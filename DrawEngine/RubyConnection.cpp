@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "engine.hpp"
 
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h) {
   int a, b, r;

@@ -1,8 +1,12 @@
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
+
 #include <ruby.h>
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdexcept>
 
 #ifndef _INCLUDE_ENGINE_H
 #define _INCLUDE_ENGINE_H
@@ -18,6 +22,7 @@ extern VALUE Global_module;
 int init_engine(int w, int h);
 
 // main.cpp
+void glfw_error_callback();
 void main_draw_loop();
 
 #endif
