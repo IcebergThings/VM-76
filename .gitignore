@@ -1,0 +1,4 @@
+*.gch
+Makefile
+*.o
+*.so
