@@ -28,11 +28,28 @@
 #endif
 
 // Global
+typedef struct _VMDE_State_t {
+  bool freeze;
+} VMDE_State_t;
+
+typedef struct _VMDE_t {
+  VMDE_State_t* States;
+} VMDE_t;
+
+extern VMDE_t* VMDE;
 extern GLFWwindow* window;
 extern VALUE Global_module;
+extern VALUE GResPic;
+
+// RubyConnection.cpp
+VALUE warp_load_pic(VALUE self, VALUE path);
+VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h);
+VALUE warp_main_draw_loop();
 
 // init.cpp
 int init_engine(int w, int h);
+void init_RClass();
+void init_RModule();
 
 // main.cpp
 void glfw_error_callback(int error, const char* description);

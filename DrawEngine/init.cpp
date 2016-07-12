@@ -1,11 +1,30 @@
 #include "engine.hpp"
 
+void init_RClass() {
+  GResPic = rb_define_class_under(Global_module, "GRes_Picture", rb_cObject);
+
+  rb_define_method(GResPic, "load_pic", (RB_F_R) warp_load_pic, 1);
+
+}
+
+void init_RModule() {
+  Global_module = rb_define_module("VMDE");
+
+  rb_define_module_function(Global_module, "init_engine", (RB_F_R) wrap_init_engine, 2);
+  rb_define_module_function(Global_module, "update", (RB_F_R) warp_main_draw_loop, 0);
+}
+
 void init_shaders() {
 
 }
 
 int init_engine(int w, int h) {
   printf("%s[init_engine]: ENGINE INIT\n", DBG_HEAD);
+
+  // 初始化VMDE结构
+  VMDE = (VMDE_t*) malloc(sizeof(VMDE));
+  VMDE->States = (VMDE_State_t*) malloc(sizeof(VMDE->States));
+  VMDE->States->freeze = false;
 
   // GLFW库初始化
   glfwSetErrorCallback(glfw_error_callback);
