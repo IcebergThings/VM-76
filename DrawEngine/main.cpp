@@ -9,24 +9,19 @@ long double sysTimeMS = sysTime * 1000;
 int temp_fps_c = 0;
 
 void main_draw_loop() {
-  VMDE->framecount++;
-  temp_fps_c++;
-  if (time(0) >= sysTime + 1) {
-    VMDE->fps = temp_fps_c;
-    temp_fps_c = 0;
+	VMDE->framecount++;
+	temp_fps_c++;
+	if (time(0) >= sysTime + 1) {
+		VMDE->fps = temp_fps_c;
+		temp_fps_c = 0;
 
-    sysTime = time(0);
-    sysTimeMS = sysTime * 1000;
-  }
-
-  if (!VMDE->States->freeze) {
-    /* Render here */
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    /* Swap front and back buffers */
-    glfwSwapBuffers(window);
-
-    /* Poll for and process events */
-    glfwPollEvents();
-  }
+		sysTime = time(0);
+		sysTimeMS = sysTime * 1000;
+	}
+	if (!VMDE->States->freeze) {
+		glClear(GL_COLOR_BUFFER_BIT);
+		/* Render */
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
 }

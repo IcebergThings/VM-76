@@ -1,12 +1,15 @@
+[F] = Function
+[C] = Class
+
 DrawEngine [VMDE]
-|- [F] init_engine
-|- [F] update
-|- [F] get_frame_count
-|- [F] get_fps
-|- [C] Rectangle [GRect]
-|   |- Shape (Vertexes)
-|   |- Texture
-|   |- Color (per Vertexes, RGBA)
-|   `- [F] Draw
-`- [C] Texture resources [GResPic]
-    `- [F] load_pic
+├[F] init_engine
+├[F] update
+├[F] get_frame_count
+├[F] get_fps
+├[C] Rectangle [GRect]
+│ ├ Shape (vertices)
+│ ├ Texture
+│ ├ Color (per vertex, RGBA)
+│ └[F] Draw
+└[C] Texture resources [GResPic]
+	└[F] load_pic
