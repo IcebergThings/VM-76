@@ -17,14 +17,8 @@
 
 // PY Deal For MICR0$0FT Windoges
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#endif
-#ifdef HAVE_WINDOWS_H
-#define DLLEXPORT __declspec(dllexport)
-#else
-#define DLLEXPORT
-#endif
+// 忠闻吔屎炉此
+// 预处理宏DLLEXPORT现已移除，因为其已被人肉展开。
 
 // Global
 extern GLFWwindow* window;
