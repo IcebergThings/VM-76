@@ -1,4 +1,11 @@
+# General output files
 *.gch
-Makefile
 *.o
 *.so
+*.dll
+
+# Generated source files
+DrawEngine/Makefile
+
+# 这些文件可能会存储个人设置（例如路径）
+DrawEngine/windoge_make.bat
