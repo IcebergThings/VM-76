@@ -20,7 +20,7 @@
 // PY Deal For MICR0$0FT Windoges
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh
 // 忠闻吔屎炉此
-#ifdef HAVE_WINDOWS_H
+#ifdef __MINGW32__
 #include <windows.h>
 #define DLLEXPORT __declspec(dllexport)
 #else
