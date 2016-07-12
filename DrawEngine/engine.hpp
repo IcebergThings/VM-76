@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <ctime>
+
 #ifndef _INCLUDE_ENGINE_H
 #define _INCLUDE_ENGINE_H
 
@@ -34,6 +36,9 @@ typedef struct _VMDE_State_t {
 
 typedef struct _VMDE_t {
   VMDE_State_t* States;
+  long framecount;
+  long millis;
+  int fps;
 } VMDE_t;
 
 extern VMDE_t* VMDE;
@@ -45,6 +50,8 @@ extern VALUE GResPic;
 VALUE warp_load_pic(VALUE self, VALUE path);
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h);
 VALUE warp_main_draw_loop();
+VALUE warp_main_get_frame_count();
+VALUE warp_main_get_fps();
 
 // init.cpp
 int init_engine(int w, int h);

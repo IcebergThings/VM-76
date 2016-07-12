@@ -19,6 +19,14 @@ VALUE warp_main_draw_loop() {
 	return Qnil;
 }
 
+VALUE warp_main_get_frame_count() {
+  return LONG2FIX(VMDE->framecount);
+}
+
+VALUE warp_main_get_fps() {
+  return INT2FIX(VMDE->fps);
+}
+
 extern "C" DLLEXPORT void Init_VMDE() {
   printf("%s[Init_VMDrawEngine]: MODULE INIT\n", DBG_HEAD);
 
