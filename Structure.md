@@ -2,7 +2,7 @@
 Ⓒ = class
 ⓜ = method / function
 
- - [ ] ◯ VMDE: draw engine
+ - [ ] ○ VMDE: draw engine
      - [ ] ⓜ init_engine
      - [ ] ⓜ update
      - [ ] ⓜ get_frame_count
