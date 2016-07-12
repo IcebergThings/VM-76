@@ -1,4 +1,4 @@
-# 如果加了这个→ !/usr/bin/cat
+# 如果加了这个 → !/usr/bin/cat
 # 就不能用了。ruby: no Ruby script found in input (LoadError)
 if ARGV.size != 4
 	puts "= Example ="
@@ -8,12 +8,9 @@ end
 # 模拟Make的行动
 def make(command)
 	puts command
-	exit unless system(command)
+	exit unless system command
 end
-ruby_path = ARGV[0]
-ruby_version = ARGV[1]
-glfw_path = ARGV[2]
-glew_path = ARGV[3]
+ruby_path, ruby_version, glfw_path, glew_path = ARGV
 sources = Dir.glob("*.cpp")
 objects = []
 dll_name = "VMDE.dll" # .dll: required to build DLL (maybe?)
@@ -27,7 +24,7 @@ sources.each do |source_name|
 	command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}\\i386-mingw32"
 	command << " -D__MINGW_USE_VC2005_COMPAT -D_FILE_OFFSET_BITS=64"
 	command << " -fno-omit-frame-pointer"
-	# GLFW
+	# GLFW & GLEW
 	command << " -DGLFW_DLL -DGLEW_STATIC"
 	command << " -I#{glfw_path}\\include"
 	command << " -I#{glew_path}\\include"
