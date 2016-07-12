@@ -1,4 +1,4 @@
-#include "engine.hpp"
+#include "global.hpp"
 
 VALUE warp_load_pic(VALUE self, VALUE path) {
   char* a = RSTRING_PTR(path);

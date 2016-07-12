@@ -1,4 +1,4 @@
-#include "engine.hpp"
+#include "global.hpp"
 
 GLFWwindow* window;
 VALUE Global_module;

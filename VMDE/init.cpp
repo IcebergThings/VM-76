@@ -1,4 +1,4 @@
-#include "engine.hpp"
+#include "global.hpp"
 
 void init_RClass() {
   GResPic = rb_define_class_under(Global_module, "GRes_Picture", rb_cObject);

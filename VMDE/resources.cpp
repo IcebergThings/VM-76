@@ -1,4 +1,4 @@
-#include "engine.hpp"
+#include "global.hpp"
 
 int load_img(char* p) {
 	p;
