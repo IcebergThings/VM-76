@@ -1,12 +1,18 @@
 #include "engine.hpp"
+/*
+VALUE warp_load_pic(VALUE self, VALUE path) {
+  char* a;
+
+  a = RSTRING(path);
+  return RSTRING(load_img(a));
+}*/
 
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h) {
-  int a, b, r;
+  int a, b;
 
   a = FIX2INT(w);
   b = FIX2INT(h);
-  r = init_engine(a,b);
-  return INT2FIX(r);
+  return INT2FIX(init_engine(a,b));
 }
 
 VALUE warp_main_draw_loop() {
@@ -16,7 +22,7 @@ VALUE warp_main_draw_loop() {
 
 extern "C" {
 
-  void Init_VMDE() {
+  DLLEXPORT void Init_VMDE() {
     printf("%s[Init_VMDrawEngine]: MODULE INIT\n", DBG_HEAD);
 
     Global_module = rb_define_module("VMDE");
