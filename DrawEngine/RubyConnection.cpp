@@ -12,7 +12,7 @@ VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h) {
 
 	a = FIX2INT(w);
 	b = FIX2INT(h);
-	return INT2FIX(init_engine(a,b));
+	return INT2FIX(init_engine(a, b));
 }
 
 VALUE warp_main_draw_loop() {
@@ -20,8 +20,8 @@ VALUE warp_main_draw_loop() {
 	return Qnil;
 }
 
-extern "C" DLLEXPORT void Init_VMDE() {
-	printf("%s[Init_VMDrawEngine]: MODULE INIT\n", DBG_HEAD);
+extern "C" __declspec(dllexport) void Init_VMDE() {
+	printf(DBG_HEAD "[Init_VMDrawEngine]: MODULE INIT\n");
 
 	Global_module = rb_define_module("VMDE");
 	rb_define_module_function(Global_module, "init_engine", (RB_F_R) wrap_init_engine, 2);

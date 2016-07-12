@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
 void glfw_error_callback(int error, const char* description) {
-	printf("%s[glfw_error_callback]: GL Error!\n\t%d: %s\n", DBG_HEAD, error, description);
+	printf(DBG_HEAD "[glfw_error_callback]: GL Error!\n\t%d: %s\n", error, description);
 }
 
 void main_draw_loop() {
