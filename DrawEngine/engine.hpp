@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
 #include <ruby.h>
@@ -18,10 +17,9 @@
 
 // PY Deal For MICR0$0FT Windoges
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh
+// 忠闻吔屎炉此
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
-#endif
-#ifdef HAVE_WINDOWS_H
 #define DLLEXPORT __declspec(dllexport)
 #else
 #define DLLEXPORT

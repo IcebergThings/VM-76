@@ -20,14 +20,10 @@ VALUE warp_main_draw_loop() {
   return Qnil;
 }
 
-extern "C" {
+extern "C" DLLEXPORT void Init_VMDE() {
+  printf("%s[Init_VMDrawEngine]: MODULE INIT\n", DBG_HEAD);
 
-  DLLEXPORT void Init_VMDE() {
-    printf("%s[Init_VMDrawEngine]: MODULE INIT\n", DBG_HEAD);
-
-    Global_module = rb_define_module("VMDE");
-    rb_define_module_function(Global_module, "init_engine", (RB_F_R) wrap_init_engine, 2);
-    rb_define_module_function(Global_module, "draw_loop", (RB_F_R) warp_main_draw_loop, 0);
-  }
-
+  Global_module = rb_define_module("VMDE");
+  rb_define_module_function(Global_module, "init_engine", (RB_F_R) wrap_init_engine, 2);
+  rb_define_module_function(Global_module, "draw_loop", (RB_F_R) warp_main_draw_loop, 0);
 }
