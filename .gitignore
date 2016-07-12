@@ -5,7 +5,7 @@
 *.dll
 
 # Generated source files
-DrawEngine/Makefile
+VMDE/Makefile
 
 # 这些文件可能会存储个人设置（例如路径）
-DrawEngine/windoge_make.bat
+VMDE/windoge_make.bat
