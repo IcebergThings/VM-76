@@ -9,8 +9,8 @@
 
 #include <ruby.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <stdexcept>
 #include <string>
 
@@ -23,9 +23,8 @@
 #define DBG_HEAD "VM DBG [C][VMDrawEngine]"
 #define RB_F_R VALUE(*)(ANYARGS) // Ruby Function Return Type
 
-// PY Deal For MICR0$0FT Windoges
-// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh
-// 忠闻吔屎炉此
+// PY Deal For MICR0$0FT Windoges ()
+// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
 #ifdef __MINGW32__
 #include <windows.h>
 #define DLLEXPORT __declspec(dllexport)
