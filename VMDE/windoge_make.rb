@@ -1,14 +1,17 @@
-# 如果加了这个 → !/usr/bin/cat
-# 就不能用了。ruby: no Ruby script found in input (LoadError)
+# 如果在第一行加了这个 → #!/usr/bin/cat ← 就不能用了。
+# ruby: no Ruby script found in input (LoadError)
 #==============================================================================
 # ■ windoge_make.rb
 #------------------------------------------------------------------------------
-#   君住Linux中，我住Windows里。日日思君不见君，共用编译器。
-#   警告几时休，错误何时已？只愿君心似我心，定不负移植意。
-#   ——Frog Chen《卜算子（伪）·编译》
+#   君住Linux中，我住Windows里。日日思君不见君，共通编译器。
+#   警告几时休，错误何时已？但愿我心藏君境，定不负移植技。
+#   ——Frog Chen《伪·卜算子·编译》
 #==============================================================================
 
 module WindogeMake
+	#--------------------------------------------------------------------------
+	# ● 常量
+	#--------------------------------------------------------------------------
 	BATCH_FILENAME = "windoge_make.bat"
 	#--------------------------------------------------------------------------
 	# ● 主程序
@@ -65,14 +68,12 @@ module WindogeMake
 	# ● 输出能够快捷地执行本脚本的批处理文件
 	#--------------------------------------------------------------------------
 	def self.output_batch(argv = ARGV)
-		File.open(BATCH_FILENAME, "w") do |f|
-			f.puts "ruby windoge_make.rb #{argv.join(" ")}"
-			f.puts "@pause"
-		end
+		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{argv.join(" ")}\n@pause\n")
 	end
 end
 
-if $0 == __FILE__
+# “各种定义结束后，从这里开始实际运行。”
+if __FILE__ == $0
 	WindogeMake.main
 	WindogeMake.output_batch unless FileTest.exist?(WindogeMake::BATCH_FILENAME)
 end
