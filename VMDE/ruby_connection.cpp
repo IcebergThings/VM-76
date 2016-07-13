@@ -36,10 +36,10 @@ void init_RClass() {
 
 void init_RModule() {
 	Global_module = rb_define_module("VMDE");
-	rb_define_module_function(Global_module, "init_engine", (RB_F_R) wrap_init_engine, 2);
+	rb_define_module_function(Global_module, "init", (RB_F_R) wrap_init_engine, 2);
 	rb_define_module_function(Global_module, "update", (RB_F_R) warp_main_draw_loop, 0);
-	rb_define_module_function(Global_module, "get_frame_count", (RB_F_R) warp_main_get_frame_count, 0);
-	rb_define_module_function(Global_module, "get_fps", (RB_F_R) warp_main_get_fps, 0);
+	rb_define_module_function(Global_module, "frame_count", (RB_F_R) warp_main_get_frame_count, 0);
+	rb_define_module_function(Global_module, "fps", (RB_F_R) warp_main_get_fps, 0);
 }
 
 extern "C" DLLEXPORT void Init_VMDE() {

@@ -8,10 +8,9 @@
 
 require "./VMDE.so"
 
-VMDE::init_engine(640, 480)
+VMDE.init(640, 480)
 puts 'Ruby here init'
-while true
-	VMDE::update
-	
-	puts VMDE::get_fps
+loop do
+	VMDE.update
+	puts VMDE.fps
 end
