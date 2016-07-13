@@ -6,47 +6,54 @@
 
 #include "global.hpp"
 
-VALUE warp_load_pic(VALUE self, VALUE path) {
-	Check_Type(path, T_STRING);
-	char* a = RSTRING_PTR(path);
-	return Qnil;//RSTRING(load_img(a));
+namespace RubyWrapper {
+	VALUE load_pic(VALUE self, VALUE path) {
+		Check_Type(path, T_STRING);
+		char* a = RSTRING_PTR(path);
+		return Qnil;//RSTRING(load_img(a));
+	}
+
+	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
+		Check_Type(w, T_FIXNUM);
+		Check_Type(h, T_FIXNUM);
+		::init_engine(FIX2INT(w), FIX2INT(h));
+		return Qtrue;
+	}
+
+	VALUE main_draw_loop() {
+		::main_draw_loop();
+		return Qnil;
+	}
+
+	VALUE main_get_frame_count() {
+		return LONG2FIX(VMDE->frame_count);
+	}
+
+	VALUE main_get_fps() {
+		return INT2FIX(VMDE->fps);
+	}
 }
 
-VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h) {
-	Check_Type(w, T_FIXNUM);
-	Check_Type(h, T_FIXNUM);
-	return INT2FIX(init_engine(FIX2INT(w), FIX2INT(h)));
-}
-
-VALUE warp_main_draw_loop() {
-	main_draw_loop();
-	return Qnil;
-}
-
-VALUE warp_main_get_frame_count() {
-	return LONG2FIX(VMDE->frame_count);
-}
-
-VALUE warp_main_get_fps() {
-	return INT2FIX(VMDE->fps);
-}
-
-void init_RClass() {
-	GResPic = rb_define_class_under(Global_module, "GRes_Picture", rb_cObject);
-	rb_define_method(GResPic, "load_pic", (type_ruby_function) warp_load_pic, 1);
-}
-
-void init_RModule() {
+void init_ruby_modules() {
 	Global_module = rb_define_module("VMDE");
-	rb_define_module_function(Global_module, "init", (type_ruby_function) wrap_init_engine, 2);
-	rb_define_module_function(Global_module, "update", (type_ruby_function) warp_main_draw_loop, 0);
-	rb_define_module_function(Global_module, "frame_count", (type_ruby_function) warp_main_get_frame_count, 0);
-	rb_define_module_function(Global_module, "fps", (type_ruby_function) warp_main_get_fps, 0);
+	#define RUBY_MODULE_API(ruby_name, wrapper_name, parameter_count) \
+		rb_define_module_function(Global_module, #ruby_name, \
+		(type_ruby_function) RubyWrapper::wrapper_name, parameter_count)
+	RUBY_MODULE_API(init, init_engine, 2);
+	RUBY_MODULE_API(update, main_draw_loop, 0);
+	RUBY_MODULE_API(frame_count, main_get_frame_count, 0);
+	RUBY_MODULE_API(fps, main_get_fps, 0);
+	#undef RUBY_MODULE_API
 }
 
-extern "C" DLLEXPORT void Init_VMDE() {
+void init_ruby_classes() {
+	GResPic = rb_define_class_under(Global_module, "GRes_Picture", rb_cObject);
+	rb_define_method(GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
+}
+
+EXPORTED void Init_VMDE() {
 	log("initializing the module");
 
-	init_RModule();
-	init_RClass();
+	init_ruby_modules();
+	init_ruby_classes();
 }

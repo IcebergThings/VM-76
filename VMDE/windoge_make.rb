@@ -62,13 +62,16 @@ module WindogeMake
 	#--------------------------------------------------------------------------
 	def self.make(command)
 		puts command
-		exit unless system command
+		if not system command
+			system "pause"
+			exit
+		end
 	end
 	#--------------------------------------------------------------------------
 	# ● 输出能够快捷地执行本脚本的批处理文件
 	#--------------------------------------------------------------------------
 	def self.output_batch(argv = ARGV)
-		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{argv.join(" ")}\n@pause\n")
+		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{argv.join(" ")}")
 	end
 end
 
