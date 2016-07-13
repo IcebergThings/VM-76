@@ -36,10 +36,14 @@ namespace RubyWrapper {
 
 void init_ruby_modules() {
 	Global_module = rb_define_module("VMDE");
-	rb_define_module_function(Global_module, "init", (type_ruby_function) RubyWrapper::init_engine, 2);
-	rb_define_module_function(Global_module, "update", (type_ruby_function) RubyWrapper::main_draw_loop, 0);
-	rb_define_module_function(Global_module, "frame_count", (type_ruby_function) RubyWrapper::main_get_frame_count, 0);
-	rb_define_module_function(Global_module, "fps", (type_ruby_function) RubyWrapper::main_get_fps, 0);
+	#define RUBY_MODULE_API(ruby_name, wrapper_name, parameter_count) \
+		rb_define_module_function(Global_module, #ruby_name, \
+		(type_ruby_function) RubyWrapper::wrapper_name, parameter_count)
+	RUBY_MODULE_API(init, init_engine, 2);
+	RUBY_MODULE_API(update, main_draw_loop, 0);
+	RUBY_MODULE_API(frame_count, main_get_frame_count, 0);
+	RUBY_MODULE_API(fps, main_get_fps, 0);
+	#undef RUBY_MODULE_API
 }
 
 void init_ruby_classes() {
