@@ -66,6 +66,7 @@ VALUE warp_main_get_fps();
 
 // init.cpp
 int init_engine(int w, int h);
+void setup_viewport();
 void init_shaders();
 void init_RClass();
 void init_RModule();
