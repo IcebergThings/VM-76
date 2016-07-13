@@ -20,7 +20,7 @@
 
 #define GAME_NAME "VM / 76"
 #define DBG_HEAD "VM DBG [C][VMDrawEngine]"
-#define RB_F_R VALUE(*)(ANYARGS) // Ruby Function Return Type
+typedef VALUE (*type_ruby_function)(ANYARGS) ;
 
 // PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
