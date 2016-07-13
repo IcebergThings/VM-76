@@ -11,7 +11,6 @@
 
 #include <cstdlib>
 #include <cstdio>
-#include <stdexcept>
 #include <string>
 
 #include <ctime>
@@ -20,10 +19,9 @@
 #define _INCLUDE_ENGINE_H
 
 #define GAME_NAME "VM / 76"
-#define DBG_HEAD "VM DBG [C][VMDrawEngine]"
-#define RB_F_R VALUE(*)(ANYARGS) // Ruby Function Return Type
+typedef VALUE (*type_ruby_function)(ANYARGS) ;
 
-// PY Deal For MICR0$0FT Windoges ()
+// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
 #ifdef __MINGW32__
 #include <windows.h>
@@ -68,6 +66,7 @@ VALUE warp_main_get_fps();
 
 // init.cpp
 int init_engine(int w, int h);
+void init_shaders();
 void init_RClass();
 void init_RModule();
 
@@ -77,5 +76,12 @@ void main_draw_loop();
 
 // resources.cpp
 int load_img(char* p);
+
+// util.cpp
+#define DEBUG_ENVIRONMENT "VMDrawEngine"
+#define log(...) Util::log_internal(__func__, __VA_ARGS__)
+namespace Util {
+	void log_internal(const char* function_name, const char* format, ...);
+}
 
 #endif
