@@ -16,3 +16,4 @@ Render_Chain_Node Render_Chain;
 
 GLuint VBO[15];
 GLuint basic_2D_vsh;
+GLuint basic_2D_fsh;

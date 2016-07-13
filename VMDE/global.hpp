@@ -58,6 +58,7 @@ extern Render_Chain_Node Render_Chain;
 
 extern GLuint VBO[15];
 extern GLuint basic_2D_vsh;
+extern GLuint basic_2D_fsh;
 
 // ruby_connection.cpp
 VALUE warp_load_pic(VALUE self, VALUE path);
