@@ -6,11 +6,8 @@
 
 #include "global.hpp"
 
-void init_shaders() {
-}
-
 int init_engine(int w, int h) {
-	printf("%s[init_engine]: ENGINE INIT\n", DBG_HEAD);
+	printf(DBG_HEAD "[init_engine]: initializing the engine\n");
 
 	// 初始化VMDE结构
 	VMDE = (VMDE_t*) malloc(sizeof(VMDE));
@@ -19,12 +16,9 @@ int init_engine(int w, int h) {
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
 
-
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
-	if (!glfwInit()) {
-		throw std::runtime_error("glfwInit failed");
-	}
+	if (!glfwInit()) rb_raise(rb_eRuntimeError, "glfwInit() failed");
 
 	// OpenGL 向前&向后兼容，使用GL 3.2 Core Profile，窗口大小不可变
 	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
@@ -37,19 +31,21 @@ int init_engine(int w, int h) {
 	window = glfwCreateWindow(w, h, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
-		throw std::runtime_error("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
+		rb_raise(rb_eRuntimeError, "glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
 	}
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 
 	// 初始化GLEW
-	if (glewInit() != GLEW_OK) {
-		throw std::runtime_error("glewInit failed");
-	}
+	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() failed");
 
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
 	init_shaders();
 
 	return 0;
+}
+
+void init_shaders() {
+	// TODO
 }

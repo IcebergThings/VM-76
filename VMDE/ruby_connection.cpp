@@ -7,12 +7,14 @@
 #include "global.hpp"
 
 VALUE warp_load_pic(VALUE self, VALUE path) {
+	Check_Type(path, T_STRING);
 	char* a = RSTRING_PTR(path);
-
 	return Qnil;//RSTRING(load_img(a));
 }
 
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h) {
+	Check_Type(w, T_FIXNUM);
+	Check_Type(h, T_FIXNUM);
 	return INT2FIX(init_engine(FIX2INT(w), FIX2INT(h)));
 }
 

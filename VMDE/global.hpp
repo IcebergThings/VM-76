@@ -11,7 +11,6 @@
 
 #include <cstdlib>
 #include <cstdio>
-#include <stdexcept>
 #include <string>
 
 #include <ctime>
@@ -58,6 +57,7 @@ VALUE warp_main_get_fps();
 
 // init.cpp
 int init_engine(int w, int h);
+void init_shaders();
 void init_RClass();
 void init_RModule();
 
