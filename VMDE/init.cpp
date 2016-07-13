@@ -10,14 +10,14 @@ void init_shaders() {
 }
 
 int init_engine(int w, int h) {
-  printf("%s[init_engine]: ENGINE INIT\n", DBG_HEAD);
+	printf("%s[init_engine]: ENGINE INIT\n", DBG_HEAD);
 
-  // 初始化VMDE结构
-  VMDE = (VMDE_t*) malloc(sizeof(VMDE));
-  VMDE->States = (VMDE_State_t*) malloc(sizeof(VMDE->States));
-  VMDE->States->freeze = false;
-  VMDE->frame_count = 0;
-  VMDE->fps = 0;
+	// 初始化VMDE结构
+	VMDE = (VMDE_t*) malloc(sizeof(VMDE));
+	VMDE->States = (VMDE_State_t*) malloc(sizeof(VMDE->States));
+	VMDE->States->freeze = false;
+	VMDE->frame_count = 0;
+	VMDE->fps = 0;
 
 
 	// GLFW库初始化
