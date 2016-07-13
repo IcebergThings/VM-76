@@ -46,13 +46,13 @@ typedef struct _Render_Chain_Node {
 	struct _Render_Chain_Node* prev; // What the fuck is struct _Render_Chain?
 	VALUE n;
 	struct _Render_Chain_Node* next;
-} RenerChainNode;
+} RenderChainNode;
 
 extern struct VMDE* VMDE;
 extern GLFWwindow* window;
 extern VALUE Global_module;
 extern VALUE GResPic;
-extern RenderChainNode render_chain;
+extern RenderChainNode* render_chain;
 
 extern GLuint VBO[15];
 extern GLuint basic_2D_vsh;
@@ -70,12 +70,11 @@ void init_ruby_classes();
 void init_ruby_modules();
 
 // init.cpp
-void init_engine(int w, int h);
+int init_engine(int w, int h);
 void setup_viewport();
 int init_shaders();
 void init_RClass();
 void init_RModule();
-void init_shaders();
 
 // main.cpp
 void glfw_error_callback(int error, const char* description);

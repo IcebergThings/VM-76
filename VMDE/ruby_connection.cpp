@@ -16,8 +16,8 @@ namespace RubyWrapper {
 	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
 		Check_Type(w, T_FIXNUM);
 		Check_Type(h, T_FIXNUM);
-		::init_engine(FIX2INT(w), FIX2INT(h));
-		return Qtrue;
+		int rc = ::init_engine(FIX2INT(w), FIX2INT(h));
+		return INT2FIX(rc);
 	}
 
 	VALUE main_draw_loop() {

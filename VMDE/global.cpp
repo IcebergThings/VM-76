@@ -14,7 +14,7 @@ VALUE GResPic;
 
 struct VMDE* VMDE;
 
-struct RenderChainNode render_chain;
+RenderChainNode* render_chain = NULL;
 
 GLuint VBO[15];
 GLuint basic_2D_vsh;

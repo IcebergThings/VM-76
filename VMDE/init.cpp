@@ -75,7 +75,7 @@ void setup_viewport() {
   glViewport(0, 0, width, height);
 }
 
-void init_engine(int w, int h) {
+int init_engine(int w, int h) {
 	log("initializing the engine");
 
 	// 初始化VMDE结构
