@@ -34,8 +34,7 @@ int init_shaders() {
   glGetShaderiv(basic_2D_vsh, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(basic_2D_vsh, 512, NULL, infoLog);
-    printf("%s[init_shaders]: VSH compilation failed:\n%s\n", DBG_HEAD, infoLog);
-
+    log("VSH compilation failed:\n%s", infoLog);
     return 301;
   }
 
@@ -48,8 +47,7 @@ int init_shaders() {
   glGetShaderiv(basic_2D_fsh, GL_COMPILE_STATUS, &success);
   if (!success) {
     glGetShaderInfoLog(basic_2D_fsh, 512, NULL, infoLog);
-    printf("%s[init_shaders]: FSH compilation failed:\n%s\n", DBG_HEAD, infoLog);
-
+    log("FSH compilation failed:\n%s", infoLog);
     return 302;
   }
 
@@ -62,7 +60,8 @@ int init_shaders() {
   glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
   if (!success) {
     glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    printf("%s[init_shaders]: Shader linking failed:\n%s\n", DBG_HEAD, infoLog);
+    log("shaders linking failed:\n%s", infoLog);
+    return 303;
   }
   glDeleteShader(basic_2D_vsh);
   glDeleteShader(basic_2D_fsh);
@@ -77,7 +76,7 @@ void setup_viewport() {
 }
 
 int init_engine(int w, int h) {
-	printf("%s[init_engine]: ENGINE INIT\n", DBG_HEAD);
+	log("initializing the engine");
 
 	// 初始化VMDE结构
 	VMDE = (VMDE_t*) malloc(sizeof(VMDE));
@@ -86,13 +85,9 @@ int init_engine(int w, int h) {
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
 
-
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
-	if (!glfwInit()) {
-		printf("%s[init_engine]: GLFW Init Failed\n", DBG_HEAD);
-    exit(1);
-	}
+	if (!glfwInit()) rb_raise(rb_eRuntimeError, "glfwInit() failed");
 
 	// OpenGL 向前&向后兼容，使用GL 3.2 Core Profile，窗口大小不可变
 	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
@@ -105,19 +100,14 @@ int init_engine(int w, int h) {
 	window = glfwCreateWindow(w, h, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
-    printf("%s[init_engine]: GLFW Window Creation Failed. Your computer need OpenGL 3.2\n", DBG_HEAD);
-    exit(1);
+		rb_raise(rb_eRuntimeError, "glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
 	}
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 
 	// 初始化GLEW
-  glewExperimental = GL_TRUE;
-  if (glewInit() != GLEW_OK) {
-    printf("%s[init_engine]: GLEW Inition failed. Your computer need OpenGL 3.2\n", DBG_HEAD);
-    exit(1);
-	}
+	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() (GLEW Initialization) failed.");
 
   setup_viewport();
 
