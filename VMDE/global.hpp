@@ -65,7 +65,7 @@ VALUE wrap_main_get_frame_count();
 VALUE wrap_main_get_fps();
 
 // init.cpp
-int init_engine(int w, int h);
+void init_engine(int w, int h);
 void setup_viewport();
 void init_shaders();
 void init_RClass();

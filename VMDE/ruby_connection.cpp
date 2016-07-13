@@ -15,7 +15,8 @@ VALUE wrap_load_pic(VALUE self, VALUE path) {
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h) {
 	Check_Type(w, T_FIXNUM);
 	Check_Type(h, T_FIXNUM);
-	return INT2FIX(init_engine(FIX2INT(w), FIX2INT(h)));
+	init_engine(FIX2INT(w), FIX2INT(h));
+	return Qtrue;
 }
 
 VALUE wrap_main_draw_loop() {

@@ -8,7 +8,7 @@
 
 char temp_src[] = "#version 300 core\nvoid main() {}";
 
-int init_engine(int w, int h) {
+void init_engine(int w, int h) {
 	log("initializing the engine");
 
 	// 初始化VMDE结构
@@ -49,8 +49,6 @@ int init_engine(int w, int h) {
 
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
 	init_shaders();
-
-	return 0;
 }
 
 void init_shaders() {
