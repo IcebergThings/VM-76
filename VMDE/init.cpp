@@ -1,34 +1,23 @@
+//=============================================================================
+// ■ init.cpp
+//-----------------------------------------------------------------------------
+//   所有初始化相关的代码都被放置在这里。
+//=============================================================================
+
 #include "global.hpp"
-
-void init_RClass() {
-  GResPic = rb_define_class_under(Global_module, "GRes_Picture", rb_cObject);
-
-  rb_define_method(GResPic, "load_pic", (RB_F_R) warp_load_pic, 1);
-
-}
-
-void init_RModule() {
-  Global_module = rb_define_module("VMDE");
-
-  rb_define_module_function(Global_module, "init_engine", (RB_F_R) wrap_init_engine, 2);
-  rb_define_module_function(Global_module, "update", (RB_F_R) warp_main_draw_loop, 0);
-  rb_define_module_function(Global_module, "get_frame_count", (RB_F_R) warp_main_get_frame_count, 0);
-  rb_define_module_function(Global_module, "get_fps", (RB_F_R) warp_main_get_fps, 0);
-
-}
 
 void init_shaders() {
 }
 
 int init_engine(int w, int h) {
-  printf("%s[init_engine]: ENGINE INIT\n", DBG_HEAD);
+	printf("%s[init_engine]: ENGINE INIT\n", DBG_HEAD);
 
-  // 初始化VMDE结构
-  VMDE = (VMDE_t*) malloc(sizeof(VMDE));
-  VMDE->States = (VMDE_State_t*) malloc(sizeof(VMDE->States));
-  VMDE->States->freeze = false;
-  VMDE->framecount = 0;
-  VMDE->fps = 0;
+	// 初始化VMDE结构
+	VMDE = (VMDE_t*) malloc(sizeof(VMDE));
+	VMDE->States = (VMDE_State_t*) malloc(sizeof(VMDE->States));
+	VMDE->States->freeze = false;
+	VMDE->frame_count = 0;
+	VMDE->fps = 0;
 
 
 	// GLFW库初始化

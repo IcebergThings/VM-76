@@ -1,10 +1,16 @@
+//=============================================================================
+// ■ global.hpp
+//-----------------------------------------------------------------------------
+//   VMDE通用C++头文件。
+//=============================================================================
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <ruby.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <stdexcept>
 #include <string>
 
@@ -17,9 +23,8 @@
 #define DBG_HEAD "VM DBG [C][VMDrawEngine]"
 #define RB_F_R VALUE(*)(ANYARGS) // Ruby Function Return Type
 
-// PY Deal For MICR0$0FT Windoges
-// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh
-// 忠闻吔屎炉此
+// PY Deal For MICR0$0FT Windoges ()
+// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
 #ifdef __MINGW32__
 #include <windows.h>
 #define DLLEXPORT __declspec(dllexport)
@@ -34,8 +39,8 @@ typedef struct _VMDE_State_t {
 
 typedef struct _VMDE_t {
 	VMDE_State_t* States;
-	long framecount;
-	long millis;
+	long frame_count;
+	long millisecond;
 	int fps;
 } VMDE_t;
 
@@ -44,7 +49,7 @@ extern GLFWwindow* window;
 extern VALUE Global_module;
 extern VALUE GResPic;
 
-// RubyConnection.cpp
+// ruby_connection.cpp
 VALUE warp_load_pic(VALUE self, VALUE path);
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h);
 VALUE warp_main_draw_loop();
