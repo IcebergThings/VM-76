@@ -10,20 +10,17 @@ void glfw_error_callback(int error, const char* description) {
 	log("GLFW error %d: %s", error, description);
 }
 
-// Why the fucking long **double**? Is it ever portable?
-long double system_time = time(NULL);
-long double system_time_millisecond = system_time * 1000;
-int temp_fps_c = 0;
+time_t fps_since = time(NULL);
+int fps_counter = 0;
 
 void main_draw_loop() {
 	VMDE->frame_count++;
-	temp_fps_c++;
-	if (time(NULL) >= system_time + 1) {
-		VMDE->fps = temp_fps_c;
-		temp_fps_c = 0;
-
-		system_time = time(NULL);
-		system_time_millisecond = system_time * 1000;
+	fps_counter++;
+	time_t now = time(NULL);
+	if (difftime(now, fps_since) >= 1.0d) {
+		VMDE->fps = fps_counter;
+		fps_counter = 0;
+		fps_since = now;
 	}
 	if (!VMDE->States->freeze) {
 		glClear(GL_COLOR_BUFFER_BIT);
