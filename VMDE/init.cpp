@@ -7,7 +7,7 @@
 #include "global.hpp"
 
 int init_engine(int w, int h) {
-	printf(DBG_HEAD "[init_engine]: initializing the engine\n");
+	log("initializing the engine");
 
 	// 初始化VMDE结构
 	VMDE = (VMDE_t*) malloc(sizeof(VMDE));

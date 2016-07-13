@@ -19,7 +19,6 @@
 #define _INCLUDE_ENGINE_H
 
 #define GAME_NAME "VM / 76"
-#define DBG_HEAD "VM DBG [C][VMDrawEngine]"
 typedef VALUE (*type_ruby_function)(ANYARGS) ;
 
 // PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
@@ -67,5 +66,12 @@ void main_draw_loop();
 
 // resources.cpp
 int load_img(char* p);
+
+// util.cpp
+#define DEBUG_ENVIRONMENT "VMDrawEngine"
+#define log(...) Util::log_internal(__func__, __VA_ARGS__)
+namespace Util {
+	void log_internal(const char* function_name, const char* format, ...);
+}
 
 #endif

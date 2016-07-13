@@ -7,7 +7,7 @@
 #include "global.hpp"
 
 void glfw_error_callback(int error, const char* description) {
-	printf(DBG_HEAD "[glfw_error_callback]: GL Error!\n\t%d: %s\n", error, description);
+	log("GLFW error %d: %s", error, description);
 }
 
 // Why the fucking long **double**? Is it ever portable?

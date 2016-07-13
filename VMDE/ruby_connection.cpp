@@ -45,7 +45,7 @@ void init_RModule() {
 }
 
 extern "C" DLLEXPORT void Init_VMDE() {
-	printf("%s[Init_VMDrawEngine]: MODULE INIT\n", DBG_HEAD);
+	log("initializing the module");
 
 	init_RModule();
 	init_RClass();
