@@ -50,6 +50,9 @@ extern VALUE Global_module;
 extern VALUE GResPic;
 extern Render_Chain_Node Render_Chain;
 
+extern GLuint VBO[15];
+extern GLuint basic_2D_vsh;
+
 // RubyConnection.cpp
 VALUE warp_load_pic(VALUE self, VALUE path);
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h);
