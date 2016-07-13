@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdexcept>
 #include <string>
 
 #include <ctime>
@@ -39,10 +38,17 @@ typedef struct _VMDE_t {
 	int fps;
 } VMDE_t;
 
+typedef struct _Render_Chain_Node {
+	struct _Render_Chain* prev;
+	VALUE n;
+	struct _Render_Chain* next;
+} Render_Chain_Node;
+
 extern VMDE_t* VMDE;
 extern GLFWwindow* window;
 extern VALUE Global_module;
 extern VALUE GResPic;
+extern Render_Chain_Node Render_Chain;
 
 // RubyConnection.cpp
 VALUE warp_load_pic(VALUE self, VALUE path);

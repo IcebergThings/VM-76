@@ -34,7 +34,8 @@ int init_engine(int w, int h) {
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit()) {
-		throw std::runtime_error("glfwInit failed");
+		printf("%s[init_engine]: GLFW Init Failed\n", DBG_HEAD);
+    exit(1);
 	}
 
 	// OpenGL 向前&向后兼容，使用GL 3.2 Core Profile，窗口大小不可变
@@ -48,7 +49,8 @@ int init_engine(int w, int h) {
 	window = glfwCreateWindow(w, h, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
-		throw std::runtime_error("glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
+    printf("%s[init_engine]: GLFW Window Creation Failed. Your computer need OpenGL 3.2\n", DBG_HEAD);
+    exit(1);
 	}
 
 	// 设置当前窗口GL上下文
@@ -56,7 +58,8 @@ int init_engine(int w, int h) {
 
 	// 初始化GLEW
 	if (glewInit() != GLEW_OK) {
-		throw std::runtime_error("glewInit failed");
+    printf("%s[init_engine]: GLEW Inition failed. Your computer need OpenGL 3.2\n", DBG_HEAD);
+    exit(1);
 	}
 
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
