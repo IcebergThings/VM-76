@@ -25,9 +25,9 @@ typedef VALUE (*type_ruby_function)(ANYARGS) ;
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
 #ifdef __MINGW32__
 #include <windows.h>
-#define DLLEXPORT __declspec(dllexport)
+#define EXPORTED extern "C" __declspec(dllexport)
 #else
-#define DLLEXPORT
+#define EXPORTED extern "C"
 #endif
 
 // Global

@@ -51,7 +51,7 @@ void init_ruby_classes() {
 	rb_define_method(GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
 }
 
-extern "C" DLLEXPORT void Init_VMDE() {
+EXPORTED void Init_VMDE() {
 	log("initializing the module");
 
 	init_ruby_modules();
