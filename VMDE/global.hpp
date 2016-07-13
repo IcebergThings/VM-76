@@ -23,7 +23,7 @@
 #define DBG_HEAD "VM DBG [C][VMDrawEngine]"
 #define RB_F_R VALUE(*)(ANYARGS) // Ruby Function Return Type
 
-// PY Deal For MICR0$0FT Windoges ()
+// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
 #ifdef __MINGW32__
 #include <windows.h>
