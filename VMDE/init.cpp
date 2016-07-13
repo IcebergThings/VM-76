@@ -6,6 +6,8 @@
 
 #include "global.hpp"
 
+char temp_src[] = "#version 300 core\nvoid main() {}";
+
 int init_engine(int w, int h) {
 	log("initializing the engine");
 
@@ -31,14 +33,19 @@ int init_engine(int w, int h) {
 	window = glfwCreateWindow(w, h, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
-		rb_raise(rb_eRuntimeError, "glfwCreateWindow failed. Can your hardware handle OpenGL 3.2?");
+		rb_raise(rb_eRuntimeError, "glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
 	}
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 
 	// 初始化GLEW
-	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() failed");
+	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() (GLEW Initialization) failed.");
+
+  setup_viewport();
+
+  glGenBuffers(1, &VBO[0]);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
 	init_shaders();
@@ -47,5 +54,15 @@ int init_engine(int w, int h) {
 }
 
 void init_shaders() {
-	// TODO
+  GLchar* basic_2D_vsh_src = (GLchar*) &temp_src;
+
+  basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(basic_2D_vsh, 1, &basic_2D_vsh_src, NULL);
+  glCompileShader(basic_2D_vsh);
+}
+
+void setup_viewport() {
+  int width, height;
+  glfwGetFramebufferSize(window, &width, &height);
+  glViewport(0, 0, width, height);
 }

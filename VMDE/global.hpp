@@ -42,10 +42,20 @@ typedef struct _VMDE_t {
 	int fps;
 } VMDE_t;
 
+typedef struct _Render_Chain_Node {
+	struct _Render_Chain* prev;
+	VALUE n;
+	struct _Render_Chain* next;
+} Render_Chain_Node;
+
 extern VMDE_t* VMDE;
 extern GLFWwindow* window;
 extern VALUE Global_module;
 extern VALUE GResPic;
+extern Render_Chain_Node Render_Chain;
+
+extern GLuint VBO[15];
+extern GLuint basic_2D_vsh;
 
 // ruby_connection.cpp
 VALUE wrap_load_pic(VALUE self, VALUE path);
@@ -56,6 +66,7 @@ VALUE wrap_main_get_fps();
 
 // init.cpp
 int init_engine(int w, int h);
+void setup_viewport();
 void init_shaders();
 void init_RClass();
 void init_RModule();
