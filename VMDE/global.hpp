@@ -40,8 +40,8 @@ typedef struct _VMDE_State_t {
 
 typedef struct _VMDE_t {
 	VMDE_State_t* States;
-	long framecount;
-	long millis;
+	long frame_count;
+	long millisecond;
 	int fps;
 } VMDE_t;
 
@@ -50,7 +50,7 @@ extern GLFWwindow* window;
 extern VALUE Global_module;
 extern VALUE GResPic;
 
-// RubyConnection.cpp
+// ruby_connection.cpp
 VALUE warp_load_pic(VALUE self, VALUE path);
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h);
 VALUE warp_main_draw_loop();
