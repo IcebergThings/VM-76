@@ -44,7 +44,7 @@ module WindogeMake
 			make command
 			objects << "#{name}.o"
 		end
-		command = "gcc #{objects.join(" ")} -s -shared -o #{dll_name} -lstdc++"
+		command = "gcc #{objects.join(" ")} -s -shared -o #{dll_name}"
 		command << " -L#{ruby_path}\\lib"
 		command << " -Wl,--enable-auto-image-base,--enable-auto-import"
 		command << " -lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi"
