@@ -11,14 +11,12 @@
 
 #include <cstdlib>
 #include <cstdio>
-#include <string>
-
+#include <cstring>
 #include <ctime>
 
-#ifndef _INCLUDE_ENGINE_H
-#define _INCLUDE_ENGINE_H
+#ifndef _INCLUDE_GLOBAL_H
+#define _INCLUDE_GLOBAL_H
 
-#define GAME_NAME "VM / 76"
 typedef VALUE (*type_ruby_function)(ANYARGS);
 
 // PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
@@ -31,6 +29,8 @@ typedef VALUE (*type_ruby_function)(ANYARGS);
 #endif
 
 // Global
+extern const char* GAME_NAME;
+
 struct VMDEState {
 	bool frozen;
 };
