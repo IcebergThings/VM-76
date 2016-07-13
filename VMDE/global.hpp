@@ -58,18 +58,20 @@ extern GLuint VBO[15];
 extern GLuint basic_2D_vsh;
 
 // ruby_connection.cpp
-VALUE wrap_load_pic(VALUE self, VALUE path);
-VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h);
-VALUE wrap_main_draw_loop();
-VALUE wrap_main_get_frame_count();
-VALUE wrap_main_get_fps();
+namespace RubyWrapper {
+	VALUE load_pic(VALUE self, VALUE path);
+	VALUE init_engine(VALUE self, VALUE w, VALUE h);
+	VALUE main_draw_loop();
+	VALUE main_get_frame_count();
+	VALUE main_get_fps();
+}
+void init_ruby_classes();
+void init_ruby_modules();
 
 // init.cpp
 void init_engine(int w, int h);
 void setup_viewport();
 void init_shaders();
-void init_RClass();
-void init_RModule();
 
 // main.cpp
 void glfw_error_callback(int error, const char* description);
