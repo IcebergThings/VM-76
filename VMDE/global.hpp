@@ -48,11 +48,11 @@ extern VALUE Global_module;
 extern VALUE GResPic;
 
 // ruby_connection.cpp
-VALUE warp_load_pic(VALUE self, VALUE path);
+VALUE wrap_load_pic(VALUE self, VALUE path);
 VALUE wrap_init_engine(VALUE self, VALUE w, VALUE h);
-VALUE warp_main_draw_loop();
-VALUE warp_main_get_frame_count();
-VALUE warp_main_get_fps();
+VALUE wrap_main_draw_loop();
+VALUE wrap_main_get_frame_count();
+VALUE wrap_main_get_fps();
 
 // init.cpp
 int init_engine(int w, int h);
