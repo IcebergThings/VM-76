@@ -1,15 +1,16 @@
-Ⓜ = Method / Function
-Ⓒ = Class
+Ⓜ = module / namespace
+Ⓒ = class
+ⓜ = method / function
 
- - [ ] [?] VMDE: draw engine
-     - [ ] Ⓜ init_engine
-     - [ ] Ⓜ update
-     - [ ] Ⓜ get_frame_count
-     - [ ] Ⓜ get_fps
-     - [ ] Ⓒ GRect: rectangle
+ - [ ] ○ VMDE: draw engine
+     - [ ] ⓜ init_engine
+     - [ ] ⓜ update
+     - [ ] ⓜ get_frame_count
+     - [ ] ⓜ get_fps
+     - [ ] ⓜ GRect: rectangle
          - [ ] Shape: vertices
          - [ ] Texture
          - [ ] Color: per vertex, RGBA
-         - [ ] Ⓜ draw
+         - [ ] ⓜ draw
      - [ ] Ⓒ GResPic: texture resources
-         - [ ] Ⓜ load_pic
+         - [ ] ⓜ load_pic
