@@ -10,9 +10,9 @@ GLFWwindow* window;
 VALUE Global_module;
 VALUE GResPic;
 
-VMDE_t* VMDE;
+struct VMDE* VMDE;
 
-Render_Chain_Node Render_Chain;
+struct RenderChainNode render_chain;
 
 GLuint VBO[15];
 GLuint basic_2D_vsh;

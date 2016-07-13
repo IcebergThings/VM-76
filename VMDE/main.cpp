@@ -22,7 +22,7 @@ void main_draw_loop() {
 		fps_counter = 0;
 		fps_since = now;
 	}
-	if (!VMDE->States->freeze) {
+	if (!VMDE->state.frozen) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		/* Render */
 		glfwSwapBuffers(window);

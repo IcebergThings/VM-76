@@ -12,9 +12,8 @@ void init_engine(int w, int h) {
 	log("initializing the engine");
 
 	// 初始化VMDE结构
-	VMDE = (VMDE_t*) malloc(sizeof(VMDE));
-	VMDE->States = (VMDE_State_t*) malloc(sizeof(VMDE->States));
-	VMDE->States->freeze = false;
+	VMDE = (struct VMDE*) malloc(sizeof(struct VMDE));
+	VMDE->state.frozen = false;
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
 

@@ -19,7 +19,7 @@
 #define _INCLUDE_ENGINE_H
 
 #define GAME_NAME "VM / 76"
-typedef VALUE (*type_ruby_function)(ANYARGS) ;
+typedef VALUE (*type_ruby_function)(ANYARGS);
 
 // PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 // Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
@@ -31,28 +31,28 @@ typedef VALUE (*type_ruby_function)(ANYARGS) ;
 #endif
 
 // Global
-typedef struct _VMDE_State_t {
-	bool freeze;
-} VMDE_State_t;
+struct VMDEState {
+	bool frozen;
+};
 
-typedef struct _VMDE_t {
-	VMDE_State_t* States;
+struct VMDE {
+	struct VMDEState state;
 	long frame_count;
 	long millisecond;
 	int fps;
-} VMDE_t;
+};
 
-typedef struct _Render_Chain_Node {
-	struct _Render_Chain* prev;
+struct RenderChainNode {
+	struct _Render_Chain* prev; // What the fuck is struct _Render_Chain?
 	VALUE n;
 	struct _Render_Chain* next;
-} Render_Chain_Node;
+};
 
-extern VMDE_t* VMDE;
+extern struct VMDE* VMDE;
 extern GLFWwindow* window;
 extern VALUE Global_module;
 extern VALUE GResPic;
-extern Render_Chain_Node Render_Chain;
+extern RenderChainNode render_chain;
 
 extern GLuint VBO[15];
 extern GLuint basic_2D_vsh;
