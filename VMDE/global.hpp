@@ -55,8 +55,21 @@ extern VALUE GResPic;
 extern RenderChainNode* render_chain;
 
 extern GLuint VBO[15];
-extern GLuint basic_2D_vsh;
-extern GLuint basic_2D_fsh;
+
+// shaders.cpp
+class Shaders {
+public:
+	GLuint basic_2D_vsh;
+	GLuint basic_2D_fsh;
+
+public:
+	int init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
+};
+
+extern const GLchar* temp_vertexShaderSource;
+extern const GLchar* temp_fragmentShaderSource;
+
+extern Shaders* main_shader;
 
 // ruby_connection.cpp
 namespace RubyWrapper {
