@@ -51,3 +51,8 @@ _t后缀是POSIX标准所保留的。
 > Although **not defined** by the C standard, this is **almost** always an integral value holding the number of seconds (not counting leap seconds) since 00:00, Jan 1 1970 UTC, corresponding to POSIX time.
 
 [Linux kernel coding style]: https://www.kernel.org/doc/Documentation/CodingStyle
+
+不要掺CRLF！
+------------
+
+CR不是金坷垃，LF掺了CR，*nix下的工具都一脸懵逼了。
