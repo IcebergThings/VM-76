@@ -15,7 +15,7 @@ void setup_viewport() {
 	glViewport(0, 0, width, height);
 }
 
-int init_engine(int w, int h) {
+void init_engine(int w, int h) {
 	log("initializing the engine");
 
 	// 初始化VMDE结构
@@ -54,12 +54,8 @@ int init_engine(int w, int h) {
 
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
 	main_shader = new Shaders();
-	int rc = main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	if (rc != 0)
-		return rc;
-	rc = main_shader->link_program();
-	if (rc != 0)
-		return rc;
+	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
+	main_shader->link_program();
 
 	// 建立缓冲
 	GLfloat vertices[] = {
@@ -81,6 +77,4 @@ int init_engine(int w, int h) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
-
-	return 0;
 }

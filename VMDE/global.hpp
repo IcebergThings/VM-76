@@ -24,8 +24,10 @@
 
 	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
+	#ifdef __CYGWIN__
+		#warning This wont work in Cygwin. Try at your own risk.
+	#endif
 	#ifdef __MINGW32__
-	#include <windows.h>
 		#define EXPORTED extern "C" __declspec(dllexport)
 	#else
 		#define EXPORTED extern "C"
@@ -69,8 +71,8 @@
 		GLuint shaderProgram;
 
 	public:
-		int init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
-		int link_program();
+		void init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
+		void link_program();
 	};
 
 	extern const GLchar* temp_vertexShaderSource;
@@ -90,11 +92,8 @@
 	void init_ruby_modules();
 
 	// init.cpp
-	int init_engine(int w, int h);
+	void init_engine(int w, int h);
 	void setup_viewport();
-	int init_shaders();
-	void init_RClass();
-	void init_RModule();
 
 	// main.cpp
 	void glfw_error_callback(int error, const char* description);
