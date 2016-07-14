@@ -54,10 +54,14 @@ int init_engine(int w, int h) {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
-  main_shader = new Shaders();
+	main_shader = new Shaders();
 	int rc = main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	if (rc != 0)
 		return rc;
+	rc = main_shader->use();
+	if (rc != 0)
+		return rc;
+
 
 	return 0;
 }

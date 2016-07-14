@@ -19,15 +19,15 @@ const GLchar* temp_fragmentShaderSource = "#version 330 core\n"
 
 int Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
 	const GLchar* basic_2D_vsh_src = vsh_src_ptr;
-
-	basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(basic_2D_vsh, 1, &basic_2D_vsh_src, NULL);
-	glCompileShader(basic_2D_vsh);
 	GLint success;
 	GLchar infoLog[512];
-	glGetShaderiv(basic_2D_vsh, GL_COMPILE_STATUS, &success);
+
+	this->basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(this->basic_2D_vsh, 1, &basic_2D_vsh_src, NULL);
+	glCompileShader(this->basic_2D_vsh);
+	glGetShaderiv(this->basic_2D_vsh, GL_COMPILE_STATUS, &success);
 	if (!success) {
-		glGetShaderInfoLog(basic_2D_vsh, 512, NULL, infoLog);
+		glGetShaderInfoLog(this->basic_2D_vsh, 512, NULL, infoLog);
 		log("VSH compilation failed:\n%s", infoLog);
 		return 301;
 	}
@@ -35,20 +35,27 @@ int Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) 
 	// Fragment shader
 	const GLchar* basic_2D_fsh_src = fsh_src_ptr;
 
-	basic_2D_fsh = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(basic_2D_fsh, 1, &basic_2D_fsh_src, NULL);
-	glCompileShader(basic_2D_fsh);
-	glGetShaderiv(basic_2D_fsh, GL_COMPILE_STATUS, &success);
+	this->basic_2D_fsh = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(this->basic_2D_fsh, 1, &basic_2D_fsh_src, NULL);
+	glCompileShader(this->basic_2D_fsh);
+	glGetShaderiv(this->basic_2D_fsh, GL_COMPILE_STATUS, &success);
 	if (!success) {
-		glGetShaderInfoLog(basic_2D_fsh, 512, NULL, infoLog);
+		glGetShaderInfoLog(this->basic_2D_fsh, 512, NULL, infoLog);
 		log("FSH compilation failed:\n%s", infoLog);
 		return 302;
 	}
 
+	return 0;
+}
+
+int Shaders::use() {
 	// Link shaders
+	GLint success;
+	GLchar infoLog[512];
+
 	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, basic_2D_vsh);
-	glAttachShader(shaderProgram, basic_2D_fsh);
+	glAttachShader(shaderProgram, this->basic_2D_vsh);
+	glAttachShader(shaderProgram, this->basic_2D_fsh);
 	glLinkProgram(shaderProgram);
 	// Check for linking errors
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
@@ -57,10 +64,10 @@ int Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) 
 		log("shaders linking failed:\n%s", infoLog);
 		return 303;
 	}
-	glDeleteShader(basic_2D_vsh);
-	glDeleteShader(basic_2D_fsh);
+	glDeleteShader(this->basic_2D_vsh);
+	glDeleteShader(this->basic_2D_fsh);
 
-	return 0;
+  return 0;
 }
 
 Shaders* main_shader;

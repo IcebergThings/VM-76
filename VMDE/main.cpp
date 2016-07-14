@@ -25,6 +25,11 @@ void main_draw_loop() {
 	if (!VMDE->state.frozen) {
 		glClear(GL_COLOR_BUFFER_BIT);
 		/* Render */
+
+		if (render_chain != NULL) {
+			
+		}
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
