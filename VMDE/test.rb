@@ -8,7 +8,7 @@
 
 require "./VMDE.so"
 
-VMDE.init(870,540)
+VMDE.init(880,540)
 
 puts "Ruby initializes here"
 loop do
