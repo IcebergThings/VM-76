@@ -59,6 +59,7 @@
 	extern GLFWwindow* window;
 	extern VALUE Global_module;
 	extern VALUE GResPic;
+	extern VALUE GDrawable;
 	extern struct RenderChainNode* render_chain;
 
 	extern GLuint VBO[15];
