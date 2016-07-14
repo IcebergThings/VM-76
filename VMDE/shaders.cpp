@@ -14,9 +14,10 @@ const GLchar* temp_vertexShaderSource = "#version 330 core\n"
     "}\0";
 const GLchar* temp_fragmentShaderSource = "#version 330 core\n"
     "out vec4 color;\n"
+    "uniform float brightness;"
     "void main()\n"
     "{\n"
-    "color = vec4(0.8f, 0.3f, 0.4f, 1.0f);\n"
+    "color = vec4(vec3(0.8f, 0.3f, 0.4f) * brightness, 1.0f);\n"
     "}\n\0";
 
 void Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
