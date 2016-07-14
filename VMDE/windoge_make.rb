@@ -20,16 +20,26 @@ class WindogeMake
 		@argv = argv
 	end
 	#--------------------------------------------------------------------------
+	# ● 输出帮助
+	#--------------------------------------------------------------------------
+	def display_help
+		puts <<~EOF
+			= Example =
+			> ruby windoge_make.rb C:\\Ruby23 2.3.0 D:\\glfw-3.2.bin.WIN32 D:\\glew-1.13.0 D:\\glm-0.9.7.5
+			> rem 作为开发者，你不应该在此类目录的名称中包含空格。
+		EOF
+	end
+	#--------------------------------------------------------------------------
 	# ● 主程序
 	#--------------------------------------------------------------------------
 	def main
-		if @argv.size != 4
-			puts "= Example ="
-			puts "> ruby windoge_make.rb C:\\Ruby23 2.3.0 D:\\glfw-3.2.bin.WIN32 D:\\glew-1.13.0"
-			puts "> rem 作为开发者，你不应该在此类目录的名称中包含空格。"
+		# display help when used incorrectly
+		if @argv.size != 5
+			display_help
 			return
 		end
-		ruby_path, ruby_version, glfw_path, glew_path = @argv
+		# 获取参数
+		ruby_path, ruby_version, glfw_path, glew_path, glm_path = @argv
 		sources = Dir.glob("*.cpp")
 		objects = []
 		# some ugly hacks for Windoge
@@ -48,12 +58,11 @@ class WindogeMake
 			# Ruby
 			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}"
 			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}\\i386-mingw32"
-			command << " -D__MINGW_USE_VC2005_COMPAT -D_FILE_OFFSET_BITS=64"
-			command << " -fno-omit-frame-pointer"
-			# GLFW & GLEW headers and macros
+			# GLFW, GLEW & GLM headers and macros
 			command << " -DGLFW_DLL -DGLEW_STATIC"
 			command << " -I#{glfw_path}\\include"
 			command << " -I#{glew_path}\\include"
+			command << " -I#{glm_path}"
 			make command
 		end
 		command = "gcc #{objects.join(" ")} -s -shared -o #{dll_name}"
@@ -61,7 +70,7 @@ class WindogeMake
 		command << " -llibstdc++"
 		# Ruby
 		command << " -L#{ruby_path}\\lib"
-		command << " -Wl,--enable-auto-image-base,--enable-auto-import"
+		command << " -Wl,--enable-auto-image-base"
 		command << " -lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi"
 		# GLFW & GLEW ~~footers~~ libraries
 		command << " -L#{glfw_path}\\lib-mingw-w64"
@@ -94,7 +103,7 @@ class WindogeMake
 		if FileTest.exist?(BATCH_FILENAME)
 			return if File.mtime(BATCH_FILENAME) > File.mtime(__FILE__)
 		end
-		File.write(BATCH_FILENAME, "start ruby windoge_make.rb #{@argv.join(" ")}")
+		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{@argv.join(" ")}")
 	end
 #------------------------------------------------------------------------------
 # ◇ 为了避免不好的事发生而添加的类级错误处理
