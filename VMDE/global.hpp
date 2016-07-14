@@ -25,7 +25,7 @@
 	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
 	#ifdef __CYGWIN__
-		#warning This won't work in Cygwin. Try at your own risk.
+		#warning This wont work in Cygwin. Try at your own risk.
 	#endif
 	#ifdef __MINGW32__
 		#define EXPORTED extern "C" __declspec(dllexport)
