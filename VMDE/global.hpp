@@ -42,17 +42,17 @@
 		int fps;
 	};
 
-	typedef struct _Render_Chain_Node {
-		struct _Render_Chain_Node* prev; // What the fuck is struct _Render_Chain?
+	struct RenderChainNode {
+		struct RenderChainNode* prev;
 		VALUE n;
-		struct _Render_Chain_Node* next;
-	} RenderChainNode;
+		struct RenderChainNode* next;
+	};
 
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
 	extern VALUE Global_module;
 	extern VALUE GResPic;
-	extern RenderChainNode* render_chain;
+	extern struct RenderChainNode* render_chain;
 
 	extern GLuint VBO[15];
 	extern GLuint VAO[15];

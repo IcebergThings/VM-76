@@ -27,7 +27,7 @@ void main_draw_loop() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		/* Render */
 
-		RenderChainNode* chain = render_chain;
+		struct RenderChainNode* chain = render_chain;
 		while (chain != NULL) {
 			VALUE v = chain->n;
 			chain = chain->next;
