@@ -16,6 +16,7 @@
          - [ ] ⓜ load_pic
 
 它是怎么绘图的：
+`
 thing_I_want_to_draw1 = GRect.new(...)
 thing_I_want_to_draw2 = GRect.new(...)
 thing_I_want_to_draw3 = GRect.new(...)
@@ -30,3 +31,4 @@ def all_the_render_in_the_game
   VMDE.update() # After calling this, VMDE will render all the things in the render list and refresh the screen.
   ...
 end
+`
