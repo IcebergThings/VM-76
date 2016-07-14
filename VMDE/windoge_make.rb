@@ -8,6 +8,8 @@
 #   ——Frog Chen《伪·卜算子·编译》
 #==============================================================================
 
+require 'io/console'
+
 class WindogeMake
 	#--------------------------------------------------------------------------
 	# ● 常量
@@ -28,6 +30,13 @@ class WindogeMake
 			> ruby windoge_make.rb C:\\Ruby23 2.3.0 D:\\glfw-3.2.bin.WIN32 D:\\glew-1.13.0 D:\\glm-0.9.7.5
 			> rem 作为开发者，你不应该在此类目录的名称中包含空格。
 		EOF
+	end
+	#--------------------------------------------------------------------------
+	# ● 请按任意键继续. . .
+	#--------------------------------------------------------------------------
+	def pause
+		print "请按任意键继续……"
+		$stdin.getch
 	end
 	#--------------------------------------------------------------------------
 	# ● 主程序
@@ -70,12 +79,12 @@ class WindogeMake
 		command << " -llibstdc++"
 		# Ruby
 		command << " -L#{ruby_path}\\lib"
-		command << " -Wl,--enable-auto-image-base"
+		command << " -Wl,--enable-auto-image-base,-subsystem,windows"
 		command << " -lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi"
 		# GLFW & GLEW ~~footers~~ libraries
 		command << " -L#{glfw_path}\\lib-mingw-w64"
 		command << " -L#{glew_path}\\lib\\Release\\Win32"
-		command << " -Wl,-subsystem,windows -lglfw3dll -lglew32s -lopengl32"
+		command << " -lglfw3dll -lglew32s -lopengl32"
 		make command
 		# For tools like exeScope, the file must have correct suffix.
 		# However for Ruby, the DLL must have corrupted suffix.
@@ -89,9 +98,10 @@ class WindogeMake
 	#--------------------------------------------------------------------------
 	def make(command)
 		puts command
-		if not system command
+		success = system command
+		if not success
 			system "title !! ERROR !!"
-			system "pause"
+			pause
 			exit
 		end
 	end
@@ -110,7 +120,7 @@ class WindogeMake
 #------------------------------------------------------------------------------
 rescue
 	p $!
-	system "pause"
+	pause
 	exit
 end
 
