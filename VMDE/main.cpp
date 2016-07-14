@@ -23,12 +23,20 @@ void main_draw_loop() {
 		fps_since = now;
 	}
 	if (!VMDE->state.frozen) {
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		/* Render */
 
-		if (render_chain != NULL) {
-			
+		RenderChainNode* chain = render_chain;
+		while (chain != NULL) {
+			VALUE v = chain->n;
+			chain = chain->next;
 		}
+
+		glUseProgram(main_shader->shaderProgram);
+		glBindVertexArray(VAO[0]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

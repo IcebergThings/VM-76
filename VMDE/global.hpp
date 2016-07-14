@@ -55,12 +55,14 @@
 	extern RenderChainNode* render_chain;
 
 	extern GLuint VBO[15];
+	extern GLuint VAO[15];
 
 	// shaders.cpp
 	class Shaders {
 	public:
 		GLuint basic_2D_vsh;
 		GLuint basic_2D_fsh;
+		GLuint shaderProgram;
 
 	public:
 		int init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);

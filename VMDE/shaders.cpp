@@ -2,19 +2,15 @@
 
 const GLchar* temp_vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
-    "layout (location = 1) in vec3 color;\n"
-    "out vec3 ourColor;\n"
     "void main()\n"
     "{\n"
     "gl_Position = vec4(position, 1.0);\n"
-    "ourColor = color;\n"
     "}\0";
 const GLchar* temp_fragmentShaderSource = "#version 330 core\n"
-    "in vec3 ourColor;\n"
     "out vec4 color;\n"
     "void main()\n"
     "{\n"
-    "color = vec4(ourColor, 1.0f);\n"
+    "color = vec4(0.8f, 0.3f, 0.4f, 1.0f);\n"
     "}\n\0";
 
 int Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
@@ -53,7 +49,7 @@ int Shaders::use() {
 	GLint success;
 	GLchar infoLog[512];
 
-	GLuint shaderProgram = glCreateProgram();
+	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, this->basic_2D_vsh);
 	glAttachShader(shaderProgram, this->basic_2D_fsh);
 	glLinkProgram(shaderProgram);

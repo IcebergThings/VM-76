@@ -46,12 +46,10 @@ int init_engine(int w, int h) {
 	glfwMakeContextCurrent(window);
 
 	// 初始化GLEW
+	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() (GLEW Initialization) failed.");
 
 	setup_viewport();
-
-	glGenBuffers(1, &VBO[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
 	main_shader = new Shaders();
@@ -62,6 +60,26 @@ int init_engine(int w, int h) {
 	if (rc != 0)
 		return rc;
 
+	// 建立缓冲
+	GLfloat vertices[] = {
+		-0.5f, -0.5f, 0.0f, // Left
+		0.5f, -0.5f, 0.0f, // Right
+		0.0f,  0.5f, 0.0f  // Top
+	};
+	glGenVertexArrays(15, VAO);
+	glGenBuffers(15, VBO);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO[0]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
+
+	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
 
 	return 0;
 }

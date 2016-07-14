@@ -8,7 +8,7 @@
 
 require "./VMDE.so"
 
-rc = VMDE.init(640, 480)
+rc = VMDE.init(1024, 768)
 if rc==0 
 
 	puts "Ruby initializes here"
