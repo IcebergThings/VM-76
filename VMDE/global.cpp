@@ -17,5 +17,4 @@ struct VMDE* VMDE;
 RenderChainNode* render_chain = NULL;
 
 GLuint VBO[15];
-GLuint basic_2D_vsh;
-GLuint basic_2D_fsh;
+GLuint VAO[15];

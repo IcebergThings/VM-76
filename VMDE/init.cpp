@@ -6,68 +6,8 @@
 
 #include "global.hpp"
 
-const GLchar* temp_vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 position;\n"
-    "layout (location = 1) in vec3 color;\n"
-    "out vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "gl_Position = vec4(position, 1.0);\n"
-    "ourColor = color;\n"
-    "}\0";
-const GLchar* temp_fragmentShaderSource = "#version 330 core\n"
-    "in vec3 ourColor;\n"
-    "out vec4 color;\n"
-    "void main()\n"
-    "{\n"
-    "color = vec4(ourColor, 1.0f);\n"
-    "}\n\0";
-
-int init_shaders() {
-	const GLchar* basic_2D_vsh_src = temp_vertexShaderSource;
-
-	basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(basic_2D_vsh, 1, &basic_2D_vsh_src, NULL);
-	glCompileShader(basic_2D_vsh);
-	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(basic_2D_vsh, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(basic_2D_vsh, 512, NULL, infoLog);
-		log("VSH compilation failed:\n%s", infoLog);
-		return 301;
-	}
-
-	// Fragment shader
-	const GLchar* basic_2D_fsh_src = temp_fragmentShaderSource;
-
-	basic_2D_fsh = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(basic_2D_fsh, 1, &basic_2D_fsh_src, NULL);
-	glCompileShader(basic_2D_fsh);
-	glGetShaderiv(basic_2D_fsh, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(basic_2D_fsh, 512, NULL, infoLog);
-		log("FSH compilation failed:\n%s", infoLog);
-		return 302;
-	}
-
-	// Link shaders
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, basic_2D_vsh);
-	glAttachShader(shaderProgram, basic_2D_fsh);
-	glLinkProgram(shaderProgram);
-	// Check for linking errors
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		log("shaders linking failed:\n%s", infoLog);
-		return 303;
-	}
-	glDeleteShader(basic_2D_vsh);
-	glDeleteShader(basic_2D_fsh);
-
-	return 0;
-}
+GLuint basic_2D_vsh;
+GLuint basic_2D_fsh;
 
 void setup_viewport() {
 	int width, height;
@@ -106,17 +46,40 @@ int init_engine(int w, int h) {
 	glfwMakeContextCurrent(window);
 
 	// 初始化GLEW
+	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() (GLEW Initialization) failed.");
 
 	setup_viewport();
 
-	glGenBuffers(1, &VBO[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
-	int rc = init_shaders();
+	main_shader = new Shaders();
+	int rc = main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	if (rc != 0)
 		return rc;
+	rc = main_shader->use();
+	if (rc != 0)
+		return rc;
+
+	// 建立缓冲
+	GLfloat vertices[] = {
+		-0.5f, -0.5f, 0.0f, // Left
+		0.5f, -0.5f, 0.0f, // Right
+		0.0f,  0.5f, 0.0f  // Top
+	};
+	glGenVertexArrays(15, VAO);
+	glGenBuffers(15, VBO);
+	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
+	glBindVertexArray(VAO[0]);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
+
+	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
 
 	return 0;
 }
