@@ -9,11 +9,7 @@
 require "./VMDE.so"
 
 rc = VMDE.init(1024, 768)
-if rc==0 
-
-	puts "Ruby initializes here"
-	loop do
-		VMDE::update
-	end
-
+puts "Ruby initializes here"
+loop do
+	VMDE.update
 end
