@@ -37,6 +37,12 @@ namespace RubyWrapper {
 		::matrix2D();
 		return Qtrue;
 	}
+
+	VALUE main_set_brightness(VALUE self, VALUE b) {
+		Check_Type(b, T_FLOAT);
+		::main_set_brightness(RFLOAT_VALUE(b));
+		return Qnil;
+	}
 }
 
 void init_ruby_modules() {
@@ -49,6 +55,8 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(fps, main_get_fps, 0);
 	RUBY_MODULE_API(matrix2D, main_matrix2D, 0);
+	RUBY_MODULE_API(set_brightness, main_set_brightness, 1);
+
 	#undef RUBY_MODULE_API
 }
 

@@ -38,6 +38,7 @@
 
 	struct VMDEState {
 		bool frozen;
+		float brightness;
 	};
 
 	struct VMDE {
@@ -87,6 +88,8 @@
 		VALUE main_draw_loop();
 		VALUE main_get_frame_count();
 		VALUE main_get_fps();
+		VALUE main_matrix2D();
+		VALUE main_set_brightness(VALUE self, VALUE b);
 	}
 	void init_ruby_classes();
 	void init_ruby_modules();
@@ -98,6 +101,7 @@
 	// main.cpp
 	void glfw_error_callback(int error, const char* description);
 	void main_draw_loop();
+	void main_set_brightness(float b);
 
 	void matrix2D();
 

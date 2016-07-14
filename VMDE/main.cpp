@@ -37,6 +37,8 @@ void main_draw_loop() {
 
 		GLint modelLoc = glGetUniformLocation(main_shader->shaderProgram, "viewMatrix");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(view));
+		modelLoc = glGetUniformLocation(main_shader->shaderProgram, "brightness");
+		glUniform1f(modelLoc, VMDE->state.brightness);
 
 		glUseProgram(main_shader->shaderProgram);
 		glBindVertexArray(VAO[0]);
@@ -46,6 +48,10 @@ void main_draw_loop() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+}
+
+void main_set_brightness(float b) {
+	VMDE->state.brightness = b;
 }
 
 void matrix2D() {
