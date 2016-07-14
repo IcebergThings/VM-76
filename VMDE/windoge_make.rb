@@ -50,6 +50,7 @@ module WindogeMake
 			make command
 		end
 		command = "gcc #{objects.join(" ")} -s -shared -o #{dll_name}"
+		command << " -llibstdc++"
 		command << " -L#{ruby_path}\\lib"
 		command << " -Wl,--enable-auto-image-base,--enable-auto-import"
 		command << " -lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi"
@@ -80,6 +81,13 @@ module WindogeMake
 	def self.output_batch(argv = ARGV)
 		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{argv.join(" ")}")
 	end
+	#--------------------------------------------------------------------------
+	# ● 为了避免不好的事发生而添加的类级错误处理
+	#--------------------------------------------------------------------------
+rescue
+	p $!
+	system "pause"
+	exit
 end
 
 #------------------------------------------------------------------------------
