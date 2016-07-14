@@ -10,6 +10,8 @@ void glfw_error_callback(int error, const char* description) {
 	log("GLFW error %d: %s", error, description);
 }
 
+glm::mat4 view;
+
 time_t fps_since = time(NULL);
 int fps_counter = 0;
 
@@ -33,6 +35,9 @@ void main_draw_loop() {
 			chain = chain->next;
 		}
 
+		GLint modelLoc = glGetUniformLocation(main_shader->shaderProgram, "viewMatrix");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(view));
+
 		glUseProgram(main_shader->shaderProgram);
 		glBindVertexArray(VAO[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -41,4 +46,8 @@ void main_draw_loop() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+}
+
+void matrix2D() {
+	view = glm::ortho(0.0f, float(VMDE->width), 0.0f, float(VMDE->width), -100.0f, 100.0f);
 }

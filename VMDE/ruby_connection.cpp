@@ -32,6 +32,11 @@ namespace RubyWrapper {
 	VALUE main_get_fps() {
 		return INT2FIX(VMDE->fps);
 	}
+
+	VALUE main_matrix2D() {
+		::matrix2D();
+		return Qtrue;
+	}
 }
 
 void init_ruby_modules() {
@@ -43,6 +48,7 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(update, main_draw_loop, 0);
 	RUBY_MODULE_API(frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(fps, main_get_fps, 0);
+	RUBY_MODULE_API(matrix2D, main_matrix2D, 0);
 	#undef RUBY_MODULE_API
 }
 

@@ -23,6 +23,7 @@ int init_engine(int w, int h) {
 	VMDE->state.frozen = false;
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
+	VMDE->width = w; VMDE->height = h;
 
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
@@ -56,15 +57,15 @@ int init_engine(int w, int h) {
 	int rc = main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	if (rc != 0)
 		return rc;
-	rc = main_shader->use();
+	rc = main_shader->link_program();
 	if (rc != 0)
 		return rc;
 
 	// 建立缓冲
 	GLfloat vertices[] = {
-		-0.5f, -0.5f, 0.0f, // Left
-		0.5f, -0.5f, 0.0f, // Right
-		0.0f,  0.5f, 0.0f  // Top
+		0.0f, 0.0f, 0.0f,
+		435.0f, 0.0f, 0.0f,
+		435.0f, 270.0f, 0.0f
 	};
 	glGenVertexArrays(15, VAO);
 	glGenBuffers(15, VBO);

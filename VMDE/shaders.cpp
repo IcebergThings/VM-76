@@ -1,10 +1,16 @@
+//=============================================================================
+// ■ shaders.cpp
+//-----------------------------------------------------------------------------
+//   VMDE中与着色器有关的全局变量和类都在这里。
+//=============================================================================
 #include "global.hpp"
 
 const GLchar* temp_vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
+    "uniform mat4 viewMatrix;\n"
     "void main()\n"
     "{\n"
-    "gl_Position = vec4(position, 1.0);\n"
+    "gl_Position = viewMatrix * vec4(position, 1.0);\n"
     "}\0";
 const GLchar* temp_fragmentShaderSource = "#version 330 core\n"
     "out vec4 color;\n"
@@ -44,7 +50,7 @@ int Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) 
 	return 0;
 }
 
-int Shaders::use() {
+int Shaders::link_program() {
 	// Link shaders
 	GLint success;
 	GLchar infoLog[512];
