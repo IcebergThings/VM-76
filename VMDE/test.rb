@@ -8,10 +8,10 @@
 
 require "./VMDE.so"
 
-VMDE.init(880,540)
-
+VMDE.init(880, 540)
 puts "Ruby initializes here"
+
 loop do
-	VMDE::matrix2D
-	VMDE::update
+	VMDE.matrix2D
+	VMDE.update
 end
