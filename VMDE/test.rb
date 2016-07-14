@@ -11,7 +11,15 @@ require "./VMDE.so"
 VMDE.init(880, 540)
 puts "Ruby initializes here"
 
+i = 0
 loop do
+	i+=1
+	if (i > 255)
+		i = 0
+	end
+	puts i
+	
+	VMDE.set_brightness(0.5 + i.to_f / 255)
 	VMDE.matrix2D
 	VMDE.update
 end

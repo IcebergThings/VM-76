@@ -38,7 +38,7 @@
 
 	struct VMDEState {
 		bool frozen;
-		int brightness;
+		float brightness;
 	};
 
 	struct VMDE {
@@ -101,6 +101,7 @@
 	// main.cpp
 	void glfw_error_callback(int error, const char* description);
 	void main_draw_loop();
+	void main_set_brightness(float b);
 
 	void matrix2D();
 
