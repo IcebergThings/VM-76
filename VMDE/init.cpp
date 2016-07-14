@@ -23,6 +23,7 @@ void init_engine(int w, int h) {
 	VMDE->state.frozen = false;
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
+	VMDE->width = w; VMDE->height = h;
 
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
@@ -54,13 +55,13 @@ void init_engine(int w, int h) {
 	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	main_shader->use();
+	main_shader->link_program();
 
 	// 建立缓冲
 	GLfloat vertices[] = {
-		-0.5f, -0.5f, 0.0f, // Left
-		0.5f, -0.5f, 0.0f, // Right
-		0.0f,  0.5f, 0.0f  // Top
+		0.0f, 0.0f, 0.0f,
+		435.0f, 0.0f, 0.0f,
+		435.0f, 270.0f, 0.0f
 	};
 	glGenVertexArrays(15, VAO);
 	glGenBuffers(15, VBO);

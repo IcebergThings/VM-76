@@ -6,6 +6,9 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <ruby.h>
 
@@ -41,6 +44,7 @@
 		struct VMDEState state;
 		long frame_count;
 		long millisecond;
+		int width, height;
 		int fps;
 	};
 
@@ -68,7 +72,7 @@
 
 	public:
 		void init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
-		void use();
+		void link_program();
 	};
 
 	extern const GLchar* temp_vertexShaderSource;
@@ -94,6 +98,8 @@
 	// main.cpp
 	void glfw_error_callback(int error, const char* description);
 	void main_draw_loop();
+
+	void matrix2D();
 
 	// resources.cpp
 	int load_img(char* p);
