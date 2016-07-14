@@ -8,22 +8,28 @@
 #   ——Frog Chen《伪·卜算子·编译》
 #==============================================================================
 
-module WindogeMake
+class WindogeMake
 	#--------------------------------------------------------------------------
 	# ● 常量
 	#--------------------------------------------------------------------------
 	BATCH_FILENAME = "windoge_make.bat"
 	#--------------------------------------------------------------------------
+	# ● 初始化对象
+	#--------------------------------------------------------------------------
+	def initialize(argv = ARGV)
+		@argv = argv
+	end
+	#--------------------------------------------------------------------------
 	# ● 主程序
 	#--------------------------------------------------------------------------
-	def self.main(argv = ARGV)
-		if argv.size != 4
+	def main
+		if @argv.size != 4
 			puts "= Example ="
 			puts "> ruby windoge_make.rb C:\\Ruby23 2.3.0 D:\\glfw-3.2.bin.WIN32 D:\\glew-1.13.0"
 			puts "> rem 作为开发者，你不应该在此类目录的名称中包含空格。"
-			exit
+			return
 		end
-		ruby_path, ruby_version, glfw_path, glew_path = argv
+		ruby_path, ruby_version, glfw_path, glew_path = @argv
 		sources = Dir.glob("*.cpp")
 		objects = []
 		# some ugly hacks for Windoge
@@ -39,6 +45,7 @@ module WindogeMake
 				next if File.mtime(object_name) > File.mtime(source_name)
 			end
 			command = "g++ -c #{source_name} -o #{name}.o -O3 -Wall -Wextra"
+			# Ruby
 			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}"
 			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}\\i386-mingw32"
 			command << " -D__MINGW_USE_VC2005_COMPAT -D_FILE_OFFSET_BITS=64"
@@ -50,7 +57,9 @@ module WindogeMake
 			make command
 		end
 		command = "gcc #{objects.join(" ")} -s -shared -o #{dll_name}"
+		# libstdc艹 for exceptions and other random stuff
 		command << " -llibstdc++"
+		# Ruby
 		command << " -L#{ruby_path}\\lib"
 		command << " -Wl,--enable-auto-image-base,--enable-auto-import"
 		command << " -lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi"
@@ -63,11 +72,13 @@ module WindogeMake
 		# However for Ruby, the DLL must have corrupted suffix.
 		# 而这就是PY交易。
 		File.rename(dll_name, so_name)
+		# 如果没有错误，输出脚本以便下次运行
+		output_batch
 	end
 	#--------------------------------------------------------------------------
 	# ● 模拟Make的一步行动
 	#--------------------------------------------------------------------------
-	def self.make(command)
+	def make(command)
 		puts command
 		if not system command
 			system "title !! ERROR !!"
@@ -77,13 +88,17 @@ module WindogeMake
 	end
 	#--------------------------------------------------------------------------
 	# ● 输出能够快捷地执行本脚本的批处理文件
+	#   如果批处理存在且比本脚本更新，则不做事。
 	#--------------------------------------------------------------------------
-	def self.output_batch(argv = ARGV)
-		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{argv.join(" ")}")
+	def output_batch
+		if FileTest.exist?(BATCH_FILENAME)
+			return if File.mtime(BATCH_FILENAME) > File.mtime(__FILE__)
+		end
+		File.write(BATCH_FILENAME, "start ruby windoge_make.rb #{@argv.join(" ")}")
 	end
-	#--------------------------------------------------------------------------
-	# ● 为了避免不好的事发生而添加的类级错误处理
-	#--------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# ◇ 为了避免不好的事发生而添加的类级错误处理
+#------------------------------------------------------------------------------
 rescue
 	p $!
 	system "pause"
@@ -93,7 +108,4 @@ end
 #------------------------------------------------------------------------------
 # ◇ “各种定义结束后，从这里开始实际运行。”
 #------------------------------------------------------------------------------
-if __FILE__ == $0
-	WindogeMake.main
-	WindogeMake.output_batch unless FileTest.exist?(WindogeMake::BATCH_FILENAME)
-end
+WindogeMake.new.main if __FILE__ == $0
