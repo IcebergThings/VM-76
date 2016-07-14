@@ -26,28 +26,34 @@ module WindogeMake
 		ruby_path, ruby_version, glfw_path, glew_path = argv
 		sources = Dir.glob("*.cpp")
 		objects = []
+		# some ugly hacks for Windoge
 		dll_name = "VMDE.dll" # .dll: required to build DLL (maybe?)
 		so_name = "VMDE.so" # .so: required for Ruby to work
-		# some ugly hacks for Windoge
-		# 如果不这么搞就会LoadError
+		# 如果不这么搞就会无法编译
 		sources.each do |source_name|
 			name = File.basename(source_name, ".cpp")
+			object_name = "#{name}.o"
+			objects << object_name
+			# Look, I'm Ruby Make now!
+			if File.exist?(object_name)
+				next if File.mtime(object_name) > File.mtime(source_name)
+			end
 			command = "g++ -c #{source_name} -o #{name}.o -O3 -Wall -Wextra"
 			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}"
 			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}\\i386-mingw32"
 			command << " -D__MINGW_USE_VC2005_COMPAT -D_FILE_OFFSET_BITS=64"
 			command << " -fno-omit-frame-pointer"
-			# GLFW & GLEW
+			# GLFW & GLEW headers and macros
 			command << " -DGLFW_DLL -DGLEW_STATIC"
 			command << " -I#{glfw_path}\\include"
 			command << " -I#{glew_path}\\include"
 			make command
-			objects << "#{name}.o"
 		end
 		command = "gcc #{objects.join(" ")} -s -shared -o #{dll_name}"
 		command << " -L#{ruby_path}\\lib"
 		command << " -Wl,--enable-auto-image-base,--enable-auto-import"
 		command << " -lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi"
+		# GLFW & GLEW ~~footers~~ libraries
 		command << " -L#{glfw_path}\\lib-mingw-w64"
 		command << " -L#{glew_path}\\lib\\Release\\Win32"
 		command << " -Wl,-subsystem,windows -lglfw3dll -lglew32s -lopengl32"
@@ -63,6 +69,7 @@ module WindogeMake
 	def self.make(command)
 		puts command
 		if not system command
+			system "title !! ERROR !!"
 			system "pause"
 			exit
 		end
@@ -75,7 +82,9 @@ module WindogeMake
 	end
 end
 
-# “各种定义结束后，从这里开始实际运行。”
+#------------------------------------------------------------------------------
+# ◇ “各种定义结束后，从这里开始实际运行。”
+#------------------------------------------------------------------------------
 if __FILE__ == $0
 	WindogeMake.main
 	WindogeMake.output_batch unless FileTest.exist?(WindogeMake::BATCH_FILENAME)
