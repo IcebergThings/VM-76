@@ -37,6 +37,11 @@ namespace RubyWrapper {
 		::matrix2D();
 		return Qtrue;
 	}
+
+	VALUE main_set_brightness(VALUE self, VALUE b) {
+		::main_set_brightness(RFLOAT_VALUE(b));
+		return Qnil;
+	}
 }
 
 void init_ruby_modules() {

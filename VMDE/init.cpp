@@ -21,6 +21,8 @@ void init_engine(int w, int h) {
 	// 初始化VMDE结构
 	VMDE = (struct VMDE*) malloc(sizeof(struct VMDE));
 	VMDE->state.frozen = false;
+	VMDE->state.brightness = 1.0;
+
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
 	VMDE->width = w; VMDE->height = h;
