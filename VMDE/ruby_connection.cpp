@@ -20,6 +20,10 @@ namespace RubyWrapper {
 	VALUE gdrawable_bind_obj(VALUE self) {
 		// 这行长到爆炸就是某人不知道为啥想出来要拒绝使用typedef的后果
 		struct RenderChainNode *node = (struct RenderChainNode *) malloc(sizeof(struct RenderChainNode));
+		node->n = self;
+		node->prev = NULL;
+		node->next = NULL;
+
 		rb_data_type_t data_type = {
 			"Drawable_C_Data",
 			{
@@ -28,7 +32,7 @@ namespace RubyWrapper {
 			0, (void*) node, RUBY_TYPED_FREE_IMMEDIATELY,
 		};
 
-		return TypedData_Wrap_Struct(rb_cData, &data_type, 0);
+		return TypedData_Wrap_Struct(rb_cData, &data_type, node);
 	}
 
 	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
