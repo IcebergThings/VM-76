@@ -60,7 +60,7 @@ void init_engine(int w, int h) {
 	main_shader->link_program();
 
 	// 建立缓冲
-	GLfloat vertices[] = {
+/*	GLfloat vertices[] = {
 		0.0f, 0.0f, 0.0f,
 		435.0f, 0.0f, 0.0f,
 		435.0f, 270.0f, 0.0f
@@ -79,4 +79,5 @@ void init_engine(int w, int h) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
+*/
 }

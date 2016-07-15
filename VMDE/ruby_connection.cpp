@@ -17,12 +17,27 @@ namespace RubyWrapper {
 
 	}
 
+
 	VALUE gdrawable_bind_obj(VALUE self) {
-		// 这行长到爆炸就是某人不知道为啥想出来要拒绝使用typedef的后果
-		struct RenderChainNode *node = (struct RenderChainNode *) malloc(sizeof(struct RenderChainNode));
+
+		RCN *node = (RCN *) malloc(sizeof(RCN));
 		node->n = self;
-		node->prev = NULL;
+		node->prev = render_chain;
+		if (node->prev == NULL)
+			render_chain = node;
+		else
+			node->prev->next = node;
 		node->next = NULL;
+		node->gd = GDrawableNS::create();
+		GDrawableNS::update(node->gd);
+
+		GLfloat vertices[] = {
+				0.0f, 0.0f, 0.0f,
+				435.0f, 0.0f, 0.0f,
+				435.0f, 270.0f, 0.0f
+			};
+
+		node->gd->vertices = vertices;
 
 		rb_data_type_t data_type = {
 			"Drawable_C_Data",

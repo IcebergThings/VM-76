@@ -11,6 +11,9 @@ require "./VMDE.so"
 VMDE.init(880, 540)
 puts "Ruby initializes here"
 
+obj=VMDE::GDrawable.new
+obj_b=obj.bind
+
 i = 0
 loop do
 	i+=1
