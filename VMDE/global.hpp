@@ -23,6 +23,7 @@
 #define _INCLUDE_GLOBAL_H
 
 	typedef VALUE (*type_ruby_function)(ANYARGS);
+	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 
 	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
