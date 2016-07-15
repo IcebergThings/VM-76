@@ -7,13 +7,13 @@
 #include "global.hpp"
 
 namespace GDrawable {
-	void draw(struct GDrawable* s) {
+	void draw(GDrawable* s) {
 		glBindVertexArray(s->VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 	}
 
-	void update(struct GDrawable* s) {
+	void update(GDrawable* s) {
 		glBindVertexArray(s->VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, s->VBO);

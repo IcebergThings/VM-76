@@ -18,7 +18,7 @@ namespace RubyWrapper {
 
 	VALUE gdrawable_bind_obj(VALUE self) {
 
-		RCN* node = (RCN *) malloc(sizeof(RCN));
+		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
 		node->prev = render_chain;
 		if (node->prev == NULL)
@@ -30,7 +30,7 @@ namespace RubyWrapper {
 		GLfloat vertices[] = {
 			0.0f, 0.0f, 0.0f,
 			435.0f, 0.0f, 0.0f,
-			435.0f, 270.0f, 0.0f
+			435.0f, 270.0f, 0.0f,
 		};
 		node->gd->vertices = vertices;
 		GDrawable::update(node->gd);

@@ -56,7 +56,7 @@
 	};
 
 	struct VMDE {
-		struct VMDEState state;
+		VMDEState state;
 		long frame_count;
 		long millisecond;
 		int width, height;
@@ -77,7 +77,7 @@
 	extern VALUE ruby_VMDE;
 	extern VALUE ruby_GResPic;
 	extern VALUE ruby_GDrawable;
-	extern struct RenderChainNode* render_chain;
+	extern RenderChainNode* render_chain;
 
 	extern GLuint VBO[15];
 	extern GLuint VAO[15];

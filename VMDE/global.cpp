@@ -15,7 +15,7 @@ VALUE ruby_GDrawable;
 
 struct VMDE* VMDE;
 
-struct RenderChainNode* render_chain = NULL;
+RenderChainNode* render_chain = NULL;
 
 GLuint VBO[15];
 GLuint VAO[15];
