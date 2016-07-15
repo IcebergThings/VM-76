@@ -29,15 +29,13 @@ namespace RubyWrapper {
 			node->prev->next = node;
 		node->next = NULL;
 		node->gd = GDrawableNS::create();
-		GDrawableNS::update(node->gd);
-
 		GLfloat vertices[] = {
-				0.0f, 0.0f, 0.0f,
-				435.0f, 0.0f, 0.0f,
-				435.0f, 270.0f, 0.0f
-			};
-
+			0.0f, 0.0f, 0.0f,
+			435.0f, 0.0f, 0.0f,
+			435.0f, 270.0f, 0.0f
+		};
 		node->gd->vertices = vertices;
+		GDrawableNS::update(node->gd);
 
 		rb_data_type_t data_type = {
 			"Drawable_C_Data",

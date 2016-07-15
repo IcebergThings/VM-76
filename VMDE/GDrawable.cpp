@@ -7,6 +7,7 @@
 
 namespace GDrawableNS {
 
+	#include <stdio.h>
 	void draw(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
