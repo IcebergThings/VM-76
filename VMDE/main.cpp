@@ -40,7 +40,7 @@ void main_draw_loop() {
 		while (chain != NULL) {
 			VALUE v = chain->n;
 
-			GDrawableNS::draw(chain->gd);
+			GDrawable::draw(chain->gd);
 
 			chain = chain->next;
 		}

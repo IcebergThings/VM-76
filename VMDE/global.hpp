@@ -35,6 +35,18 @@
 		#define EXPORTED extern "C"
 	#endif
 
+	// GDrawable.cpp
+	namespace GDrawable {
+		struct GDrawable {
+			GLfloat* vertices;
+			GLuint VAO;
+			GLuint VBO;
+		};
+		void draw(GDrawable* s);
+		void update(GDrawable* s);
+		GDrawable* create();
+	}
+
 	// Global
 	extern const char* GAME_NAME;
 
@@ -52,19 +64,19 @@
 	};
 
 	struct RenderChainNode {
-		struct RenderChainNode* prev;
+		RenderChainNode* prev;
 		VALUE n;
-		struct GDrawableNS::GDrawable* gd;
-		struct RenderChainNode* next;
+		GDrawable::GDrawable* gd;
+		RenderChainNode* next;
 	};
 
 	#define RCN struct RenderChainNode
 
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
-	extern VALUE Global_module;
-	extern VALUE GResPic;
-	extern VALUE GDrawable;
+	extern VALUE ruby_VMDE;
+	extern VALUE ruby_GResPic;
+	extern VALUE ruby_GDrawable;
 	extern struct RenderChainNode* render_chain;
 
 	extern GLuint VBO[15];

@@ -3,11 +3,10 @@
 //-----------------------------------------------------------------------------
 //   VMDE中GDrawable的控制与类。
 //=============================================================================
-#include "GDrawable.hpp"
 
-namespace GDrawableNS {
+#include "global.hpp"
 
-	#include <stdio.h>
+namespace GDrawable {
 	void draw(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -28,13 +27,12 @@ namespace GDrawableNS {
 		glBindVertexArray(0);
 	}
 
-	struct GDrawable* create() {
-		struct GDrawable* s = (struct GDrawable*) malloc(sizeof(struct GDrawable));
+	GDrawable* create() {
+		GDrawable* s = (GDrawable*) malloc(sizeof(GDrawable));
 
 		glGenVertexArrays(1, &s->VAO);
 		glGenBuffers(1, &s->VBO);
 
 		return s;
 	}
-
 }

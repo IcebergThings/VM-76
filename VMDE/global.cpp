@@ -9,9 +9,9 @@
 const char* GAME_NAME = "VM / 76";
 
 GLFWwindow* window;
-VALUE Global_module;
-VALUE GResPic;
-VALUE GDrawable;
+VALUE ruby_VMDE;
+VALUE ruby_GResPic;
+VALUE ruby_GDrawable;
 
 struct VMDE* VMDE;
 

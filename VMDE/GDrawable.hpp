@@ -12,20 +12,5 @@
 #ifndef _INCLUDE_GDRAWABLE_H
 #define _INCLUDE_GDRAWABLE_H
 
-namespace GDrawableNS {
-
-	struct GDrawable {
-		GLfloat* vertices;
-		GLuint VAO;
-		GLuint VBO;
-	};
-
-	void draw(struct GDrawable* s);
-
-	void update(struct GDrawable* s);
-
-	struct GDrawable* create();
-
-}
 
 #endif
