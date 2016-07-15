@@ -29,21 +29,21 @@ void main_draw_loop() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		/* Render */
 
-		struct RenderChainNode* chain = render_chain;
-		while (chain != NULL) {
-			VALUE v = chain->n;
-			chain = chain->next;
-		}
-
 		GLint modelLoc = glGetUniformLocation(main_shader->shaderProgram, "viewMatrix");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(view));
 		modelLoc = glGetUniformLocation(main_shader->shaderProgram, "brightness");
 		glUniform1f(modelLoc, VMDE->state.brightness);
 
 		glUseProgram(main_shader->shaderProgram);
-		glBindVertexArray(VAO[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glBindVertexArray(0);
+
+		struct RenderChainNode* chain = render_chain;
+		while (chain != NULL) {
+			VALUE v = chain->n;
+
+			GDrawable::draw(chain->gd);
+
+			chain = chain->next;
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
