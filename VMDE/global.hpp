@@ -17,6 +17,8 @@
 #include <cstring>
 #include <ctime>
 
+#include "GDrawable.hpp"
+
 #ifndef _INCLUDE_GLOBAL_H
 #define _INCLUDE_GLOBAL_H
 
@@ -52,13 +54,17 @@
 	struct RenderChainNode {
 		struct RenderChainNode* prev;
 		VALUE n;
+		struct GDrawableNS::GDrawable* gd;
 		struct RenderChainNode* next;
 	};
+
+	#define RCN struct RenderChainNode
 
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
 	extern VALUE Global_module;
 	extern VALUE GResPic;
+	extern VALUE GDrawable;
 	extern struct RenderChainNode* render_chain;
 
 	extern GLuint VBO[15];

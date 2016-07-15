@@ -13,6 +13,41 @@ namespace RubyWrapper {
 		return Qnil;//RSTRING(load_img(a));
 	}
 
+	VALUE gdrawable_visible_equ(VALUE self, VALUE s) {
+
+	}
+
+
+	VALUE gdrawable_bind_obj(VALUE self) {
+
+		RCN *node = (RCN *) malloc(sizeof(RCN));
+		node->n = self;
+		node->prev = render_chain;
+		if (node->prev == NULL)
+			render_chain = node;
+		else
+			node->prev->next = node;
+		node->next = NULL;
+		node->gd = GDrawableNS::create();
+		GLfloat vertices[] = {
+			0.0f, 0.0f, 0.0f,
+			435.0f, 0.0f, 0.0f,
+			435.0f, 270.0f, 0.0f
+		};
+		node->gd->vertices = vertices;
+		GDrawableNS::update(node->gd);
+
+		rb_data_type_t data_type = {
+			"Drawable_C_Data",
+			{
+				0, 0,
+			},
+			0, (void*) node, RUBY_TYPED_FREE_IMMEDIATELY,
+		};
+
+		return TypedData_Wrap_Struct(rb_cData, &data_type, node);
+	}
+
 	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
 		Check_Type(w, T_FIXNUM);
 		Check_Type(h, T_FIXNUM);
@@ -63,6 +98,10 @@ void init_ruby_modules() {
 void init_ruby_classes() {
 	GResPic = rb_define_class_under(Global_module, "GRes_Picture", rb_cObject);
 	rb_define_method(GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
+
+	GDrawable = rb_define_class_under(Global_module, "GDrawable", rb_cObject);
+	rb_define_method(GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 0);
+
 }
 
 EXPORTED void Init_VMDE() {

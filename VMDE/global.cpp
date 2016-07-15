@@ -11,6 +11,7 @@ const char* GAME_NAME = "VM / 76";
 GLFWwindow* window;
 VALUE Global_module;
 VALUE GResPic;
+VALUE GDrawable;
 
 struct VMDE* VMDE;
 
