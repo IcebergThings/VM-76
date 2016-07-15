@@ -17,8 +17,6 @@
 #include <cstring>
 #include <ctime>
 
-#include "GDrawable.hpp"
-
 #ifndef _INCLUDE_GLOBAL_H
 #define _INCLUDE_GLOBAL_H
 
