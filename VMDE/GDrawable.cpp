@@ -3,9 +3,9 @@
 //-----------------------------------------------------------------------------
 //   VMDE中GDrawable的控制与类。
 //=============================================================================
-#include "GDrawable.hpp"
+#include "global.hpp"
 
-namespace GDrawableNS {
+namespace GDrawable {
 
 	void draw(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);

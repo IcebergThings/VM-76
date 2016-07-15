@@ -11,18 +11,15 @@ require "./VMDE.so"
 VMDE.init(880, 540)
 puts "Ruby initializes here"
 
-obj=VMDE::GDrawable.new
-obj_b=obj.bind
+obj = VMDE::GDrawable.new
+obj_b = obj.bind
 
 i = 0
 loop do
-	i+=1
-	if (i > 255)
-		i = 0
-	end
-	puts i
-	
-	VMDE.set_brightness(0.5 + i.to_f / 255)
+	i += 1
+	i = 0 if i > 255
+	p i
+	VMDE.set_brightness(0.5 + i / 255.0)
 	VMDE.matrix2D
 	VMDE.update
 end

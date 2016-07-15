@@ -9,13 +9,13 @@
 const char* GAME_NAME = "VM / 76";
 
 GLFWwindow* window;
-VALUE Global_module;
-VALUE GResPic;
-VALUE GDrawable;
+VALUE ruby_VMDE;
+VALUE ruby_GResPic;
+VALUE ruby_GDrawable;
 
 struct VMDE* VMDE;
 
-struct RenderChainNode* render_chain = NULL;
+RenderChainNode* render_chain = NULL;
 
 GLuint VBO[15];
 GLuint VAO[15];

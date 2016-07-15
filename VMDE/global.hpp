@@ -17,12 +17,11 @@
 #include <cstring>
 #include <ctime>
 
-#include "GDrawable.hpp"
-
 #ifndef _INCLUDE_GLOBAL_H
 #define _INCLUDE_GLOBAL_H
 
 	typedef VALUE (*type_ruby_function)(ANYARGS);
+	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 
 	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
@@ -35,6 +34,19 @@
 		#define EXPORTED extern "C"
 	#endif
 
+	// GDrawable.cpp
+	namespace GDrawable {
+		struct GDrawable {
+			GLfloat* vertices;
+			GLuint VAO;
+			GLuint VBO;
+			size_t size_of_VBO;
+		};
+		void draw(GDrawable* s);
+		void update(GDrawable* s);
+		GDrawable* create();
+	}
+
 	// Global
 	extern const char* GAME_NAME;
 
@@ -44,7 +56,7 @@
 	};
 
 	struct VMDE {
-		struct VMDEState state;
+		VMDEState state;
 		long frame_count;
 		long millisecond;
 		int width, height;
@@ -52,20 +64,20 @@
 	};
 
 	struct RenderChainNode {
-		struct RenderChainNode* prev;
+		RenderChainNode* prev;
 		VALUE n;
-		struct GDrawableNS::GDrawable* gd;
-		struct RenderChainNode* next;
+		GDrawable::GDrawable* gd;
+		RenderChainNode* next;
 	};
 
 	#define RCN struct RenderChainNode
 
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
-	extern VALUE Global_module;
-	extern VALUE GResPic;
-	extern VALUE GDrawable;
-	extern struct RenderChainNode* render_chain;
+	extern VALUE ruby_VMDE;
+	extern VALUE ruby_GResPic;
+	extern VALUE ruby_GDrawable;
+	extern RenderChainNode* render_chain;
 
 	extern GLuint VBO[15];
 	extern GLuint VAO[15];

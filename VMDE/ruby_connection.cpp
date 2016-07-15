@@ -19,13 +19,12 @@ namespace RubyWrapper {
 		return Qnil;//RSTRING(load_img(a));
 	}
 
-	VALUE gdrawable_visible_equ(VALUE self, VALUE s) {
-
+	VALUE gdrawable_set_visible(VALUE self, VALUE s) {
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self) {
 
-		RCN *node = (RCN *) malloc(sizeof(RCN));
+		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
 		node->prev = render_chain;
 		if (node->prev == NULL)
@@ -33,11 +32,11 @@ namespace RubyWrapper {
 		else
 			node->prev->next = node;
 		node->next = NULL;
-		node->gd = GDrawableNS::create();
+		node->gd = GDrawable::create();
 		node->gd->vertices = (GLfloat*) malloc(sizeof(vertices));
 		memcpy(node->gd->vertices, vertices, sizeof(vertices));
 		node->gd->size_of_VBO = sizeof(vertices);
-		GDrawableNS::update(node->gd);
+		GDrawable::update(node->gd);
 
 		rb_data_type_t data_type = {
 			"Drawable_C_Data",
@@ -83,9 +82,9 @@ namespace RubyWrapper {
 }
 
 void init_ruby_modules() {
-	Global_module = rb_define_module("VMDE");
+	ruby_VMDE = rb_define_module("VMDE");
 	#define RUBY_MODULE_API(ruby_name, wrapper_name, parameter_count) \
-		rb_define_module_function(Global_module, #ruby_name, \
+		rb_define_module_function(ruby_VMDE, #ruby_name, \
 		(type_ruby_function) RubyWrapper::wrapper_name, parameter_count)
 	RUBY_MODULE_API(init, init_engine, 2);
 	RUBY_MODULE_API(update, main_draw_loop, 0);
@@ -93,17 +92,15 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(fps, main_get_fps, 0);
 	RUBY_MODULE_API(matrix2D, main_matrix2D, 0);
 	RUBY_MODULE_API(set_brightness, main_set_brightness, 1);
-
 	#undef RUBY_MODULE_API
 }
 
 void init_ruby_classes() {
-	GResPic = rb_define_class_under(Global_module, "GRes_Picture", rb_cObject);
-	rb_define_method(GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
+	ruby_GResPic = rb_define_class_under(ruby_VMDE, "GResPic", rb_cObject);
+	rb_define_method(ruby_GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
 
-	GDrawable = rb_define_class_under(Global_module, "GDrawable", rb_cObject);
-	rb_define_method(GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 0);
-
+	ruby_GDrawable = rb_define_class_under(ruby_VMDE, "GDrawable", rb_cObject);
+	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 0);
 }
 
 EXPORTED void Init_VMDE() {
