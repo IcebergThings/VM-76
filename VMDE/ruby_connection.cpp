@@ -6,6 +6,12 @@
 
 #include "global.hpp"
 
+GLfloat vertices[] = {
+	0.0f, 0.0f, 0.0f,
+	435.0f, 0.0f, 0.0f,
+	435.0f, 270.0f, 0.0f
+};
+
 namespace RubyWrapper {
 	VALUE load_pic(VALUE self, VALUE path) {
 		Check_Type(path, T_STRING);
@@ -16,7 +22,6 @@ namespace RubyWrapper {
 	VALUE gdrawable_visible_equ(VALUE self, VALUE s) {
 
 	}
-
 
 	VALUE gdrawable_bind_obj(VALUE self) {
 
@@ -29,12 +34,9 @@ namespace RubyWrapper {
 			node->prev->next = node;
 		node->next = NULL;
 		node->gd = GDrawableNS::create();
-		GLfloat vertices[] = {
-			0.0f, 0.0f, 0.0f,
-			435.0f, 0.0f, 0.0f,
-			435.0f, 270.0f, 0.0f
-		};
-		node->gd->vertices = vertices;
+		node->gd->vertices = (GLfloat*) malloc(sizeof(vertices));
+		memcpy(node->gd->vertices, vertices, sizeof(vertices));
+		node->gd->size_of_VBO = sizeof(vertices);
 		GDrawableNS::update(node->gd);
 
 		rb_data_type_t data_type = {

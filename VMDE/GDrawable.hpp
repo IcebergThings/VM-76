@@ -18,6 +18,7 @@ namespace GDrawableNS {
 		GLfloat* vertices;
 		GLuint VAO;
 		GLuint VBO;
+		size_t size_of_VBO;
 	};
 
 	void draw(struct GDrawable* s);
