@@ -18,7 +18,15 @@ i = 0
 loop do
 	i += 1
 	i = 0 if i > 255
-	p obj.get_visible(obj_b)
+	p obj.get_visible(obj_b).to_s + " " + i.to_s
+
+	if i==128
+		obj.set_visible(obj_b, true)
+	end
+	if i==255
+		obj.set_visible(obj_b, false)
+	end
+
 	VMDE.set_brightness(0.5 + i / 255.0)
 	VMDE.matrix2D
 	VMDE.update

@@ -28,10 +28,6 @@ namespace RubyWrapper {
 		VALUE wrap[2];
 	};
 
-	VALUE gdrawable_visible_set(VALUE val, VALUE cdata) {
-		return Qnil;
-	}
-
 	static void rb_data_mark(void *ptr) {
 		struct ptr_data *data = ptr;
 		if (data->wrap[0])
@@ -62,21 +58,42 @@ namespace RubyWrapper {
 		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
 		RCN* node = (RCN*) data->ptr;
 
-		log("%d", node);
 		return node->visible ? Qtrue : Qfalse;
+	}
+
+	VALUE gdrawable_visible_set(VALUE val, VALUE cdata, VALUE b) {
+		struct ptr_data *data;
+		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
+		RCN* node = (RCN*) data->ptr;
+
+		if (b == Qtrue && node->visible != true) {
+			node->visible = true;
+			node->prev = NULL;
+			node->next = render_chain;
+			if (node->next)
+				node->next->prev = node;
+			render_chain = node;
+		}
+		if (b == Qfalse && node->visible != false) {
+			node->visible = false;
+			if (node == render_chain)
+				render_chain = NULL;
+			if (node->prev)
+				node->prev->next = node->next;
+			if (node->next)
+				node->next->prev = node->prev;
+			node->prev = NULL;
+			node->next = NULL;
+		}
+
+		return Qnil;
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self) {
 
 		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
-		node->visible = true;
-		node->prev = render_chain;
-		if (node->prev == NULL)
-			render_chain = node;
-		else
-			node->prev->next = node;
-		node->next = NULL;
+		node->visible = false; node->prev = NULL; node->next = NULL;
 		node->gd = GDrawable::create();
 		node->gd->vertices = (GLfloat*) malloc(sizeof(vertices));
 		memcpy(node->gd->vertices, vertices, sizeof(vertices));
@@ -144,6 +161,7 @@ void init_ruby_classes() {
 
 	ruby_GDrawable = rb_define_class_under(ruby_VMDE, "GDrawable", rb_cObject);
 	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 0);
+	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);
 	rb_define_method(ruby_GDrawable, "get_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_get, 1);
 }
 
