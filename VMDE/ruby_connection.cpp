@@ -49,7 +49,7 @@ namespace RubyWrapper {
 		return TypedData_Wrap_Struct(rb_cData, &data_type, node);
 	}
 
-	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
+	VALUE init_engine(VALUE self UNUSED, VALUE w, VALUE h) {
 		Check_Type(w, T_FIXNUM);
 		Check_Type(h, T_FIXNUM);
 		::init_engine(FIX2INT(w), FIX2INT(h));
@@ -74,7 +74,7 @@ namespace RubyWrapper {
 		return Qtrue;
 	}
 
-	VALUE main_set_brightness(VALUE self, VALUE b) {
+	VALUE main_set_brightness(VALUE self UNUSED, VALUE b) {
 		Check_Type(b, T_FLOAT);
 		::main_set_brightness(RFLOAT_VALUE(b));
 		return Qnil;

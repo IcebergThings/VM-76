@@ -21,6 +21,7 @@
 #define _INCLUDE_GLOBAL_H
 
 	typedef VALUE (*type_ruby_function)(ANYARGS);
+	#define UNUSED __attribute__((unused))
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 
 	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
