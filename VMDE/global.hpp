@@ -133,4 +133,8 @@
 		void log_internal(const char* function_name, const char* format, ...);
 	}
 
+	// audio.cpp
+	namespace Audio {
+	}
+
 #endif
