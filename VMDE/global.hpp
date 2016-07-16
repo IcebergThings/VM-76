@@ -137,10 +137,14 @@
 
 	// audio.cpp
 	namespace Audio {
+		extern PaStream *stream;
 		struct triangle_data {
 			float value;
 			float delta;
 		};
+		void init();
+		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
+		void ensure_no_error(PaError err);
 		void play_triangle(int freq);
 		int play_triangle_callback(
 			const void* input_buffer,
