@@ -9,6 +9,9 @@
 #include <cstring>
 #include <ctime>
 
+#include <list>
+#include <queue>
+
 #include <ruby.h>
 
 #include <GL/glew.h>
