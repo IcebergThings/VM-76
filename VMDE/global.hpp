@@ -27,7 +27,8 @@
 	typedef VALUE (*type_ruby_function)(ANYARGS);
 	#define UNUSED __attribute__((unused))
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
-	#define TWICE(x) x x
+	#define TWICE \
+		for (int _my_lovely_index = 1; _my_lovely_index & 3; _my_lovely_index <<= 1)
 
 	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此

@@ -67,10 +67,10 @@ namespace Audio {
 		struct triangle_data* data = (struct triangle_data*) user_data;
 		while (frames_per_buffer > 0) {
 			get_next_triangle_value(data);
-			TWICE(
+			TWICE {
 				*output = data->value;
 				output++; frames_per_buffer--;
-			)
+			}
 		}
 		return paContinue;
 	}
