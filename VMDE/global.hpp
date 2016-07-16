@@ -4,24 +4,26 @@
 //   VMDE通用C++头文件。
 //=============================================================================
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+
+#include <ruby.h>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <ruby.h>
-
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-#include <ctime>
+#include <portaudio.h>
 
 #ifndef _INCLUDE_GLOBAL_H
 #define _INCLUDE_GLOBAL_H
 
 	typedef VALUE (*type_ruby_function)(ANYARGS);
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
+	#define TWICE(x) x x
 
 	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
@@ -135,6 +137,20 @@
 
 	// audio.cpp
 	namespace Audio {
+		struct triangle_data {
+			float value;
+			float delta;
+		};
+		void play_triangle(int freq);
+		int play_triangle_callback(
+			const void* input_buffer,
+			void* output_buffer,
+			unsigned long frames_per_buffer,
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
+			void* user_data
+		);
+		void get_next_triangle_value(struct triangle_data* data);
 	}
 
 #endif

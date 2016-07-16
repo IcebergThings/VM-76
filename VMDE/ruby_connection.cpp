@@ -88,19 +88,20 @@ namespace RubyWrapper {
 }
 
 void init_ruby_modules() {
-	ruby_VMDE = rb_define_module("VMDE");
 	#define RUBY_MODULE_API(module, ruby_name, wrapper_name, parameter_count) \
 		rb_define_module_function(ruby_##module, #ruby_name, \
 		(type_ruby_function) RubyWrapper::wrapper_name, parameter_count)
+	ruby_VMDE = rb_define_module("VMDE");
 	RUBY_MODULE_API(VMDE, init, init_engine, 2);
 	RUBY_MODULE_API(VMDE, update, main_draw_loop, 0);
 	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
 	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
 	RUBY_MODULE_API(VMDE, set_brightness, main_set_brightness, 1);
-	#undef RUBY_MODULE_API
+
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
+	#undef RUBY_MODULE_API
 }
 
 void init_ruby_classes() {
