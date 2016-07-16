@@ -56,11 +56,11 @@ namespace Audio {
 	// ● 播放三角波时内部使用的回调函数
 	//-------------------------------------------------------------------------
 	int play_triangle_callback(
-		const void* input_buffer __attribute__((unused)),
+		const void* input_buffer UNUSED,
 		void* output_buffer,
 		unsigned long frames_per_buffer,
-		const PaStreamCallbackTimeInfo* time_info __attribute__((unused)),
-		PaStreamCallbackFlags status_flags __attribute__((unused)),
+		const PaStreamCallbackTimeInfo* time_info UNUSED,
+		PaStreamCallbackFlags status_flags UNUSED,
 		void* user_data
 	) {
 		float* output = (float*) output_buffer;
