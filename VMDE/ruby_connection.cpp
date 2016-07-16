@@ -58,17 +58,12 @@ namespace RubyWrapper {
 	};
 
 	VALUE gdrawable_visible_get(VALUE val, VALUE cdata) {
-	/*	rb_data_type_t gdrawable_data_type = {
-			"Drawable_C_Data",
-			{
-				0, 0,
-			},
-			0, (void*) node, RUBY_TYPED_FREE_IMMEDIATELY,
-		};*/
 		struct ptr_data *data;
 		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
 		RCN* node = (RCN*) data->ptr;
-		return Qnil;//(VALUE) node->visible;
+
+		log("%d", node);
+		return node->visible ? Qtrue : Qfalse;
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self) {
@@ -88,7 +83,13 @@ namespace RubyWrapper {
 		node->gd->size_of_VBO = sizeof(vertices);
 		GDrawable::update(node->gd);
 
-		return TypedData_Wrap_Struct(rb_cData, &gdrawable_data_type, node);
+		struct ptr_data* data;
+		VALUE v = TypedData_Make_Struct(rb_cData, struct ptr_data, &gdrawable_data_type, data);
+		data->ptr = node;
+		data->free = free;
+		data->size = sizeof(RCN);
+
+		return v;
 	}
 
 	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
