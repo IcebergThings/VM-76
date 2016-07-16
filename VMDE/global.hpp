@@ -122,7 +122,7 @@
 	// init.cpp
 	void init_engine(int w, int h);
 	void setup_viewport();
-	void init_vmde();
+	void init_vmde(int w, int h);
 
 	// main.cpp
 	void glfw_error_callback(int error, const char* description);

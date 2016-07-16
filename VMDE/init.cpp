@@ -24,7 +24,7 @@ void setup_viewport() {
 void init_engine(int w, int h) {
 	log("initializing the engine");
 
-	init_vmde();
+	init_vmde(w, h);
 
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
@@ -38,7 +38,7 @@ void init_engine(int w, int h) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	window = glfwCreateWindow(w, h, GAME_NAME, NULL, NULL);
+	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		rb_raise(rb_eRuntimeError, "glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
@@ -67,7 +67,7 @@ void init_engine(int w, int h) {
 //-----------------------------------------------------------------------------
 // ● 初始化VMDE结构体
 //-----------------------------------------------------------------------------
-void init_vmde() {
+void init_vmde(int w, int h) {
 	VMDE = new struct VMDE;
 	VMDE->state.frozen = false;
 	VMDE->state.brightness = 1.0;
