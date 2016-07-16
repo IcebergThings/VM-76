@@ -6,6 +6,8 @@
 
 #include "global.hpp"
 
+typedef void (*freefunc_t)(void*);
+
 GLfloat vertices[] = {
 	0.0f, 0.0f, 0.0f,
 	435.0f, 0.0f, 0.0f,
@@ -19,34 +21,92 @@ namespace RubyWrapper {
 		return Qnil;//RSTRING(load_img(a));
 	}
 
-	VALUE gdrawable_set_visible(VALUE self, VALUE s) {
+	struct ptr_data {
+		void *ptr;
+		long size;
+		freefunc_t free;
+		VALUE wrap[2];
+	};
+
+	static void rb_data_mark(void *ptr) {
+		struct ptr_data *data = ptr;
+		if (data->wrap[0])
+			rb_gc_mark(data->wrap[0]);
+		if (data->wrap[1])
+			rb_gc_mark(data->wrap[1]);
+	}
+
+	static void rb_data_free(void *ptr) {
+		struct ptr_data *data = ptr;
+		if (data->ptr && data->free)
+			(*(data->free))(data->ptr);
+		xfree(ptr);
+	}
+
+	static size_t rb_data_memsize(const void *ptr) {
+		const struct ptr_data *data = ptr;
+		return sizeof(*data) + data->size;
+	}
+
+	rb_data_type_t gdrawable_data_type = {
+		"Drawable_C_Data",
+		{rb_data_mark, rb_data_free, rb_data_memsize},
+	};
+
+	VALUE gdrawable_visible_get(VALUE val, VALUE cdata) {
+		struct ptr_data *data;
+		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
+		RCN* node = (RCN*) data->ptr;
+
+		return node->visible ? Qtrue : Qfalse;
+	}
+
+	VALUE gdrawable_visible_set(VALUE val, VALUE cdata, VALUE b) {
+		struct ptr_data *data;
+		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
+		RCN* node = (RCN*) data->ptr;
+
+		if (b == Qtrue && node->visible != true) {
+			node->visible = true;
+			node->prev = NULL;
+			node->next = render_chain;
+			if (node->next)
+				node->next->prev = node;
+			render_chain = node;
+		}
+		if (b == Qfalse && node->visible != false) {
+			node->visible = false;
+			if (node == render_chain)
+				render_chain = NULL;
+			if (node->prev)
+				node->prev->next = node->next;
+			if (node->next)
+				node->next->prev = node->prev;
+			node->prev = NULL;
+			node->next = NULL;
+		}
+
+		return Qnil;
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self) {
 
 		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
-		node->prev = render_chain;
-		if (node->prev == NULL)
-			render_chain = node;
-		else
-			node->prev->next = node;
-		node->next = NULL;
+		node->visible = false; node->prev = NULL; node->next = NULL;
 		node->gd = GDrawable::create();
 		node->gd->vertices = (GLfloat*) malloc(sizeof(vertices));
 		memcpy(node->gd->vertices, vertices, sizeof(vertices));
 		node->gd->size_of_VBO = sizeof(vertices);
 		GDrawable::update(node->gd);
 
-		rb_data_type_t data_type = {
-			"Drawable_C_Data",
-			{
-				0, 0,
-			},
-			0, (void*) node, RUBY_TYPED_FREE_IMMEDIATELY,
-		};
+		struct ptr_data* data;
+		VALUE v = TypedData_Make_Struct(rb_cData, struct ptr_data, &gdrawable_data_type, data);
+		data->ptr = node;
+		data->free = free;
+		data->size = sizeof(RCN);
 
-		return TypedData_Wrap_Struct(rb_cData, &data_type, node);
+		return v;
 	}
 
 	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
@@ -101,6 +161,8 @@ void init_ruby_classes() {
 
 	ruby_GDrawable = rb_define_class_under(ruby_VMDE, "GDrawable", rb_cObject);
 	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 0);
+	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);
+	rb_define_method(ruby_GDrawable, "get_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_get, 1);
 }
 
 EXPORTED void Init_VMDE() {

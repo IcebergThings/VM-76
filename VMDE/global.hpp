@@ -67,6 +67,7 @@
 		RenderChainNode* prev;
 		VALUE n;
 		GDrawable::GDrawable* gd;
+		bool visible;
 		RenderChainNode* next;
 	};
 
