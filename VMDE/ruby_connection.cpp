@@ -79,19 +79,30 @@ namespace RubyWrapper {
 		::main_set_brightness(RFLOAT_VALUE(b));
 		return Qnil;
 	}
+
+	VALUE audio_play_triangle(VALUE self, VALUE freq) {
+		Check_Type(freq, T_FIXNUM);
+		int f = FIX2INT(freq);
+		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
+		Audio::play_triangle(f);
+		return Qnil;
+	}
 }
 
 void init_ruby_modules() {
-	ruby_VMDE = rb_define_module("VMDE");
-	#define RUBY_MODULE_API(ruby_name, wrapper_name, parameter_count) \
-		rb_define_module_function(ruby_VMDE, #ruby_name, \
+	#define RUBY_MODULE_API(module, ruby_name, wrapper_name, parameter_count) \
+		rb_define_module_function(ruby_##module, #ruby_name, \
 		(type_ruby_function) RubyWrapper::wrapper_name, parameter_count)
-	RUBY_MODULE_API(init, init_engine, 2);
-	RUBY_MODULE_API(update, main_draw_loop, 0);
-	RUBY_MODULE_API(frame_count, main_get_frame_count, 0);
-	RUBY_MODULE_API(fps, main_get_fps, 0);
-	RUBY_MODULE_API(matrix2D, main_matrix2D, 0);
-	RUBY_MODULE_API(set_brightness, main_set_brightness, 1);
+	ruby_VMDE = rb_define_module("VMDE");
+	RUBY_MODULE_API(VMDE, init, init_engine, 2);
+	RUBY_MODULE_API(VMDE, update, main_draw_loop, 0);
+	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
+	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
+	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
+	RUBY_MODULE_API(VMDE, set_brightness, main_set_brightness, 1);
+
+	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
+	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
 	#undef RUBY_MODULE_API
 }
 

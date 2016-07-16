@@ -13,12 +13,13 @@ puts "Ruby initializes here"
 
 obj = VMDE::GDrawable.new
 obj_b = obj.bind
+VMDE::Audio.play_triangle(440)
 
 i = 0
 loop do
 	i += 1
 	i = 0 if i > 255
-	p i
+	#p i
 	VMDE.set_brightness(0.5 + i / 255.0)
 	VMDE.matrix2D
 	VMDE.update

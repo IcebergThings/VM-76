@@ -58,4 +58,7 @@ void init_engine(int w, int h) {
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	main_shader->link_program();
+
+	// 初始化声音「上面和下面这堆东西全放在一个函数里，真节约啊」
+	Audio::init();
 }

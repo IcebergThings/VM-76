@@ -36,15 +36,19 @@ class WindogeMake
 				-ID:\\glfw-3.2.bin.WIN32\\include
 				-ID:\\glew-1.13.0\\include
 				-ID:\\glm-0.9.7.5
-				-O3 -llibstdc++
+				-ID:\\portaudio\\include
+				-ID:\libogg-1.3.2\include
+				-ID:\libvorbis-1.3.5\include
+				-O3 -LD:\\bin -llibstdc++
 				-LC:\\Ruby23\\lib
 				-Wl,--enable-auto-image-base,-subsystem,windows
 				-lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi
 				-LD:\\glfw-3.2.bin.WIN32\\lib-mingw-w64
 				-LD:\\glew-1.13.0\\lib\\Release\\Win32
-				-lglfw3dll -lglew32s -lopengl32
+				-lglfw3dll -lglew32s -lopengl32 -lportaudio_x86 -lvorbisfile
 			libstdc艹 is for exceptions and other random stuff. Omit it if not used.
 			-Wall, -Wextra and some required arguments are built into this script.
+			‘D:\\bin’ above is where you put all libraries (.lib files) and DLLs.
 		EOF
 	end
 	#--------------------------------------------------------------------------
