@@ -9,23 +9,22 @@
 GLuint basic_2D_vsh;
 GLuint basic_2D_fsh;
 
+//-----------------------------------------------------------------------------
+// ● 设置视口
+//-----------------------------------------------------------------------------
 void setup_viewport() {
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 }
 
+//-----------------------------------------------------------------------------
+// ● 初始化引擎
+//-----------------------------------------------------------------------------
 void init_engine(int w, int h) {
 	log("initializing the engine");
 
-	// 初始化VMDE结构
-	VMDE = new struct VMDE;
-	VMDE->state.frozen = false;
-	VMDE->state.brightness = 1.0;
-
-	VMDE->frame_count = 0;
-	VMDE->fps = 0;
-	VMDE->width = w; VMDE->height = h;
+	init_vmde();
 
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
@@ -61,4 +60,19 @@ void init_engine(int w, int h) {
 
 	// 初始化声音「上面和下面这堆东西全放在一个函数里，真节约啊」
 	Audio::init();
+
+	log("initialized the engine");
+}
+
+//-----------------------------------------------------------------------------
+// ● 初始化VMDE结构体
+//-----------------------------------------------------------------------------
+void init_vmde() {
+	VMDE = new struct VMDE;
+	VMDE->state.frozen = false;
+	VMDE->state.brightness = 1.0;
+
+	VMDE->frame_count = 0;
+	VMDE->fps = 0;
+	VMDE->width = w; VMDE->height = h;
 }
