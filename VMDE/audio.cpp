@@ -25,6 +25,7 @@ namespace Audio {
 	void init() {
 		ensure_no_error(Pa_Initialize());
 		populate_sine_table();
+		data.type = 0;
 		// 44100Hz
 		data.sample_rate = 44100.0d;
 		ensure_no_error(Pa_OpenDefaultStream(
@@ -105,6 +106,12 @@ namespace Audio {
 		return paContinue;
 	}
 	//-------------------------------------------------------------------------
+	// ● 停止播放
+	//-------------------------------------------------------------------------
+	void stop() {
+		data.type = 0;
+	}
+	//-------------------------------------------------------------------------
 	// ● 播放三角波
 	//    freq : 频率（Hz）
 	//-------------------------------------------------------------------------
@@ -141,11 +148,11 @@ namespace Audio {
 	// ● 向正弦表中填充数据
 	//-------------------------------------------------------------------------
 	void populate_sine_table() {
-		float k = 0.5f / (float) sine_table_size * (float) Util::PI;
+		float k = 0.5f / (float) sine_table_size * Util::PIf;
 		for (size_t i = 0; i < sine_table_size; i++) sine_table[i] = sin(i * k);
 	}
 	//-------------------------------------------------------------------------
-	// ● 计算下一个值使输出呈正弦波形
+	// ● 计算正弦函数的下一自变量
 	//-------------------------------------------------------------------------
 	void get_next_sine_value(struct sine_data* data) {
 		data->index += data->index_delta;

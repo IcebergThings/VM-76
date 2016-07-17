@@ -136,6 +136,11 @@ namespace RubyWrapper {
 		return Qnil;
 	}
 
+	VALUE audio_stop(VALUE self UNUSED) {
+		Audio::stop();
+		return Qnil;
+	}
+
 	VALUE audio_play_triangle(VALUE self UNUSED, VALUE freq) {
 		Check_Type(freq, T_FLOAT);
 		float f = RFLOAT_VALUE(freq);
@@ -166,6 +171,7 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, brightness=, main_set_brightness, 1);
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
+	RUBY_MODULE_API(Audio, stop, audio_stop, 0);
 	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
 	RUBY_MODULE_API(Audio, play_sine, audio_play_sine, 1);
 	#undef RUBY_MODULE_API

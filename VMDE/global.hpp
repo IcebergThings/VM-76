@@ -138,7 +138,9 @@
 	#define DEBUG_ENVIRONMENT "VMDrawEngine"
 	#define log(...) Util::log_internal(__func__, __VA_ARGS__)
 	namespace Util {
+		extern const float PIf;
 		extern const double PI;
+		#define PId PI
 		void log_internal(const char* function_name, const char* format, ...);
 	}
 
@@ -178,6 +180,7 @@
 			PaStreamCallbackFlags status_flags UNUSED,
 			void* user_data
 		);
+		void stop();
 		void play_triangle(float freq);
 		void get_next_triangle_value(struct triangle_data* data);
 		void play_sine(float freq);
