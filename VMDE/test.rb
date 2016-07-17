@@ -16,7 +16,13 @@ obj1_b = obj1.bind([])
 obj2 = VMDE::GDrawable.new
 obj2_b = obj2.bind([])
 VMDE::Audio.play_triangle(440)
-
+VMDE.wtftestingcode([
+	1.1, 2.2, 3.3,
+	4.4, 5.5, 6.6,
+	7.7, 8.8, 9.9,
+	100.0, 200.0, 300.0,
+])
+exit
 i = 0
 loop do
 	i += 1

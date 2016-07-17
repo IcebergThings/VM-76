@@ -9,8 +9,8 @@
 #include <cstring>
 #include <ctime>
 #include <thread>
-#include <list>
-#include <queue>
+#include <vector>
+using namespace std;
 
 #include <ruby.h>
 

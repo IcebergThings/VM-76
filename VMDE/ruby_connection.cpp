@@ -8,10 +8,10 @@
 
 typedef void (*freefunc_t)(void*);
 
-GLfloat vertices[] = {
+vector<GLfloat> vertices {
 	0.0f, 0.0f, 0.0f,
 	435.0f, 0.0f, 0.0f,
-	435.0f, 270.0f, 0.0f
+	435.0f, 270.0f, 0.0f,
 };
 
 namespace RubyWrapper {
@@ -87,7 +87,7 @@ namespace RubyWrapper {
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self, VALUE ary) {
-
+		/*
 		VALUE* cary = rb_ary_to_ary(ary);
 		log("%d", cary);
 
@@ -105,8 +105,9 @@ namespace RubyWrapper {
 		data->ptr = node;
 		data->free = free;
 		data->size = sizeof(RCN);
-
 		return v;
+*/
+		return Qfalse;
 	}
 
 	VALUE init_engine(VALUE self UNUSED, VALUE w, VALUE h) {
@@ -147,6 +148,24 @@ namespace RubyWrapper {
 		Audio::play_triangle(f);
 		return Qnil;
 	}
+
+	VALUE load_vertices(VALUE self UNUSED, VALUE vertex_array) {
+		Check_Type(vertex_array, T_ARRAY);
+		long i;
+		long length = rb_array_len(vertex_array);
+		for (i = 0; i < length; i++) {
+			VALUE k = rb_ary_entry(vertex_array, i);
+			Check_Type(k, T_FLOAT);
+		}
+		vertices.clear();
+		for (i = 0; i < length; i++) {
+			//render_chain->gd->vertices
+			float k = (float) rb_float_value(rb_ary_entry(vertex_array, i));
+			vertices.push_back(k);
+			printf("%ld %f", i, k);
+		}
+		return vertex_array;
+	}
 }
 
 void init_ruby_modules() {
@@ -160,6 +179,7 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
 	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
 	RUBY_MODULE_API(VMDE, set_brightness, main_set_brightness, 1);
+	RUBY_MODULE_API(VMDE, wtftestingcode, load_vertices, 1);
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
