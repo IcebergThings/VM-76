@@ -22,29 +22,26 @@ namespace RubyWrapper {
 	}
 
 	struct ptr_data {
-		void *ptr;
+		void* ptr;
 		long size;
 		freefunc_t free;
 		VALUE wrap[2];
 	};
 
-	static void rb_data_mark(void *ptr) {
-		struct ptr_data *data = ptr;
-		if (data->wrap[0])
-			rb_gc_mark(data->wrap[0]);
-		if (data->wrap[1])
-			rb_gc_mark(data->wrap[1]);
+	static void rb_data_mark(void* ptr) {
+		struct ptr_data* data = (struct ptr_data*) ptr;
+		if (data->wrap[0]) rb_gc_mark(data->wrap[0]);
+		if (data->wrap[1]) rb_gc_mark(data->wrap[1]);
 	}
 
-	static void rb_data_free(void *ptr) {
-		struct ptr_data *data = ptr;
-		if (data->ptr && data->free)
-			(*(data->free))(data->ptr);
+	static void rb_data_free(void* ptr) {
+		struct ptr_data* data = (struct ptr_data*) ptr;
+		if (data->ptr && data->free) (*(data->free))(data->ptr);
 		xfree(ptr);
 	}
 
-	static size_t rb_data_memsize(const void *ptr) {
-		const struct ptr_data *data = ptr;
+	static size_t rb_data_memsize(const void* ptr) {
+		const struct ptr_data* data = (const struct ptr_data*) ptr;
 		return sizeof(*data) + data->size;
 	}
 
