@@ -47,6 +47,7 @@ using namespace std;
 			GLfloat* vertices;
 			GLuint VAO;
 			GLuint VBO;
+			GLuint tri_mesh_count;
 			size_t size_of_VBO;
 		};
 		void draw(GDrawable* s);

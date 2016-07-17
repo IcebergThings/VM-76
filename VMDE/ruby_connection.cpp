@@ -102,6 +102,7 @@ namespace RubyWrapper {
 		for (i = 0; i < length; i++) {
 			gd->vertices[i] = (float) rb_float_value(rb_ary_entry(vertex_array, i));
 		}
+		gd->tri_mesh_count = length / 3;
 		gd->size_of_VBO = size;
 	}
 
