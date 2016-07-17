@@ -11,7 +11,7 @@ extension_name = "VMDE"
 
 dirs = ["/usr/local/lib"]
 $libs += %w(
-	-lGLEW -lGLU -lglfw -lrt -lXrandr -lXinerama -lXi -lXcursor -lXrender
+	-lGLEW -lGLU -lglfw -lrt -lportaudio -lasound -lXrandr -lXinerama -lXi -lXcursor -lXrender
 	-lGL -lm -ldl -ldrm -lXdamage -lXfixes -lX11-xcb -lxcb-glx -lxcb-dri2
 	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp
 ).join(" ")
