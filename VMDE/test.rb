@@ -11,18 +11,28 @@ require "./VMDE.so"
 VMDE.init(880, 540)
 puts "Ruby initializes here"
 
-obj = VMDE::GDrawable.new
-obj_b = obj.bind
+obj1 = VMDE::GDrawable.new
+obj1_b = obj1.bind([])
+obj2 = VMDE::GDrawable.new
+obj2_b = obj2.bind([])
 VMDE::Audio.play_sine(440.0)
 
 i = 0
 loop do
 	i += 1
 	i = 0 if i > 255
-	p [obj.get_visible(obj_b), i]
-	obj.set_visible(obj_b, true) if i == 128
-	obj.set_visible(obj_b, false) if i == 255
-	VMDE.brightness = 0.5 + i / 510.0
+	p [obj1.get_visible(obj1_b), i]
+
+	if i == 128
+		obj1.set_visible(obj1_b, true)
+		obj2.set_visible(obj2_b, true)
+	end
+	if i == 255
+		obj1.set_visible(obj1_b, false)
+		obj2.set_visible(obj2_b, false)
+	end
+
+	VMDE.set_brightness(0.5 + i / 510.0)
 	VMDE.matrix2D
 	VMDE.update
 end
