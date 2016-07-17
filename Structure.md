@@ -20,6 +20,14 @@ Structure
          - [ ] ⓜ draw
      - [ ] Ⓒ GResPic: texture resources
          - [ ] ⓜ load_pic
+     - [ ] Ⓜ Audio: audio *drawing* support
+         - [ ] ⓜ stop
+         - [ ] ⓜ play_wave
+             - [ ] triangle
+             - [ ] sine
+             - [ ] white_noise
+         - [ ] ⓜ play_sound: load before playing
+         - [ ] ⓜ play_music: load | play
 
 它是怎么绘图的
 --------------
