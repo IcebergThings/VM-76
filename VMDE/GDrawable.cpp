@@ -12,12 +12,6 @@ namespace GDrawable {
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 	}
-/*
-	GLfloat vertices[] = {
-		0.0f, 0.0f, 0.0f,
-		435.0f, 0.0f, 0.0f,
-		435.0f, 270.0f, 0.0f
-	};*/
 
 	void update(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);

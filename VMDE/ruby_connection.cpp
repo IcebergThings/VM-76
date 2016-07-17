@@ -8,12 +8,6 @@
 
 typedef void (*freefunc_t)(void*);
 
-GLfloat vertices[] = {
-	0.0f, 0.0f, 0.0f,
-	435.0f, 0.0f, 0.0f,
-	435.0f, 270.0f, 0.0f
-};
-
 namespace RubyWrapper {
 	VALUE load_pic(VALUE self, VALUE path) {
 		Check_Type(path, T_STRING);
@@ -37,6 +31,15 @@ namespace RubyWrapper {
 	static void rb_data_free(void* ptr) {
 		struct ptr_data* data = (struct ptr_data*) ptr;
 		if (data->ptr && data->free) (*(data->free))(data->ptr);
+		RCN* n = (RCN*) data->ptr;
+		if (n) {
+			if (n->gd) {
+				if (n->gd->vertices) {
+					free(n->gd->vertices);
+				}
+				free(n->gd);
+			}
+		}
 		xfree(ptr);
 	}
 
@@ -74,7 +77,7 @@ namespace RubyWrapper {
 		if (b == Qfalse && node->visible != false) {
 			node->visible = false;
 			if (node == render_chain)
-				render_chain = NULL;
+				render_chain = node->next;
 			if (node->prev)
 				node->prev->next = node->next;
 			if (node->next)
@@ -86,15 +89,29 @@ namespace RubyWrapper {
 		return Qnil;
 	}
 
-	VALUE gdrawable_bind_obj(VALUE self) {
+	size_t load_vertices(VALUE vertex_array, GDrawable::GDrawable* gd) {
+		Check_Type(vertex_array, T_ARRAY);
+		long i;
+		long length = rb_array_len(vertex_array);
+		for (i = 0; i < length; i++) {
+			VALUE k = rb_ary_entry(vertex_array, i);
+			Check_Type(k, T_FLOAT);
+		}
+		size_t size = sizeof(GLfloat) * length;
+		gd->vertices = (GLfloat*) malloc(size);
+		for (i = 0; i < length; i++) {
+			gd->vertices[i] = (float) rb_float_value(rb_ary_entry(vertex_array, i));
+		}
+		gd->size_of_VBO = size;
+	}
+
+	VALUE gdrawable_bind_obj(VALUE self, VALUE ary) {
 
 		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
 		node->visible = false; node->prev = NULL; node->next = NULL;
 		node->gd = GDrawable::create();
-		node->gd->vertices = (GLfloat*) malloc(sizeof(vertices));
-		memcpy(node->gd->vertices, vertices, sizeof(vertices));
-		node->gd->size_of_VBO = sizeof(vertices);
+		load_vertices(ary, node->gd);
 		GDrawable::update(node->gd);
 
 		struct ptr_data* data;
@@ -168,7 +185,7 @@ void init_ruby_classes() {
 	rb_define_method(ruby_GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
 
 	ruby_GDrawable = rb_define_class_under(ruby_VMDE, "GDrawable", rb_cObject);
-	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 0);
+	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 1);
 	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);
 	rb_define_method(ruby_GDrawable, "get_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_get, 1);
 }
