@@ -98,6 +98,7 @@ namespace RubyWrapper {
 			Check_Type(k, T_FLOAT);
 		}
 		size_t size = sizeof(GLfloat) * length;
+		if (gd->vertices) free(gd->vertices);
 		gd->vertices = (GLfloat*) malloc(size);
 		for (i = 0; i < length; i++) {
 			gd->vertices[i] = (float) rb_float_value(rb_ary_entry(vertex_array, i));
@@ -113,7 +114,7 @@ namespace RubyWrapper {
 		node->visible = false; node->prev = NULL; node->next = NULL;
 		node->gd = GDrawable::create();
 		load_vertices(ary, node->gd);
-		GDrawable::update(node->gd);
+		GDrawable::fbind(node->gd);
 
 		struct ptr_data* data;
 		VALUE v = TypedData_Make_Struct(rb_cData, struct ptr_data, &gdrawable_data_type, data);
@@ -122,6 +123,19 @@ namespace RubyWrapper {
 		data->size = sizeof(RCN);
 
 		return v;
+	}
+
+	VALUE gdrawable_update_vertices(VALUE self, VALUE cdata, VALUE ary) {
+		struct ptr_data *data;
+		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
+		RCN* node = (RCN*) data->ptr;
+
+	//	if (!node->gd) {
+	//		return Qfalse;
+	//	}
+
+		load_vertices(ary, node->gd);
+		GDrawable::update(node->gd);
 	}
 
 	VALUE init_engine(VALUE self UNUSED, VALUE w, VALUE h) {
@@ -189,6 +203,7 @@ void init_ruby_classes() {
 	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 1);
 	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);
 	rb_define_method(ruby_GDrawable, "get_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_get, 1);
+	rb_define_method(ruby_GDrawable, "update_vertices", (type_ruby_function) RubyWrapper::gdrawable_update_vertices, 2);
 }
 
 EXPORTED void Init_VMDE() {

@@ -51,6 +51,7 @@ using namespace std;
 			size_t size_of_VBO;
 		};
 		void draw(GDrawable* s);
+		void fbind(GDrawable* s);
 		void update(GDrawable* s);
 		GDrawable* create();
 	}
