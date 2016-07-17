@@ -32,7 +32,7 @@ loop do
 		obj1.set_visible(obj1_b, false)
 	end
 
-	VMDE.set_brightness(0.5 + i / 510.0)
+	VMDE.brightness = 0.5 + i / 510.0
 	VMDE.matrix2D
 	VMDE.update
 end

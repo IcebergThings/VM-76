@@ -164,21 +164,17 @@ namespace RubyWrapper {
 	}
 
 	VALUE audio_play_wave(VALUE self UNUSED, VALUE type, VALUE freq) {
-		static const ID triangle = rb_intern("triangle");
-		static const ID sine = rb_intern("sine");
 		Check_Type(type, T_SYMBOL);
 		Check_Type(freq, T_FLOAT);
 		float f = rb_float_value(freq);
 		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
-		switch (SYM2ID(type)) {
-			case triangle:
-				Audio::play_triangle(f);
-				break;
-			case sine:
-				Audio::play_sine(f);
-				break;
-			default:
-				rb_raise(rb_eArgError, "invalid wave type");
+		ID type_id = SYM2ID(type);
+		if (type_id == rb_intern("triangle")) {
+			Audio::play_triangle(f);
+		} else if (type_id == rb_intern("sine")) {
+			Audio::play_sine(f);
+		} else {
+			rb_raise(rb_eArgError, "invalid wave type");
 		}
 		return Qnil;
 	}
