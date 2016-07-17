@@ -15,7 +15,7 @@ obj1 = VMDE::GDrawable.new
 obj1_b = obj1.bind([])
 obj2 = VMDE::GDrawable.new
 obj2_b = obj2.bind([])
-VMDE::Audio.play_sine(440.0)
+VMDE::Audio.play_wave(:sine, 440.0)
 
 i = 0
 loop do

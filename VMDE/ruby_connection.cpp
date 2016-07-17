@@ -1,12 +1,11 @@
 //=============================================================================
 // ■ ruby_connection.cpp
 //-----------------------------------------------------------------------------
-//   包装每一个导出到Ruby中的函数，也负责一些Ruby扩展所需的杂务。
+//   包装每一个导出到Ruby中的函数（即RubyWrapper），
+//   还负责一些Ruby扩展所需的杂务和整个初始化系统的调用。
 //=============================================================================
 
 #include "global.hpp"
-
-typedef void (*freefunc_t)(void*);
 
 GLfloat vertices[] = {
 	0.0f, 0.0f, 0.0f,
@@ -24,7 +23,7 @@ namespace RubyWrapper {
 	struct ptr_data {
 		void* ptr;
 		long size;
-		freefunc_t free;
+		type_free_function free;
 		VALUE wrap[2];
 	};
 
@@ -133,9 +132,9 @@ namespace RubyWrapper {
 		return Qtrue;
 	}
 
-	VALUE main_set_brightness(VALUE self UNUSED, VALUE b) {
-		Check_Type(b, T_FLOAT);
-		VMDE->state.brightness = RFLOAT_VALUE(b);
+	VALUE main_set_brightness(VALUE self UNUSED, VALUE value) {
+		Check_Type(value, T_FLOAT);
+		VMDE->state.brightness = rb_float_value(value);
 		return Qnil;
 	}
 
@@ -144,19 +143,23 @@ namespace RubyWrapper {
 		return Qnil;
 	}
 
-	VALUE audio_play_triangle(VALUE self UNUSED, VALUE freq) {
+	VALUE audio_play_wave(VALUE self UNUSED, VALUE type, VALUE freq) {
+		static const ID triangle = rb_intern("triangle");
+		static const ID sine = rb_intern("sine");
+		Check_Type(type, T_SYMBOL);
 		Check_Type(freq, T_FLOAT);
-		float f = RFLOAT_VALUE(freq);
+		float f = rb_float_value(freq);
 		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
-		Audio::play_triangle(f);
-		return Qnil;
-	}
-
-	VALUE audio_play_sine(VALUE self UNUSED, VALUE freq) {
-		Check_Type(freq, T_FLOAT);
-		float f = RFLOAT_VALUE(freq);
-		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
-		Audio::play_sine(f);
+		switch (SYM2ID(type)) {
+			case triangle:
+				Audio::play_triangle(f);
+				break;
+			case sine:
+				Audio::play_sine(f);
+				break;
+			default:
+				rb_raise(rb_eArgError, "invalid wave type");
+		}
 		return Qnil;
 	}
 }
@@ -175,8 +178,7 @@ void init_ruby_modules() {
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, stop, audio_stop, 0);
-	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
-	RUBY_MODULE_API(Audio, play_sine, audio_play_sine, 1);
+	RUBY_MODULE_API(Audio, play_wave, audio_play_wave, 2);
 	#undef RUBY_MODULE_API
 }
 

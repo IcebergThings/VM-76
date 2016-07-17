@@ -24,6 +24,7 @@
 #define _INCLUDE_GLOBAL_H
 
 	typedef VALUE (*type_ruby_function)(ANYARGS);
+	typedef void (*type_free_function)(void*);
 	#define UNUSED __attribute__((unused))
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
 	#define TWICE \
