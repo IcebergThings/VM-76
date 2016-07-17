@@ -152,7 +152,7 @@
 		void init();
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
-		void play_triangle(int freq);
+		void play_triangle(float freq);
 		int play_triangle_callback(
 			const void* input_buffer,
 			void* output_buffer,

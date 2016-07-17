@@ -137,8 +137,8 @@ namespace RubyWrapper {
 	}
 
 	VALUE audio_play_triangle(VALUE self UNUSED, VALUE freq) {
-		Check_Type(freq, T_FIXNUM);
-		int f = FIX2INT(freq);
+		Check_Type(freq, T_FLOAT);
+		float f = RFLOAT_VALUE(freq);
 		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
 		Audio::play_triangle(f);
 		return Qnil;

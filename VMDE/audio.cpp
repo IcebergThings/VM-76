@@ -47,7 +47,7 @@ namespace Audio {
 	// ● 播放三角波
 	//    freq : 频率（Hz）
 	//-------------------------------------------------------------------------
-	void play_triangle(int freq) {
+	void play_triangle(float freq) {
 		data.value = -1.0f;
 		data.delta = 2.0f / (44100.0f / freq / 2);
 		ensure_no_error(Pa_StartStream(stream));
