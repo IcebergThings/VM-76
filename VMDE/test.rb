@@ -12,7 +12,7 @@ VMDE.init(880, 540)
 puts "Ruby initializes here"
 
 obj1 = VMDE::GDrawable.new
-obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0])
+obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0,50.0,50.0,0.0,200.0,50.0,0.0,200.0,200.0,0.0])
 obj2 = VMDE::GDrawable.new
 obj2_b = obj2.bind([600.0,600.0,0.0,450.0,450.0,0.0,600.0,475.0,0.0])
 VMDE::Audio.play_wave(:sine, 440.0)
