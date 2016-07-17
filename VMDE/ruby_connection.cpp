@@ -86,7 +86,10 @@ namespace RubyWrapper {
 		return Qnil;
 	}
 
-	VALUE gdrawable_bind_obj(VALUE self) {
+	VALUE gdrawable_bind_obj(VALUE self, VALUE ary) {
+
+		VALUE* cary = rb_ary_to_ary(ary);
+		log("%d", cary);
 
 		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
@@ -168,7 +171,7 @@ void init_ruby_classes() {
 	rb_define_method(ruby_GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
 
 	ruby_GDrawable = rb_define_class_under(ruby_VMDE, "GDrawable", rb_cObject);
-	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 0);
+	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 1);
 	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);
 	rb_define_method(ruby_GDrawable, "get_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_get, 1);
 }
