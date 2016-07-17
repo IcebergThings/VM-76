@@ -9,23 +9,22 @@
 GLuint basic_2D_vsh;
 GLuint basic_2D_fsh;
 
+//-----------------------------------------------------------------------------
+// ● 设置视口
+//-----------------------------------------------------------------------------
 void setup_viewport() {
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 }
 
+//-----------------------------------------------------------------------------
+// ● 初始化引擎
+//-----------------------------------------------------------------------------
 void init_engine(int w, int h) {
 	log("initializing the engine");
 
-	// 初始化VMDE结构
-	VMDE = new struct VMDE;
-	VMDE->state.frozen = false;
-	VMDE->state.brightness = 1.0;
-
-	VMDE->frame_count = 0;
-	VMDE->fps = 0;
-	VMDE->width = w; VMDE->height = h;
+	init_vmde(w, h);
 
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
@@ -39,7 +38,7 @@ void init_engine(int w, int h) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	window = glfwCreateWindow(w, h, GAME_NAME, NULL, NULL);
+	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		rb_raise(rb_eRuntimeError, "glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
@@ -58,4 +57,22 @@ void init_engine(int w, int h) {
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	main_shader->link_program();
+
+	// 初始化声音「上面和下面这堆东西全放在一个函数里，真节约啊」
+	Audio::init();
+
+	log("initialized the engine");
+}
+
+//-----------------------------------------------------------------------------
+// ● 初始化VMDE结构体
+//-----------------------------------------------------------------------------
+void init_vmde(int w, int h) {
+	VMDE = new struct VMDE;
+	VMDE->state.frozen = false;
+	VMDE->state.brightness = 1.0;
+
+	VMDE->frame_count = 0;
+	VMDE->fps = 0;
+	VMDE->width = w; VMDE->height = h;
 }

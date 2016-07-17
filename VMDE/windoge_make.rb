@@ -26,9 +26,29 @@ class WindogeMake
 	#--------------------------------------------------------------------------
 	def display_help
 		puts <<~EOF
-			= Example =
-			> ruby windoge_make.rb C:\\Ruby23 2.3.0 D:\\glfw-3.2.bin.WIN32 D:\\glew-1.13.0 D:\\glm-0.9.7.5
-			> rem 作为开发者，你不应该在此类目录的名称中包含空格。
+			= Usage =
+			> ruby windoge_make.rb -D... -I... -L... -l...
+			> rem 作为开发者，你不应该在库目录的名称中包含空格。
+			Typical arguments:
+				-IC:\\Ruby23\\include\\ruby-2.3.0
+				-IC:\\Ruby23\\include\\ruby-2.3.0\\i386-mingw32
+				-DGLFW_DLL -DGLEW_STATIC
+				-ID:\\glfw-3.2.bin.WIN32\\include
+				-ID:\\glew-1.13.0\\include
+				-ID:\\glm-0.9.7.5
+				-ID:\\portaudio\\include
+				-ID:\libogg-1.3.2\include
+				-ID:\libvorbis-1.3.5\include
+				-O3 -LD:\\bin -llibstdc++
+				-LC:\\Ruby23\\lib
+				-Wl,--enable-auto-image-base,-subsystem,windows
+				-lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi
+				-LD:\\glfw-3.2.bin.WIN32\\lib-mingw-w64
+				-LD:\\glew-1.13.0\\lib\\Release\\Win32
+				-lglfw3dll -lglew32s -lopengl32 -lportaudio_x86 -lvorbisfile
+			libstdc艹 is for exceptions and other random stuff. Omit it if not used.
+			-Wall, -Wextra and some required arguments are built into this script.
+			‘D:\\bin’ above is where you put all libraries (.lib files) and DLLs.
 		EOF
 	end
 	#--------------------------------------------------------------------------
@@ -43,12 +63,14 @@ class WindogeMake
 	#--------------------------------------------------------------------------
 	def main
 		# display help when used incorrectly
-		if @argv.size != 5
+		if @argv.empty? or @argv.include?("--help") or @argv.include?("-h")
 			display_help
 			return
 		end
 		# 获取参数
-		ruby_path, ruby_version, glfw_path, glew_path, glm_path = @argv
+		compiling_args = []
+		linking_args = []
+		@argv.each { |a| (/^-[gDIO]/ === a ? compiling_args : linking_args) << a }
 		sources = Dir.glob("*.cpp")
 		objects = []
 		# some ugly hacks for Windoge
@@ -59,32 +81,19 @@ class WindogeMake
 			name = File.basename(source_name, ".cpp")
 			object_name = "#{name}.o"
 			objects << object_name
-			# Look, I'm Ruby Make now!
+			# Look, I'm Ruby 'make' now!
 			if File.exist?(object_name)
 				next if File.mtime(object_name) > File.mtime(source_name)
 			end
-			command = "g++ -c #{source_name} -o #{name}.o -O3 -Wall -Wextra"
-			# Ruby
-			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}"
-			command << " -I#{ruby_path}\\include\\ruby-#{ruby_version}\\i386-mingw32"
-			# GLFW, GLEW & GLM headers and macros
-			command << " -DGLFW_DLL -DGLEW_STATIC"
-			command << " -I#{glfw_path}\\include"
-			command << " -I#{glew_path}\\include"
-			command << " -I#{glm_path}"
+			command = %w(g++ -c -Wall -Wextra -std=c++11 -o)
+			command.push(object_name, source_name)
+			command.concat(compiling_args)
 			make command
 		end
-		command = "gcc #{objects.join(" ")} -s -shared -o #{dll_name}"
-		# libstdc艹 for exceptions and other random stuff
-		command << " -llibstdc++"
-		# Ruby
-		command << " -L#{ruby_path}\\lib"
-		command << " -Wl,--enable-auto-image-base,-subsystem,windows"
-		command << " -lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi"
-		# GLFW & GLEW ~~footers~~ libraries
-		command << " -L#{glfw_path}\\lib-mingw-w64"
-		command << " -L#{glew_path}\\lib\\Release\\Win32"
-		command << " -lglfw3dll -lglew32s -lopengl32"
+		command = %w(gcc -shared -o)
+		command.push(dll_name)
+		command.concat(objects)
+		command.concat(linking_args)
 		make command
 		# For tools like exeScope, the file must have correct suffix.
 		# However for Ruby, the DLL must have corrupted suffix.
@@ -95,11 +104,12 @@ class WindogeMake
 	end
 	#--------------------------------------------------------------------------
 	# ● 模拟Make的一步行动
+	#    command : 参数数组
 	#--------------------------------------------------------------------------
 	def make(command)
-		puts command
-		success = system command
-		if not success
+		puts command.join(" ")
+		success = system(*command)
+		unless success
 			system "title !! ERROR !!"
 			pause
 			exit

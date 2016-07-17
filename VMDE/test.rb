@@ -13,6 +13,7 @@ puts "Ruby initializes here"
 
 obj = VMDE::GDrawable.new
 obj_b = obj.bind
+VMDE::Audio.play_triangle(440)
 
 i = 0
 loop do

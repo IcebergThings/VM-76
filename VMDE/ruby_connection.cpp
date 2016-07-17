@@ -22,29 +22,26 @@ namespace RubyWrapper {
 	}
 
 	struct ptr_data {
-		void *ptr;
+		void* ptr;
 		long size;
 		freefunc_t free;
 		VALUE wrap[2];
 	};
 
-	static void rb_data_mark(void *ptr) {
-		struct ptr_data *data = ptr;
-		if (data->wrap[0])
-			rb_gc_mark(data->wrap[0]);
-		if (data->wrap[1])
-			rb_gc_mark(data->wrap[1]);
+	static void rb_data_mark(void* ptr) {
+		struct ptr_data* data = (struct ptr_data*) ptr;
+		if (data->wrap[0]) rb_gc_mark(data->wrap[0]);
+		if (data->wrap[1]) rb_gc_mark(data->wrap[1]);
 	}
 
-	static void rb_data_free(void *ptr) {
-		struct ptr_data *data = ptr;
-		if (data->ptr && data->free)
-			(*(data->free))(data->ptr);
+	static void rb_data_free(void* ptr) {
+		struct ptr_data* data = (struct ptr_data*) ptr;
+		if (data->ptr && data->free) (*(data->free))(data->ptr);
 		xfree(ptr);
 	}
 
-	static size_t rb_data_memsize(const void *ptr) {
-		const struct ptr_data *data = ptr;
+	static size_t rb_data_memsize(const void* ptr) {
+		const struct ptr_data* data = (const struct ptr_data*) ptr;
 		return sizeof(*data) + data->size;
 	}
 
@@ -109,7 +106,7 @@ namespace RubyWrapper {
 		return v;
 	}
 
-	VALUE init_engine(VALUE self, VALUE w, VALUE h) {
+	VALUE init_engine(VALUE self UNUSED, VALUE w, VALUE h) {
 		Check_Type(w, T_FIXNUM);
 		Check_Type(h, T_FIXNUM);
 		::init_engine(FIX2INT(w), FIX2INT(h));
@@ -134,24 +131,35 @@ namespace RubyWrapper {
 		return Qtrue;
 	}
 
-	VALUE main_set_brightness(VALUE self, VALUE b) {
+	VALUE main_set_brightness(VALUE self UNUSED, VALUE b) {
 		Check_Type(b, T_FLOAT);
 		::main_set_brightness(RFLOAT_VALUE(b));
+		return Qnil;
+	}
+
+	VALUE audio_play_triangle(VALUE self UNUSED, VALUE freq) {
+		Check_Type(freq, T_FIXNUM);
+		int f = FIX2INT(freq);
+		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
+		Audio::play_triangle(f);
 		return Qnil;
 	}
 }
 
 void init_ruby_modules() {
-	ruby_VMDE = rb_define_module("VMDE");
-	#define RUBY_MODULE_API(ruby_name, wrapper_name, parameter_count) \
-		rb_define_module_function(ruby_VMDE, #ruby_name, \
+	#define RUBY_MODULE_API(module, ruby_name, wrapper_name, parameter_count) \
+		rb_define_module_function(ruby_##module, #ruby_name, \
 		(type_ruby_function) RubyWrapper::wrapper_name, parameter_count)
-	RUBY_MODULE_API(init, init_engine, 2);
-	RUBY_MODULE_API(update, main_draw_loop, 0);
-	RUBY_MODULE_API(frame_count, main_get_frame_count, 0);
-	RUBY_MODULE_API(fps, main_get_fps, 0);
-	RUBY_MODULE_API(matrix2D, main_matrix2D, 0);
-	RUBY_MODULE_API(set_brightness, main_set_brightness, 1);
+	ruby_VMDE = rb_define_module("VMDE");
+	RUBY_MODULE_API(VMDE, init, init_engine, 2);
+	RUBY_MODULE_API(VMDE, update, main_draw_loop, 0);
+	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
+	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
+	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
+	RUBY_MODULE_API(VMDE, set_brightness, main_set_brightness, 1);
+
+	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
+	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
 	#undef RUBY_MODULE_API
 }
 
