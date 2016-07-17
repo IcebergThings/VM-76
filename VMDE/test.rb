@@ -13,13 +13,12 @@ puts "Ruby initializes here"
 
 obj = VMDE::GDrawable.new
 obj_b = obj.bind
-VMDE::Audio.play_triangle(440.0)
+VMDE::Audio.play_sine(440.0)
 
 i = 0
 loop do
 	i += 1
 	i = 0 if i > 255
-	sleep 1
 	p [obj.get_visible(obj_b), i]
 	obj.set_visible(obj_b, true) if i == 128
 	obj.set_visible(obj_b, false) if i == 255

@@ -143,6 +143,14 @@ namespace RubyWrapper {
 		Audio::play_triangle(f);
 		return Qnil;
 	}
+
+	VALUE audio_play_sine(VALUE self UNUSED, VALUE freq) {
+		Check_Type(freq, T_FLOAT);
+		float f = RFLOAT_VALUE(freq);
+		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
+		Audio::play_sine(f);
+		return Qnil;
+	}
 }
 
 void init_ruby_modules() {
@@ -159,6 +167,7 @@ void init_ruby_modules() {
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
+	RUBY_MODULE_API(Audio, play_sine, audio_play_sine, 1);
 	#undef RUBY_MODULE_API
 }
 

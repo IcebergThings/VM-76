@@ -7,10 +7,9 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <math.h>
 #include <ctime>
 #include <thread>
-#include <list>
-#include <queue>
 
 #include <ruby.h>
 
@@ -139,6 +138,7 @@
 	#define DEBUG_ENVIRONMENT "VMDrawEngine"
 	#define log(...) Util::log_internal(__func__, __VA_ARGS__)
 	namespace Util {
+		extern const double PI;
 		void log_internal(const char* function_name, const char* format, ...);
 	}
 
@@ -149,19 +149,40 @@
 			float value;
 			float delta;
 		};
+		struct sine_data {
+			float index;
+			float index_delta;
+			bool minus;
+		};
+		struct callback_data {
+			double sample_rate;
+			// type = 0……静音；1……三角波；2……正弦波；3……指定音频
+			// 为啥不用枚举？因为太麻烦了！
+			int type;
+			union {
+				struct triangle_data triangle;
+				struct sine_data sine;
+			} data;
+		};
+		extern struct callback_data data;
+		extern float sine_table[256];
+		extern const size_t sine_table_size;
 		void init();
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
-		void play_triangle(float freq);
-		int play_triangle_callback(
-			const void* input_buffer,
+		int play_callback(
+			const void* input_buffer UNUSED,
 			void* output_buffer,
 			unsigned long frames_per_buffer,
-			const PaStreamCallbackTimeInfo* time_info,
-			PaStreamCallbackFlags status_flags,
+			const PaStreamCallbackTimeInfo* time_info UNUSED,
+			PaStreamCallbackFlags status_flags UNUSED,
 			void* user_data
 		);
+		void play_triangle(float freq);
 		void get_next_triangle_value(struct triangle_data* data);
+		void play_sine(float freq);
+		void populate_sine_table();
+		void get_next_sine_value(struct sine_data* data);
 	}
 
 #endif
