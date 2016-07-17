@@ -83,11 +83,10 @@ namespace RubyWrapper {
 			node->next = NULL;
 		}
 
-		return Qnil;
+		return b;
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self) {
-
 		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
 		node->visible = false; node->prev = NULL; node->next = NULL;
@@ -156,7 +155,7 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
 	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
-	RUBY_MODULE_API(VMDE, set_brightness, main_set_brightness, 1);
+	RUBY_MODULE_API(VMDE, brightness=, main_set_brightness, 1);
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
