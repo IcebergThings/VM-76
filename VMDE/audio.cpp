@@ -80,10 +80,10 @@ namespace Audio {
 	void get_next_triangle_value(struct triangle_data* data) {
 		data->value += data->delta;
 		if (data->value > 1.0f) {
-			data->value = 1.0f;
+			data->value = 2.0f - data->value;
 			data->delta = -data->delta;
 		} else if (data->value < -1.0f) {
-			data->value = -1.0f;
+			data->value = -2.0f - data->value;
 			data->delta = -data->delta;
 		}
 	}

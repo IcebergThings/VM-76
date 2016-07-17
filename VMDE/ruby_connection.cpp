@@ -132,7 +132,7 @@ namespace RubyWrapper {
 
 	VALUE main_set_brightness(VALUE self UNUSED, VALUE b) {
 		Check_Type(b, T_FLOAT);
-		::main_set_brightness(RFLOAT_VALUE(b));
+		VMDE->state.brightness = RFLOAT_VALUE(b);
 		return Qnil;
 	}
 
