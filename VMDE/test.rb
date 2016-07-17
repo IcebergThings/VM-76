@@ -11,10 +11,12 @@ require "./VMDE.so"
 VMDE.init(880, 540)
 puts "Ruby initializes here"
 
+obj2_arr = [600.0,600.0,0.0,450.0,450.0,0.0,600.0,475.0,0.0]
+
 obj1 = VMDE::GDrawable.new
 obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0,50.0,50.0,0.0,200.0,50.0,0.0,200.0,200.0,0.0])
 obj2 = VMDE::GDrawable.new
-obj2_b = obj2.bind([600.0,600.0,0.0,450.0,450.0,0.0,600.0,475.0,0.0])
+obj2_b = obj2.bind(obj2_arr)
 VMDE::Audio.play_wave(:sine, 440.0)
 
 obj2.set_visible(obj2_b,true)
@@ -32,7 +34,11 @@ loop do
 		obj1.set_visible(obj1_b, false)
 	end
 
+	obj2_arr_t = obj2_arr.map { |v| (i.to_f / 128.0) * v }
+	obj2.update_vertices(obj2_b, obj2_arr_t)
+
 	VMDE.brightness = 0.5 + i / 510.0
+
 	VMDE.matrix2D
 	VMDE.update
 end
