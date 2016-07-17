@@ -70,7 +70,7 @@ class WindogeMake
 		# 获取参数
 		compiling_args = []
 		linking_args = []
-		@argv.each { |a| (/^-[DIO]/ === a ? compiling_args : linking_args) << a }
+		@argv.each { |a| (/^-[gDIO]/ === a ? compiling_args : linking_args) << a }
 		sources = Dir.glob("*.cpp")
 		objects = []
 		# some ugly hacks for Windoge
@@ -85,12 +85,12 @@ class WindogeMake
 			if File.exist?(object_name)
 				next if File.mtime(object_name) > File.mtime(source_name)
 			end
-			command = ["g++", "-c", source_name, "-o", "#{name}.o"]
-			command.concat(%w(-Wall -Wextra))
+			command = %w(g++ -c -Wall -Wextra -std=c++11 -o)
+			command.push(object_name, source_name)
 			command.concat(compiling_args)
 			make command
 		end
-		command = %w(gcc -s -shared -o)
+		command = %w(gcc -shared -o)
 		command.push(dll_name)
 		command.concat(objects)
 		command.concat(linking_args)
