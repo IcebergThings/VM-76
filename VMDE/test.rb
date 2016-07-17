@@ -12,10 +12,12 @@ VMDE.init(880, 540)
 puts "Ruby initializes here"
 
 obj1 = VMDE::GDrawable.new
-obj1_b = obj1.bind([])
+obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0])
 obj2 = VMDE::GDrawable.new
-obj2_b = obj2.bind([])
+obj2_b = obj2.bind([600.0,600.0,0.0,450.0,450.0,0.0,600.0,475.0,0.0])
 VMDE::Audio.play_wave(:sine, 440.0)
+
+obj2.set_visible(obj2_b,true)
 
 i = 0
 loop do
@@ -25,11 +27,9 @@ loop do
 
 	if i == 128
 		obj1.set_visible(obj1_b, true)
-		obj2.set_visible(obj2_b, true)
 	end
 	if i == 255
 		obj1.set_visible(obj1_b, false)
-		obj2.set_visible(obj2_b, false)
 	end
 
 	VMDE.set_brightness(0.5 + i / 510.0)

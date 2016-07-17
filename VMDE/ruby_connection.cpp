@@ -36,6 +36,15 @@ namespace RubyWrapper {
 	static void rb_data_free(void* ptr) {
 		struct ptr_data* data = (struct ptr_data*) ptr;
 		if (data->ptr && data->free) (*(data->free))(data->ptr);
+		RCN* n = (RCN*) data->ptr;
+		if (n) {
+			if (n->gd) {
+				if (n->gd->vertices) {
+					free(n->gd->vertices);
+				}
+				free(n->gd);
+			}
+		}
 		xfree(ptr);
 	}
 
@@ -73,7 +82,7 @@ namespace RubyWrapper {
 		if (b == Qfalse && node->visible != false) {
 			node->visible = false;
 			if (node == render_chain)
-				render_chain = NULL;
+				render_chain = node->next;
 			if (node->prev)
 				node->prev->next = node->next;
 			if (node->next)
@@ -85,17 +94,28 @@ namespace RubyWrapper {
 		return b;
 	}
 
-	VALUE gdrawable_bind_obj(VALUE self, VALUE ary) {
-		VALUE* cary = rb_ary_to_ary(ary);
-		log("%d", cary);
+	size_t load_vertices(VALUE vertex_array, GDrawable::GDrawable* gd) {
+		Check_Type(vertex_array, T_ARRAY);
+		long i;
+		long length = rb_array_len(vertex_array);
+		for (i = 0; i < length; i++) {
+			VALUE k = rb_ary_entry(vertex_array, i);
+			Check_Type(k, T_FLOAT);
+		}
+		size_t size = sizeof(GLfloat) * length;
+		gd->vertices = (GLfloat*) malloc(size);
+		for (i = 0; i < length; i++) {
+			gd->vertices[i] = (float) rb_float_value(rb_ary_entry(vertex_array, i));
+		}
+		gd->size_of_VBO = size;
+	}
 
+	VALUE gdrawable_bind_obj(VALUE self, VALUE ary) {
 		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
 		node->visible = false; node->prev = NULL; node->next = NULL;
 		node->gd = GDrawable::create();
-		node->gd->vertices = (GLfloat*) malloc(sizeof(vertices));
-		memcpy(node->gd->vertices, vertices, sizeof(vertices));
-		node->gd->size_of_VBO = sizeof(vertices);
+		load_vertices(ary, node->gd);
 		GDrawable::update(node->gd);
 
 		struct ptr_data* data;
