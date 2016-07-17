@@ -1,12 +1,17 @@
 //=============================================================================
 // ■ ruby_connection.cpp
 //-----------------------------------------------------------------------------
-//   包装每一个导出到Ruby中的函数，也负责一些Ruby扩展所需的杂务。
+//   包装每一个导出到Ruby中的函数（即RubyWrapper），
+//   还负责一些Ruby扩展所需的杂务和整个初始化系统的调用。
 //=============================================================================
 
 #include "global.hpp"
 
-typedef void (*freefunc_t)(void*);
+GLfloat vertices[] = {
+	0.0f, 0.0f, 0.0f,
+	435.0f, 0.0f, 0.0f,
+	435.0f, 270.0f, 0.0f
+};
 
 namespace RubyWrapper {
 	VALUE load_pic(VALUE self, VALUE path) {
@@ -18,7 +23,7 @@ namespace RubyWrapper {
 	struct ptr_data {
 		void* ptr;
 		long size;
-		freefunc_t free;
+		type_free_function free;
 		VALUE wrap[2];
 	};
 
@@ -86,7 +91,7 @@ namespace RubyWrapper {
 			node->next = NULL;
 		}
 
-		return Qnil;
+		return b;
 	}
 
 	size_t load_vertices(VALUE vertex_array, GDrawable::GDrawable* gd) {
@@ -108,7 +113,6 @@ namespace RubyWrapper {
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self, VALUE ary) {
-
 		RCN* node = (RCN*) malloc(sizeof(RCN));
 		node->n = self;
 		node->visible = false; node->prev = NULL; node->next = NULL;
@@ -163,17 +167,30 @@ namespace RubyWrapper {
 		return Qtrue;
 	}
 
-	VALUE main_set_brightness(VALUE self UNUSED, VALUE b) {
-		Check_Type(b, T_FLOAT);
-		::main_set_brightness(RFLOAT_VALUE(b));
+	VALUE main_set_brightness(VALUE self UNUSED, VALUE value) {
+		Check_Type(value, T_FLOAT);
+		VMDE->state.brightness = rb_float_value(value);
 		return Qnil;
 	}
 
-	VALUE audio_play_triangle(VALUE self UNUSED, VALUE freq) {
-		Check_Type(freq, T_FIXNUM);
-		int f = FIX2INT(freq);
+	VALUE audio_stop(VALUE self UNUSED) {
+		Audio::stop();
+		return Qnil;
+	}
+
+	VALUE audio_play_wave(VALUE self UNUSED, VALUE type, VALUE freq) {
+		Check_Type(type, T_SYMBOL);
+		Check_Type(freq, T_FLOAT);
+		float f = rb_float_value(freq);
 		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
-		Audio::play_triangle(f);
+		ID type_id = SYM2ID(type);
+		if (type_id == rb_intern("triangle")) {
+			Audio::play_triangle(f);
+		} else if (type_id == rb_intern("sine")) {
+			Audio::play_sine(f);
+		} else {
+			rb_raise(rb_eArgError, "invalid wave type");
+		}
 		return Qnil;
 	}
 }
@@ -188,10 +205,11 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
 	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
-	RUBY_MODULE_API(VMDE, set_brightness, main_set_brightness, 1);
+	RUBY_MODULE_API(VMDE, brightness=, main_set_brightness, 1);
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
-	RUBY_MODULE_API(Audio, play_triangle, audio_play_triangle, 1);
+	RUBY_MODULE_API(Audio, stop, audio_stop, 0);
+	RUBY_MODULE_API(Audio, play_wave, audio_play_wave, 2);
 	#undef RUBY_MODULE_API
 }
 
