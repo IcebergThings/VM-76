@@ -10,6 +10,7 @@
 #include <math.h>
 #include <ctime>
 #include <thread>
+#include <list>
 
 #include <ruby.h>
 
@@ -19,9 +20,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <portaudio.h>
+#include <vorbis/vorbisfile.h>
 
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
+	using namespace std;
 	//-------------------------------------------------------------------------
 	// ● 定义类型
 	//-------------------------------------------------------------------------

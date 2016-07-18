@@ -166,6 +166,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename) {
 		FILE* file = fopen(filename, "rb");
+		if (!file) rb_raise(rb_eIOError, "couldn't open file %s", filename);
 		fclose(file);
 	}
 }
