@@ -12,7 +12,8 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	PaStream* wave_stream;
 	struct callback_data data;
-	list<struct active_sound> active_sounds;
+	struct active_sound* active_sounds[16];
+	size_t active_sound_count = 0;
 	// 为了避免反复计算，将正弦值存储在这里。其分布为
 	// [0] = sin 0
 	// [64] = sin ⅛π
@@ -169,16 +170,17 @@ namespace Audio {
 		FILE* file = fopen(filename, "rb");
 		if (!file) rb_raise(rb_eIOError, "couldn't open this file: %s", filename);
 		log("play sound %s", filename);
-		struct active_sound sound = {
-			.stream = NULL,
-			.file = file,
-		};
-		Pa_OpenDefaultStream(
-			&sound.stream, 0, 2, paFloat32, 44100,
-			256, play_sound_callback, &data
-		);
-		active_sounds.emplace_back(sound);
+		struct active_sound* the_sound = new struct active_sound;
+		the_sound->stream = NULL;
+		the_sound->file = file;
+		ensure_no_error(Pa_OpenDefaultStream(
+			&the_sound->stream, 0, 2, paFloat32, 44100,
+			256, play_sound_callback, &the_sound
+		));
+		active_sounds[active_sound_count] = the_sound;
+		active_sound_count++;
 		(void) file; // file垃圾！摔掉！不要！
+		ensure_no_error(Pa_StartStream(the_sound->stream));
 	}
 	//-------------------------------------------------------------------------
 	// ● 播放声音的回调函数
@@ -195,7 +197,9 @@ namespace Audio {
 		float* output = (float*) output_buffer;
 		struct active_sound* sound = (struct active_sound*) user_data;
 		while (frame_count > 0) {
-			*output++ = (float) ((double) rand() / (double) RAND_MAX * 2.0d - 1.0d);
+			float v = (float) ((double) rand() / (double) RAND_MAX * 2.0d - 1.0d);
+			*output++ = v;
+			*output++ = .0f;
 			frame_count--;
 		}
 		return paContinue;

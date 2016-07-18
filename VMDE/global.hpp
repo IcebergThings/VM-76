@@ -10,7 +10,6 @@
 #include <math.h>
 #include <ctime>
 #include <thread>
-#include <list>
 
 #include <ruby.h>
 
@@ -205,7 +204,7 @@
 		};
 		extern PaStream* wave_stream;
 		extern struct callback_data data;
-		extern list<struct active_sound> active_sounds;
+		extern struct active_sound* active_sounds[16];
 		extern float sine_table[256];
 		extern const size_t sine_table_size;
 		void init();
