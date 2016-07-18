@@ -65,44 +65,38 @@ namespace Audio {
 	int play_callback(
 		const void* input_buffer UNUSED,
 		void* output_buffer,
-		unsigned long frames_per_buffer,
+		unsigned long frame_count,
 		const PaStreamCallbackTimeInfo* time_info UNUSED,
 		PaStreamCallbackFlags status_flags UNUSED,
 		void* user_data
 	) {
 		float* output = (float*) output_buffer;
-		float* output_end = output + frames_per_buffer;
 		struct callback_data* data = (struct callback_data*) user_data;
-		while (output < output_end) {
-			switch (data->type) {
-				case 0:
-					*output = .0f;
-					output++;
-					break;
-				case 1:
-					get_next_triangle_value(&data->data.triangle);
-					TWICE {
-						*output = data->data.triangle.value;
-						output++;
-					}
-					break;
-				case 2:
-				default:
-					{
-						get_next_sine_value(&data->data.sine);
-						float value = sine_table[(size_t) (int) data->data.sine.index];
-						if (data->data.sine.minus) value = -value;
-						TWICE {
-							*output = value;
-							output++;
-						}
-						break;
-					}
-				case 3:
-					*((float*) 0) = .0f; // 音频就是爆炸！
-					break;
-			}
+		// Magic. 吔屎啦PortAudio！
+		#define FEED_AUDIO_DATA(value) do { \
+			*output++ = (value); \
+			*output++ = (value); \
+			frame_count--; \
+		} while (false)
+		while (frame_count > 0) switch (data->type) {
+			case 0:
+				FEED_AUDIO_DATA(.0f);
+				break;
+			case 1:
+				get_next_triangle_value(&data->data.triangle);
+				FEED_AUDIO_DATA(data->data.triangle.value);
+				break;
+			case 2:
+			default:
+				get_next_sine_value(&data->data.sine);
+				FEED_AUDIO_DATA(data->data.sine.value);
+				break;
+			case 3:
+				*((float*) 0) = .0f; // 音频就是爆炸！
+				FEED_AUDIO_DATA(.0f);
+				break;
 		}
+		#undef FEED_AUDIO_DATA
 		return paContinue;
 	}
 	//-------------------------------------------------------------------------
@@ -152,15 +146,19 @@ namespace Audio {
 		for (size_t i = 0; i < sine_table_size; i++) sine_table[i] = sin(i * k);
 	}
 	//-------------------------------------------------------------------------
-	// ● 计算正弦函数的下一自变量
+	// ● 计算正弦函数的下一值
 	//-------------------------------------------------------------------------
 	void get_next_sine_value(struct sine_data* data) {
 		data->index += data->index_delta;
 		if (data->index > (float) sine_table_size) {
+			data->index = sine_table_size * 2.0f - data->index;
 			data->index_delta = -data->index_delta;
 		} else if (data->index < 0) {
+			data->index = -data->index;
 			data->index_delta = -data->index_delta;
 			data->minus = !data->minus;
 		}
+		data->value = sine_table[(size_t) (int) data->index];
+		if (data->minus) data->value = -data->value;
 	}
 }
