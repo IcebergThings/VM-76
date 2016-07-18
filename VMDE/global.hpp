@@ -185,6 +185,7 @@
 			float index;
 			float index_delta;
 			bool minus;
+			float value; // for convenience only
 		};
 		struct callback_data {
 			double sample_rate;
