@@ -21,17 +21,30 @@
 #include <portaudio.h>
 
 #ifndef _INCLUDE_GLOBAL_H
-#define _INCLUDE_GLOBAL_H
-
+	#define _INCLUDE_GLOBAL_H
+	//-------------------------------------------------------------------------
+	// ● 定义类型
+	//-------------------------------------------------------------------------
 	typedef VALUE (*type_ruby_function)(ANYARGS);
 	typedef void (*type_free_function)(void*);
+	//-------------------------------------------------------------------------
+	// ● 定义宏魔法
+	//-------------------------------------------------------------------------
+	// UNUSED - 标记无用函数参数
+	//     int random(int n UNUSED) { return 4; }
 	#define UNUSED __attribute__((unused))
+	// ARRAY_SIZE - 获取定义的数组大小
+	//     int a[56]; → ARRAY_SIZE(a) == 56
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
+	// TWICE - 执行两次
+	//     TWICE a++;
+	//     TWICE { a++; b++; }
 	#define TWICE \
 		for (int _my_lovely_index = 0; _my_lovely_index < 2; _my_lovely_index++)
-
-	// PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
-	// Becuase it;s Windoges, I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
+	//-------------------------------------------------------------------------
+	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
+	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
+	//-------------------------------------------------------------------------
 	#ifdef __CYGWIN__
 		#warning This wont work in Cygwin. Try at your own risk.
 	#endif
@@ -41,7 +54,9 @@
 		#define EXPORTED extern "C"
 	#endif
 
-	// GDrawable.cpp
+	//-------------------------------------------------------------------------
+	// ● GDrawable.cpp
+	//-------------------------------------------------------------------------
 	namespace GDrawable {
 		struct GDrawable {
 			GLfloat* vertices;
@@ -55,8 +70,9 @@
 		void update(GDrawable* s);
 		GDrawable* create();
 	}
-
-	// Global
+	//-------------------------------------------------------------------------
+	// ● Global
+	//-------------------------------------------------------------------------
 	extern const char* GAME_NAME;
 
 	struct VMDEState {
@@ -91,8 +107,9 @@
 
 	extern GLuint VBO[15];
 	extern GLuint VAO[15];
-
-	// shaders.cpp
+	//-------------------------------------------------------------------------
+	// ● shaders.cpp
+	//-------------------------------------------------------------------------
 	class Shaders {
 	public:
 		GLuint basic_2D_vsh;
@@ -108,8 +125,9 @@
 	extern const GLchar* temp_fragmentShaderSource;
 
 	extern Shaders* main_shader;
-
-	// ruby_connection.cpp
+	//-------------------------------------------------------------------------
+	// ● ruby_connection.cpp
+	//-------------------------------------------------------------------------
 	namespace RubyWrapper {
 		VALUE load_pic(VALUE self, VALUE path);
 		VALUE init_engine(VALUE self, VALUE w, VALUE h);
@@ -121,24 +139,29 @@
 	}
 	void init_ruby_classes();
 	void init_ruby_modules();
-
-	// init.cpp
+	//-------------------------------------------------------------------------
+	// ● init.cpp
+	//-------------------------------------------------------------------------
 	void init_engine(int w, int h);
 	void setup_viewport();
 	void init_vmde(int w, int h);
-
-	// main.cpp
+	//-------------------------------------------------------------------------
+	// ● main.cpp
+	//-------------------------------------------------------------------------
 	void glfw_error_callback(int error, const char* description);
 	void main_draw_loop();
 	void main_set_brightness(float b);
-
 	void matrix2D();
-
-	// resources.cpp
+	//-------------------------------------------------------------------------
+	// ● resources.cpp
+	//-------------------------------------------------------------------------
 	int load_img(char* p);
-
-	// util.cpp
+	//-------------------------------------------------------------------------
+	// ● util.cpp
+	//-------------------------------------------------------------------------
 	#define DEBUG_ENVIRONMENT "VMDrawEngine"
+	// log - Util::log_internal的方便缩写，可以直接得到当前函数名
+	//     log("%p", log);
 	#define log(...) Util::log_internal(__func__, __VA_ARGS__)
 	namespace Util {
 		extern const float PIf;
@@ -146,8 +169,9 @@
 		#define PId PI
 		void log_internal(const char* function_name, const char* format, ...);
 	}
-
-	// audio.cpp
+	//-------------------------------------------------------------------------
+	// ● audio.cpp
+	//-------------------------------------------------------------------------
 	namespace Audio {
 		extern PaStream *stream;
 		struct triangle_data {
@@ -190,5 +214,4 @@
 		void populate_sine_table();
 		void get_next_sine_value(struct sine_data* data);
 	}
-
 #endif
