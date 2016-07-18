@@ -12,7 +12,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	PaStream* wave_stream;
 	struct callback_data data;
-	struct active_sound* active_sounds[16];
+	struct active_sound* active_sounds[16] = {NULL};
 	size_t active_sound_count = 0;
 	// 为了避免反复计算，将正弦值存储在这里。其分布为
 	// [0] = sin 0
@@ -53,7 +53,7 @@ namespace Audio {
 	// ● 统一处理错误
 	//-------------------------------------------------------------------------
 	void ensure_no_error(PaError err) {
-		if (err == paNoError) return;
+		if (err >= 0) return;
 		Pa_Terminate();
 		rb_raise(
 			rb_eRuntimeError,
@@ -164,9 +164,27 @@ namespace Audio {
 		if (data->minus) data->value = -data->value;
 	}
 	//-------------------------------------------------------------------------
+	// ● 扔掉active_sounds中已经播放完的条目
+	//-------------------------------------------------------------------------
+	void compact_active_sounds_array() {
+		size_t size = ARRAY_SIZE(active_sounds);
+		for (size_t i = 0; i < size; i++) {
+			if (!active_sounds[i]) continue;
+			PaError active = Pa_IsStreamActive(active_sounds[i]->stream);
+			ensure_no_error(active);
+			if (!active) {
+				Pa_CloseStream(active_sounds[i]->stream);
+				fclose(active_sounds[i]->file);
+				delete active_sounds[i];
+				active_sounds[i] = NULL;
+			}
+		}
+	}
+	//-------------------------------------------------------------------------
 	// ● 播放声音
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename) {
+		compact_active_sounds_array();
 		FILE* file = fopen(filename, "rb");
 		if (!file) rb_raise(rb_eIOError, "couldn't open this file: %s", filename);
 		log("play sound %s", filename);
@@ -175,11 +193,10 @@ namespace Audio {
 		the_sound->file = file;
 		ensure_no_error(Pa_OpenDefaultStream(
 			&the_sound->stream, 0, 2, paFloat32, 44100,
-			256, play_sound_callback, &the_sound
+			256, play_sound_callback, &active_sounds[active_sound_count]
 		));
 		active_sounds[active_sound_count] = the_sound;
 		active_sound_count++;
-		(void) file; // file垃圾！摔掉！不要！
 		ensure_no_error(Pa_StartStream(the_sound->stream));
 	}
 	//-------------------------------------------------------------------------
@@ -202,6 +219,6 @@ namespace Audio {
 			*output++ = .0f;
 			frame_count--;
 		}
-		return paContinue;
+		return rand() < RAND_MAX / 16 ? paComplete : paContinue;
 	}
 }
