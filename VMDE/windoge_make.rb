@@ -46,7 +46,8 @@ class WindogeMake
 				-LD:\\glfw-3.2.bin.WIN32\\lib-mingw-w64
 				-LD:\\glew-1.13.0\\lib\\Release\\Win32
 				-lglfw3dll -lglew32s -lopengl32 -lportaudio_x86 -lvorbisfile
-			libstdc艹 is for exceptions and other random stuff. Omit it if not used.
+			All ‘-Idir’ options will be translated to ‘-isystem dir’ and no way back.
+			libstdc艹 is for exceptions and other random stuff; omit it if not used.
 			-Wall, -Wextra and some required arguments are built into this script.
 			‘D:\\bin’ above is where you put all libraries (.lib files) and DLLs.
 		EOF
@@ -71,6 +72,8 @@ class WindogeMake
 		compiling_args = []
 		linking_args = []
 		@argv.each { |a| (/^-[gDIO]/ === a ? compiling_args : linking_args) << a }
+		compiling_args.map! { |a| a[1, 1] == "I" ? ["-isystem", a[2, a.size]] : a }
+		compiling_args.flatten!
 		sources = Dir.glob("*.cpp")
 		objects = []
 		# some ugly hacks for Windoge

@@ -10,8 +10,9 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 全局变量
 	//-------------------------------------------------------------------------
-	PaStream* stream;
+	PaStream* wave_stream;
 	struct callback_data data;
+	list<struct active_sound> active_sounds;
 	// 为了避免反复计算，将正弦值存储在这里。其分布为
 	// [0] = sin 0
 	// [64] = sin ⅛π
@@ -29,7 +30,7 @@ namespace Audio {
 		// 44100Hz
 		data.sample_rate = 44100.0d;
 		ensure_no_error(Pa_OpenDefaultStream(
-			&stream,
+			&wave_stream,
 			// 无声输入 - 立体声输出、32位浮点数
 			0, 2, paFloat32,
 			data.sample_rate,
@@ -37,14 +38,14 @@ namespace Audio {
 			256,
 			play_callback, &data
 		));
-		ensure_no_error(Pa_StartStream(stream));
+		ensure_no_error(Pa_StartStream(wave_stream));
 	}
 	//-------------------------------------------------------------------------
 	// ● 释放
 	//-------------------------------------------------------------------------
 	void wobuzhidaozhegefangfayinggaijiaoshenmemingzi() {
-		ensure_no_error(Pa_StopStream(stream));
-		ensure_no_error(Pa_CloseStream(stream));
+		ensure_no_error(Pa_StopStream(wave_stream));
+		ensure_no_error(Pa_CloseStream(wave_stream));
 		Pa_Terminate();
 	}
 	//-------------------------------------------------------------------------

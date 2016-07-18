@@ -179,7 +179,6 @@
 	// ● audio.cpp
 	//-------------------------------------------------------------------------
 	namespace Audio {
-		extern PaStream *stream;
 		struct triangle_data {
 			float value;
 			float delta;
@@ -200,7 +199,13 @@
 				struct sine_data sine;
 			} data;
 		};
+		struct active_sound {
+			PaStream* stream;
+			FILE* file;
+		};
+		extern PaStream* wave_stream;
 		extern struct callback_data data;
+		extern list<struct active_sound> active_sounds;
 		extern float sine_table[256];
 		extern const size_t sine_table_size;
 		void init();
