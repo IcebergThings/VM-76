@@ -167,7 +167,37 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename) {
 		FILE* file = fopen(filename, "rb");
-		if (!file) rb_raise(rb_eIOError, "couldn't open file %s", filename);
-		fclose(file);
+		if (!file) rb_raise(rb_eIOError, "couldn't open this file: %s", filename);
+		log("play sound %s", filename);
+		struct active_sound sound = {
+			.stream = NULL,
+			.file = file,
+		};
+		Pa_OpenDefaultStream(
+			&sound.stream, 0, 2, paFloat32, 44100,
+			256, play_sound_callback, &data
+		);
+		active_sounds.emplace_back(sound);
+		(void) file; // file垃圾！摔掉！不要！
+	}
+	//-------------------------------------------------------------------------
+	// ● 播放声音的回调函数
+	//   先用白噪音凑个数。又不能用TTS把文件名读出来……
+	//-------------------------------------------------------------------------
+	int play_sound_callback(
+		const void* input_buffer UNUSED,
+		void* output_buffer,
+		unsigned long frame_count,
+		const PaStreamCallbackTimeInfo* time_info UNUSED,
+		PaStreamCallbackFlags status_flags UNUSED,
+		void* user_data
+	) {
+		float* output = (float*) output_buffer;
+		struct active_sound* sound = (struct active_sound*) user_data;
+		while (frame_count > 0) {
+			*output++ = (float) ((double) rand() / (double) RAND_MAX * 2.0d - 1.0d);
+			frame_count--;
+		}
+		return paContinue;
 	}
 }

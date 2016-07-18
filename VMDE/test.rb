@@ -25,7 +25,6 @@ i = 0
 loop do
 	i += 1
 	i = 0 if i > 255
-	p [obj1.get_visible(obj1_b), i]
 
 	if i == 128
 		obj1.set_visible(obj1_b, true)

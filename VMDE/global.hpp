@@ -226,5 +226,13 @@
 		void populate_sine_table();
 		void get_next_sine_value(struct sine_data* data);
 		void play_sound(const char* filename);
+		int play_sound_callback(
+			const void* input_buffer UNUSED,
+			void* output_buffer,
+			unsigned long frame_count,
+			const PaStreamCallbackTimeInfo* time_info UNUSED,
+			PaStreamCallbackFlags status_flags UNUSED,
+			void* user_data
+		);
 	}
 #endif
