@@ -99,7 +99,7 @@ namespace Audio {
 						break;
 					}
 				case 3:
-					*((float*) 0) = .0f; // 音频就是爆炸！
+					EXPLOSION; // 音频就是爆炸！
 					break;
 			}
 		}

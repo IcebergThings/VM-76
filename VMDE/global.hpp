@@ -41,6 +41,10 @@
 	//     TWICE { a++; b++; }
 	#define TWICE \
 		for (int _my_lovely_index = 0; _my_lovely_index < 2; _my_lovely_index++)
+	// EXPLOSION!
+	// 可以安全地在用户级代码中调用并获得SIGSEGV。
+	// 在退出程序时装逼。
+	#define EXPLOSION ((void) (*((float*) 0) = INFINITY))
 	//-------------------------------------------------------------------------
 	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
@@ -53,7 +57,6 @@
 	#else
 		#define EXPORTED extern "C"
 	#endif
-
 	//-------------------------------------------------------------------------
 	// ● GDrawable.cpp
 	//-------------------------------------------------------------------------
