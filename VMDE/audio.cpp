@@ -161,4 +161,11 @@ namespace Audio {
 		data->value = sine_table[(size_t) (int) data->index];
 		if (data->minus) data->value = -data->value;
 	}
+	//-------------------------------------------------------------------------
+	// ● 播放声音
+	//-------------------------------------------------------------------------
+	void play_sound(const char* filename) {
+		FILE* file = fopen(filename, "rb");
+		fclose(file);
+	}
 }

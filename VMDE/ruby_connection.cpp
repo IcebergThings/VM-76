@@ -193,6 +193,13 @@ namespace RubyWrapper {
 		}
 		return Qnil;
 	}
+
+	VALUE audio_play_sound(VALUE self UNUSED, VALUE filename) {
+		Check_Type(filename, T_STRING);
+		char* c_filename = StringValueCStr(filename);
+		Audio::play_sound(c_filename);
+		return Qnil;
+	}
 }
 
 void init_ruby_modules() {
@@ -210,6 +217,7 @@ void init_ruby_modules() {
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, stop, audio_stop, 0);
 	RUBY_MODULE_API(Audio, play_wave, audio_play_wave, 2);
+	RUBY_MODULE_API(Audio, play_sound, audio_play_sound, 1);
 	#undef RUBY_MODULE_API
 }
 

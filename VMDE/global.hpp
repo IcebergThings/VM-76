@@ -217,5 +217,6 @@
 		void play_sine(float freq);
 		void populate_sine_table();
 		void get_next_sine_value(struct sine_data* data);
+		void play_sound(const char* filename);
 	}
 #endif
