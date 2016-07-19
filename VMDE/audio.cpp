@@ -174,7 +174,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename) {
 		compact_active_sounds_array();
-log("play sound %s", filename);
+		log("play sound %s", filename);
 		struct active_sound* sound = new struct active_sound;
 		sound->stream = NULL;
 		// sound->file
@@ -222,6 +222,7 @@ log("play sound %s", filename);
 				Pa_CloseStream(active_sounds[i]->stream);
 				ov_clear(&active_sounds[i]->vf);
 				fclose(active_sounds[i]->file);
+				active_sounds[i]->decode_thread->join();
 				delete active_sounds[i]->decode_thread;
 				delete active_sounds[i];
 				active_sounds[i] = NULL;
@@ -244,7 +245,6 @@ log("play sound %s", filename);
 		while (frame_count > 0) {
 			if (sound->play_head < sound->load_head) {
 				size_t index = sound->play_head % vf_buffer_size;
-//log("%f %f", sound->vf_buffer[0][index], sound->vf_buffer[1][index]);
 				*output++ = sound->vf_buffer[0][index];
 				*output++ = sound->vf_buffer[1][index];
 				sound->play_head++;
