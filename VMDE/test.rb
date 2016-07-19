@@ -19,7 +19,7 @@ obj2 = VMDE::GDrawable.new
 obj2_b = obj2.bind(obj2_arr)
 10.times do
 	VMDE::Audio.play_sound("../Media/soft-ping.ogg")
-	sleep 1
+	sleep 2.2
 end
 
 obj2.set_visible(obj2_b,true)

@@ -174,7 +174,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename) {
 		compact_active_sounds_array();
-		log("play sound %s", filename);
+log("play sound %s", filename);
 		struct active_sound* sound = new struct active_sound;
 		sound->stream = NULL;
 		// sound->file
@@ -205,6 +205,8 @@ namespace Audio {
 		active_sounds[active_sound_count] = sound;
 		active_sound_count++;
 		decode_vorbis(sound);
+		// sound->decode_thread
+		sound->decode_thread = new thread(decode_vorbis_thread, sound);
 		ensure_no_error(Pa_StartStream(sound->stream));
 	}
 	//-------------------------------------------------------------------------
@@ -220,6 +222,7 @@ namespace Audio {
 				Pa_CloseStream(active_sounds[i]->stream);
 				ov_clear(&active_sounds[i]->vf);
 				fclose(active_sounds[i]->file);
+				delete active_sounds[i]->decode_thread;
 				delete active_sounds[i];
 				active_sounds[i] = NULL;
 			}
@@ -241,6 +244,7 @@ namespace Audio {
 		while (frame_count > 0) {
 			if (sound->play_head < sound->load_head) {
 				size_t index = sound->play_head % vf_buffer_size;
+//log("%f %f", sound->vf_buffer[0][index], sound->vf_buffer[1][index]);
 				*output++ = sound->vf_buffer[0][index];
 				*output++ = sound->vf_buffer[1][index];
 				sound->play_head++;
@@ -252,12 +256,18 @@ namespace Audio {
 		return sound->eof ? paComplete : paContinue;
 	}
 	//-------------------------------------------------------------------------
-	// ● 用解码文件来填active_sound结构中的缓冲区
+	// ● 解码文件来填active_sound结构中的缓冲区
 	//-------------------------------------------------------------------------
 	void decode_vorbis(struct active_sound* sound) {
-		float tmp_buffer[2][vf_buffer_size] = {.0f};
 		while (sound->load_head - sound->play_head < vf_buffer_size) {
-			long ret = ov_read_float(&sound->vf, (float***) &tmp_buffer, vf_buffer_size, &sound->bitstream);
+			// After ov_read_float(), tmp_buffer will be changed.
+			float** tmp_buffer;
+			long ret = ov_read_float(
+				&sound->vf,
+				&tmp_buffer,
+				vf_buffer_size,
+				&sound->bitstream
+			);
 			if (ret > 0) {
 				for (long i = 0; i < ret; i++) {
 					size_t j = (sound->load_head + i) % vf_buffer_size;
@@ -279,6 +289,15 @@ namespace Audio {
 			} else if (ret == OV_EINVAL) {
 				rb_raise(rb_eIOError, "bad vorbis data (OV_EINVAL)");
 			}
+			// We must not free(tmp_buffer). It isn't ours.
+		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 解码线程函数
+	//-------------------------------------------------------------------------
+	void decode_vorbis_thread(struct active_sound* sound) {
+		while (!sound->eof) {
+			decode_vorbis(sound);
 		}
 	}
 }

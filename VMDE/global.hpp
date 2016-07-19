@@ -207,6 +207,7 @@
 			size_t load_head;
 			bool eof;
 			int bitstream;
+			thread* decode_thread;
 		};
 		extern const size_t vf_buffer_size;
 		extern PaStream* wave_stream;
@@ -242,5 +243,6 @@
 			void* user_data
 		);
 		void decode_vorbis(struct active_sound* sound);
+		void decode_vorbis_thread(struct active_sound* sound);
 	}
 #endif
