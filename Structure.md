@@ -20,22 +20,34 @@ Structure
          - [ ] ⓜ draw
      - [ ] Ⓒ GResPic: texture resources
          - [ ] ⓜ load_pic
+     - [ ] Ⓜ Audio: audio *drawing* support
+         - [ ] ⓜ stop
+         - [ ] ⓜ play_wave
+             - [ ] triangle
+             - [ ] sine
+             - [ ] white_noise
+         - [ ] ⓜ play_sound: load before playing
+         - [ ] ⓜ play_music: load | play
 
 它是怎么绘图的
 --------------
 
 ```ruby
-thing_I_want_to_draw1 = GRect.new(...)
-thing_I_want_to_draw2 = GRect.new(...)
-thing_I_want_to_draw3 = GRect.new(...)
+draw_me = GDrawable.new
+hide_me = GDrawable.new
+thing_I_want_to_draw3 = GDrawable.new
 # ...
-thing_I_want_to_draw1.add_to_render_list
-thing_I_want_to_draw2.remove_from_render_list
+draw_me.add_to_render_list
+hide_me.remove_from_render_list
 # ...
 def all_the_render_in_the_game
 	# ...
-	thing_I_want_to_draw1.update # This will "upload" the info to VMDE, if you don't use update, VMDE will not update this object but still render it (as what it is before)
+	draw_me.update
+	# This will "upload" the info to VMDE, if you don't use update, VMDE will not update this object but still render it (as what it is before)
 	# ...
-	VMDE.update() # After calling this, VMDE will render all the things in the render list and refresh the screen.
+	VMDE.update
+	# After calling VMDE.update, it will render all the things in the render list and refresh the screen.
 end
 ```
+
+\* 这已经过期了，请参考VMDE/test.rb的用法。被坑了吧
