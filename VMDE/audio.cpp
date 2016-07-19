@@ -178,7 +178,7 @@ namespace Audio {
 		struct active_sound* sound = new struct active_sound;
 		sound->stream = NULL;
 		// sound->file
-		FILE* sound->file = fopen(filename, "rb");
+		sound->file = fopen(filename, "rb");
 		if (!sound->file) {
 			delete sound;
 			rb_raise(rb_eIOError, "can't open this file: %s", filename);
@@ -195,15 +195,16 @@ namespace Audio {
 		// sound->stream
 		ensure_no_error(Pa_OpenDefaultStream(
 			&sound->stream, 0, 2, paFloat32, 44100,
-			256, play_sound_callback, &active_sounds[active_sound_count]
+			256, play_sound_callback, sound
 		));
 		// sound->*_head
 		sound->play_head = 0;
 		sound->load_head = 0;
 		// etc
+		sound->eof = false;
 		active_sounds[active_sound_count] = sound;
 		active_sound_count++;
-		decode_vorbis(&active_sounds[active_sound_count]);
+		decode_vorbis(sound);
 		ensure_no_error(Pa_StartStream(sound->stream));
 	}
 	//-------------------------------------------------------------------------
@@ -239,7 +240,7 @@ namespace Audio {
 		struct active_sound* sound = (struct active_sound*) user_data;
 		while (frame_count > 0) {
 			if (sound->play_head < sound->load_head) {
-				size_t index = play_head % vf_buffer_size;
+				size_t index = sound->play_head % vf_buffer_size;
 				*output++ = sound->vf_buffer[0][index];
 				*output++ = sound->vf_buffer[1][index];
 				sound->play_head++;
@@ -256,9 +257,9 @@ namespace Audio {
 	void decode_vorbis(struct active_sound* sound) {
 		float tmp_buffer[2][vf_buffer_size] = {.0f};
 		while (sound->load_head - sound->play_head < vf_buffer_size) {
-			long ret = ov_read_float(&sound->vf, tmp_buffer, vf_buffer_size, &sound->bitstream);
+			long ret = ov_read_float(&sound->vf, (float***) &tmp_buffer, vf_buffer_size, &sound->bitstream);
 			if (ret > 0) {
-				for (size_t i = 0; i < ret; i++) {
+				for (long i = 0; i < ret; i++) {
 					size_t j = (sound->load_head + i) % vf_buffer_size;
 					sound->vf_buffer[0][j] = tmp_buffer[0][i];
 					sound->vf_buffer[1][j] = tmp_buffer[1][i];
@@ -273,7 +274,7 @@ namespace Audio {
 				}
 				sound->eof = true;
 				break;
-			} else if (ret == OV_EBADLINK){
+			} else if (ret == OV_EBADLINK) {
 				rb_raise(rb_eIOError, "bad vorbis data (OV_EBADLINK)");
 			} else if (ret == OV_EINVAL) {
 				rb_raise(rb_eIOError, "bad vorbis data (OV_EINVAL)");
