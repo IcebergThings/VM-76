@@ -19,9 +19,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <portaudio.h>
+#include <vorbis/vorbisfile.h>
 
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
+	using namespace std;
 	//-------------------------------------------------------------------------
 	// ● 定义类型
 	//-------------------------------------------------------------------------
@@ -176,7 +178,6 @@
 	// ● audio.cpp
 	//-------------------------------------------------------------------------
 	namespace Audio {
-		extern PaStream *stream;
 		struct triangle_data {
 			float value;
 			float delta;
@@ -189,7 +190,7 @@
 		};
 		struct callback_data {
 			double sample_rate;
-			// type = 0……静音；1……三角波；2……正弦波；3……指定音频
+			// type = 0……静音；1……三角波；2……正弦波；3……指定音频；4……白噪音
 			// 为啥不用枚举？因为太麻烦了！
 			int type;
 			union {
@@ -197,7 +198,21 @@
 				struct sine_data sine;
 			} data;
 		};
+		struct active_sound {
+			PaStream* stream;
+			FILE* file;
+			OggVorbis_File vf;
+			float vf_buffer[2][4096];
+			size_t play_head;
+			size_t load_head;
+			bool eof;
+			int bitstream;
+			thread* decode_thread;
+		};
+		extern const size_t vf_buffer_size;
+		extern PaStream* wave_stream;
 		extern struct callback_data data;
+		extern struct active_sound* active_sounds[16];
 		extern float sine_table[256];
 		extern const size_t sine_table_size;
 		void init();
@@ -217,5 +232,17 @@
 		void play_sine(float freq);
 		void populate_sine_table();
 		void get_next_sine_value(struct sine_data* data);
+		void compact_active_sounds_array();
+		void play_sound(const char* filename);
+		int play_sound_callback(
+			const void* input_buffer UNUSED,
+			void* output_buffer,
+			unsigned long frame_count,
+			const PaStreamCallbackTimeInfo* time_info UNUSED,
+			PaStreamCallbackFlags status_flags UNUSED,
+			void* user_data
+		);
+		void decode_vorbis(struct active_sound* sound);
+		void decode_vorbis_thread(struct active_sound* sound);
 	}
 #endif

@@ -17,7 +17,10 @@ obj1 = VMDE::GDrawable.new
 obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0,50.0,50.0,0.0,200.0,50.0,0.0,200.0,200.0,0.0])
 obj2 = VMDE::GDrawable.new
 obj2_b = obj2.bind(obj2_arr)
-VMDE::Audio.play_wave(:sine, 440.0)
+10.times do
+	VMDE::Audio.play_sound("../Media/soft-ping.ogg")
+	sleep 2.2
+end
 
 obj2.set_visible(obj2_b,true)
 
@@ -25,7 +28,6 @@ i = 0
 loop do
 	i += 1
 	i = 0 if i > 255
-	p [obj1.get_visible(obj1_b), i]
 
 	if i == 128
 		obj1.set_visible(obj1_b, true)
