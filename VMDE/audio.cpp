@@ -10,6 +10,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 全局变量
 	//-------------------------------------------------------------------------
+	const size_t vf_buffer_size = 4096;
 	PaStream* wave_stream;
 	struct callback_data data;
 	struct active_sound* active_sounds[16] = {NULL};
@@ -97,6 +98,11 @@ namespace Audio {
 				*((float*) 0) = .0f; // 音频就是爆炸！
 				FEED_AUDIO_DATA(.0f);
 				break;
+			case 4:
+				FEED_AUDIO_DATA((float) (
+					(double) rand() / (double) RAND_MAX * 2.0d - 1.0d
+				));
+				break;
 		}
 		#undef FEED_AUDIO_DATA
 		return paContinue;
@@ -164,6 +170,43 @@ namespace Audio {
 		if (data->minus) data->value = -data->value;
 	}
 	//-------------------------------------------------------------------------
+	// ● 播放声音
+	//-------------------------------------------------------------------------
+	void play_sound(const char* filename) {
+		compact_active_sounds_array();
+		log("play sound %s", filename);
+		struct active_sound* sound = new struct active_sound;
+		sound->stream = NULL;
+		// sound->file
+		FILE* sound->file = fopen(filename, "rb");
+		if (!sound->file) {
+			delete sound;
+			rb_raise(rb_eIOError, "can't open this file: %s", filename);
+		}
+		// sound->vf
+		if (ov_open_callbacks(
+			sound->file, &sound->vf,
+			NULL, 0, OV_CALLBACKS_NOCLOSE
+		) < 0) {
+			delete sound;
+			fclose(sound->file);
+			rb_raise(rb_eRuntimeError, "can't open ogg vorbis file: %s", filename);
+		}
+		// sound->stream
+		ensure_no_error(Pa_OpenDefaultStream(
+			&sound->stream, 0, 2, paFloat32, 44100,
+			256, play_sound_callback, &active_sounds[active_sound_count]
+		));
+		// sound->*_head
+		sound->play_head = 0;
+		sound->load_head = 0;
+		// etc
+		active_sounds[active_sound_count] = sound;
+		active_sound_count++;
+		decode_vorbis(&active_sounds[active_sound_count]);
+		ensure_no_error(Pa_StartStream(sound->stream));
+	}
+	//-------------------------------------------------------------------------
 	// ● 扔掉active_sounds中已经播放完的条目
 	//-------------------------------------------------------------------------
 	void compact_active_sounds_array() {
@@ -174,6 +217,7 @@ namespace Audio {
 			ensure_no_error(active);
 			if (!active) {
 				Pa_CloseStream(active_sounds[i]->stream);
+				ov_clear(&active_sounds[i]->vf);
 				fclose(active_sounds[i]->file);
 				delete active_sounds[i];
 				active_sounds[i] = NULL;
@@ -181,27 +225,7 @@ namespace Audio {
 		}
 	}
 	//-------------------------------------------------------------------------
-	// ● 播放声音
-	//-------------------------------------------------------------------------
-	void play_sound(const char* filename) {
-		compact_active_sounds_array();
-		FILE* file = fopen(filename, "rb");
-		if (!file) rb_raise(rb_eIOError, "couldn't open this file: %s", filename);
-		log("play sound %s", filename);
-		struct active_sound* the_sound = new struct active_sound;
-		the_sound->stream = NULL;
-		the_sound->file = file;
-		ensure_no_error(Pa_OpenDefaultStream(
-			&the_sound->stream, 0, 2, paFloat32, 44100,
-			256, play_sound_callback, &active_sounds[active_sound_count]
-		));
-		active_sounds[active_sound_count] = the_sound;
-		active_sound_count++;
-		ensure_no_error(Pa_StartStream(the_sound->stream));
-	}
-	//-------------------------------------------------------------------------
 	// ● 播放声音的回调函数
-	//   先用白噪音凑个数。又不能用TTS把文件名读出来……
 	//-------------------------------------------------------------------------
 	int play_sound_callback(
 		const void* input_buffer UNUSED,
@@ -214,11 +238,46 @@ namespace Audio {
 		float* output = (float*) output_buffer;
 		struct active_sound* sound = (struct active_sound*) user_data;
 		while (frame_count > 0) {
-			float v = (float) ((double) rand() / (double) RAND_MAX * 2.0d - 1.0d);
-			*output++ = v;
-			*output++ = .0f;
+			if (sound->play_head < sound->load_head) {
+				size_t index = play_head % vf_buffer_size;
+				*output++ = sound->vf_buffer[0][index];
+				*output++ = sound->vf_buffer[1][index];
+				sound->play_head++;
+			} else {
+				TWICE *output++ = .0f;
+			}
 			frame_count--;
 		}
-		return rand() < RAND_MAX / 16 ? paComplete : paContinue;
+		return sound->eof ? paComplete : paContinue;
+	}
+	//-------------------------------------------------------------------------
+	// ● 用解码文件来填active_sound结构中的缓冲区
+	//-------------------------------------------------------------------------
+	void decode_vorbis(struct active_sound* sound) {
+		float tmp_buffer[2][vf_buffer_size] = {.0f};
+		while (sound->load_head - sound->play_head < vf_buffer_size) {
+			long ret = ov_read_float(&sound->vf, tmp_buffer, vf_buffer_size, &sound->bitstream);
+			if (ret > 0) {
+				for (size_t i = 0; i < ret; i++) {
+					size_t j = (sound->load_head + i) % vf_buffer_size;
+					sound->vf_buffer[0][j] = tmp_buffer[0][i];
+					sound->vf_buffer[1][j] = tmp_buffer[1][i];
+				}
+				sound->load_head += ret;
+			} else if (ret == 0) {
+				while (sound->load_head - sound->play_head < vf_buffer_size) {
+					size_t j = sound->load_head % vf_buffer_size;
+					sound->vf_buffer[0][j] = .0f;
+					sound->vf_buffer[1][j] = .0f;
+					sound->load_head++;
+				}
+				sound->eof = true;
+				break;
+			} else if (ret == OV_EBADLINK){
+				rb_raise(rb_eIOError, "bad vorbis data (OV_EBADLINK)");
+			} else if (ret == OV_EINVAL) {
+				rb_raise(rb_eIOError, "bad vorbis data (OV_EINVAL)");
+			}
+		}
 	}
 }

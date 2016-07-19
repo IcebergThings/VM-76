@@ -190,7 +190,7 @@
 		};
 		struct callback_data {
 			double sample_rate;
-			// type = 0……静音；1……三角波；2……正弦波；3……指定音频
+			// type = 0……静音；1……三角波；2……正弦波；3……指定音频；4……白噪音
 			// 为啥不用枚举？因为太麻烦了！
 			int type;
 			union {
@@ -201,7 +201,14 @@
 		struct active_sound {
 			PaStream* stream;
 			FILE* file;
+			OggVorbis_File vf;
+			float vf_buffer[2][4096];
+			size_t play_head;
+			size_t load_head;
+			bool eof;
+			int bitstream;
 		};
+		extern const size_t vf_buffer_size;
 		extern PaStream* wave_stream;
 		extern struct callback_data data;
 		extern struct active_sound* active_sounds[16];
@@ -224,6 +231,7 @@
 		void play_sine(float freq);
 		void populate_sine_table();
 		void get_next_sine_value(struct sine_data* data);
+		void compact_active_sounds_array();
 		void play_sound(const char* filename);
 		int play_sound_callback(
 			const void* input_buffer UNUSED,
@@ -233,5 +241,6 @@
 			PaStreamCallbackFlags status_flags UNUSED,
 			void* user_data
 		);
+		void decode_vorbis(struct active_sound* sound);
 	}
 #endif
