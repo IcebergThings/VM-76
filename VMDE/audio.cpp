@@ -63,7 +63,7 @@ namespace Audio {
 		);
 	}
 	//-------------------------------------------------------------------------
-	// ● 内部使用的回调函数
+	// ● 播放波形时使用的回调函数
 	//-------------------------------------------------------------------------
 	int play_callback(
 		const void* input_buffer UNUSED,
@@ -259,13 +259,17 @@ namespace Audio {
 	// ● 解码文件来填active_sound结构中的缓冲区
 	//-------------------------------------------------------------------------
 	void decode_vorbis(struct active_sound* sound) {
-		while (sound->load_head - sound->play_head < vf_buffer_size) {
+		#ifdef DEBUG
+			FILE* f = fopen("rubbish.raw", "wb");
+		#endif
+		size_t t;
+		while ((t = sound->load_head - sound->play_head) < vf_buffer_size) {
 			// After ov_read_float(), tmp_buffer will be changed.
 			float** tmp_buffer;
 			long ret = ov_read_float(
 				&sound->vf,
 				&tmp_buffer,
-				vf_buffer_size,
+				vf_buffer_size - t,
 				&sound->bitstream
 			);
 			if (ret > 0) {
@@ -273,6 +277,10 @@ namespace Audio {
 					size_t j = (sound->load_head + i) % vf_buffer_size;
 					sound->vf_buffer[0][j] = tmp_buffer[0][i];
 					sound->vf_buffer[1][j] = tmp_buffer[1][i];
+					#ifdef DEBUG
+						fprintf(f, "%ld %zu\r\n", i, j);
+						fwrite(&tmp_buffer[0][i], sizeof(float), 1, f);
+					#endif
 				}
 				sound->load_head += ret;
 			} else if (ret == 0) {
@@ -291,13 +299,15 @@ namespace Audio {
 			}
 			// We must not free(tmp_buffer). It isn't ours.
 		}
+		#ifdef DEBUG
+			fclose(f);
+			exit(10);
+		#endif
 	}
 	//-------------------------------------------------------------------------
 	// ● 解码线程函数
 	//-------------------------------------------------------------------------
 	void decode_vorbis_thread(struct active_sound* sound) {
-		while (!sound->eof) {
-			decode_vorbis(sound);
-		}
+		while (!sound->eof) decode_vorbis(sound);
 	}
 }
