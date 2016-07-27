@@ -190,7 +190,7 @@
 		};
 		struct callback_data {
 			double sample_rate;
-			// type = 0……静音；1……三角波；2……正弦波；3……指定音频；4……白噪音
+			// type = 0……静音；1……三角波；2……正弦波；3……白噪音
 			// 为啥不用枚举？因为太麻烦了！
 			int type;
 			union {
