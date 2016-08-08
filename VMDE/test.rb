@@ -17,9 +17,13 @@ obj1 = VMDE::GDrawable.new
 obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0,50.0,50.0,0.0,200.0,50.0,0.0,200.0,200.0,0.0])
 obj2 = VMDE::GDrawable.new
 obj2_b = obj2.bind(obj2_arr)
-10.times do
-	VMDE::Audio.play_sound("../Media/soft-ping.ogg")
-	sleep 2.2
+freq = 261.626
+freq_factor = 2.0 ** (1.0 / 12)
+10.times do |i|
+	puts "##{i} - #{freq}Hz"
+	VMDE::Audio.play_wave(:triangle, freq)
+	freq *= freq_factor
+	sleep 1
 end
 
 obj2.set_visible(obj2_b,true)

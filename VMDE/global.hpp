@@ -175,7 +175,7 @@
 		void log_internal(const char* function_name, const char* format, ...);
 	}
 	//-------------------------------------------------------------------------
-	// ● audio.cpp
+	// ● audio.cpp and audio_waves.cpp
 	//-------------------------------------------------------------------------
 	namespace Audio {
 		struct triangle_data {
@@ -216,6 +216,7 @@
 		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
 		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
 		void init();
+		void init_waves();
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
 		int play_callback(
@@ -227,6 +228,7 @@
 			void* user_data
 		);
 		void stop();
+		void stop_waves();
 		void play_triangle(float freq);
 		void get_next_triangle_value(struct triangle_data* data);
 		void play_sine(float freq);
