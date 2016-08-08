@@ -209,11 +209,11 @@
 			int bitstream;
 			thread* decode_thread;
 		};
-		extern const size_t vf_buffer_size;
+		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
 		extern PaStream* wave_stream;
 		extern struct callback_data data;
 		extern struct active_sound* active_sounds[16];
-		#define AUDIO_SINE_TABLE_SIZE 256
+		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
 		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
 		void init();
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();

@@ -10,7 +10,6 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 全局变量
 	//-------------------------------------------------------------------------
-	const size_t vf_buffer_size = 4096;
 	PaStream* wave_stream;
 	struct callback_data data;
 	struct active_sound* active_sounds[16] = {NULL};
@@ -94,6 +93,8 @@ namespace Audio {
 				FEED_AUDIO_DATA(data->data.sine.value);
 				break;
 			case 3:
+				// Channels are different channels.
+				// Values are different values.
 				FEED_AUDIO_DATA((float) (
 					(double) rand() / (double) RAND_MAX * 2.0d - 1.0d
 				));
@@ -259,7 +260,7 @@ namespace Audio {
 		struct active_sound* sound = (struct active_sound*) user_data;
 		while (frame_count > 0) {
 			if (sound->play_head < sound->load_head) {
-				size_t index = sound->play_head % vf_buffer_size;
+				size_t index = sound->play_head % AUDIO_VF_BUFFER_SIZE;
 				*output++ = sound->vf_buffer[0][index];
 				*output++ = sound->vf_buffer[1][index];
 				sound->play_head++;
@@ -275,25 +276,25 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void decode_vorbis(struct active_sound* sound) {
 		size_t t;
-		while ((t = sound->load_head - sound->play_head) < vf_buffer_size) {
+		while ((t = sound->load_head - sound->play_head) < AUDIO_VF_BUFFER_SIZE) {
 			// After ov_read_float(), tmp_buffer will be changed.
 			float** tmp_buffer;
 			long ret = ov_read_float(
 				&sound->vf,
 				&tmp_buffer,
-				vf_buffer_size - t,
+				AUDIO_VF_BUFFER_SIZE - t,
 				&sound->bitstream
 			);
 			if (ret > 0) {
 				for (long i = 0; i < ret; i++) {
-					size_t j = (sound->load_head + i) % vf_buffer_size;
+					size_t j = (sound->load_head + i) % AUDIO_VF_BUFFER_SIZE;
 					sound->vf_buffer[0][j] = tmp_buffer[0][i];
 					sound->vf_buffer[1][j] = tmp_buffer[1][i];
 				}
 				sound->load_head += ret;
 			} else if (ret == 0) {
-				while (sound->load_head - sound->play_head < vf_buffer_size) {
-					size_t j = sound->load_head % vf_buffer_size;
+				while (sound->load_head - sound->play_head < AUDIO_VF_BUFFER_SIZE) {
+					size_t j = sound->load_head % AUDIO_VF_BUFFER_SIZE;
 					sound->vf_buffer[0][j] = .0f;
 					sound->vf_buffer[1][j] = .0f;
 					sound->load_head++;
