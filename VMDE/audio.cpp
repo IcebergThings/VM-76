@@ -14,14 +14,13 @@ namespace Audio {
 	PaStream* wave_stream;
 	struct callback_data data;
 	struct active_sound* active_sounds[16] = {NULL};
-	size_t active_sound_count = 0;
-	// 为了避免反复计算，将正弦值存储在这里。其分布为
+	// 为了避免反复计算，将正弦值存储在这里。
+	// 当AUDIO_SINE_TABLE_SIZE为256时，其分布为
 	// [0] = sin 0
 	// [64] = sin ⅛π
 	// [128] = sin ¼π
 	// [192] = sin ⅜π
-	float sine_table[256];
-	const size_t sine_table_size = ARRAY_SIZE(sine_table);
+	float sine_table[AUDIO_SINE_TABLE_SIZE];
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
@@ -81,7 +80,7 @@ namespace Audio {
 			*output++ = (value); \
 			frame_count--; \
 		} while (false)
-		while (frame_count > 0) switch (data->type) {
+		while (frame_count) switch (data->type) {
 			case 0:
 				FEED_AUDIO_DATA(.0f);
 				break;
@@ -95,10 +94,6 @@ namespace Audio {
 				FEED_AUDIO_DATA(data->data.sine.value);
 				break;
 			case 3:
-				*((float*) 0) = .0f; // 音频就是爆炸！
-				FEED_AUDIO_DATA(.0f);
-				break;
-			case 4:
 				FEED_AUDIO_DATA((float) (
 					(double) rand() / (double) RAND_MAX * 2.0d - 1.0d
 				));
@@ -112,6 +107,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void stop() {
 		data.type = 0;
+		compact_active_sounds_array();
 	}
 	//-------------------------------------------------------------------------
 	// ● 播放三角波
@@ -142,7 +138,7 @@ namespace Audio {
 	void play_sine(float freq) {
 		data.data.sine.index = .0f;
 		data.data.sine.index_delta =
-			sine_table_size / ((float) data.sample_rate / 4 / freq);
+			AUDIO_SINE_TABLE_SIZE / ((float) data.sample_rate / 4 / freq);
 		data.data.sine.minus = false;
 		data.type = 2;
 	}
@@ -150,16 +146,16 @@ namespace Audio {
 	// ● 向正弦表中填充数据
 	//-------------------------------------------------------------------------
 	void populate_sine_table() {
-		float k = 0.5f / (float) sine_table_size * Util::PIf;
-		for (size_t i = 0; i < sine_table_size; i++) sine_table[i] = sin(i * k);
+		float k = 0.5f / (float) AUDIO_SINE_TABLE_SIZE * Util::PIf;
+		for (size_t i = 0; i < AUDIO_SINE_TABLE_SIZE; i++) sine_table[i] = sin(i * k);
 	}
 	//-------------------------------------------------------------------------
 	// ● 计算正弦函数的下一值
 	//-------------------------------------------------------------------------
 	void get_next_sine_value(struct sine_data* data) {
 		data->index += data->index_delta;
-		if (data->index > (float) sine_table_size) {
-			data->index = sine_table_size * 2.0f - data->index;
+		if (data->index > (float) AUDIO_SINE_TABLE_SIZE) {
+			data->index = AUDIO_SINE_TABLE_SIZE * 2.0f - data->index;
 			data->index_delta = -data->index_delta;
 		} else if (data->index < 0) {
 			data->index = -data->index;
@@ -177,6 +173,26 @@ namespace Audio {
 		log("play sound %s", filename);
 		struct active_sound* sound = new struct active_sound;
 		sound->stream = NULL;
+		// Find a blank first.
+		size_t first_free_slot = (size_t) -1;
+		{
+			bool found_a_blank = false;
+			for (size_t i = 0; i < ARRAY_SIZE(active_sounds); i++) {
+				if (!active_sounds[i]) {
+					found_a_blank = true;
+					first_free_slot = i;
+					break;
+				}
+			}
+			if (!found_a_blank) {
+				log(
+					"unable to play sound %s"
+					" because of my stingy programmer that only gave me %zu slots",
+					filename, ARRAY_SIZE(active_sounds)
+				);
+				return;
+			}
+		}
 		// sound->file
 		sound->file = fopen(filename, "rb");
 		if (!sound->file) {
@@ -202,8 +218,8 @@ namespace Audio {
 		sound->load_head = 0;
 		// etc
 		sound->eof = false;
-		active_sounds[active_sound_count] = sound;
-		active_sound_count++;
+		// Fill in the blanks with the words you hear.
+		active_sounds[first_free_slot] = sound;
 		decode_vorbis(sound);
 		// sound->decode_thread
 		sound->decode_thread = new thread(decode_vorbis_thread, sound);
@@ -213,8 +229,7 @@ namespace Audio {
 	// ● 扔掉active_sounds中已经播放完的条目
 	//-------------------------------------------------------------------------
 	void compact_active_sounds_array() {
-		size_t size = ARRAY_SIZE(active_sounds);
-		for (size_t i = 0; i < size; i++) {
+		for (size_t i = 0; i < ARRAY_SIZE(active_sounds); i++) {
 			if (!active_sounds[i]) continue;
 			PaError active = Pa_IsStreamActive(active_sounds[i]->stream);
 			ensure_no_error(active);

@@ -213,8 +213,8 @@
 		extern PaStream* wave_stream;
 		extern struct callback_data data;
 		extern struct active_sound* active_sounds[16];
-		extern float sine_table[256];
-		extern const size_t sine_table_size;
+		#define AUDIO_SINE_TABLE_SIZE 256
+		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
 		void init();
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
