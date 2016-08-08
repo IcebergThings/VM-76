@@ -155,7 +155,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void get_next_sine_value(struct sine_data* data) {
 		data->index += data->index_delta;
-		if (data->index > (float) AUDIO_SINE_TABLE_SIZE) {
+		if (data->index >= (float) AUDIO_SINE_TABLE_SIZE) {
 			data->index = AUDIO_SINE_TABLE_SIZE * 2.0f - data->index;
 			data->index_delta = -data->index_delta;
 		} else if (data->index < 0) {
