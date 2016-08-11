@@ -133,15 +133,6 @@
 	//-------------------------------------------------------------------------
 	// ● ruby_connection.cpp
 	//-------------------------------------------------------------------------
-	namespace RubyWrapper {
-		VALUE load_pic(VALUE self, VALUE path);
-		VALUE init_engine(VALUE self, VALUE w, VALUE h);
-		VALUE main_draw_loop();
-		VALUE main_get_frame_count();
-		VALUE main_get_fps();
-		VALUE main_matrix2D();
-		VALUE main_set_brightness(VALUE self, VALUE b);
-	}
 	void init_ruby_classes();
 	void init_ruby_modules();
 	//-------------------------------------------------------------------------
