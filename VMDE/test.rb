@@ -25,8 +25,10 @@ freq_factor = 2.0 ** (1.0 / 12)
 	puts "##{i} - #{freq}Hz"
 	VMDE::Audio.play_wave(:triangle, freq)
 	freq *= freq_factor
-	sleep 1
+	sleep 0.25
 end
+VMDE::Audio.stop
+VMDE::Audio.play_loop("../Media/loop-test.ogg")
 
 obj2.set_visible(obj2_b,true)
 

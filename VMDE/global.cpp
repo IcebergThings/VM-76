@@ -6,8 +6,6 @@
 
 #include "global.hpp"
 
-const char* GAME_NAME = "VM / 76";
-
 GLFWwindow* window;
 VALUE ruby_VMDE;
 VALUE ruby_GResPic;
