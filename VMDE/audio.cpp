@@ -11,7 +11,7 @@ namespace Audio {
 	// ● 全局变量
 	//-------------------------------------------------------------------------
 	// 活动（正在播放中）的声音列表
-	struct active_sound* active_sounds[16] = {NULL};
+	struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE] = {NULL};
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 播放声音
 	//-------------------------------------------------------------------------
-	void play_sound(const char* filename) {
+	void play_sound(const char* filename, bool loop) {
 		compact_active_sounds_array();
 		log("play sound %s", filename);
 		struct active_sound* sound = new struct active_sound;
@@ -59,7 +59,7 @@ namespace Audio {
 		size_t first_free_slot = (size_t) -1;
 		{
 			bool found_a_blank = false;
-			for (size_t i = 0; i < ARRAY_SIZE(active_sounds); i++) {
+			for (size_t i = 0; i < AUDIO_ACTIVE_SOUND_SIZE; i++) {
 				if (!active_sounds[i]) {
 					found_a_blank = true;
 					first_free_slot = i;
@@ -70,7 +70,7 @@ namespace Audio {
 				log(
 					"unable to play sound %s"
 					" because of my stingy programmer that only gave me %zu slots",
-					filename, ARRAY_SIZE(active_sounds)
+					filename, AUDIO_ACTIVE_SOUND_SIZE
 				);
 				return;
 			}
@@ -100,6 +100,7 @@ namespace Audio {
 		sound->load_head = 0;
 		// etc
 		sound->eof = false;
+		sound->loop = loop;
 		// Fill in the blanks with the words you hear.
 		active_sounds[first_free_slot] = sound;
 		decode_vorbis(sound);
@@ -111,7 +112,7 @@ namespace Audio {
 	// ● 扔掉active_sounds中已经播放完的条目
 	//-------------------------------------------------------------------------
 	void compact_active_sounds_array() {
-		for (size_t i = 0; i < ARRAY_SIZE(active_sounds); i++) {
+		for (size_t i = 0; i < AUDIO_ACTIVE_SOUND_SIZE; i++) {
 			if (!active_sounds[i]) continue;
 			PaError active = Pa_IsStreamActive(active_sounds[i]->stream);
 			ensure_no_error(active);

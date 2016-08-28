@@ -202,17 +202,19 @@
 			PaStream* stream;
 			FILE* file;
 			OggVorbis_File vf;
-			float vf_buffer[2][4096];
+			#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
+			float vf_buffer[2][AUDIO_VF_BUFFER_SIZE];
 			size_t play_head;
 			size_t load_head;
 			bool eof;
+			bool loop;
 			int bitstream;
 			thread* decode_thread;
 		};
-		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
 		extern PaStream* wave_stream;
 		extern struct wave_callback_data wave_data;
-		extern struct active_sound* active_sounds[16];
+		#define AUDIO_ACTIVE_SOUND_SIZE ((size_t) 16)
+		extern struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE];
 		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
 		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
 		void init();
