@@ -11,7 +11,7 @@ namespace Audio {
 	// ● 全局变量
 	//-------------------------------------------------------------------------
 	// 活动（正在播放中）的声音列表
-	struct active_sound* active_sounds[16] = {NULL};
+	struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE] = {NULL};
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 播放声音
 	//-------------------------------------------------------------------------
-	void play_sound(const char* filename) {
+	void play_sound(const char* filename, bool loop) {
 		compact_active_sounds_array();
 		log("play sound %s", filename);
 		struct active_sound* sound = new struct active_sound;
@@ -59,7 +59,7 @@ namespace Audio {
 		size_t first_free_slot = (size_t) -1;
 		{
 			bool found_a_blank = false;
-			for (size_t i = 0; i < ARRAY_SIZE(active_sounds); i++) {
+			for (size_t i = 0; i < AUDIO_ACTIVE_SOUND_SIZE; i++) {
 				if (!active_sounds[i]) {
 					found_a_blank = true;
 					first_free_slot = i;
@@ -70,7 +70,7 @@ namespace Audio {
 				log(
 					"unable to play sound %s"
 					" because of my stingy programmer that only gave me %zu slots",
-					filename, ARRAY_SIZE(active_sounds)
+					filename, AUDIO_ACTIVE_SOUND_SIZE
 				);
 				return;
 			}
@@ -90,6 +90,10 @@ namespace Audio {
 			fclose(sound->file);
 			rb_raise(rb_eRuntimeError, "can't open ogg vorbis file: %s", filename);
 		}
+		if (!sound->vf.seekable && loop) {
+			log("unseekable file requested to be looped: %s", filename);
+			log("Isn't that plain weird?");
+		}
 		// sound->stream
 		ensure_no_error(Pa_OpenDefaultStream(
 			&sound->stream, 0, 2, paFloat32, 44100,
@@ -100,6 +104,7 @@ namespace Audio {
 		sound->load_head = 0;
 		// etc
 		sound->eof = false;
+		sound->loop = loop;
 		// Fill in the blanks with the words you hear.
 		active_sounds[first_free_slot] = sound;
 		decode_vorbis(sound);
@@ -111,7 +116,7 @@ namespace Audio {
 	// ● 扔掉active_sounds中已经播放完的条目
 	//-------------------------------------------------------------------------
 	void compact_active_sounds_array() {
-		for (size_t i = 0; i < ARRAY_SIZE(active_sounds); i++) {
+		for (size_t i = 0; i < AUDIO_ACTIVE_SOUND_SIZE; i++) {
 			if (!active_sounds[i]) continue;
 			PaError active = Pa_IsStreamActive(active_sounds[i]->stream);
 			ensure_no_error(active);
@@ -167,6 +172,7 @@ namespace Audio {
 				&sound->bitstream
 			);
 			if (ret > 0) {
+				// On reading successful:
 				for (long i = 0; i < ret; i++) {
 					size_t j = (sound->load_head + i) % AUDIO_VF_BUFFER_SIZE;
 					sound->vf_buffer[0][j] = tmp_buffer[0][i];
@@ -174,18 +180,34 @@ namespace Audio {
 				}
 				sound->load_head += ret;
 			} else if (ret == 0) {
-				while (sound->load_head - sound->play_head < AUDIO_VF_BUFFER_SIZE) {
-					size_t j = sound->load_head % AUDIO_VF_BUFFER_SIZE;
-					sound->vf_buffer[0][j] = .0f;
-					sound->vf_buffer[1][j] = .0f;
-					sound->load_head++;
+				// On reached End Of File:
+				if (sound->loop) {
+					int ret = ov_pcm_seek(&sound->vf, 0);
+					#define THE_SOUND "A sound stream played by play_loop "
+					if (ret == OV_ENOSEEK) {
+						log(THE_SOUND "is not seekable. (OV_ENOSEEK)");
+					} else if (ret == OV_EREAD) {
+						rb_raise(rb_eIOError, THE_SOUND "is not readable. (OV_EREAD)");
+					} else if (ret == OV_EBADLINK) {
+						log(THE_SOUND "may be corrupted. (OV_EBADLINK)");
+					} else if (ret == OV_EFAULT) {
+						rb_raise(rb_eRuntimeError, "You encountered a bug!");
+					}
+					// After this, we can go on ov_read'ing in the next loop.
+					#undef THE_SOUND
+				} else {
+					while (sound->load_head - sound->play_head < AUDIO_VF_BUFFER_SIZE) {
+						size_t j = sound->load_head % AUDIO_VF_BUFFER_SIZE;
+						sound->vf_buffer[0][j] = .0f;
+						sound->vf_buffer[1][j] = .0f;
+						sound->load_head++;
+					}
+					sound->eof = true;
 				}
-				sound->eof = true;
-				break;
 			} else if (ret == OV_EBADLINK) {
-				rb_raise(rb_eIOError, "bad vorbis data (OV_EBADLINK)");
+				rb_raise(rb_eRuntimeError, "bad vorbis data (OV_EBADLINK)");
 			} else if (ret == OV_EINVAL) {
-				rb_raise(rb_eIOError, "bad vorbis data (OV_EINVAL)");
+				rb_raise(rb_eRuntimeError, "bad vorbis data (OV_EINVAL)");
 			}
 			// We must not free(tmp_buffer). It isn't ours.
 		}
