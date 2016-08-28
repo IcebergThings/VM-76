@@ -168,6 +168,7 @@ namespace Audio {
 				&sound->bitstream
 			);
 			if (ret > 0) {
+				// On reading successful:
 				for (long i = 0; i < ret; i++) {
 					size_t j = (sound->load_head + i) % AUDIO_VF_BUFFER_SIZE;
 					sound->vf_buffer[0][j] = tmp_buffer[0][i];
@@ -175,18 +176,34 @@ namespace Audio {
 				}
 				sound->load_head += ret;
 			} else if (ret == 0) {
-				while (sound->load_head - sound->play_head < AUDIO_VF_BUFFER_SIZE) {
-					size_t j = sound->load_head % AUDIO_VF_BUFFER_SIZE;
-					sound->vf_buffer[0][j] = .0f;
-					sound->vf_buffer[1][j] = .0f;
-					sound->load_head++;
+				// On reached End Of File:
+				if (sound->loop) {
+					int ret = ov_pcm_seek(&sound->vf, 0);
+					#define THE_SOUND "A sound stream played by play_loop "
+					if (ret == OV_ENOSEEK) {
+						log(THE_SOUND "is not seekable. (OV_ENOSEEK)");
+					} else if (ret == OV_EREAD) {
+						rb_raise(rb_eIOError, THE_SOUND "is not readable. (OV_EREAD)");
+					} else if (ret == OV_EBADLINK) {
+						log(THE_SOUND "may be corrupted. (OV_EBADLINK)");
+					} else if (ret == OV_EFAULT) {
+						rb_raise(rb_eRuntimeError, "You encountered a bug!");
+					}
+					// After this, we can go on ov_read'ing in the next loop.
+					#undef THE_SOUND
+				} else {
+					while (sound->load_head - sound->play_head < AUDIO_VF_BUFFER_SIZE) {
+						size_t j = sound->load_head % AUDIO_VF_BUFFER_SIZE;
+						sound->vf_buffer[0][j] = .0f;
+						sound->vf_buffer[1][j] = .0f;
+						sound->load_head++;
+					}
+					sound->eof = true;
 				}
-				sound->eof = true;
-				break;
 			} else if (ret == OV_EBADLINK) {
-				rb_raise(rb_eIOError, "bad vorbis data (OV_EBADLINK)");
+				rb_raise(rb_eRuntimeError, "bad vorbis data (OV_EBADLINK)");
 			} else if (ret == OV_EINVAL) {
-				rb_raise(rb_eIOError, "bad vorbis data (OV_EINVAL)");
+				rb_raise(rb_eRuntimeError, "bad vorbis data (OV_EINVAL)");
 			}
 			// We must not free(tmp_buffer). It isn't ours.
 		}

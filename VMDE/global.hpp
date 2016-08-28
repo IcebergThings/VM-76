@@ -237,7 +237,7 @@
 		void populate_sine_table();
 		void get_next_sine_value(struct sine_data* data);
 		void compact_active_sounds_array();
-		void play_sound(const char* filename);
+		void play_sound(const char* filename, bool loop);
 		int play_sound_callback(
 			const void* input_buffer UNUSED,
 			void* output_buffer,
