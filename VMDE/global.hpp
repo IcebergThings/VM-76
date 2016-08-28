@@ -78,7 +78,7 @@
 	//-------------------------------------------------------------------------
 	// ● Global
 	//-------------------------------------------------------------------------
-	extern const char* GAME_NAME;
+	#define GAME_NAME "VM / 76"
 
 	struct VMDEState {
 		bool frozen;
@@ -93,6 +93,7 @@
 		int fps;
 	};
 
+	#define RCN struct RenderChainNode
 	struct RenderChainNode {
 		RenderChainNode* prev;
 		VALUE n;
@@ -100,8 +101,6 @@
 		bool visible;
 		RenderChainNode* next;
 	};
-
-	#define RCN struct RenderChainNode
 
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
