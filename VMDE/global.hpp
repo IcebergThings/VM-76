@@ -188,7 +188,7 @@
 			bool minus;
 			float value; // for convenience only
 		};
-		struct callback_data {
+		struct wave_callback_data {
 			double sample_rate;
 			// type = 0……静音；1……三角波；2……正弦波；3……指定音频；4……白噪音
 			// 为啥不用枚举？因为太麻烦了！
@@ -211,7 +211,7 @@
 		};
 		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
 		extern PaStream* wave_stream;
-		extern struct callback_data data;
+		extern struct wave_callback_data wave_data;
 		extern struct active_sound* active_sounds[16];
 		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
 		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
@@ -219,7 +219,7 @@
 		void init_waves();
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
-		int play_callback(
+		int play_wave_callback(
 			const void* input_buffer UNUSED,
 			void* output_buffer,
 			unsigned long frames_per_buffer,

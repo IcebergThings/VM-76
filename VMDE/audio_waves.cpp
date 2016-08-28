@@ -12,7 +12,7 @@ namespace Audio {
 	//   一些宏常量被定义在global.hpp中。
 	//-------------------------------------------------------------------------
 	PaStream* wave_stream;
-	struct callback_data data;
+	struct wave_callback_data wave_data;
 	// 为了避免反复计算，将正弦值存储在这里。
 	// 当AUDIO_SINE_TABLE_SIZE为256时，其分布为
 	// [0] = sin 0
@@ -25,23 +25,23 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	void init_waves() {
 		populate_sine_table();
-		data.type = 0;
+		wave_data.type = 0;
 		// 44100Hz
-		data.sample_rate = 44100.0d;
+		wave_data.sample_rate = 44100.0d;
 		ensure_no_error(Pa_OpenDefaultStream(
 			&wave_stream,
 			// 无声输入 - 立体声输出、32位浮点数
 			0, 2, paFloat32,
-			data.sample_rate,
+			wave_data.sample_rate,
 			// 256格缓冲区
 			256,
-			play_callback, &data
+			play_wave_callback, &wave_data
 		));
 	}
 	//-------------------------------------------------------------------------
 	// ● 播放波形时使用的回调函数
 	//-------------------------------------------------------------------------
-	int play_callback(
+	int play_wave_callback(
 		const void* input_buffer UNUSED,
 		void* output_buffer,
 		unsigned long frame_count,
@@ -50,7 +50,7 @@ namespace Audio {
 		void* user_data
 	) {
 		float* output = (float*) output_buffer;
-		struct callback_data* data = (struct callback_data*) user_data;
+		struct wave_callback_data* data = (struct wave_callback_data*) user_data;
 		// Magic. 吔屎啦PortAudio！
 		#define FEED_AUDIO_DATA(value) do { \
 			*output++ = (value); \
@@ -85,16 +85,17 @@ namespace Audio {
 	// ● 停止播放波形
 	//-------------------------------------------------------------------------
 	void stop_waves() {
-		data.type = 0;
+		wave_data.type = 0;
 	}
 	//-------------------------------------------------------------------------
 	// ● 播放三角波
 	//    freq : 频率（Hz）
 	//-------------------------------------------------------------------------
 	void play_triangle(float freq) {
-		data.data.triangle.value = -1.0f;
-		data.data.triangle.delta = 2.0f / ((float) data.sample_rate / freq / 2);
-		data.type = 1;
+		wave_data.data.triangle.value = -1.0f;
+		wave_data.data.triangle.delta =
+			2.0f / ((float) wave_data.sample_rate / freq / 2);
+		wave_data.type = 1;
 	}
 	//-------------------------------------------------------------------------
 	// ● 计算下一个值使输出呈三角波形
@@ -114,11 +115,11 @@ namespace Audio {
 	//    freq : 频率（Hz）
 	//-------------------------------------------------------------------------
 	void play_sine(float freq) {
-		data.data.sine.index = .0f;
-		data.data.sine.index_delta =
-			AUDIO_SINE_TABLE_SIZE / ((float) data.sample_rate / 4 / freq);
-		data.data.sine.minus = false;
-		data.type = 2;
+		wave_data.data.sine.index = .0f;
+		wave_data.data.sine.index_delta =
+			AUDIO_SINE_TABLE_SIZE / ((float) wave_data.sample_rate / 4 / freq);
+		wave_data.data.sine.minus = false;
+		wave_data.type = 2;
 	}
 	//-------------------------------------------------------------------------
 	// ● 向正弦表中填充数据
