@@ -90,6 +90,10 @@ namespace Audio {
 			fclose(sound->file);
 			rb_raise(rb_eRuntimeError, "can't open ogg vorbis file: %s", filename);
 		}
+		if (!sound->vf.seekable && loop) {
+			log("unseekable file requested to be looped: %s", filename);
+			log("Isn't that plain weird?");
+		}
 		// sound->stream
 		ensure_no_error(Pa_OpenDefaultStream(
 			&sound->stream, 0, 2, paFloat32, 44100,
