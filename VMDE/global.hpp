@@ -46,7 +46,19 @@
 	// EXPLOSION!
 	// 可以安全地在用户级代码中调用并获得SIGSEGV。
 	// 在退出程序时装逼。
-	#define EXPLOSION ((void) (*((float*) 0) = INFINITY))
+	#define EXPLOSION EXP_ASSIGNMENT
+	// EXP_ASSIGNMENT - EXPLOSION的赋值实现
+	#define EXP_ASSIGNMENT ((void) (*((float*) NULL) = INFINITY))
+	// EXP_MEMORY - EXPLOSION的标准C库内存操作实现
+	#define EXP_MEMORY ((void) memset(NULL, 233, 1))
+	// EXP_SIGNAL - EXPLOSION的标准C库信号实现
+	// * 需要#include <csignal>，但本项目没有包含。
+	#define EXP_SIGNAL ((void) ((raise(SIGSEGV) == 0) || abort()))
+	// EXP_CONSTSTR - EXPLOSION的只读字符串实现
+	#define EXP_CONSTSTR ((void) *"" = 0;)
+	// EXP_ - EXPLOSION的???实现
+	// TODO：本来想再写一个实现的，结果写完上面两个就忘记了这个是什么了。
+	#define EXP_
 	//-------------------------------------------------------------------------
 	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
