@@ -38,11 +38,18 @@
 	// ARRAY_SIZE - 获取定义的数组大小
 	//     int a[56]; → ARRAY_SIZE(a) == 56
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
+	// MLVN - Macro-Local Variable Name
+	// 这是为了不让明文变量名被莫名其妙使用而设计的。
+	//     #define TEST do { int MLVN() = 0, MLVN(another) = 0; } while(0)
+	#define MLVN(name) My_Lovely_##name##___
+	// NTIMES - 执行多次
+	//     NTIMES(3) puts("Three or more, use a for");
+	#define NTIMES(n) \
+		for (unsigned short MLVN(index) = 0; MLVN(index) < (n); MLVN(index)++)
 	// TWICE - 执行两次
 	//     TWICE a++;
 	//     TWICE { a++; b++; }
-	#define TWICE \
-		for (int _my_lovely_index = 0; _my_lovely_index < 2; _my_lovely_index++)
+	#define TWICE NTIMES(2)
 	// EXPLOSION!
 	// 可以安全地在用户级代码中调用并获得SIGSEGV。
 	// 在退出程序时装逼。
