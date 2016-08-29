@@ -6,6 +6,7 @@
 
 #include "global.hpp"
 
-int load_img(char* p) {
+int load_img(const char* p) {
+	log("load image: %s", p);
 	return 0;
 }
