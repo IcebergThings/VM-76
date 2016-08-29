@@ -49,6 +49,7 @@ namespace Audio {
 	}
 	//-------------------------------------------------------------------------
 	// ● 播放声音
+	//   其实这个函数应该叫做draw_sound，不然都对不起Draw Engine这个名字。
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename, bool loop) {
 		compact_active_sounds_array();
@@ -102,7 +103,7 @@ namespace Audio {
 		// sound->*_head
 		sound->play_head = 0;
 		sound->load_head = 0;
-		// etc
+		// etc.
 		sound->eof = false;
 		sound->loop = loop;
 		// Fill in the blanks with the words you hear.
@@ -203,6 +204,7 @@ namespace Audio {
 						sound->load_head++;
 					}
 					sound->eof = true;
+					return;
 				}
 			} else if (ret == OV_EBADLINK) {
 				rb_raise(rb_eRuntimeError, "bad vorbis data (OV_EBADLINK)");
