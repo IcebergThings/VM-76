@@ -24,6 +24,7 @@ void setup_viewport() {
 void init_engine(int w, int h) {
 	log("initializing the engine");
 
+	srand(time(NULL));
 	init_vmde(w, h);
 
 	// GLFW库初始化

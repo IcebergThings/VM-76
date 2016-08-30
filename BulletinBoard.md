@@ -58,11 +58,22 @@ CR不是金坷垃，LF掺了CR，*nix下的工具都一脸懵逼了。
 
 来自一个学C/C++数月的人的建议：C太过神奇，C++太过奇异。在这个世界，还是尽量用C式C++（“C with namespaces”）为好。
 
+### printf（log）
+
+有些数据类型确实会让人不知道怎么在printf里表达。
+
+| 数据类型 | printf |
+| -------- | ------ |
+| void* | %p |
+| size_t | %zu |
+| ptrdiff_t | %td |
+
 这些提交消息十分滑稽
 --------------------
 
 下面是按照时间从新到旧的我认为滑稽的提交消息。如果这些并不合你口味，`git log --oneline`里总会有你喜欢的。
 
+ - e49946a：摸鱼并提交
  - 1cdaa57：Merge! Merge! Merge!
  - a5d77bc：Merge! Though not working
  - ca04f2d：终于搞定啦！！！！！！！RenderChain能用啦，VISIBLE有用啦！！！！(顺便在demo里加入了

@@ -10,14 +10,14 @@
 GLfloat vertices[] = {
 	0.0f, 0.0f, 0.0f,
 	435.0f, 0.0f, 0.0f,
-	435.0f, 270.0f, 0.0f
+	435.0f, 270.0f, 0.0f,
 };
 
 namespace RubyWrapper {
-	VALUE load_pic(VALUE self, VALUE path) {
+	VALUE load_pic(VALUE self UNUSED, VALUE path) {
 		Check_Type(path, T_STRING);
-		char* a = RSTRING_PTR(path);
-		return Qnil;//RSTRING(load_img(a));
+		char* a = StringValueCStr(path);
+		return INT2FIX(load_img(a));
 	}
 
 	struct ptr_data {
@@ -58,7 +58,7 @@ namespace RubyWrapper {
 		{rb_data_mark, rb_data_free, rb_data_memsize},
 	};
 
-	VALUE gdrawable_visible_get(VALUE val, VALUE cdata) {
+	VALUE gdrawable_visible_get(VALUE self UNUSED, VALUE cdata) {
 		struct ptr_data *data;
 		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
 		RCN* node = (RCN*) data->ptr;
@@ -66,7 +66,7 @@ namespace RubyWrapper {
 		return node->visible ? Qtrue : Qfalse;
 	}
 
-	VALUE gdrawable_visible_set(VALUE val, VALUE cdata, VALUE b) {
+	VALUE gdrawable_visible_set(VALUE self UNUSED, VALUE cdata, VALUE b) {
 		struct ptr_data *data;
 		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
 		RCN* node = (RCN*) data->ptr;
@@ -110,6 +110,7 @@ namespace RubyWrapper {
 		}
 		gd->tri_mesh_count = length / 3;
 		gd->size_of_VBO = size;
+		return size;
 	}
 
 	VALUE gdrawable_bind_obj(VALUE self, VALUE ary) {
@@ -129,17 +130,17 @@ namespace RubyWrapper {
 		return v;
 	}
 
-	VALUE gdrawable_update_vertices(VALUE self, VALUE cdata, VALUE ary) {
+	VALUE gdrawable_update_vertices(VALUE self UNUSED, VALUE cdata, VALUE ary) {
 		struct ptr_data *data;
 		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
 		RCN* node = (RCN*) data->ptr;
 
-	//	if (!node->gd) {
-	//		return Qfalse;
-	//	}
+		//if (!node->gd) return Qfalse;
 
 		load_vertices(ary, node->gd);
 		GDrawable::update(node->gd);
+
+		return Qnil;
 	}
 
 	VALUE init_engine(VALUE self UNUSED, VALUE w, VALUE h) {
@@ -193,6 +194,20 @@ namespace RubyWrapper {
 		}
 		return Qnil;
 	}
+
+	VALUE audio_play_sound(VALUE self UNUSED, VALUE filename) {
+		Check_Type(filename, T_STRING);
+		char* c_filename = StringValueCStr(filename);
+		Audio::play_sound(c_filename, false);
+		return Qnil;
+	}
+
+	VALUE audio_play_loop(VALUE self UNUSED, VALUE filename) {
+		Check_Type(filename, T_STRING);
+		char* c_filename = StringValueCStr(filename);
+		Audio::play_sound(c_filename, true);
+		return Qnil;
+	}
 }
 
 void init_ruby_modules() {
@@ -210,6 +225,8 @@ void init_ruby_modules() {
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, stop, audio_stop, 0);
 	RUBY_MODULE_API(Audio, play_wave, audio_play_wave, 2);
+	RUBY_MODULE_API(Audio, play_sound, audio_play_sound, 1);
+	RUBY_MODULE_API(Audio, play_loop, audio_play_loop, 1);
 	#undef RUBY_MODULE_API
 }
 
