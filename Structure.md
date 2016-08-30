@@ -8,26 +8,27 @@ Structure
 Ⓒ = class
 ⓜ = method / function
 
- - [ ] ○ VMDE: draw engine
-     - [ ] ⓜ init_engine
-     - [ ] ⓜ update
-     - [ ] ⓜ get_frame_count
-     - [ ] ⓜ get_fps
-     - [ ] ⓜ GRect: rectangle
-         - [ ] Shape: vertices
-         - [ ] Texture
-         - [ ] Color: per vertex, RGBA
-         - [ ] ⓜ draw
-     - [ ] Ⓒ GResPic: texture resources
-         - [ ] ⓜ load_pic
-     - [ ] Ⓜ Audio: audio *drawing* support
-         - [ ] ⓜ stop
-         - [ ] ⓜ play_wave
-             - [ ] triangle
-             - [ ] sine
-             - [ ] white_noise
-         - [ ] ⓜ play_sound: load before playing
-         - [ ] ⓜ play_music: load | play
+- [ ] ○ VMDE: draw engine
+    - [ ] ⓜ init_engine
+    - [ ] ⓜ update
+    - [ ] ⓜ get_frame_count
+    - [ ] ⓜ get_fps
+    - [ ] ⓜ GRect: rectangle
+        - [ ] Shape: vertices
+        - [ ] Texture
+        - [ ] Color: per vertex, RGBA
+        - [ ] ⓜ draw
+    - [ ] Ⓒ GResPic: texture resources
+        - [ ] ⓜ load_pic
+    - [ ] Ⓜ Audio: audio *drawing* support
+        - [ ] ⓜ stop: stop_wave in fact
+        - [x] ⓜ play_wave
+            - [x] triangle
+            - [x] sine
+            - [x] white_noise
+        - [x] ⓜ play_sound
+            - [x] play_sound
+            - [x] play_loop
 
 它是怎么绘图的
 --------------
@@ -43,10 +44,13 @@ hide_me.remove_from_render_list
 def all_the_render_in_the_game
 	# ...
 	draw_me.update
-	# This will "upload" the info to VMDE, if you don't use update, VMDE will not update this object but still render it (as what it is before)
+	# This will “upload” the info to VMDE.
+	# If you don't use update, VMDE will not update this object,
+	# but still render it as what it was before.
 	# ...
 	VMDE.update
-	# After calling VMDE.update, it will render all the things in the render list and refresh the screen.
+	# After calling VMDE.update, it will render everything
+	# in the render list and refresh the screen.
 end
 ```
 

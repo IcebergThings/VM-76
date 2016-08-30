@@ -38,15 +38,34 @@
 	// ARRAY_SIZE - 获取定义的数组大小
 	//     int a[56]; → ARRAY_SIZE(a) == 56
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
+	// MLVN - Macro-Local Variable Name
+	// 这是为了不让明文变量名被莫名其妙使用而设计的。
+	//     #define TEST do { int MLVN() = 0, MLVN(another) = 0; } while(0)
+	#define MLVN(name) My_Lovely_##name##___
+	// NTIMES - 执行多次
+	//     NTIMES(3) puts("Three or more, use a for");
+	#define NTIMES(n) \
+		for (unsigned short MLVN(index) = 0; MLVN(index) < (n); MLVN(index)++)
 	// TWICE - 执行两次
 	//     TWICE a++;
 	//     TWICE { a++; b++; }
-	#define TWICE \
-		for (int _my_lovely_index = 0; _my_lovely_index < 2; _my_lovely_index++)
+	#define TWICE NTIMES(2)
 	// EXPLOSION!
 	// 可以安全地在用户级代码中调用并获得SIGSEGV。
 	// 在退出程序时装逼。
-	#define EXPLOSION ((void) (*((float*) 0) = INFINITY))
+	#define EXPLOSION EXP_ASSIGNMENT
+	// EXP_ASSIGNMENT - EXPLOSION的赋值实现
+	#define EXP_ASSIGNMENT ((void) (*((float*) NULL) = INFINITY))
+	// EXP_MEMORY - EXPLOSION的标准C库内存操作实现
+	#define EXP_MEMORY ((void) memset(NULL, 233, 1))
+	// EXP_SIGNAL - EXPLOSION的标准C库信号实现
+	// * 需要#include <csignal>，但本项目没有包含。
+	#define EXP_SIGNAL ((void) ((raise(SIGSEGV) == 0) || abort()))
+	// EXP_CONSTSTR - EXPLOSION的只读字符串实现
+	#define EXP_CONSTSTR ((void) *"" = 0;)
+	// EXP_ASM - EXPLOSION的Pentium Pro指令实现
+	// * 这个实现不会导致SIGSEGV。
+	#define EXP_ASM (__asm__("UD2"))
 	//-------------------------------------------------------------------------
 	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
@@ -78,7 +97,7 @@
 	//-------------------------------------------------------------------------
 	// ● Global
 	//-------------------------------------------------------------------------
-	extern const char* GAME_NAME;
+	#define GAME_NAME "VM / 76"
 
 	struct VMDEState {
 		bool frozen;
@@ -93,6 +112,7 @@
 		int fps;
 	};
 
+	#define RCN struct RenderChainNode
 	struct RenderChainNode {
 		RenderChainNode* prev;
 		VALUE n;
@@ -100,8 +120,6 @@
 		bool visible;
 		RenderChainNode* next;
 	};
-
-	#define RCN struct RenderChainNode
 
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
@@ -175,7 +193,7 @@
 		void log_internal(const char* function_name, const char* format, ...);
 	}
 	//-------------------------------------------------------------------------
-	// ● audio.cpp
+	// ● audio.cpp and audio_waves.cpp
 	//-------------------------------------------------------------------------
 	namespace Audio {
 		struct triangle_data {
@@ -188,7 +206,7 @@
 			bool minus;
 			float value; // for convenience only
 		};
-		struct callback_data {
+		struct wave_callback_data {
 			double sample_rate;
 			// type = 0……静音；1……三角波；2……正弦波；3……白噪音
 			// 为啥不用枚举？因为太麻烦了！
@@ -202,23 +220,26 @@
 			PaStream* stream;
 			FILE* file;
 			OggVorbis_File vf;
-			float vf_buffer[2][4096];
+			#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
+			float vf_buffer[2][AUDIO_VF_BUFFER_SIZE];
 			size_t play_head;
 			size_t load_head;
 			bool eof;
+			bool loop;
 			int bitstream;
 			thread* decode_thread;
 		};
-		extern const size_t vf_buffer_size;
 		extern PaStream* wave_stream;
-		extern struct callback_data data;
-		extern struct active_sound* active_sounds[16];
-		extern float sine_table[256];
-		extern const size_t sine_table_size;
+		extern struct wave_callback_data wave_data;
+		#define AUDIO_ACTIVE_SOUND_SIZE ((size_t) 16)
+		extern struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE];
+		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
+		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
 		void init();
+		void init_waves();
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
-		int play_callback(
+		int play_wave_callback(
 			const void* input_buffer UNUSED,
 			void* output_buffer,
 			unsigned long frames_per_buffer,
@@ -227,13 +248,14 @@
 			void* user_data
 		);
 		void stop();
+		void stop_waves();
 		void play_triangle(float freq);
 		void get_next_triangle_value(struct triangle_data* data);
 		void play_sine(float freq);
 		void populate_sine_table();
 		void get_next_sine_value(struct sine_data* data);
 		void compact_active_sounds_array();
-		void play_sound(const char* filename);
+		void play_sound(const char* filename, bool loop);
 		int play_sound_callback(
 			const void* input_buffer UNUSED,
 			void* output_buffer,
