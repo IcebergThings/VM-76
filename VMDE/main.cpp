@@ -48,7 +48,7 @@ void main_draw_loop() {
 
 		struct RenderChainNode* chain = render_chain;
 		while (chain) {
-			VALUE v = chain->n;
+			VALUE v UNUSED = chain->n; // TODO: use it!
 
 			GDrawable::draw(chain->gd);
 

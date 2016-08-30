@@ -1,11 +1,13 @@
+#==============================================================================
+# ■ .gitignore
+#==============================================================================
+
 # General output files
 *.gch
 *.o
 *.so
 *.dll
 
-# Generated source files
+# Generated source files; 这些文件可能会存储个人设置（例如路径）
 VMDE/Makefile
-
-# 这些文件可能会存储个人设置（例如路径）
 VMDE/windoge_make.bat
