@@ -29,7 +29,7 @@ freq_factor = 2.0 ** (1.0 / 12)
 	freq *= freq_factor
 	sleep 0.25
 end
-VMDE::Audio.stop
+VMDE::Audio.stop_wave
 VMDE::Audio.play_loop("../Media/loop-test.ogg")
 
 obj2.set_visible(obj2_b,true)
