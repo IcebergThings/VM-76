@@ -21,7 +21,7 @@ Structure
     - [ ] Ⓒ GResPic: texture resources
         - [ ] ⓜ load_pic
     - [ ] Ⓜ Audio: audio *drawing* support
-        - [ ] ⓜ stop: stop_wave in fact
+        - [x] ⓜ stop: stop_wave in fact
         - [x] ⓜ play_wave
             - [x] triangle
             - [x] sine
