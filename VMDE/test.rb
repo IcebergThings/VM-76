@@ -12,12 +12,12 @@ require "./VMDE.so"
 VMDE.init(880, 540)
 puts "Ruby initializes here"
 
-obj2_arr = [600.0,600.0,0.0,450.0,450.0,0.0,600.0,475.0,0.0]
+obj2_arr = [600.0,600.0,0.0, 450.0,450.0,0.0, 600.0,475.0,0.0]
 
 obj1 = VMDE::GDrawable.new
-obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0,50.0,50.0,0.0,200.0,50.0,0.0,200.0,200.0,0.0])
+obj1_b = obj1.bind([50.0,50.0,0.0, 50.0,200.0,0.0, 200.0,200.0,0.0, 200.0,50.0,0.0], [0,1,3, 1,2,3])
 obj2 = VMDE::GDrawable.new
-obj2_b = obj2.bind(obj2_arr)
+obj2_b = obj2.bind(obj2_arr, [0,1,2])
 
 freq = 261.626
 freq_factor = 2.0 ** (1.0 / 12)
@@ -45,7 +45,7 @@ loop do
 	end
 
 	obj2_arr_t = obj2_arr.map { |v| (i.to_f / 128.0) * v }
-	obj2.update_vertices(obj2_b, obj2_arr_t)
+	obj2.update_vertices(obj2_b, obj2_arr_t, [0,1,2])
 
 	VMDE.brightness = 0.5 + i / 510.0
 
