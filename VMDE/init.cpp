@@ -36,7 +36,7 @@ void init_engine(int w, int h) {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
@@ -47,6 +47,8 @@ void init_engine(int w, int h) {
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
+	// 垂直同步，拒绝鬼畜
+	glfwSwapInterval(1);
 
 	// 初始化GLEW
 	glewExperimental = GL_TRUE;
