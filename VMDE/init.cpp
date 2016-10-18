@@ -49,6 +49,8 @@ void init_engine(int w, int h) {
 	glfwMakeContextCurrent(window);
 	// 垂直同步，拒绝鬼畜
 	glfwSwapInterval(1);
+	// 深度测试是必要的
+	glEnable(GL_DEPTH_TEST);
 
 	// 初始化GLEW
 	glewExperimental = GL_TRUE;
