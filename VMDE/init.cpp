@@ -31,7 +31,7 @@ void init_engine(int w, int h) {
 	glfwSetErrorCallback(glfw_error_callback);
 	if (!glfwInit()) rb_raise(rb_eRuntimeError, "glfwInit() failed");
 
-	// OpenGL 向前&向后兼容，使用GL 3.2 Core Profile，窗口大小不可变
+	// OpenGL 向前&向后兼容，使用GL 3.3 Core Profile，窗口大小不可变
 	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -49,6 +49,8 @@ void init_engine(int w, int h) {
 	glfwMakeContextCurrent(window);
 	// 垂直同步，拒绝鬼畜
 	glfwSwapInterval(1);
+	// 深度测试是必要的
+	glEnable(GL_DEPTH_TEST);
 
 	// 初始化GLEW
 	glewExperimental = GL_TRUE;
@@ -56,7 +58,7 @@ void init_engine(int w, int h) {
 
 	setup_viewport();
 
-	// 初始化着色器「OpenGL 3.2没有固定管线了，着色器是被钦定的」
+	// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	main_shader->link_program();

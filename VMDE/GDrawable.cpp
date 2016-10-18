@@ -44,6 +44,11 @@ namespace GDrawable {
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 	}
 
+	void dispose(struct GDrawable* s) {
+		xefree(s->vertices);
+		xefree(s->indices);
+	}
+
 	struct GDrawable* create() {
 		struct GDrawable* s = (struct GDrawable*) malloc(sizeof(struct GDrawable));
 

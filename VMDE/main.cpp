@@ -35,7 +35,7 @@ void main_draw_loop() {
 	}
 	if (!VMDE->state.frozen) {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/* Render */
 
 		GLint model_location;
@@ -61,7 +61,7 @@ void main_draw_loop() {
 }
 
 //-----------------------------------------------------------------------------
-// ● TODO: comment for matrix2D
+// ● Matrix for 2D (GUI), depth from -100 to 100, X = 0 ~ Width, Y = 0 ~ Height
 //-----------------------------------------------------------------------------
 void matrix2D() {
 	view = glm::ortho(0.0f, float(VMDE->width), 0.0f, float(VMDE->width), -100.0f, 100.0f);
