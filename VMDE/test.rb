@@ -9,6 +9,8 @@
 
 require "./VMDE.so"
 
+def main
+
 VMDE.init(880, 540)
 puts "Ruby initializes here"
 
@@ -62,3 +64,4 @@ rescue
         exit
 end
 
+main
