@@ -32,14 +32,9 @@ namespace RubyWrapper {
 		if (data->ptr && data->free) (*(data->free))(data->ptr);
 		RCN* n = (RCN*) data->ptr;
 		if (n) {
-			if (n->gd) {
-				if (n->gd->vertices) {
-					free(n->gd->vertices);
-				}
-				free(n->gd);
-			}
+			GDrawable::dispose(n->gd);
 		}
-		xfree(ptr);
+		xefree(ptr);
 	}
 
 	static size_t rb_data_memsize(const void* ptr) {

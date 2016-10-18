@@ -97,6 +97,7 @@
 		void draw(GDrawable* s);
 		void fbind(GDrawable* s);
 		void update(GDrawable* s);
+		void dispose(GDrawable* s);
 		GDrawable* create();
 	}
 	//-------------------------------------------------------------------------

@@ -45,8 +45,11 @@ namespace GDrawable {
 	}
 
 	void dispose(struct GDrawable* s) {
-		xefree(s->vertices);
-		xefree(s->indices);
+		if (s) {
+			xefree(s->vertices);
+			xefree(s->indices);
+			free(s);
+		}
 	}
 
 	struct GDrawable* create() {
