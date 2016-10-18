@@ -66,6 +66,8 @@
 	// EXP_ASM - EXPLOSION的Pentium Pro指令实现
 	// * 这个实现不会导致SIGSEGV。
 	#define EXP_ASM (__asm__("UD2"))
+	// xeFree - 释放内存黑魔法
+	#define xefree(pointer) if (pointer) free(pointer)
 	//-------------------------------------------------------------------------
 	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
 	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此

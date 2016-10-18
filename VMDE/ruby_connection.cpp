@@ -103,14 +103,14 @@ namespace RubyWrapper {
 		}
 
 		size_t size = sizeof(GLfloat) * length_v;
-		if (gd->vertices) free(gd->vertices);
+		xefree(gd->vertices);
 		gd->vertices = (GLfloat*) malloc(size);
 		for (i = 0; i < length_v; i++) {
 			gd->vertices[i] = (GLfloat) rb_float_value(rb_ary_entry(vertex_array, i));
 		}
 
 		size = sizeof(GLuint) * length_i;
-		if (gd->indices) free(gd->indices);
+		xefree(gd->indices);
 		gd->indices = (GLuint*) malloc(size);
 		for (i = 0; i < length_i; i++) {
 			gd->indices[i] = (GLuint) FIX2UINT(rb_ary_entry(indices_array, i));
