@@ -10,7 +10,6 @@ namespace GDrawable {
 	void draw(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);
 		glDrawElements(GL_TRIANGLES, s->tri_mesh_count * 3, GL_UNSIGNED_INT, 0);
-		//glDrawArrays(GL_TRIANGLES, s->VBO, 3);
 		glBindVertexArray(0);
 	}
 
