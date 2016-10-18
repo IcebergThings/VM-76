@@ -36,7 +36,7 @@ void init_engine(int w, int h) {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
@@ -47,6 +47,8 @@ void init_engine(int w, int h) {
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
+	// 垂直同步，拒绝鬼畜
+	glfwSwapInterval(1);
 
 	// 初始化GLEW
 	glewExperimental = GL_TRUE;
@@ -58,6 +60,10 @@ void init_engine(int w, int h) {
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	main_shader->link_program();
+	// 获取可用的Vertex Attributes数量
+	GLint nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
 
 	// 初始化声音「上面和下面这堆东西全放在一个函数里，真节约啊」
 	Audio::init();

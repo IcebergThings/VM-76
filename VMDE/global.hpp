@@ -84,10 +84,13 @@
 	namespace GDrawable {
 		struct GDrawable {
 			GLfloat* vertices;
+			int vtx_c;
+			GLuint* indices;
+			int ind_c;
 			GLuint VAO;
 			GLuint VBO;
+			GLuint EBO;
 			GLuint tri_mesh_count;
-			size_t size_of_VBO;
 		};
 		void draw(GDrawable* s);
 		void fbind(GDrawable* s);
