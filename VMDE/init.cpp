@@ -19,12 +19,9 @@ void setup_viewport() {
 }
 
 //-----------------------------------------------------------------------------
-// ● 初始化引擎
+// ● 初始化图形
 //-----------------------------------------------------------------------------
-void init_engine(int w, int h) {
-	log("initializing the engine");
-
-	srand(time(NULL));
+void init_graphics(int w, int h) {
 	init_vmde(w, h);
 
 	// GLFW库初始化
@@ -66,8 +63,19 @@ void init_engine(int w, int h) {
 	GLint nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
+}
 
-	// 初始化声音「上面和下面这堆东西全放在一个函数里，真节约啊」
+//-----------------------------------------------------------------------------
+// ● 初始化引擎
+//-----------------------------------------------------------------------------
+void init_engine(int w, int h) {
+	log("initializing the engine");
+
+	srand(time(NULL));
+
+	init_graphics(w, h);
+
+	// 初始化声音
 	Audio::init();
 
 	log("initialized the engine");
