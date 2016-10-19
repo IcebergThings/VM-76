@@ -4,7 +4,8 @@
 //   所有初始化相关的代码都被放置在这里。
 //=============================================================================
 
-#include "global.hpp"
+#include "VMDE.hpp"
+#include "audio.hpp"
 
 GLuint basic_2D_vsh;
 GLuint basic_2D_fsh;

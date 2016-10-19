@@ -5,7 +5,9 @@
 //   还负责一些Ruby扩展所需的杂务和整个初始化系统的调用。
 //=============================================================================
 
-#include "global.hpp"
+#include "VMDE.hpp"
+#include "audio.hpp"
+#include "GDrawable.hpp"
 
 namespace RubyWrapper {
 	VALUE load_pic(VALUE self UNUSED, VALUE path) {
