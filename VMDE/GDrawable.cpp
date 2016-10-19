@@ -20,8 +20,11 @@ namespace GDrawable {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->ind_c * sizeof(GLuint), s->indices, GL_DYNAMIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		size_t vertex_size = 6 * sizeof(GLfloat);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -45,8 +48,11 @@ namespace GDrawable {
 	}
 
 	void dispose(struct GDrawable* s) {
-		xefree(s->vertices);
-		xefree(s->indices);
+		if (s) {
+			xefree(s->vertices);
+			xefree(s->indices);
+			free(s);
+		}
 	}
 
 	struct GDrawable* create() {
