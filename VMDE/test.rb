@@ -31,16 +31,18 @@ obj1_b = obj1.bind(obj1_arr, [0,1,3, 1,2,3])
 obj2 = VMDE::GDrawable.new
 obj2_b = obj2.bind(obj2_arr, [0,1,2])
 
-freq = 261.626
-freq_factor = 2.0 ** (1.0 / 12)
-10.times do |i|
-	puts "##{i} - #{freq}Hz"
-	VMDE::Audio.play_wave(:triangle, freq)
-	freq *= freq_factor
-	sleep 0.25
-end
-VMDE::Audio.stop
-VMDE::Audio.play_loop("../Media/loop-test.ogg")
+Thread.new {
+	freq = 261.626
+	freq_factor = 2.0 ** (1.0 / 12)
+	10.times do |i|
+		puts "##{i} - #{freq}Hz"
+		VMDE::Audio.play_wave(:triangle, freq)
+		freq *= freq_factor
+		sleep 0.25
+	end
+	VMDE::Audio.stop
+	VMDE::Audio.play_loop("../Media/loop-test.ogg")	
+}
 
 obj2.set_visible(obj2_b,true)
 
