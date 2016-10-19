@@ -16,9 +16,9 @@ puts "Ruby initializes here"
 
 obj1_arr = [
 	50.0,50.0,0.0,   1.0, 1.0, 0.0,
-	50.0,200.0,0.0,  1.0, 0.0, 1.0,
-	200.0,200.0,0.0, 0.0, 1.0, 1.0,
-	200.0,50.0,0.0,  1.0, 1.0, 1.0
+	50.0,300.0,0.0,  1.0, 0.0, 1.0,
+	300.0,300.0,0.0, 0.0, 1.0, 1.0,
+	300.0,50.0,0.0,  1.0, 1.0, 1.0
 ]
 obj2_arr = [
 	600.0,600.0,0.0, 1.0, 0.0, 0.0,
@@ -42,6 +42,12 @@ Thread.new {
 	end
 	VMDE::Audio.stop
 	VMDE::Audio.play_loop("../Media/loop-test.ogg")	
+}
+Thread.new {
+	loop do
+		sleep 1
+		puts "FPS : #{VMDE.fps}"
+	end
 }
 
 obj2.set_visible(obj2_b,true)
