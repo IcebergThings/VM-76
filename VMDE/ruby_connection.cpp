@@ -10,11 +10,6 @@
 #include "GDrawable.hpp"
 
 namespace RubyWrapper {
-	VALUE load_pic(VALUE self UNUSED, VALUE path) {
-		Check_Type(path, T_STRING);
-		char* a = StringValueCStr(path);
-		return INT2FIX(load_img(a));
-	}
 
 	struct ptr_data {
 		void* ptr;
@@ -237,8 +232,7 @@ void init_ruby_modules() {
 }
 
 void init_ruby_classes() {
-	ruby_GResPic = rb_define_class_under(ruby_VMDE, "GResPic", rb_cObject);
-	rb_define_method(ruby_GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
+	ruby_GResPic = rb_define_class_under(ruby_VMDE, "GRes", rb_cObject);
 
 	ruby_GDrawable = rb_define_class_under(ruby_VMDE, "GDrawable", rb_cObject);
 	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 2);

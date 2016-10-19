@@ -20,7 +20,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <portaudio.h>
 #include <vorbis/vorbisfile.h>
-#include <../lib/SOIL/src/SOIL.h>
+#include <SOIL.h>
 
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
@@ -126,7 +126,17 @@
 	//-------------------------------------------------------------------------
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
-	int load_img(const char* p);
+	namespace Res {
+		class Texture {
+		private:
+			GLuint texture;
+		public:
+			int width, height;
+			Texture(char* file, GLuint index, Shaders sh);
+		};
+
+		extern Texture* tex_unit[16];
+	}
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//-------------------------------------------------------------------------
