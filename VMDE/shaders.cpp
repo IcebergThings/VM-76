@@ -9,16 +9,20 @@
 const GLchar* temp_vertexShaderSource =
 	"#version 330 core\n"
 	"layout (location = 0) in vec3 position;\n"
+	"layout (location = 1) in vec3 vertex_color;\n"
 	"uniform mat4 viewMatrix;\n"
+	"out vec3 texcolor;\n"
 	"void main() {\n"
 	"gl_Position = viewMatrix * vec4(position, 1.0);\n"
+	"texcolor = vertex_color;"
 	"}";
 const GLchar* temp_fragmentShaderSource =
 	"#version 330 core\n"
 	"out vec4 color;\n"
+	"in vec3 texcolor;\n"
 	"uniform float brightness;"
 	"void main() {\n"
-	"color = vec4(vec3(0.8f, 0.3f, 0.4f) * brightness, 1.0f);\n"
+	"color = vec4(texcolor * brightness, 1.0f);\n"
 	"}";
 
 void Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
