@@ -46,7 +46,7 @@ Thread.new {
 Thread.new {
 	loop do
 		sleep 1
-		puts "FPS : #{VMDE.fps}"
+		puts "FPS : #{VMDE.fps}, Average Frame Time : #{VMDE.frame_time}ms"
 	end
 }
 
