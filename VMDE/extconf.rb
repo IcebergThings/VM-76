@@ -15,13 +15,13 @@ dirs = ["/usr/local/lib"]
 
 if RbConfig::CONFIG['host_os'].index("linux")
 	puts "Linux system detected"
-	$CFLAGS += " -Wall -O4 -O -pthread -malign-double "
+	$CXXFLAGS += " -Wall -O4 -O -pthread -malign-double "
 else
-	$CFLAGS += " -Wall -O3 "
+	$CXXFLAGS += " -Wall -O3 "
 end
+$CXXFLAGS += " -I../lib/SOIL/src -fPIC "
 
-$LOCAL_LIBS+="../lib/SOIL/lib/libSOIL.a"
-$INCLUDE += " -I../lib/SOIL/src "
+$LOCAL_LIBS+="../lib/SOIL/lib/libSOIL.so"
 
 $libs += %w(
 	-lGLEW -lGLU -lglfw -lrt -lportaudio -lasound -lXrandr -lXinerama -lXi -lXcursor -lXrender
