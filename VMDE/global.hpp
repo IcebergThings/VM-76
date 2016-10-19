@@ -116,6 +116,7 @@
 	void init_engine(int w, int h);
 	void setup_viewport();
 	void init_vmde(int w, int h);
+	void reload_shaders();
 	//-------------------------------------------------------------------------
 	// ● main.cpp
 	//-------------------------------------------------------------------------
@@ -128,11 +129,10 @@
 	//-------------------------------------------------------------------------
 	namespace Res {
 		class Texture {
-		private:
-			GLuint texture;
 		public:
+			GLuint texture;
 			int width, height;
-			Texture(char* file, GLuint index, Shaders sh);
+			Texture(char* file, GLuint index, GLuint sh);
 		};
 
 		extern Texture* tex_unit[16];

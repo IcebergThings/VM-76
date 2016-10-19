@@ -45,13 +45,26 @@ void main_draw_loop() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/* Render */
 
+		// Activate Shader
+		glUseProgram(main_shader->shaderProgram);
+
+		// Setup uniforms
 		GLint model_location;
 		model_location = glGetUniformLocation(main_shader->shaderProgram, "viewMatrix");
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(view));
 		model_location = glGetUniformLocation(main_shader->shaderProgram, "brightness");
 		glUniform1f(model_location, VMDE->state.brightness);
 
-		glUseProgram(main_shader->shaderProgram);
+		// Setup textures
+		for (int index = 0; index < 16; index++) if (Res::tex_unit[index]) {
+			char* uniform_name = new char[16];
+			sprintf(uniform_name, "colortex%d", index);
+			glActiveTexture(GL_TEXTURE0 + index);
+			glBindTexture(GL_TEXTURE_2D, Res::tex_unit[index]->texture);
+			glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
+			xefree(uniform_name);
+		}
+
 
 		struct RenderChainNode* chain = render_chain;
 		while (chain) {

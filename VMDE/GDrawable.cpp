@@ -20,11 +20,13 @@ namespace GDrawable {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->ind_c * sizeof(GLuint), s->indices, GL_DYNAMIC_DRAW);
 
-		size_t vertex_size = 6 * sizeof(GLfloat);
+		size_t vertex_size = (3 + 4 + 2) * sizeof(GLfloat); // X,Y,Z,  R,G,B,A,  S,T
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (7 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 

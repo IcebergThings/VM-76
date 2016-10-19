@@ -56,14 +56,20 @@ void init_graphics(int w, int h) {
 
 	setup_viewport();
 
-	// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
-	main_shader = new Shaders();
-	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	main_shader->link_program();
+	reload_shaders();
+
 	// 获取可用的Vertex Attributes数量
 	GLint nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
+}
+
+void reload_shaders() {
+	// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
+	xefree(main_shader);
+	main_shader = new Shaders();
+	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
+	main_shader->link_program();
 }
 
 //-----------------------------------------------------------------------------
