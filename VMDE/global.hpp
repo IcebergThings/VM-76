@@ -20,6 +20,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <portaudio.h>
 #include <vorbis/vorbisfile.h>
+#include <SOIL.h>
 
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
@@ -80,62 +81,12 @@
 	#else
 		#define EXPORTED extern "C"
 	#endif
-	//-------------------------------------------------------------------------
-	// ● GDrawable.cpp
-	//-------------------------------------------------------------------------
-	namespace GDrawable {
-		struct GDrawable {
-			GLfloat* vertices;
-			int vtx_c;
-			GLuint* indices;
-			int ind_c;
-			GLuint VAO;
-			GLuint VBO;
-			GLuint EBO;
-			GLuint tri_mesh_count;
-		};
-		void draw(GDrawable* s);
-		void fbind(GDrawable* s);
-		void update(GDrawable* s);
-		void dispose(GDrawable* s);
-		GDrawable* create();
-	}
+
 	//-------------------------------------------------------------------------
 	// ● Global
 	//-------------------------------------------------------------------------
 	#define GAME_NAME "VM / 76"
 
-	struct VMDEState {
-		bool frozen;
-		float brightness;
-	};
-
-	struct VMDE {
-		VMDEState state;
-		long frame_count;
-		long millisecond;
-		int width, height;
-		int fps;
-	};
-
-	#define RCN struct RenderChainNode
-	struct RenderChainNode {
-		RenderChainNode* prev;
-		VALUE n;
-		GDrawable::GDrawable* gd;
-		bool visible;
-		RenderChainNode* next;
-	};
-
-	extern struct VMDE* VMDE;
-	extern GLFWwindow* window;
-	extern VALUE ruby_VMDE;
-	extern VALUE ruby_GResPic;
-	extern VALUE ruby_GDrawable;
-	extern RenderChainNode* render_chain;
-
-	extern GLuint VBO[15];
-	extern GLuint VAO[15];
 	//-------------------------------------------------------------------------
 	// ● shaders.cpp
 	//-------------------------------------------------------------------------
@@ -165,6 +116,7 @@
 	void init_engine(int w, int h);
 	void setup_viewport();
 	void init_vmde(int w, int h);
+	void reload_shaders();
 	//-------------------------------------------------------------------------
 	// ● main.cpp
 	//-------------------------------------------------------------------------
@@ -175,7 +127,16 @@
 	//-------------------------------------------------------------------------
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
-	int load_img(const char* p);
+	namespace Res {
+		class Texture {
+		public:
+			GLuint texture;
+			int width, height;
+			Texture(char* file, GLuint index, GLuint sh);
+		};
+
+		extern Texture* tex_unit[16];
+	}
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//-------------------------------------------------------------------------
@@ -188,80 +149,5 @@
 		extern const double PI;
 		#define PId PI
 		void log_internal(const char* function_name, const char* format, ...);
-	}
-	//-------------------------------------------------------------------------
-	// ● audio.cpp and audio_waves.cpp
-	//-------------------------------------------------------------------------
-	namespace Audio {
-		struct triangle_data {
-			float value;
-			float delta;
-		};
-		struct sine_data {
-			float index;
-			float index_delta;
-			bool minus;
-			float value; // for convenience only
-		};
-		struct wave_callback_data {
-			double sample_rate;
-			// type = 0……静音；1……三角波；2……正弦波；3……白噪音
-			// 为啥不用枚举？因为太麻烦了！
-			int type;
-			union {
-				struct triangle_data triangle;
-				struct sine_data sine;
-			} data;
-		};
-		struct active_sound {
-			PaStream* stream;
-			FILE* file;
-			OggVorbis_File vf;
-			#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
-			float vf_buffer[2][AUDIO_VF_BUFFER_SIZE];
-			size_t play_head;
-			size_t load_head;
-			bool eof;
-			bool loop;
-			int bitstream;
-			thread* decode_thread;
-		};
-		extern PaStream* wave_stream;
-		extern struct wave_callback_data wave_data;
-		#define AUDIO_ACTIVE_SOUND_SIZE ((size_t) 16)
-		extern struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE];
-		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
-		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
-		void init();
-		void init_waves();
-		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
-		void ensure_no_error(PaError err);
-		int play_wave_callback(
-			const void* input_buffer UNUSED,
-			void* output_buffer,
-			unsigned long frames_per_buffer,
-			const PaStreamCallbackTimeInfo* time_info UNUSED,
-			PaStreamCallbackFlags status_flags UNUSED,
-			void* user_data
-		);
-		void stop();
-		void stop_waves();
-		void play_triangle(float freq);
-		void get_next_triangle_value(struct triangle_data* data);
-		void play_sine(float freq);
-		void populate_sine_table();
-		void get_next_sine_value(struct sine_data* data);
-		void compact_active_sounds_array();
-		void play_sound(const char* filename, bool loop);
-		int play_sound_callback(
-			const void* input_buffer UNUSED,
-			void* output_buffer,
-			unsigned long frame_count,
-			const PaStreamCallbackTimeInfo* time_info UNUSED,
-			PaStreamCallbackFlags status_flags UNUSED,
-			void* user_data
-		);
-		void decode_vorbis(struct active_sound* sound);
-		void decode_vorbis_thread(struct active_sound* sound);
 	}
 #endif

@@ -4,7 +4,7 @@
 # For 'make install' to work, set LOCAL according to your system configuration
 LOCAL = /usr/local
 
-LIB = libSOIL.a
+LIB = libSOIL.so
 INC = SOIL.h
 
 SRCDIR = ../../src
@@ -13,7 +13,7 @@ INCDIR = ../../src
 OBJDIR = obj
 
 CXX = gcc
-CXXFLAGS = -O2 -s -Wall
+CXXFLAGS = -O4 -s -Wall -fPIC
 DELETER = rm -f
 COPIER = cp
 
@@ -29,8 +29,7 @@ BIN = $(LIBDIR)/$(LIB)
 all: $(BIN)
 
 $(BIN): $(OBJ)
-	ar r $(BIN) $(OBJ)
-	ranlib $(BIN)
+	ld -shared $(OBJ) -o $(BIN)
 	@echo -------------------------------------------------------------------
 	@echo Done. As root, type 'make install' to install the library.
 

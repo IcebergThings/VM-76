@@ -5,14 +5,11 @@
 //   还负责一些Ruby扩展所需的杂务和整个初始化系统的调用。
 //=============================================================================
 
-#include "global.hpp"
+#include "VMDE.hpp"
+#include "audio.hpp"
+#include "GDrawable.hpp"
 
 namespace RubyWrapper {
-	VALUE load_pic(VALUE self UNUSED, VALUE path) {
-		Check_Type(path, T_STRING);
-		char* a = StringValueCStr(path);
-		return INT2FIX(load_img(a));
-	}
 
 	struct ptr_data {
 		void* ptr;
@@ -167,9 +164,40 @@ namespace RubyWrapper {
 		return INT2FIX(VMDE->fps);
 	}
 
+	VALUE main_get_frame_time() {
+		return rb_float_new(VMDE->frame_time);
+	}
+
 	VALUE main_matrix2D() {
 		::matrix2D();
 		return Qtrue;
+	}
+
+	VALUE ruby_reload_shaders() {
+		reload_shaders();
+		return Qnil;
+	}
+
+	VALUE load_tex(VALUE self UNUSED, VALUE index, VALUE file) {
+		Check_Type(index, T_FIXNUM);
+		Check_Type(file, T_STRING);
+		char* filestr = rb_string_value_ptr(&file);
+		new Res::Texture(filestr, FIX2INT(index), main_shader->shaderProgram);
+		//xefree(filestr);
+		return Qtrue;
+	}
+
+	VALUE unload_tex(VALUE self UNUSED, VALUE index) {
+		Check_Type(index, T_FIXNUM);
+		if (index < 16 && index >= 0 && Res::tex_unit[index]) {
+			// FIXME: How to disable that?
+			// glRemoveTexture(GL_TEXTURE0 + index);
+			free(Res::tex_unit[index]);
+			Res::tex_unit[index] = NULL;
+			return Qtrue;
+		} else {
+			return Qfalse;
+		}
 	}
 
 	VALUE main_set_brightness(VALUE self UNUSED, VALUE value) {
@@ -223,8 +251,11 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, update, main_draw_loop, 0);
 	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
+	RUBY_MODULE_API(VMDE, frame_time, main_get_frame_time, 0);
 	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
 	RUBY_MODULE_API(VMDE, brightness=, main_set_brightness, 1);
+	RUBY_MODULE_API(VMDE, reload_shaders, ruby_reload_shaders, 0);
+	RUBY_MODULE_API(VMDE, load_tex, load_tex, 2);
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
 	RUBY_MODULE_API(Audio, stop, audio_stop, 0);
@@ -235,9 +266,6 @@ void init_ruby_modules() {
 }
 
 void init_ruby_classes() {
-	ruby_GResPic = rb_define_class_under(ruby_VMDE, "GResPic", rb_cObject);
-	rb_define_method(ruby_GResPic, "load_pic", (type_ruby_function) RubyWrapper::load_pic, 1);
-
 	ruby_GDrawable = rb_define_class_under(ruby_VMDE, "GDrawable", rb_cObject);
 	rb_define_method(ruby_GDrawable, "bind", (type_ruby_function) RubyWrapper::gdrawable_bind_obj, 2);
 	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);

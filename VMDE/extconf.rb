@@ -13,12 +13,16 @@ extension_name = "VMDE"
 
 dirs = ["/usr/local/lib"]
 
-$CFLAGS+="-Wall -O3"
 if RbConfig::CONFIG['host_os'].index("linux")
-	$CFLAGS += "-Wall -O4 -O -pthread -malign-double"
+	puts "Linux system detected"
+	$CXXFLAGS += " -Wall -O4 -O -pthread -malign-double "
+else
+	$CXXFLAGS += " -Wall -O3 "
 end
+$CXXFLAGS += " -I../lib/SOIL/src -fPIC "
 
-$LOCAL_LIBS+="../lib/SOIL/lib/libSOIL.a"
+$LOCAL_LIBS+="../lib/SOIL/lib/libSOIL.so"
+
 $libs += %w(
 	-lGLEW -lGLU -lglfw -lrt -lportaudio -lasound -lXrandr -lXinerama -lXi -lXcursor -lXrender
 	-lGL -lm -ldl -ldrm -lXdamage -lXfixes -lX11-xcb -lxcb-glx -lxcb-dri2

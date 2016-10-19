@@ -4,7 +4,8 @@
 //   处理主渲染循环等主要过程。
 //=============================================================================
 
-#include "global.hpp"
+#include "VMDE.hpp"
+#include "GDrawable.hpp"
 
 //-----------------------------------------------------------------------------
 // ● 为GLFW提供的通用错误回调函数
@@ -20,6 +21,7 @@ glm::mat4 view;
 
 time_t fps_since = time(NULL);
 int fps_counter = 0;
+time_t accumulated_frame_time = 0;
 
 //-----------------------------------------------------------------------------
 // ● 渲染
@@ -32,19 +34,37 @@ void main_draw_loop() {
 		VMDE->fps = fps_counter;
 		fps_counter = 0;
 		fps_since = now;
+		VMDE->frame_time = accumulated_frame_time / double((VMDE->fps)) * 1000.0;
+		accumulated_frame_time -= 1.0d;
 	}
 	if (!VMDE->state.frozen) {
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		double cr = 0.2f * VMDE->state.brightness,
+			cg = 0.3f * VMDE->state.brightness,
+			cb = 0.3f * VMDE->state.brightness;
+		glClearColor(cr, cg, cb, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/* Render */
 
+		// Activate Shader
+		glUseProgram(main_shader->shaderProgram);
+
+		// Setup uniforms
 		GLint model_location;
 		model_location = glGetUniformLocation(main_shader->shaderProgram, "viewMatrix");
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(view));
 		model_location = glGetUniformLocation(main_shader->shaderProgram, "brightness");
 		glUniform1f(model_location, VMDE->state.brightness);
 
-		glUseProgram(main_shader->shaderProgram);
+		// Setup textures
+		for (int index = 0; index < 16; index++) if (Res::tex_unit[index]) {
+			char* uniform_name = new char[16];
+			sprintf(uniform_name, "colortex%d", index);
+			glActiveTexture(GL_TEXTURE0 + index);
+			glBindTexture(GL_TEXTURE_2D, Res::tex_unit[index]->texture);
+			glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
+			xefree(uniform_name);
+		}
+
 
 		struct RenderChainNode* chain = render_chain;
 		while (chain) {
@@ -54,6 +74,9 @@ void main_draw_loop() {
 
 			chain = chain->next;
 		}
+		glFlush();
+
+		accumulated_frame_time += difftime(time(NULL), now);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
