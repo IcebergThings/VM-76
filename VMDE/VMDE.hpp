@@ -20,6 +20,7 @@
 		long millisecond;
 		int width, height;
 		int fps;
+		double frame_time;
 	};
 
 	#define RCN struct RenderChainNode

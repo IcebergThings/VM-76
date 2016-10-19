@@ -21,6 +21,7 @@ glm::mat4 view;
 
 time_t fps_since = time(NULL);
 int fps_counter = 0;
+time_t accumulated_frame_time = 0;
 
 //-----------------------------------------------------------------------------
 // ● 渲染
@@ -33,9 +34,14 @@ void main_draw_loop() {
 		VMDE->fps = fps_counter;
 		fps_counter = 0;
 		fps_since = now;
+		VMDE->frame_time = accumulated_frame_time / double((VMDE->fps)) * 1000.0;
+		accumulated_frame_time -= 1.0d;
 	}
 	if (!VMDE->state.frozen) {
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		double cr = 0.2f * VMDE->state.brightness,
+			cg = 0.3f * VMDE->state.brightness,
+			cb = 0.3f * VMDE->state.brightness;
+		glClearColor(cr, cg, cb, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/* Render */
 
@@ -55,6 +61,9 @@ void main_draw_loop() {
 
 			chain = chain->next;
 		}
+		glFlush();
+
+		accumulated_frame_time += difftime(time(NULL), now);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

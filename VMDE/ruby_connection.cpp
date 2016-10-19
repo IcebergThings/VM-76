@@ -164,6 +164,10 @@ namespace RubyWrapper {
 		return INT2FIX(VMDE->fps);
 	}
 
+	VALUE main_get_frame_time() {
+		return rb_float_new(VMDE->frame_time);
+	}
+
 	VALUE main_matrix2D() {
 		::matrix2D();
 		return Qtrue;
@@ -220,6 +224,7 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, update, main_draw_loop, 0);
 	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
+	RUBY_MODULE_API(VMDE, frame_time, main_get_frame_time, 0);
 	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
 	RUBY_MODULE_API(VMDE, brightness=, main_set_brightness, 1);
 
