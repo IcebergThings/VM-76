@@ -87,5 +87,5 @@ void main_draw_loop() {
 // ● Matrix for 2D (GUI), depth from -100 to 100, X = 0 ~ Width, Y = 0 ~ Height
 //-----------------------------------------------------------------------------
 void matrix2D() {
-	view = glm::ortho(0.0f, float(VMDE->width), 0.0f, float(VMDE->width), -100.0f, 100.0f);
+	view = glm::ortho(0.0f, float(VMDE->width), 0.0f, float(VMDE->height), -100.0f, 100.0f);
 }
