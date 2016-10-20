@@ -144,6 +144,20 @@ namespace RubyWrapper {
 		return Qnil;
 	}
 
+	VALUE gdrawable_model_translate(VALUE self UNUSED, VALUE cdata, VALUE x, VALUE y, VALUE z) {
+		Check_Type(x, T_FLOAT);
+		Check_Type(y, T_FLOAT);
+		Check_Type(z, T_FLOAT);
+
+		struct ptr_data *data;
+		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
+		RCN* node = (RCN*) data->ptr;
+		glm::vec3 translate(rb_float_value(x), rb_float_value(y), rb_float_value(z));
+		node->gd->model = glm::translate(glm::mat4(1.f), translate);
+
+		return Qtrue;
+	}
+
 	VALUE init_engine(VALUE self UNUSED, VALUE w, VALUE h) {
 		Check_Type(w, T_FIXNUM);
 		Check_Type(h, T_FIXNUM);
@@ -271,6 +285,8 @@ void init_ruby_classes() {
 	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);
 	rb_define_method(ruby_GDrawable, "get_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_get, 1);
 	rb_define_method(ruby_GDrawable, "update_vertices", (type_ruby_function) RubyWrapper::gdrawable_update_vertices, 3);
+	rb_define_method(ruby_GDrawable, "model_translate", (type_ruby_function) RubyWrapper::gdrawable_model_translate, 4);
+
 }
 
 EXPORTED void Init_VMDE() {

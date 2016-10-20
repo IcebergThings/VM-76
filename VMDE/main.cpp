@@ -44,6 +44,8 @@ void main_draw_loop() {
 		glClearColor(cr, cg, cb, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		/* Render */
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// Activate Shader
 		glUseProgram(main_shader->shaderProgram);
@@ -74,6 +76,7 @@ void main_draw_loop() {
 
 			chain = chain->next;
 		}
+		glDisable(GL_BLEND);
 		glFlush();
 
 		accumulated_frame_time += difftime(time(NULL), now);

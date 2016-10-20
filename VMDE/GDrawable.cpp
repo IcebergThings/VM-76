@@ -8,6 +8,9 @@
 namespace GDrawable {
 
 	void draw(struct GDrawable* s) {
+		GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "modelMatrix");
+		glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(s->model));
+
 		glBindVertexArray(s->VAO);
 		glDrawElements(GL_TRIANGLES, s->tri_mesh_count * 3, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
@@ -68,6 +71,7 @@ namespace GDrawable {
 		glGenBuffers(1, &s->EBO);
 		s->vertices = NULL;
 		s->indices = NULL;
+		s->model = glm::mat4(1.0f);
 
 		return s;
 	}

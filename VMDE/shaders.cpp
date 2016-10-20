@@ -12,10 +12,12 @@ const GLchar* temp_vertexShaderSource =
 	"layout (location = 1) in vec4 vertex_color;\n"
 	"layout (location = 2) in vec2 texc;\n"
 	"uniform mat4 viewMatrix;\n"
+	"uniform mat4 modelMatrix;\n"
 	"out vec4 texcolor;\n"
 	"out vec2 texcoord;\n"
 	"void main() {\n"
-	"gl_Position = viewMatrix * vec4(position, 1.0);\n"
+	"vec4 pos = modelMatrix * vec4(position, 1.0);"
+	"gl_Position = viewMatrix * pos;\n"
 	"texcolor = vertex_color;\n"
 	"texcoord = texc;\n"
 	"}";

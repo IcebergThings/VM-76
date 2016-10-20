@@ -19,6 +19,7 @@ namespace GDrawable {
 		GLuint VBO;
 		GLuint EBO;
 		GLuint tri_mesh_count;
+		glm::mat4 model;
 	};
 	void draw(GDrawable* s);
 	void fbind(GDrawable* s);
