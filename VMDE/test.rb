@@ -13,7 +13,7 @@ def main
 
 VMDE.init(880, 540)
 puts "Ruby initializes here"
-VMDE.load_tex(0, "../Media/test_pic.jpg")
+VMDE.load_tex(0, "../Media/terrain.png")
 
 obj1_arr = [
 	50.0,50.0,0.0,    1.0, 1.0, 0.0, 0.0,  0.0, 0.0,
@@ -51,7 +51,7 @@ Thread.new {
 		sleep 0.25
 	end
 	VMDE::Audio.stop
-	VMDE::Audio.play_loop("../Media/loop-test.ogg")	
+	VMDE::Audio.play_loop("../Media/loop-test.ogg")
 }
 Thread.new {
 	loop do
