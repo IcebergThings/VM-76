@@ -287,7 +287,7 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, load_tex, load_tex, 2);
 
 	VALUE ruby_Audio = rb_define_module_under(ruby_VMDE, "Audio");
-	RUBY_MODULE_API(Audio, stop, audio_stop, 0);
+	RUBY_MODULE_API(Audio, stop_wave, audio_stop, 0);
 	RUBY_MODULE_API(Audio, play_wave, audio_play_wave, 2);
 	RUBY_MODULE_API(Audio, play_sound, audio_play_sound, 1);
 	RUBY_MODULE_API(Audio, play_loop, audio_play_loop, 1);
