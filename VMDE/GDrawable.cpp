@@ -7,9 +7,11 @@
 
 namespace GDrawable {
 
-	void draw(struct GDrawable* s) {
-		GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "modelMatrix");
-		glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(s->model));
+	void draw(struct GDrawable* s, glm::mat4 projection, glm::mat4 view) {
+		GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "MVP");
+		glm::mat4 mvp = projection * view * s->model;
+		GLfloat* ptr = glm::value_ptr(mvp);
+		glUniformMatrix4fv(model_location, 1, GL_FALSE, ptr);
 
 		glBindVertexArray(s->VAO);
 		glDrawElements(GL_TRIANGLES, s->tri_mesh_count * 3, GL_UNSIGNED_INT, 0);

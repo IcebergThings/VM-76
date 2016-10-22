@@ -21,7 +21,7 @@ namespace GDrawable {
 		GLuint tri_mesh_count;
 		glm::mat4 model;
 	};
-	void draw(GDrawable* s);
+	void draw(GDrawable* s, glm::mat4 projection, glm::mat4 view);
 	void fbind(GDrawable* s);
 	void update(GDrawable* s);
 	void dispose(GDrawable* s);
