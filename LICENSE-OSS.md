@@ -276,3 +276,23 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
+
+SOIL
+----
+
+```c
+/*
+	Jonathan Dummer
+	2007-07-26-10.36
+
+	Simple OpenGL Image Library
+
+	Public Domain
+	using Sean Barret's stb_image as a base
+
+	Thanks to:
+	* Sean Barret - for the awesome stb_image
+	* Dan Venkitachalam - for finding some non-compliant DDS files, and patching some explicit casts
+	* everybody at gamedev.net
+*/
+```
