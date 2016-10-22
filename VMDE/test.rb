@@ -74,7 +74,7 @@ loop do
 		obj1.set_visible(obj1_b, false)
 	end
 
-	obj2_arr_t = obj2_arr.map { |v| (i.to_f / 128.0) * v }
+	obj2_arr_t = obj2_arr.map { |v| (i.to_f / 256.0) * v }
 	obj2.update_vertices(obj2_b, obj2_arr_t, [0,1,2])
 
 	VMDE.brightness = 0.5 + i / 510.0

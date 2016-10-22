@@ -15,11 +15,15 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#define GLM_FORCE_SSE41
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <portaudio.h>
 #include <vorbis/vorbisfile.h>
+
 #include <SOIL.h>
 
 #ifndef _INCLUDE_GLOBAL_H
@@ -121,9 +125,12 @@
 	// ● main.cpp
 	//-------------------------------------------------------------------------
 	void glfw_error_callback(int error, const char* description);
-	void main_draw_loop();
+	void main_draw_start();
+	void main_draw_end();
 	void main_set_brightness(float b);
 	void matrix2D();
+
+	extern glm::mat4 projection, view;
 	//-------------------------------------------------------------------------
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
