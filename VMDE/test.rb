@@ -9,28 +9,56 @@
 
 require "./VMDE.so"
 
+def main
+
 VMDE.init(880, 540)
 puts "Ruby initializes here"
+VMDE.load_tex(0, "../Media/terrain.png")
 
-obj2_arr = [600.0,600.0,0.0,450.0,450.0,0.0,600.0,475.0,0.0]
+obj1_arr = [
+	50.0,50.0,0.0,    1.0, 1.0, 0.0, 0.0,  0.0, 0.0,
+	50.0,300.0,0.0,   1.0, 0.0, 1.0, 0.0,  0.0, 1.0,
+	444.4,300.0,0.0,  0.0, 1.0, 1.0, 0.0,  1.0, 1.0,
+	444.4,50.0,0.0,   1.0, 1.0, 1.0, 0.0,  1.0, 0.0
+]
+obj2_arr = [
+	600.0,600.0,0.0,  1.0, 0.0, 0.0, 0.0,  1.0, 1.0,
+	450.0,450.0,0.0,  0.0, 1.0, 0.0, 0.0,  0.0, 0.0,
+	600.0,475.0,0.0,  0.0, 0.0, 1.0, 0.0,  1.0, 0.0
+]
+background_arr = [
+	0.0, 0.0, -99.0,     1.0,1.0,1.0,0.5, 0.0, 0.0,
+	0.0, 540.0, -99.0,   1.0,1.0,1.0,0.5, 0.0, 1.0,
+	880.0, 540.0, -99.0, 1.0,1.0,1.0,0.5, 1.0, 1.0,
+	880.0, 0.0, -99.0,   1.0,1.0,1.0,0.5, 1.0, 0.0,
+]
 
 obj1 = VMDE::GDrawable.new
-obj1_b = obj1.bind([50.0,50.0,0.0,50.0,200.0,0.0,200.0,200.0,0.0,50.0,50.0,0.0,200.0,50.0,0.0,200.0,200.0,0.0])
+obj1_b = obj1.bind(obj1_arr, [0,1,3, 1,2,3])
 obj2 = VMDE::GDrawable.new
-obj2_b = obj2.bind(obj2_arr)
+obj2_b = obj2.bind(obj2_arr, [0,1,2])
+background = VMDE::GDrawable.new
+background_b = background.bind(background_arr, [0,1,3, 1,2,3])
+background.set_visible(background_b, true)
 
-VMDE::Audio.play_sound("../Media/soft-ping.ogg")
-sleep 1
-freq = 261.626
-freq_factor = 2.0 ** (1.0 / 12)
-10.times do |i|
-	puts "##{i} - #{freq}Hz"
-	VMDE::Audio.play_wave(:triangle, freq)
-	freq *= freq_factor
-	sleep 0.25
-end
-VMDE::Audio.stop_wave
-VMDE::Audio.play_loop("../Media/loop-test.ogg")
+Thread.new {
+	freq = 261.626
+	freq_factor = 2.0 ** (1.0 / 12)
+	10.times do |i|
+		puts "##{i} - #{freq}Hz"
+		VMDE::Audio.play_wave(:triangle, freq)
+		freq *= freq_factor
+		sleep 0.25
+	end
+	VMDE::Audio.stop
+	VMDE::Audio.play_loop("../Media/loop-test.ogg")
+}
+Thread.new {
+	loop do
+		sleep 1
+		puts "FPS : #{VMDE.fps}, Average Frame Time : #{VMDE.frame_time}ms"
+	end
+}
 
 obj2.set_visible(obj2_b,true)
 
@@ -46,11 +74,22 @@ loop do
 		obj1.set_visible(obj1_b, false)
 	end
 
-	obj2_arr_t = obj2_arr.map { |v| (i.to_f / 128.0) * v }
-	obj2.update_vertices(obj2_b, obj2_arr_t)
+	obj2_arr_t = obj2_arr.map { |v| (i.to_f / 256.0) * v }
+	obj2.update_vertices(obj2_b, obj2_arr_t, [0,1,2])
 
 	VMDE.brightness = 0.5 + i / 510.0
 
 	VMDE.matrix2D
 	VMDE.update
 end
+
+#------------------------------------------------------------------------------
+# 为了避免不好的事发生而从windoge_make搬运来的类级错误处理
+#------------------------------------------------------------------------------
+rescue
+        p $!
+        pause
+        exit
+end
+
+main

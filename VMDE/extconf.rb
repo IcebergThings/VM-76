@@ -7,15 +7,28 @@
 #==============================================================================
 
 require 'mkmf'
+require 'rbconfig'
 
 extension_name = "VMDE"
 
 dirs = ["/usr/local/lib"]
+
+if RbConfig::CONFIG['host_os'].index("linux")
+	puts "Linux system detected"
+	$CXXFLAGS += " -Wall -O4 -O -pthread -malign-double "
+else
+	$CXXFLAGS += " -Wall -O3 "
+end
+$CXXFLAGS += " -I../lib/SOIL/src -fPIC "
+
+$LOCAL_LIBS+="../lib/SOIL/lib/libSOIL.so"
+
 $libs += %w(
 	-lGLEW -lGLU -lglfw -lrt -lportaudio -lasound -lXrandr -lXinerama -lXi -lXcursor -lXrender
 	-lGL -lm -ldl -ldrm -lXdamage -lXfixes -lX11-xcb -lxcb-glx -lxcb-dri2
 	-lXxf86vm -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lvorbisfile
 ).join(" ")
+$libs = append_library($libs, "supc++")
 
 dir_config(extension_name)
 create_makefile(extension_name)
