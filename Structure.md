@@ -29,6 +29,7 @@ Structure
         - [x] ⓜ play_sound
             - [x] play_sound
             - [x] play_loop
+- [ ] ○ VMGS: game system
 
 它是怎么绘图的
 --------------
