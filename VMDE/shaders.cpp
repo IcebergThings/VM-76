@@ -11,11 +11,12 @@ const GLchar* temp_vertexShaderSource =
 	"layout (location = 0) in vec3 position;\n"
 	"layout (location = 1) in vec4 vertex_color;\n"
 	"layout (location = 2) in vec2 texc;\n"
-	"uniform mat4 viewMatrix;\n"
+	"uniform mat4 MVP;\n"
 	"out vec4 texcolor;\n"
 	"out vec2 texcoord;\n"
 	"void main() {\n"
-	"gl_Position = viewMatrix * vec4(position, 1.0);\n"
+	"vec4 v = vec4(position, 1.0);\n"
+	"gl_Position = MVP * v;\n"
 	"texcolor = vertex_color;\n"
 	"texcoord = texc;\n"
 	"}";
@@ -27,7 +28,9 @@ const GLchar* temp_fragmentShaderSource =
 	"uniform float brightness;\n"
 	"uniform sampler2D colortex0;\n"
 	"void main() {\n"
-	"color = vec4(texture(colortex0, texcoord) * texcolor * brightness);\n"
+	"vec4 finalc = vec4(0.0);\n"
+	"finalc += texture(colortex0, texcoord.st);\n"
+	"color = vec4(finalc * texcolor * brightness);\n"
 	"}";
 
 void Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {

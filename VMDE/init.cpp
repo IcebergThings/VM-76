@@ -49,6 +49,8 @@ void init_graphics(int w, int h) {
 	glfwSwapInterval(1);
 	// 深度测试是必要的
 	glEnable(GL_DEPTH_TEST);
+	// 混合是极度必要的
+	glEnable(GL_BLEND);
 
 	// 初始化GLEW
 	glewExperimental = GL_TRUE;

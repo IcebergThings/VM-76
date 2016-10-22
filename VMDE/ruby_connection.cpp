@@ -98,7 +98,7 @@ namespace RubyWrapper {
 		xefree(gd->vertices);
 		gd->vertices = (GLfloat*) malloc(size);
 		for (i = 0; i < length_v; i++) {
-			gd->vertices[i] = (GLfloat) rb_float_value(rb_ary_entry(vertex_array, i));
+			gd->vertices[i] = (GLfloat) RFLOAT_VALUE(rb_ary_entry(vertex_array, i));
 		}
 
 		size = sizeof(GLuint) * length_i;
@@ -144,6 +144,29 @@ namespace RubyWrapper {
 		return Qnil;
 	}
 
+	VALUE gdrawable_model_translate(VALUE self UNUSED, VALUE cdata, VALUE x, VALUE y, VALUE z) {
+		Check_Type(x, T_FLOAT);
+		Check_Type(y, T_FLOAT);
+		Check_Type(z, T_FLOAT);
+
+		struct ptr_data *data;
+		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
+		RCN* node = (RCN*) data->ptr;
+		glm::vec3 translate(RFLOAT_VALUE(x), RFLOAT_VALUE(y), RFLOAT_VALUE(z));
+		node->gd->model = glm::translate(glm::mat4(1.0f), translate);
+
+		return Qtrue;
+	}
+
+	VALUE gdrawable_render(VALUE self UNUSED, VALUE cdata) {
+		struct ptr_data *data;
+		(RCN*) TypedData_Get_Struct(cdata, ptr_data, &gdrawable_data_type, data);
+		RCN* node = (RCN*) data->ptr;
+		GDrawable::draw(node->gd, projection, view);
+
+		return Qnil;
+	}
+
 	VALUE init_engine(VALUE self UNUSED, VALUE w, VALUE h) {
 		Check_Type(w, T_FIXNUM);
 		Check_Type(h, T_FIXNUM);
@@ -151,8 +174,13 @@ namespace RubyWrapper {
 		return Qnil;
 	}
 
-	VALUE main_draw_loop() {
-		::main_draw_loop();
+	VALUE main_draw_init() {
+		::main_draw_start();
+		return Qnil;
+	}
+
+	VALUE main_draw_end() {
+		::main_draw_end();
 		return Qnil;
 	}
 
@@ -202,7 +230,7 @@ namespace RubyWrapper {
 
 	VALUE main_set_brightness(VALUE self UNUSED, VALUE value) {
 		Check_Type(value, T_FLOAT);
-		VMDE->state.brightness = rb_float_value(value);
+		VMDE->state.brightness = RFLOAT_VALUE(value);
 		return Qnil;
 	}
 
@@ -214,7 +242,7 @@ namespace RubyWrapper {
 	VALUE audio_play_wave(VALUE self UNUSED, VALUE type, VALUE freq) {
 		Check_Type(type, T_SYMBOL);
 		Check_Type(freq, T_FLOAT);
-		float f = rb_float_value(freq);
+		float f = RFLOAT_VALUE(freq);
 		if (f <= 0) rb_raise(rb_eRangeError, "frequency must be positive");
 		ID type_id = SYM2ID(type);
 		if (type_id == rb_intern("triangle")) {
@@ -248,7 +276,8 @@ void init_ruby_modules() {
 		(type_ruby_function) RubyWrapper::wrapper_name, parameter_count)
 	ruby_VMDE = rb_define_module("VMDE");
 	RUBY_MODULE_API(VMDE, init, init_engine, 2);
-	RUBY_MODULE_API(VMDE, update, main_draw_loop, 0);
+	RUBY_MODULE_API(VMDE, prepare, main_draw_init, 0);
+	RUBY_MODULE_API(VMDE, update, main_draw_end, 0);
 	RUBY_MODULE_API(VMDE, frame_count, main_get_frame_count, 0);
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
 	RUBY_MODULE_API(VMDE, frame_time, main_get_frame_time, 0);
@@ -271,6 +300,8 @@ void init_ruby_classes() {
 	rb_define_method(ruby_GDrawable, "set_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_set, 2);
 	rb_define_method(ruby_GDrawable, "get_visible", (type_ruby_function) RubyWrapper::gdrawable_visible_get, 1);
 	rb_define_method(ruby_GDrawable, "update_vertices", (type_ruby_function) RubyWrapper::gdrawable_update_vertices, 3);
+	rb_define_method(ruby_GDrawable, "model_translate", (type_ruby_function) RubyWrapper::gdrawable_model_translate, 4);
+	rb_define_method(ruby_GDrawable, "render", (type_ruby_function) RubyWrapper::gdrawable_render, 1);
 }
 
 EXPORTED void Init_VMDE() {
