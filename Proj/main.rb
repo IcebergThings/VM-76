@@ -4,7 +4,11 @@ require '../VMDE/VMDE.so'
 
 class Tile
 
-	def initialize(x, y, x0, y0)
+	attr_accessor :x0, :y0
+
+	def initialize(tid, x0, y0)
+		x = tid / 16
+		y = tid % 16
 		tile_size = 1 / 16.0
 		@tile_vbo = [
 			0.0,0.0,0.0,    1.0, 1.0, 1.0, 1.0,  x * tile_size, y * tile_size,
@@ -16,8 +20,23 @@ class Tile
 		@draw_item = VMDE::GDrawable.new
 		@draw_item_b = @draw_item.bind(@tile_vbo, [0,1,3, 1,2,3])
 		@draw_item.set_visible(@draw_item_b, true)
+		move_to(x0.to_f, y0.to_f)
+	end
 
+	def move_to(x0, y0)
+		self.x0 = x0
+		self.y0 = y0
 		@draw_item.model_translate(@draw_item_b, x0, y0, 0.0)
+	end
+
+	def move(x1, y1)
+		self.x0 = self.x0 + x1
+		self.y0 = self.y0 + y1
+		@draw_item.model_translate(@draw_item_b, self.x0, self.y0, 0.0)
+	end
+
+	def render
+		@draw_item.render(@draw_item_b)
 	end
 end
 
@@ -37,9 +56,10 @@ class Craft
 			end
 		}
 
+		@tiles = []
 		for x in 0..15
 			for y in 0..15
-				Tile.new(x, y, x * 24.0, y * 24.0);
+				@tiles.push Tile.new(x * 16 + y, x * 24.0, y * 24.0);
 			end
 		end
 
@@ -49,6 +69,13 @@ class Craft
 	def game_loop
 		loop do
 			VMDE.matrix2D
+			VMDE.prepare
+
+			for a in @tiles
+				a.move(0.01,0.01)
+				a.render
+			end
+
 			VMDE.update
 		end
 	end
