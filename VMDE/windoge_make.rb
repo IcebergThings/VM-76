@@ -25,7 +25,7 @@ class WindogeMake
 	def display_help
 		puts <<~EOF
 			= Usage =
-			> ruby windoge_make.rb -D... -I... -L... -l...
+			> ruby windoge_make.rb -D<...> -I<...> <...>.a <...>.lib -L<...> -l<...>
 			> rem 作为开发者，你不应该在库目录的名称中包含空格。
 			Typical arguments:
 				-IC:\\Ruby23\\include\\ruby-2.3.0
@@ -35,12 +35,14 @@ class WindogeMake
 				-ID:\\glew-1.13.0\\include
 				-ID:\\glm-0.9.7.5
 				-ID:\\portaudio\\include
-				-ID:\libogg-1.3.2\include
-				-ID:\libvorbis-1.3.5\include
+				-ID:\\libogg-1.3.2\\include
+				-ID:\\libvorbis-1.3.5\\include
+				-ID:\\SOIL\\src
 				-O3 -LD:\\bin -llibstdc++
 				-LC:\\Ruby23\\lib
 				-Wl,--enable-auto-image-base,-subsystem,windows
 				-lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi
+				D:\\SOIL\\lib\\libSOIL.a
 				-LD:\\glfw-3.2.bin.WIN32\\lib-mingw-w64
 				-LD:\\glew-1.13.0\\lib\\Release\\Win32
 				-lglfw3dll -lglew32s -lopengl32 -lportaudio_x86 -lvorbisfile
@@ -68,7 +70,20 @@ class WindogeMake
 		# 获取参数
 		compiling_args = []
 		linking_args = []
-		@argv.each { |a| (/^-[gDIO]/ === a ? compiling_args : linking_args) << a }
+		@argv.each do |arg|
+			(
+				case arg
+				when /^-[gDIO]/
+					compiling_args
+				when /^-[lL]/
+					linking_args
+				when /\.(?:a|lib)$/
+					linking_args
+				else
+					linking_args
+				end
+			) << arg
+		end
 		compiling_args.map! { |a| a[1, 1] == "I" ? ["-isystem", a[2, a.size]] : a }
 		compiling_args.flatten!
 		sources = Dir.glob("*.cpp")
