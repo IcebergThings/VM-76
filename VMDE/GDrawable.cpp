@@ -59,8 +59,12 @@ namespace GDrawable {
 
 	void dispose(struct GDrawable* s) {
 		if (s) {
-			xefree(s->vertices);
-			xefree(s->indices);
+			glDeleteVertexArrays(1, &s->VAO);
+			glDeleteBuffers(1, &s->VBO);
+			glDeleteBuffers(1, &s->EBO);
+			// 节约内存，将顶点直接交给Client管理
+			//xefree(s->vertices);
+			//xefree(s->indices);
 			free(s);
 		}
 	}
