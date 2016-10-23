@@ -14,7 +14,7 @@ namespace GDrawable {
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, ptr);
 
 		glBindVertexArray(s->VAO);
-		glDrawElements(GL_TRIANGLES, s->tri_mesh_count * 3, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, s->ind_c, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 
@@ -45,12 +45,12 @@ namespace GDrawable {
 		glBindVertexArray(s->VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, s->VBO);
-		void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 		memcpy(bufv, s->vertices, s->vtx_c * sizeof(GLfloat));
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->EBO);
-		void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+		void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 		memcpy(bufi, s->indices, s->ind_c * sizeof(GLuint));
 		glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
