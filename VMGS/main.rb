@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
+#==============================================================================
+# ■ main.rb
+#------------------------------------------------------------------------------
+#   这个文件是干什么的？w
+#==============================================================================
 
 require '../VMDE/VMDE.so'
 
@@ -65,7 +70,7 @@ class Craft
 
 	end
 
-	# 这玩意每60分之一秒跑一次
+	# 这玩意每秒跑60次
 	def game_loop
 		loop do
 			VMDE.matrix2D
@@ -82,12 +87,11 @@ class Craft
 			VMDE.update
 		end
 	end
-
-rescue
-	p $!
-	pause
-	exit
 end
 
-main = Craft.new
-main.game_loop
+begin
+	main = Craft.new
+	main.game_loop
+rescue
+	p $!
+end

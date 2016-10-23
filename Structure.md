@@ -21,7 +21,7 @@ Structure
     - [ ] Ⓒ GResPic: texture resources
         - [ ] ⓜ load_pic
     - [ ] Ⓜ Audio: audio *drawing* support
-        - [ ] ⓜ stop: stop_wave in fact
+        - [x] ⓜ stop: stop_wave in fact
         - [x] ⓜ play_wave
             - [x] triangle
             - [x] sine
@@ -29,6 +29,7 @@ Structure
         - [x] ⓜ play_sound
             - [x] play_sound
             - [x] play_loop
+- [ ] ○ VMGS: game system
 
 它是怎么绘图的
 --------------
