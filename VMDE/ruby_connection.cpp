@@ -201,6 +201,11 @@ namespace RubyWrapper {
 		return Qtrue;
 	}
 
+	VALUE main_matrix3D() {
+		::matrix3D();
+		return Qtrue;
+	}
+
 	VALUE ruby_reload_shaders() {
 		reload_shaders();
 		return Qnil;
@@ -282,6 +287,7 @@ void init_ruby_modules() {
 	RUBY_MODULE_API(VMDE, fps, main_get_fps, 0);
 	RUBY_MODULE_API(VMDE, frame_time, main_get_frame_time, 0);
 	RUBY_MODULE_API(VMDE, matrix2D, main_matrix2D, 0);
+	RUBY_MODULE_API(VMDE, matrix3D, main_matrix3D, 0);
 	RUBY_MODULE_API(VMDE, brightness=, main_set_brightness, 1);
 	RUBY_MODULE_API(VMDE, reload_shaders, ruby_reload_shaders, 0);
 	RUBY_MODULE_API(VMDE, load_tex, load_tex, 2);

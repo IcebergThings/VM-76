@@ -93,3 +93,10 @@ void main_draw_end() {
 void matrix2D() {
 	projection = glm::ortho(0.0f, float(VMDE->width), 0.0f, float(VMDE->height), -1.0f, 1.0f);
 }
+
+//-----------------------------------------------------------------------------
+// ● Matrix for 3D
+//-----------------------------------------------------------------------------
+void matrix3D() {
+	projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), -0.1f, 128.0f);
+}

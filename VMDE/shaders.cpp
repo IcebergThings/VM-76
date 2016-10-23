@@ -28,8 +28,7 @@ const GLchar* temp_fragmentShaderSource =
 	"uniform float brightness;\n"
 	"uniform sampler2D colortex0;\n"
 	"void main() {\n"
-	"vec4 finalc = vec4(0.0);\n"
-	"finalc += texture(colortex0, texcoord.st);\n"
+	"vec4 finalc = texture(colortex0, texcoord.st);\n"
 	"color = vec4(finalc * texcolor * brightness);\n"
 	"}";
 
