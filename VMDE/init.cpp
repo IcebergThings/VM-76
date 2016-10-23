@@ -66,9 +66,16 @@ void init_graphics(int w, int h) {
 	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
 }
 
+//-----------------------------------------------------------------------------
+// ● 加载着色器
+//-----------------------------------------------------------------------------
 void reload_shaders() {
 	// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
 	xefree(main_shader);
+	xefree(temp_vertexShaderSource);
+	xefree(temp_fragmentShaderSource);
+	temp_vertexShaderSource = Util::read_file("../shaders/G2D_basic.vsh");
+	temp_fragmentShaderSource = Util::read_file("../shaders/G2D_basic.fsh");
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	main_shader->link_program();

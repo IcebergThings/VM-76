@@ -105,8 +105,8 @@
 		void link_program();
 	};
 
-	extern const GLchar* temp_vertexShaderSource;
-	extern const GLchar* temp_fragmentShaderSource;
+	extern GLchar* temp_vertexShaderSource;
+	extern GLchar* temp_fragmentShaderSource;
 
 	extern Shaders* main_shader;
 	//-------------------------------------------------------------------------
@@ -156,5 +156,6 @@
 		extern const double PI;
 		#define PId PI
 		void log_internal(const char* function_name, const char* format, ...);
+		char* read_file(const char* filename);
 	}
 #endif

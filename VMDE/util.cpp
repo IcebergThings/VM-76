@@ -35,4 +35,17 @@ namespace Util {
 		putchar('\n');
 		va_end(ap);
 	}
+	//-------------------------------------------------------------------------
+	// ● 一次性读入文件并加零（固定大小1KB，超出将截断）
+	//-------------------------------------------------------------------------
+	char* read_file(const char* filename) {
+		FILE* f = fopen(filename, "rb");
+		if (!f) return NULL;
+		char* r = (char*) malloc(1024);
+		if (!r) return NULL;
+		size_t size = fread(r, 1, 1024, f);
+		r[size < 1024 ? size : 1023] = 0;
+		fclose(f);
+		return r;
+	}
 }
