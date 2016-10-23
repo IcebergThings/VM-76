@@ -74,8 +74,8 @@ void reload_shaders() {
 	xefree(main_shader);
 	xefree(temp_vertexShaderSource);
 	xefree(temp_fragmentShaderSource);
-	temp_vertexShaderSource = Util::read_file("../shaders/G2D_basic.vsh");
-	temp_fragmentShaderSource = Util::read_file("../shaders/G2D_basic.fsh");
+	temp_vertexShaderSource = Util::read_file("../Media/shaders/G2D_basic.vsh");
+	temp_fragmentShaderSource = Util::read_file("../Media/shaders/G2D_basic.fsh");
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	main_shader->link_program();
