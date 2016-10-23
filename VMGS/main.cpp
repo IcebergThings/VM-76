@@ -22,13 +22,12 @@ namespace VM76 {
 			glUniform1f(model_location, VMDE->state.brightness);
 
 			// Setup textures
+			char uniform_name[16];
 			for (int index = 0; index < 16; index++) if (Res::tex_unit[index]) {
-				char* uniform_name = new char[16];
 				sprintf(uniform_name, "colortex%d", index);
 				glActiveTexture(GL_TEXTURE0 + index);
 				glBindTexture(GL_TEXTURE_2D, Res::tex_unit[index]->texture);
-				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), Res::tex_unit[index]->texture);
-				xefree(uniform_name);
+				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
 			matrix2D();
@@ -40,9 +39,9 @@ namespace VM76 {
 
 	static GLfloat vtx[] = {
 		0.0, 0.0, 0.0,   1.0, 1.0, 1.0, 1.0,  0.0, 0.0,
-		0.0, 16.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
-		16.0, 16.0, 0.0, 1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
-		16.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0
+		0.0, 64.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
+		64.0, 64.0, 0.0, 1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
+		64.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0
 	};
 	static GLuint itx[] = {0, 1, 3,  1, 2, 3};
 
@@ -57,6 +56,8 @@ namespace VM76 {
 		test_obj->indices = itx;
 		test_obj->tri_mesh_count = sizeof(itx) / sizeof(GLuint) / 3;
 		GDrawable::fbind(test_obj);
+		glm::vec3 translate(100.0, 100.0, 0.0);
+		test_obj->model = glm::translate(glm::mat4(1.0f), translate);
 
 		loop();
 	}
