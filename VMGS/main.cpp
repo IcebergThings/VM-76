@@ -1,17 +1,17 @@
 #include <VMDE/VMDE.hpp>
 
 namespace VM76 {
-	GDrawable::GDrawable* test_obj;
+	GDrawable::GDrawable* test_obj = NULL;
 
 	void loop() {
 		for (;;) {
+			glfwPollEvents();
 			::main_draw_start();
 
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glEnable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			// Activate Shader
@@ -30,8 +30,8 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			//matrix2D();
 			test_obj->model = glm::translate(test_obj->model, glm::vec3(0.0001f, 0.0001f, 0.0001f));
+			test_obj->model = glm::rotate(test_obj->model, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f));
 			GDrawable::draw(test_obj, projection, view);
 
 			::main_draw_end();
@@ -39,12 +39,16 @@ namespace VM76 {
 	}
 
 	static GLfloat vtx[] = {
-		0.0, 0.0, 0.0,   1.0, 1.0, 1.0, 1.0,  0.0, 0.0,
+		0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 0.0,
 		0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
-		1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
-		1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0
+		1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
+		1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0,
+		0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  0.0, 0.0,
+		0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
+		1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
+		1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0,
 	};
-	static GLuint itx[] = {0, 1, 3,  1, 2, 3};
+	static GLuint itx[] = {0,1,3, 1,2,3, 4,5,7, 5,6,7};
 
 	void start_game() {
 		::init_engine(800, 600);
@@ -59,9 +63,19 @@ namespace VM76 {
 		GDrawable::fbind(test_obj);
 
 		projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), -1.0f, 1.0f);
-		view = glm::lookAt(glm::vec3(2.0, 0.0, 2.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		view = glm::lookAt(glm::vec3(2.0, 3.0, 2.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 		loop();
+	}
+
+	void terminate() {
+		GDrawable::dispose(test_obj);
+	}
+}
+
+extern "C" {
+	void client_terminate() {
+		VM76::terminate();
 	}
 }
 
