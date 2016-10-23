@@ -21,9 +21,6 @@ namespace GDrawable {
 	void fbind(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, s->VBO);
-		for (int i = 8; i < s->vtx_c; i += 9) {
-			s->vertices[i] = 1.0 - s->vertices[i];
-		}
 		glBufferData(GL_ARRAY_BUFFER, s->vtx_c * sizeof(GLfloat), s->vertices, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->ind_c * sizeof(GLuint), s->indices, GL_DYNAMIC_DRAW);
