@@ -63,8 +63,9 @@ void init_graphics(int w, int h) {
 
 	// 深度测试是必要的
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 	// 混合是极度必要的
-	glEnable(GL_BLEND);
+	//glEnable(GL_BLEND);
 
 	reload_shaders();
 
@@ -91,6 +92,7 @@ void init_engine(int w, int h) {
 	srand(time(NULL));
 
 	init_vmde(w, h);
+	glfwSetKeyCallback(window, i_have_a_key);
 	init_graphics(w, h);
 
 	// 初始化声音

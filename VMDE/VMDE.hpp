@@ -39,6 +39,7 @@
 	// 关闭函数要在client里
 	extern "C" {
 		extern void client_terminate();
+		extern void i_have_a_key(GLFWwindow* window, int key, int scancode, int action, int mode);
 	}
 
 #endif

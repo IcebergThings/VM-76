@@ -28,6 +28,7 @@ time_t accumulated_frame_time = 0;
 //-----------------------------------------------------------------------------
 time_t now;
 void main_draw_start() {
+	glfwPollEvents();
 	if (glfwWindowShouldClose(window)) {
 		client_terminate();
 		// Terminate GLFW, clearing any resources allocated by GLFW.
