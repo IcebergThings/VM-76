@@ -44,7 +44,7 @@ void Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr)
 	if (!success) {
 		glGetShaderInfoLog(this->basic_2D_vsh, 512, NULL, info_log);
 		log("VSH compilation failed:\n%s", info_log);
-		rb_raise(rb_eRuntimeError, "Shaders error");
+		log("Shaders error");
 	}
 
 	// Fragment shader
@@ -57,7 +57,7 @@ void Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr)
 	if (!success) {
 		glGetShaderInfoLog(this->basic_2D_fsh, 512, NULL, info_log);
 		log("FSH compilation failed:\n%s", info_log);
-		rb_raise(rb_eRuntimeError, "Shaders error");
+		log("Shaders error");
 	}
 }
 
@@ -75,7 +75,7 @@ void Shaders::link_program() {
 	if (!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, info_log);
 		log("shaders linking failed:\n%s", info_log);
-		rb_raise(rb_eRuntimeError, "Shaders error");
+		log("Shaders error");
 	}
 	glDeleteShader(this->basic_2D_vsh);
 	glDeleteShader(this->basic_2D_fsh);

@@ -22,7 +22,7 @@ namespace GDrawable {
 		glBindVertexArray(s->VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, s->VBO);
 		for (int i = 8; i < s->vtx_c; i += 9) {
-			s->vertices[i] = 1.0d - s->vertices[i];
+			s->vertices[i] = 1.0 - s->vertices[i];
 		}
 		glBufferData(GL_ARRAY_BUFFER, s->vtx_c * sizeof(GLfloat), s->vertices, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->EBO);

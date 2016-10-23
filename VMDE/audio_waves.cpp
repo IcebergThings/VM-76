@@ -27,7 +27,7 @@ namespace Audio {
 		populate_sine_table();
 		wave_data.type = 0;
 		// 44100Hz
-		wave_data.sample_rate = 44100.0d;
+		wave_data.sample_rate = 44100.0;
 		ensure_no_error(Pa_OpenDefaultStream(
 			&wave_stream,
 			// 无声输入 - 立体声输出、32位浮点数
@@ -74,7 +74,7 @@ namespace Audio {
 				// Channels are different channels.
 				// Values are different values.
 				FEED_AUDIO_DATA((float) (
-					(double) rand() / (double) RAND_MAX * 2.0d - 1.0d
+					(double) rand() / (double) RAND_MAX * 2.0 - 1.0
 				));
 				break;
 		}

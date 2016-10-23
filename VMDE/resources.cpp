@@ -10,7 +10,7 @@ namespace Res {
 
 	Texture* tex_unit[16];
 
-	Texture::Texture(char* file, GLuint index, GLuint sh) {
+	Texture::Texture(char* file, GLuint index) {
 		glGenTextures(1, &this->texture);
 		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_2D, this->texture);

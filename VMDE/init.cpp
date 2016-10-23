@@ -27,7 +27,10 @@ void init_graphics(int w, int h) {
 
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
-	if (!glfwInit()) rb_raise(rb_eRuntimeError, "glfwInit() failed");
+	if (!glfwInit()) {
+		log("glfwInit() failed");
+		return;
+	}
 
 	// OpenGL 向前&向后兼容，使用GL 3.3 Core Profile，窗口大小不可变
 	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
@@ -40,7 +43,8 @@ void init_graphics(int w, int h) {
 	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
-		rb_raise(rb_eRuntimeError, "glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
+		log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
+		return;
 	}
 
 	// 设置当前窗口GL上下文
@@ -54,7 +58,10 @@ void init_graphics(int w, int h) {
 
 	// 初始化GLEW
 	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() (GLEW Initialization) failed.");
+	if (glewInit() != GLEW_OK) {
+		log("glewInit() (GLEW Initialization) failed.");
+		return;
+	}
 
 	setup_viewport();
 
@@ -82,6 +89,7 @@ void init_engine(int w, int h) {
 
 	srand(time(NULL));
 
+	init_vmde(w, h);
 	init_graphics(w, h);
 
 	// 初始化声音

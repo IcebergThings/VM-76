@@ -8,9 +8,6 @@
 #include "GDrawable.hpp"
 
 GLFWwindow* window;
-VALUE ruby_VMDE;
-VALUE ruby_GResPic;
-VALUE ruby_GDrawable;
 
 struct VMDE* VMDE;
 

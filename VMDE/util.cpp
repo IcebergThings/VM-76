@@ -11,7 +11,7 @@ namespace Util {
 	// ● 常量
 	//-------------------------------------------------------------------------
 	const float PIf = acos(-1.0f);
-	const double PI = acos(-1.0d);
+	const double PI = acos(-1.0);
 	//-------------------------------------------------------------------------
 	// ● 输出调试信息
 	//   * 如果需要报错，请使用Ruby提供的rb_raise函数，例如
@@ -19,6 +19,7 @@ namespace Util {
 	//    function_name : 如无意外，应当传入__func__。
 	//    format, ...   : 与printf风格一致。
 	//   凭借宏的力量（global.hpp），这个函数应当直接使用log(format, ...)调用。
+	// FIXME: 没有ruby了
 	//-------------------------------------------------------------------------
 	void log_internal(const char* function_name, const char* format, ...) {
 		time_t time_t_time = time(NULL);

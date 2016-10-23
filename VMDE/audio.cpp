@@ -34,11 +34,7 @@ namespace Audio {
 	void ensure_no_error(PaError err) {
 		if (err >= 0) return;
 		Pa_Terminate();
-		rb_raise(
-			rb_eRuntimeError,
-			"PortAudio error %d: %s",
-			err, Pa_GetErrorText(err)
-		);
+		log("PortAudio error %d: %s", err, Pa_GetErrorText(err));
 	}
 	//-------------------------------------------------------------------------
 	// ● 停止播放
@@ -80,7 +76,8 @@ namespace Audio {
 		sound->file = fopen(filename, "rb");
 		if (!sound->file) {
 			delete sound;
-			rb_raise(rb_eIOError, "can't open this file: %s", filename);
+			log("can't open this file: %s", filename);
+			return;
 		}
 		// sound->vf
 		if (ov_open_callbacks(
@@ -89,7 +86,8 @@ namespace Audio {
 		) < 0) {
 			delete sound;
 			fclose(sound->file);
-			rb_raise(rb_eRuntimeError, "can't open ogg vorbis file: %s", filename);
+			log("can't open ogg vorbis file: %s", filename);
+			return;
 		}
 		if (!sound->vf.seekable && loop) {
 			log("unseekable file requested to be looped: %s", filename);
@@ -188,11 +186,13 @@ namespace Audio {
 					if (ret == OV_ENOSEEK) {
 						log(THE_SOUND "is not seekable. (OV_ENOSEEK)");
 					} else if (ret == OV_EREAD) {
-						rb_raise(rb_eIOError, THE_SOUND "is not readable. (OV_EREAD)");
+						log(THE_SOUND "is not readable. (OV_EREAD)");
+						return;
 					} else if (ret == OV_EBADLINK) {
 						log(THE_SOUND "may be corrupted. (OV_EBADLINK)");
 					} else if (ret == OV_EFAULT) {
-						rb_raise(rb_eRuntimeError, "You encountered a bug!");
+						log("You encountered a bug!");
+						return;
 					}
 					// After this, we can go on ov_read'ing in the next loop.
 					#undef THE_SOUND
@@ -207,9 +207,11 @@ namespace Audio {
 					return;
 				}
 			} else if (ret == OV_EBADLINK) {
-				rb_raise(rb_eRuntimeError, "bad vorbis data (OV_EBADLINK)");
+				log("bad vorbis data (OV_EBADLINK)");
+				return;
 			} else if (ret == OV_EINVAL) {
-				rb_raise(rb_eRuntimeError, "bad vorbis data (OV_EINVAL)");
+				log("bad vorbis data (OV_EINVAL)");
+				return;
 			}
 			// We must not free(tmp_buffer). It isn't ours.
 		}

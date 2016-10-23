@@ -26,7 +26,6 @@
 	#define RCN struct RenderChainNode
 	struct RenderChainNode {
 		RenderChainNode* prev;
-		VALUE n;
 		GDrawable::GDrawable* gd;
 		bool visible;
 		RenderChainNode* next;
@@ -35,9 +34,6 @@
 	// VMDE操控的全局变量
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
-	extern VALUE ruby_VMDE;
-	extern VALUE ruby_GResPic;
-	extern VALUE ruby_GDrawable;
 	extern RenderChainNode* render_chain;
 
 #endif
