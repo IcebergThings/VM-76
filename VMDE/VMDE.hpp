@@ -36,4 +36,9 @@
 	extern GLFWwindow* window;
 	extern RenderChainNode* render_chain;
 
+	// 关闭函数要在client里
+	extern "C" {
+		extern void client_terminate();
+	}
+
 #endif
