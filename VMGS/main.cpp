@@ -5,14 +5,17 @@ namespace VM76 {
 
 	void loop() {
 		for (;;) {
-			glfwPollEvents();
 			::main_draw_start();
 
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClearDepth(1.0f);
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			glDepthMask(GL_TRUE);
 
 			// Activate Shader
 			glUseProgram(main_shader->shaderProgram);
@@ -62,7 +65,7 @@ namespace VM76 {
 		test_obj->tri_mesh_count = sizeof(itx) / sizeof(GLuint) / 3;
 		GDrawable::fbind(test_obj);
 
-		projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), -1.0f, 1.0f);
+		projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), 1.0f, -1.0f);
 		view = glm::lookAt(glm::vec3(2.0, 3.0, 2.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 		loop();
@@ -76,6 +79,10 @@ namespace VM76 {
 extern "C" {
 	void client_terminate() {
 		VM76::terminate();
+	}
+
+	void i_have_a_key(GLFWwindow* window UNUSED, int key UNUSED, int scancode UNUSED, int action UNUSED, int mode UNUSED) {
+		log("Something happened");
 	}
 }
 
