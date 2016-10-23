@@ -30,7 +30,8 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			matrix2D();
+			//matrix2D();
+			test_obj->model = glm::translate(test_obj->model, glm::vec3(0.0001f, 0.0001f, 0.0001f));
 			GDrawable::draw(test_obj, projection, view);
 
 			::main_draw_end();
@@ -39,9 +40,9 @@ namespace VM76 {
 
 	static GLfloat vtx[] = {
 		0.0, 0.0, 0.0,   1.0, 1.0, 1.0, 1.0,  0.0, 0.0,
-		0.0, 64.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
-		64.0, 64.0, 0.0, 1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
-		64.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0
+		0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
+		1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
+		1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0
 	};
 	static GLuint itx[] = {0, 1, 3,  1, 2, 3};
 
@@ -56,8 +57,9 @@ namespace VM76 {
 		test_obj->indices = itx;
 		test_obj->tri_mesh_count = sizeof(itx) / sizeof(GLuint) / 3;
 		GDrawable::fbind(test_obj);
-		glm::vec3 translate(100.0, 100.0, 0.0);
-		test_obj->model = glm::translate(glm::mat4(1.0f), translate);
+
+		projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), -1.0f, 1.0f);
+		view = glm::lookAt(glm::vec3(2.0, 0.0, 2.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 		loop();
 	}
