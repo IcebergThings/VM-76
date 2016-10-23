@@ -33,11 +33,17 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			view = glm::lookAt(glm::vec3(3.0, 3.0 * (sin(0.01f * VMDE->frame_count)), 3.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+			float x = 5.0f * cos(0.01f * VMDE->frame_count);
+			float y = 5.0f * sin(0.01f * VMDE->frame_count);
+			view = glm::lookAt(glm::vec3(x, 3.5f, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
-			test_obj->model = glm::rotate(glm::mat4(1.0f), 0.01f * VMDE->frame_count, glm::vec3(0.0f, 1.0f, 0.0f));
-			test_obj->model = glm::translate(test_obj->model, glm::vec3(-0.5f, 0.0f, -0.5f));
-			GDrawable::draw(test_obj, projection, view);
+			//test_obj->model = glm::rotate(glm::mat4(1.0f), 0.01f * VMDE->frame_count, glm::vec3(0.0f, 1.0f, 0.0f));
+			for (int x = -2; x < 3; x++) {
+				for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
+					test_obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f + float(x), 0.0f, -0.5f + float(y)));
+					GDrawable::draw(test_obj, projection, view);
+				}
+			}
 
 			::main_draw_end();
 		}
@@ -56,7 +62,7 @@ namespace VM76 {
 		1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  T, S,
 		1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  S, S,
 	};
-	static GLuint itx[] = {0,1,3, 1,2,3, 4,5,7, 5,6,7, 0,4,5, 0,5,1, 2,6,7, 2,3,7, 1,5,6, 1,2,6, 0,3,4, 3,4,7};
+	static GLuint itx[] = {0,1,2, 1,2,3, 4,5,7, 5,6,7, 0,4,5, 0,5,1, 2,6,7, 2,3,7, 6,1,5, 6,1,2, 0,3,4, 3,4,7};
 
 	void start_game() {
 		::init_engine(800, 600);
