@@ -33,25 +33,30 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			test_obj->model = glm::translate(test_obj->model, glm::vec3(0.0001f, 0.0001f, 0.0001f));
-			test_obj->model = glm::rotate(test_obj->model, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f));
+			view = glm::lookAt(glm::vec3(3.0, 3.0 * (sin(0.01f * VMDE->frame_count)), 3.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+
+			test_obj->model = glm::rotate(glm::mat4(1.0f), 0.01f * VMDE->frame_count, glm::vec3(0.0f, 1.0f, 0.0f));
+			test_obj->model = glm::translate(test_obj->model, glm::vec3(-0.5f, 0.0f, -0.5f));
 			GDrawable::draw(test_obj, projection, view);
 
 			::main_draw_end();
 		}
 	}
 
+	const GLfloat tile_size = 1.0f / 16.0f;
+	#define T tile_size
+	#define S 0.0f
 	static GLfloat vtx[] = {
-		0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 0.0,
-		0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
-		1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
-		1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0,
-		0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  0.0, 0.0,
-		0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  0.0, 1.0,
-		1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  1.0, 1.0,
-		1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  1.0, 0.0,
+		0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  S, S,
+		0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  S, T,
+		1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  T, T,
+		1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  T, S,
+		0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  S, T,
+		0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  T, T,
+		1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  T, S,
+		1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  S, S,
 	};
-	static GLuint itx[] = {0,1,3, 1,2,3, 4,5,7, 5,6,7};
+	static GLuint itx[] = {0,1,3, 1,2,3, 4,5,7, 5,6,7, 0,4,5, 0,5,1, 2,6,7, 2,3,7, 1,5,6, 1,2,6, 0,3,4, 3,4,7};
 
 	void start_game() {
 		::init_engine(800, 600);
