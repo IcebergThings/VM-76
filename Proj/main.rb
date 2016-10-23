@@ -12,9 +12,9 @@ class Tile
 		tile_size = 1 / 16.0
 		@tile_vbo = [
 			0.0,0.0,0.0,    1.0, 1.0, 1.0, 1.0,  x * tile_size, y * tile_size,
-			0.0,24.0,0.0,   1.0, 1.0, 1.0, 1.0,  x * tile_size, (y + 1.0) * tile_size,
-			24.0,24.0,0.0,  1.0, 1.0, 1.0, 1.0,  (x + 1.0) * tile_size, (y + 1.0) * tile_size,
-			24.0,0.0,0.0,   1.0, 1.0, 1.0, 1.0,  (x + 1.0) * tile_size, y * tile_size
+			0.0,16.0,0.0,   1.0, 1.0, 1.0, 1.0,  x * tile_size, (y + 1.0) * tile_size,
+			16.0,16.0,0.0,  1.0, 1.0, 1.0, 1.0,  (x + 1.0) * tile_size, (y + 1.0) * tile_size,
+			16.0,0.0,0.0,   1.0, 1.0, 1.0, 1.0,  (x + 1.0) * tile_size, y * tile_size
 		]
 
 		@draw_item = VMDE::GDrawable.new
@@ -59,7 +59,7 @@ class Craft
 		@tiles = []
 		for x in 0..15
 			for y in 0..15
-				@tiles.push Tile.new(x * 16 + y, x * 24.0, y * 24.0);
+				@tiles.push Tile.new(x * 16 + y, x * 16.0, y * 16.0);
 			end
 		end
 
@@ -72,9 +72,12 @@ class Craft
 			VMDE.prepare
 
 			for a in @tiles
-				a.move(0.01,0.01)
+				a.move(0.05,0.05)
 				a.render
 			end
+
+			VMDE.matrix3D
+			@tiles[0].render
 
 			VMDE.update
 		end
