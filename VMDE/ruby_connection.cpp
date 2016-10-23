@@ -28,9 +28,7 @@ namespace RubyWrapper {
 		struct ptr_data* data = (struct ptr_data*) ptr;
 		if (data->ptr && data->free) (*(data->free))(data->ptr);
 		RCN* n = (RCN*) data->ptr;
-		if (n) {
-			GDrawable::dispose(n->gd);
-		}
+		if (n) GDrawable::dispose(n->gd);
 		xefree(ptr);
 	}
 
@@ -215,16 +213,21 @@ namespace RubyWrapper {
 		return Qtrue;
 	}
 
-	VALUE unload_tex(VALUE self UNUSED, VALUE index) {
-		Check_Type(index, T_FIXNUM);
-		if (index < 16 && index >= 0 && Res::tex_unit[index]) {
-			// FIXME: How to disable that?
-			// glRemoveTexture(GL_TEXTURE0 + index);
-			free(Res::tex_unit[index]);
-			Res::tex_unit[index] = NULL;
-			return Qtrue;
+	VALUE unload_tex(VALUE self UNUSED, VALUE index_fixnum) {
+		FIXNUM_P(index_fixnum);
+		long index = FIX2LONG(index_fixnum);
+		if (index < 16 && index >= 0) {
+			if (Res::tex_unit[index]) {
+				// FIXME: How to disable that?
+				// glRemoveTexture(GL_TEXTURE0 + index);
+				free(Res::tex_unit[index]);
+				Res::tex_unit[index] = NULL;
+				return Qtrue;
+			} else {
+				return Qfalse;
+			}
 		} else {
-			return Qfalse;
+			rb_raise(rb_eRangeError, "index out of range (0...16)");
 		}
 	}
 

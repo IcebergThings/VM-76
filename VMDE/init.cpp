@@ -107,5 +107,6 @@ void init_vmde(int w, int h) {
 
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
-	VMDE->width = w; VMDE->height = h;
+	VMDE->width = w;
+	VMDE->height = h;
 }
