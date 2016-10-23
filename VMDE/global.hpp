@@ -129,6 +129,7 @@
 	void main_draw_end();
 	void main_set_brightness(float b);
 	void matrix2D();
+	void matrix3D();
 
 	extern glm::mat4 projection, view;
 	//-------------------------------------------------------------------------
