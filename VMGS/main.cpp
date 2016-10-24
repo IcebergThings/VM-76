@@ -1,44 +1,45 @@
-#include <VMDE/VMDE.hpp>
+#include "global.hpp"
 
 namespace VM76 {
-	class Tile {
-	public:
-		GDrawable::GDrawable* obj = NULL;
 
-	private:
-		GLfloat *vtx = NULL;
-		GLuint *itx = NULL;
+	Tile::Tile(int tid) {
+		int x = tid % 16;
+		int y = tid / 16;
+		float T = 1.0f / 16.0f;
+		float S = 0.0f;
+		float xs = x * T;
+		float ys = y * T;
+		vtx = new GLfloat[4 * 9 * 4] {
+			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
 
-	public:
-		Tile(int tid) {
-			int x = tid % 16;
-			int y = tid / 16;
-			float T = 1.0f / 16.0f;
-			float S = 0.0f;
-			float xs = x * T;
-			float ys = y * T;
-			vtx = new GLfloat[8 * 9] {
-				0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-				0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-				1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-				1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-				0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-				0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-				1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-				1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-			};
-			itx = new GLuint[3 * 6 * 2] {0,1,2, 1,2,3, 4,5,7, 5,6,7, 0,4,5, 0,5,1, 2,6,7, 2,3,7, 6,1,5, 6,1,2, 0,3,4, 3,4,7};
-			obj = GDrawable::create();
-			obj->vtx_c = 8 * 9;
-			obj->ind_c = 6 * 2 * 3;
-			obj->vertices = vtx;
-			obj->indices = itx;
-			obj->tri_mesh_count = 6 * 2;
-			GDrawable::fbind(obj);
-		}
-	};
+			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
+			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
 
-	// 暂时初始化前16个方块
+			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
+
+			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
+			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+		};
+		itx = new GLuint[3 * 6] {0,1,3, 1,2,3, 7,5,4, 7,6,5, 8,9,11, 9,10,11};
+		obj = GDrawable::create();
+		obj->vtx_c = 8 * 9;
+		obj->ind_c = 7 * 3;
+		obj->vertices = vtx;
+		obj->indices = itx;
+		obj->tri_mesh_count = 6 * 2;
+		GDrawable::fbind(obj);
+	}
+
 	Tile* t[16];
 
 	void loop() {
@@ -51,6 +52,9 @@ namespace VM76 {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			glEnable(GL_BLEND);
+			glFrontFace(GL_CCW);
+			glEnable(GL_CULL_FACE);
+			log("FPS %d",VMDE->fps);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glDepthMask(GL_TRUE);
@@ -76,18 +80,17 @@ namespace VM76 {
 			view = glm::lookAt(glm::vec3(x, 3.5f, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 			//test_obj->model = glm::rotate(glm::mat4(1.0f), 0.01f * VMDE->frame_count, glm::vec3(0.0f, 1.0f, 0.0f));
-			for (int x = -2; x < 3; x++) {
-				for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
-					t[x + 2]->obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f + float(x), 0.0f, -0.5f + float(y)));
-					GDrawable::draw(t[x + 2]->obj, projection, view);
-				}
-			}
+			//for (int x = -2; x < 3; x++) {
+			//	for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
+//					t[3]->obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.0f, -0.5f));
+					GDrawable::prepare(t[3]->obj, projection, view);
+					GDrawable::draw(t[3]->obj);
+			//	}
+			//}
 
 			::main_draw_end();
 		}
 	}
-
-	const GLfloat tile_size = 1.0f / 16.0f;
 
 	void start_game() {
 		::init_engine(800, 600);
