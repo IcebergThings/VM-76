@@ -7,12 +7,31 @@
 
 namespace GDrawable {
 
-	void draw(struct GDrawable* s, glm::mat4 projection, glm::mat4 view) {
-		GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "MVP");
-		glm::mat4 mvp = projection * view * s->model;
-		GLfloat* ptr = glm::value_ptr(mvp);
-		glUniformMatrix4fv(model_location, 1, GL_FALSE, ptr);
+	void prepare(struct GDrawable* s, glm::mat4 projection, glm::mat4 view) {
+		//GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "MVP");
+		//glm::mat4 mvp = projection * view * s->model;
+		//GLfloat* ptr = glm::value_ptr(mvp);
+		//glUniformMatrix4fv(model_location, 1, GL_FALSE, ptr);
+		GLuint loc = glGetUniformLocation(main_shader->shaderProgram, "Model");
+		GLfloat* ptrM = glm::value_ptr(s->model);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, ptrM);
 
+		loc = glGetUniformLocation(main_shader->shaderProgram, "View");
+		GLfloat* ptrV = glm::value_ptr(view);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, ptrV);
+
+		loc = glGetUniformLocation(main_shader->shaderProgram, "Projection");
+		GLfloat* ptrP = glm::value_ptr(projection);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, ptrP);
+	}
+
+	void draw(struct GDrawable* s, GLuint start, GLuint end) {
+		glBindVertexArray(s->VAO);
+		glDrawRangeElements(GL_TRIANGLES, start, end, end - start, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+	}
+
+	void draw(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);
 		glDrawElements(GL_TRIANGLES, s->ind_c, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
