@@ -9,31 +9,44 @@ namespace VM76 {
 		float S = 0.0f;
 		float xs = x * T;
 		float ys = y * T;
-		vtx = new GLfloat[4 * 9 * 4] {
+		vtx = new GLfloat[6 * 9 * 4] {
 			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
 			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
 			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
 			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
 
-			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
+
+			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
+
+			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
+			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
 
 			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-
-			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
 			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
+
+			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
+			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
+			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
+			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
 		};
-		itx = new GLuint[3 * 6] {0,1,3, 1,2,3, 7,5,4, 7,6,5, 8,9,11, 9,10,11};
+		itx = new GLuint[3 * 12] {
+			0,1,3,    1,2,3,    7,5,4,    7,6,5,
+			8,9,11,   9,10,11,  15,13,12, 15,14,13,
+			16,17,19, 17,18,19, 23,21,20, 23,22,21};
 		obj = GDrawable::create();
-		obj->vtx_c = 8 * 9;
-		obj->ind_c = 7 * 3;
+		obj->vtx_c = 6 * 9 * 4;
+		obj->ind_c = 12 * 3;
 		obj->vertices = vtx;
 		obj->indices = itx;
 		obj->tri_mesh_count = 6 * 2;
@@ -75,16 +88,16 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			float x = 5.0f * cos(0.01f * VMDE->frame_count);
-			float y = 5.0f * sin(0.01f * VMDE->frame_count);
-			view = glm::lookAt(glm::vec3(x, 3.5f, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+			float x = 5.4f * cos(0.01f * VMDE->frame_count);
+			float y = 5.4f * sin(0.01f * VMDE->frame_count);
+			view = glm::lookAt(glm::vec3(x, 3.5f * cos(VMDE->frame_count * 0.01f), y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 			//test_obj->model = glm::rotate(glm::mat4(1.0f), 0.01f * VMDE->frame_count, glm::vec3(0.0f, 1.0f, 0.0f));
 			//for (int x = -2; x < 3; x++) {
 			//	for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
 //					t[3]->obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.0f, -0.5f));
-					GDrawable::prepare(t[3]->obj, projection, view);
-					GDrawable::draw(t[3]->obj);
+					GDrawable::prepare(t[4]->obj, projection, view);
+					GDrawable::draw(t[4]->obj);
 			//	}
 			//}
 
