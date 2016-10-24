@@ -27,7 +27,7 @@ namespace GDrawable {
 
 	void draw(struct GDrawable* s, GLuint start, GLuint end) {
 		glBindVertexArray(s->VAO);
-		glDrawRangeElements(GL_TRIANGLES, start, end, end - start, GL_UNSIGNED_INT, 0);
+		glDrawRangeElements(GL_TRIANGLES, start, end, end + 1, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 
