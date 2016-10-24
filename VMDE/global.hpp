@@ -10,8 +10,7 @@
 #include <math.h>
 #include <ctime>
 #include <thread>
-
-#include <ruby.h>
+#include <stdarg.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -32,7 +31,6 @@
 	//-------------------------------------------------------------------------
 	// ● 定义类型
 	//-------------------------------------------------------------------------
-	typedef VALUE (*type_ruby_function)(ANYARGS);
 	typedef void (*type_free_function)(void*);
 	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
@@ -110,11 +108,6 @@
 
 	extern Shaders* main_shader;
 	//-------------------------------------------------------------------------
-	// ● ruby_connection.cpp
-	//-------------------------------------------------------------------------
-	void init_ruby_classes();
-	void init_ruby_modules();
-	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
 	void init_engine(int w, int h);
@@ -140,7 +133,7 @@
 		public:
 			GLuint texture;
 			int width, height;
-			Texture(char* file, GLuint index, GLuint sh);
+			Texture(char* file, GLuint index);
 		};
 
 		extern Texture* tex_unit[16];

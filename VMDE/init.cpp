@@ -27,7 +27,10 @@ void init_graphics(int w, int h) {
 
 	// GLFW库初始化
 	glfwSetErrorCallback(glfw_error_callback);
-	if (!glfwInit()) rb_raise(rb_eRuntimeError, "glfwInit() failed");
+	if (!glfwInit()) {
+		log("glfwInit() failed");
+		return;
+	}
 
 	// OpenGL 向前&向后兼容，使用GL 3.3 Core Profile，窗口大小不可变
 	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
@@ -40,23 +43,29 @@ void init_graphics(int w, int h) {
 	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
-		rb_raise(rb_eRuntimeError, "glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
+		log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
+		return;
 	}
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 	// 垂直同步，拒绝鬼畜
 	glfwSwapInterval(1);
-	// 深度测试是必要的
-	glEnable(GL_DEPTH_TEST);
-	// 混合是极度必要的
-	glEnable(GL_BLEND);
 
 	// 初始化GLEW
 	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) rb_raise(rb_eRuntimeError, "glewInit() (GLEW Initialization) failed.");
+	if (glewInit() != GLEW_OK) {
+		log("glewInit() (GLEW Initialization) failed.");
+		return;
+	}
 
 	setup_viewport();
+
+	// 深度测试是必要的
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	// 混合是极度必要的
+	//glEnable(GL_BLEND);
 
 	reload_shaders();
 
@@ -74,8 +83,8 @@ void reload_shaders() {
 	xefree(main_shader);
 	xefree(temp_vertexShaderSource);
 	xefree(temp_fragmentShaderSource);
-	temp_vertexShaderSource = Util::read_file("../Media/shaders/G2D_basic.vsh");
-	temp_fragmentShaderSource = Util::read_file("../Media/shaders/G2D_basic.fsh");
+	temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
+	temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
 	main_shader = new Shaders();
 	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 	main_shader->link_program();
@@ -89,6 +98,8 @@ void init_engine(int w, int h) {
 
 	srand(time(NULL));
 
+	init_vmde(w, h);
+	glfwSetKeyCallback(window, i_have_a_key);
 	init_graphics(w, h);
 
 	// 初始化声音

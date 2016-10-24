@@ -7,23 +7,39 @@
 
 namespace GDrawable {
 
-	void draw(struct GDrawable* s, glm::mat4 projection, glm::mat4 view) {
-		GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "MVP");
-		glm::mat4 mvp = projection * view * s->model;
-		GLfloat* ptr = glm::value_ptr(mvp);
-		glUniformMatrix4fv(model_location, 1, GL_FALSE, ptr);
+	void prepare(struct GDrawable* s, glm::mat4 projection, glm::mat4 view) {
+		//GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "MVP");
+		//glm::mat4 mvp = projection * view * s->model;
+		//GLfloat* ptr = glm::value_ptr(mvp);
+		//glUniformMatrix4fv(model_location, 1, GL_FALSE, ptr);
+		GLuint loc = glGetUniformLocation(main_shader->shaderProgram, "Model");
+		GLfloat* ptrM = glm::value_ptr(s->model);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, ptrM);
 
+		loc = glGetUniformLocation(main_shader->shaderProgram, "View");
+		GLfloat* ptrV = glm::value_ptr(view);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, ptrV);
+
+		loc = glGetUniformLocation(main_shader->shaderProgram, "Projection");
+		GLfloat* ptrP = glm::value_ptr(projection);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, ptrP);
+	}
+
+	void draw(struct GDrawable* s, GLuint start, GLuint end) {
 		glBindVertexArray(s->VAO);
-		glDrawElements(GL_TRIANGLES, s->tri_mesh_count * 3, GL_UNSIGNED_INT, 0);
+		glDrawRangeElements(GL_TRIANGLES, start, end, end - start, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+	}
+
+	void draw(struct GDrawable* s) {
+		glBindVertexArray(s->VAO);
+		glDrawElements(GL_TRIANGLES, s->ind_c, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 
 	void fbind(struct GDrawable* s) {
 		glBindVertexArray(s->VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, s->VBO);
-		for (int i = 8; i < s->vtx_c; i += 9) {
-			s->vertices[i] = 1.0d - s->vertices[i];
-		}
 		glBufferData(GL_ARRAY_BUFFER, s->vtx_c * sizeof(GLfloat), s->vertices, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, s->ind_c * sizeof(GLuint), s->indices, GL_DYNAMIC_DRAW);
@@ -45,12 +61,12 @@ namespace GDrawable {
 		glBindVertexArray(s->VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, s->VBO);
-		void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 		memcpy(bufv, s->vertices, s->vtx_c * sizeof(GLfloat));
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->EBO);
-		void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+		void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 		memcpy(bufi, s->indices, s->ind_c * sizeof(GLuint));
 		glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
@@ -59,8 +75,12 @@ namespace GDrawable {
 
 	void dispose(struct GDrawable* s) {
 		if (s) {
-			xefree(s->vertices);
-			xefree(s->indices);
+			glDeleteVertexArrays(1, &s->VAO);
+			glDeleteBuffers(1, &s->VBO);
+			glDeleteBuffers(1, &s->EBO);
+			// 节约内存，将顶点直接交给Client管理
+			//xefree(s->vertices);
+			//xefree(s->indices);
 			free(s);
 		}
 	}

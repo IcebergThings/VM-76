@@ -28,20 +28,29 @@ time_t accumulated_frame_time = 0;
 //-----------------------------------------------------------------------------
 time_t now;
 void main_draw_start() {
+	glfwPollEvents();
+	if (glfwWindowShouldClose(window)) {
+		client_terminate();
+		// Terminate GLFW, clearing any resources allocated by GLFW.
+		glfwTerminate();
+		exit(0);
+	}
 	VMDE->frame_count++;
 	fps_counter++;
 	now = time(NULL);
-	if (difftime(now, fps_since) >= 1.0d) {
+	if (difftime(now, fps_since) >= 1.0) {
 		VMDE->fps = fps_counter;
 		fps_counter = 0;
 		fps_since = now;
 		VMDE->frame_time = accumulated_frame_time / double((VMDE->fps)) * 1000.0;
-		accumulated_frame_time -= 1.0d;
+		accumulated_frame_time -= 1.0;
 	}
-	if (!VMDE->state.frozen) {
+}
+// 这部夫交给C Client去管了
+/*	if (!VMDE->state.frozen) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		/* Render */
+		// Render
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -63,6 +72,7 @@ void main_draw_start() {
 		}
 	}
 }
+*/
 
 void main_draw_end() {
 	if (!VMDE->state.frozen) {
@@ -74,18 +84,6 @@ void main_draw_end() {
 		glfwPollEvents();
 	}
 }
-/*
-
-		struct RenderChainNode* chain = render_chain;
-		while (chain) {
-			VALUE v UNUSED = chain->n; // TODO: use it!
-
-			GDrawable::draw(chain->gd, projection, view);
-
-			chain = chain->next;
-		}
-		glDisable(GL_BLEND);
-*/
 
 //-----------------------------------------------------------------------------
 // ● Matrix for 2D (GUI), depth from -1.0 to 1.0, X = 0 ~ Width, Y = 0 ~ Height

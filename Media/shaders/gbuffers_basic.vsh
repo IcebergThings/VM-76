@@ -2,13 +2,17 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec4 vertex_color;
 layout (location = 2) in vec2 texc;
-uniform mat4 MVP;
+
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat4 Projection;
+
 out vec4 texcolor;
 out vec2 texcoord;
 
 void main() {
 	vec4 v = vec4(position, 1.0);
-	gl_Position = MVP * v;
+	gl_Position = Projection * (View * (Model * v));
 	texcolor = vertex_color;
 	texcoord = texc;
 }
