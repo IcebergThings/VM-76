@@ -7,7 +7,6 @@
 #include "global.hpp"
 
 namespace Res {
-
 	Texture* tex_unit[16];
 
 	Texture::Texture(const char* file, GLuint index) {
