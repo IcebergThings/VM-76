@@ -1,4 +1,4 @@
-#include <VMDE/VMDE.hpp>
+#include "VMDE/VMDE.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 #define _INCLUDE_VMGS_GLOBAL_H
@@ -23,14 +23,10 @@ namespace VM76 {
 	void loop();
 	void start_game();
 	void terminate();
-
 }
 
 extern "C" {
 	void client_terminate();
-
-	void i_have_a_key(GLFWwindow* window UNUSED,
-		int key UNUSED, int scancode UNUSED, int action UNUSED, int mode UNUSED);
+	void i_have_a_key(GLFWwindow* window, int key, int scancode, int action, int mode);
 }
-
 #endif

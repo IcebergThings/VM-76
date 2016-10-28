@@ -95,7 +95,7 @@ namespace VM76 {
 	void start_game() {
 		::init_engine(800, 600);
 
-		new Res::Texture((char*)"../Media/terrain.png", 0);
+		new Res::Texture("../Media/terrain.png", 0);
 
 		for (int i = 0; i < 16; i++) {
 			t[i] = new Tile(i);
