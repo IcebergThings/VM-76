@@ -1,18 +1,19 @@
 # 如果在第一行加了这个 → #!/usr/bin/cat ← 就不能用了。
 # ruby: no Ruby script found in input (LoadError)
 #==============================================================================
-# ■ windoge_make.rb
+# ■ make.rb
 #------------------------------------------------------------------------------
-#   君住Linux中，我住Windows里。日日思君不见君，共通编译器。
-#   警告几时休，错误何时已？但愿我心藏君境，定不负移植技。
-#   ——Frog Chen《伪·卜算子·编译》
+#   往日生成按至鄙，而今欲有所依赖，奈何扳手不开怀。
+#   工程图日新月异，Makefile有百弊，是适时一返梦里。
+#   ——Frog Chen《伪·浣溪沙·构建》
 #==============================================================================
 
-class WindogeMake
+class WindogixMake
 	#--------------------------------------------------------------------------
-	# ● 常量
+	# ● 常量与类变量
 	#--------------------------------------------------------------------------
-	BATCH_FILENAME = "windoge_make.bat"
+	@@windows = (ENV["OS"] == "Windows_NT")
+	SHORTCUT_NAME = (@@windows ? "make.bat" : "make")
 	#--------------------------------------------------------------------------
 	# ● 初始化对象
 	#--------------------------------------------------------------------------
@@ -25,9 +26,9 @@ class WindogeMake
 	def display_help
 		puts <<~EOF
 			= Usage =
-			> ruby windoge_make.rb -D<...> -I<...> <...>.a <...>.lib -L<...> -l<...>
+			> ruby windoge_make.rb -D... -I... *.a *.lib -L... -l...
 			> rem 作为开发者，你不应该在库目录的名称中包含空格。
-			Typical arguments:
+			Typical arguments for Windoge:
 				-IC:\\Ruby23\\include\\ruby-2.3.0
 				-IC:\\Ruby23\\include\\ruby-2.3.0\\i386-mingw32
 				-DGLFW_DLL -DGLEW_STATIC
@@ -46,6 +47,10 @@ class WindogeMake
 				-LD:\\glfw-3.2.bin.WIN32\\lib-mingw-w64
 				-LD:\\glew-1.13.0\\lib\\Release\\Win32
 				-lglfw3dll -lglew32s -lopengl32 -lportaudio_x86 -lvorbisfile
+			And for *nix:
+				-I../lib/SOIL/include -I. -I..
+				$(pkg-config --cflags --libs glfw3 gl glm glew portaudio-2.0 ogg)
+				-lstdc++ -lSOIL
 			All ‘-Idir’ options will be translated to ‘-isystem dir’ and no way back.
 			libstdc艹 is for exceptions and other random stuff; omit it if not used.
 			-Wall, -Wextra and some required arguments are built into this script.
@@ -56,7 +61,7 @@ class WindogeMake
 	# ● 请按任意键继续. . .
 	#--------------------------------------------------------------------------
 	def pause
-		system "pause"
+		system @@windows ? "pause" : "echo 'PRESS BUTTON'; read -n 1"
 	end
 	#--------------------------------------------------------------------------
 	# ● 主程序
@@ -115,17 +120,19 @@ class WindogeMake
 		# 而这就是PY交易。
 		File.rename(dll_name, so_name)
 		# 如果没有错误，输出脚本以便下次运行
-		output_batch
+		output_shortcut
 	end
 	#--------------------------------------------------------------------------
 	# ● 模拟Make的一步行动
 	#    command : 参数数组
 	#--------------------------------------------------------------------------
 	def make(command)
-		puts command.join(" ")
+		print "▎"
+		puts command.reject { |a| /^[A-Za-z]:|^\/|^-/ === a }.join(" ")
 		success = system(*command)
 		unless success
-			system "title !! ERROR !!"
+			system "title !! ERROR !!" if @@windows
+			puts "△ when executing this command:\n#{command.join(" ")}"
 			pause
 			exit
 		end
@@ -134,11 +141,12 @@ class WindogeMake
 	# ● 输出能够快捷地执行本脚本的批处理文件
 	#   如果批处理存在且比本脚本更新，则不做事。
 	#--------------------------------------------------------------------------
-	def output_batch
-		if FileTest.exist?(BATCH_FILENAME)
-			return if File.mtime(BATCH_FILENAME) > File.mtime(__FILE__)
+	def output_shortcut
+		if FileTest.exist?(SHORTCUT_NAME)
+			return if File.mtime(SHORTCUT_NAME) > File.mtime(__FILE__)
 		end
-		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{@argv.join(" ")}")
+		File.write(SHORTCUT_NAME, "#{@@windows ? "@" : "#/bin/sh\n"}ruby make.rb #{@argv.join(" ")}")
+		File.chmod(0755, SHORTCUT_NAME)
 	end
 #------------------------------------------------------------------------------
 # ◇ 为了避免不好的事发生而添加的类级错误处理
@@ -152,4 +160,4 @@ end
 #------------------------------------------------------------------------------
 # ◇ “各种定义结束后，从这里开始实际运行。”
 #------------------------------------------------------------------------------
-WindogeMake.new.main if __FILE__ == $0
+WindogixMake.new.main if __FILE__ == $0
