@@ -68,6 +68,24 @@ CR不是金坷垃，LF掺了CR，*nix下的工具都一脸懵逼了。
 | size_t | %zu |
 | ptrdiff_t | %td |
 
+### 不要乱写Makefile
+
+仅供参考，因为我也不知道怎么写。
+
+> "Suffix rules" are the old-fashioned way of defining implicit rules for
+> 'make'.  Suffix rules are obsolete because pattern rules are more
+> general and clearer.  They are supported in GNU 'make' for compatibility
+> with old makefiles.
+
+— 10.7 Old-Fashioned Suffix Rules
+
+> Use the following 'make' variables to run those programs:
+>
+> $(AR) $(BISON) $(CC) $(FLEX) $(INSTALL) $(LD) $(LDCONFIG) $(LEX)
+> $(MAKE) $(MAKEINFO) $(RANLIB) $(TEXI2DVI) $(YACC)
+
+— 16.2 Utilities in Makefiles
+
 这些提交消息十分滑稽
 --------------------
 
