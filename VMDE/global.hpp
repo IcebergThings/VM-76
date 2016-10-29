@@ -9,21 +9,19 @@
 #include <cstring>
 #include <math.h>
 #include <ctime>
+#include <cstdarg>
 #include <thread>
-#include <stdarg.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #define GLM_FORCE_SSE41
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <SOIL.h>
 
 #include <portaudio.h>
 #include <vorbis/vorbisfile.h>
-
-#include <SOIL.h>
 
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
@@ -143,7 +141,7 @@
 	//-------------------------------------------------------------------------
 	#define DEBUG_ENVIRONMENT "VMDrawEngine"
 	// log - Util::log_internal的方便缩写，可以直接得到当前函数名
-	//     log("%p", log);
+	//     log("The address of log() is %p.", log);
 	#define log(...) Util::log_internal(__func__, __VA_ARGS__)
 	namespace Util {
 		extern const float PIf;

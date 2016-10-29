@@ -39,21 +39,19 @@ class WindogixMake
 				-ID:\\libogg-1.3.2\\include
 				-ID:\\libvorbis-1.3.5\\include
 				-ID:\\SOIL\\src
-				-O3 -LD:\\bin -llibstdc++
-				-LC:\\Ruby23\\lib
-				-Wl,--enable-auto-image-base,-subsystem,windows
-				-lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi
+				-O3 -Wl,--enable-auto-image-base,-subsystem,windows
 				D:\\SOIL\\lib\\libSOIL.a
+				-LD:\\bin -llibstdc++
 				-LD:\\glfw-3.2.bin.WIN32\\lib-mingw-w64
 				-LD:\\glew-1.13.0\\lib\\Release\\Win32
 				-lglfw3dll -lglew32s -lopengl32 -lportaudio_x86 -lvorbisfile
 			And for *nix:
-				-I../lib/SOIL/include -I. -I..
+				-I~/SOIL/lib/include -I. -I..
 				$(pkg-config --cflags --libs glfw3 gl glm glew portaudio-2.0 ogg)
 				-lstdc++ -lSOIL
 			All ‘-Idir’ options will be translated to ‘-isystem dir’ and no way back.
 			libstdc艹 is for exceptions and other random stuff; omit it if not used.
-			-Wall, -Wextra and some required arguments are built into this script.
+			-Wall, -Wextra and some necessary switches are built into this script.
 			‘D:\\bin’ above is where you put all libraries (.lib files) and DLLs.
 		EOF
 	end
@@ -78,7 +76,7 @@ class WindogixMake
 		@argv.each do |arg|
 			(
 				case arg
-				when /^-[gDIO]/
+				when /^-[UgDIO]/
 					compiling_args
 				when /^-[lL]/
 					linking_args
@@ -145,7 +143,10 @@ class WindogixMake
 		if FileTest.exist?(SHORTCUT_NAME)
 			return if File.mtime(SHORTCUT_NAME) > File.mtime(__FILE__)
 		end
-		File.write(SHORTCUT_NAME, "#{@@windows ? "@" : "#/bin/sh\n"}ruby make.rb #{@argv.join(" ")}")
+		File.write(
+			SHORTCUT_NAME,
+			"#{@@windows ? "@" : "#/bin/sh\n"}ruby make.rb ^\n#{@argv.join(" ^\n")}"
+		)
 		File.chmod(0755, SHORTCUT_NAME)
 	end
 #------------------------------------------------------------------------------

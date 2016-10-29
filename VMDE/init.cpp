@@ -10,114 +10,126 @@
 GLuint basic_2D_vsh;
 GLuint basic_2D_fsh;
 
-//-----------------------------------------------------------------------------
-// ● 设置视口
-//-----------------------------------------------------------------------------
-void setup_viewport() {
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	glViewport(0, 0, width, height);
-}
-
-//-----------------------------------------------------------------------------
-// ● 初始化图形
-//-----------------------------------------------------------------------------
-void init_graphics(int w, int h) {
-	init_vmde(w, h);
-
-	// GLFW库初始化
-	glfwSetErrorCallback(glfw_error_callback);
-	if (!glfwInit()) {
-		log("glfwInit() failed");
-		return;
+namespace Graphics {
+	//-------------------------------------------------------------------------
+	// ● 设置视口
+	//-------------------------------------------------------------------------
+	void setup_viewport() {
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+		glViewport(0, 0, width, height);
 	}
 
-	// OpenGL 向前&向后兼容，使用GL 3.3 Core Profile，窗口大小不可变
-	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	//-------------------------------------------------------------------------
+	// ● 初始化图形
+	//-------------------------------------------------------------------------
+	void init_graphics(int w, int h) {
+		init_vmde(w, h);
 
-	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
-	if (!window) {
-		glfwTerminate();
-		log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
-		return;
+		// GLFW库初始化
+		glfwSetErrorCallback(glfw_error_callback);
+		if (!glfwInit()) {
+			log("glfwInit() failed");
+			return;
+		}
+
+		// OpenGL 向前&向后兼容，使用GL 3.3 Core Profile，窗口大小不可变
+		// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+		window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NUL
+		if (!window) {
+			glfwTerminate();
+			log(
+				"glfwCreateWindow() failed.\n"
+				"I need OpenGL 3.3; check whether you have it or not."
+			);
+			return;
+		}
+
+		// 设置当前窗口GL上下文
+		glfwMakeContextCurrent(window);
+		// 垂直同步，拒绝鬼畜
+		glfwSwapInterval(1);
+
+		// 初始化GLEW
+		glewExperimental = GL_TRUE;
+		if (glewInit() != GLEW_OK) {
+			log("glewInit() (GLEW Initialization) failed.");
+			return;
+		}
+
+		setup_viewport();
+
+		// 深度测试是必要的
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		// 混合是极度必要的
+		//glEnable(GL_BLEND);
+
+		reload_shaders();
+
+		// 获取可用的Vertex Attributes数量
+		GLint nrAttributes;
+		glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+		log("Maximum number of vertex attributes supported: %d\n", nrAttributes);
 	}
 
-	// 设置当前窗口GL上下文
-	glfwMakeContextCurrent(window);
-	// 垂直同步，拒绝鬼畜
-	glfwSwapInterval(1);
-
-	// 初始化GLEW
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) {
-		log("glewInit() (GLEW Initialization) failed.");
-		return;
+	//-------------------------------------------------------------------------
+	// ● 加载着色器
+	//-------------------------------------------------------------------------
+	void reload_shaders() {
+		// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
+		xefree(main_shader);
+		xefree(temp_vertexShaderSource);
+		xefree(temp_fragmentShaderSource);
+		temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
+		temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
+		main_shader = new Shaders();
+		main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
+		main_shader->link_program();
 	}
 
-	setup_viewport();
+	//-------------------------------------------------------------------------
+	// ● 初始化引擎
+	//-------------------------------------------------------------------------
+	void init_engine(int w, int h) {
+		log("initializing the engine");
 
-	// 深度测试是必要的
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	// 混合是极度必要的
-	//glEnable(GL_BLEND);
+		srand(time(NULL));
 
-	reload_shaders();
+		init_vmde(w, h);
+		glfwSetKeyCallback(window, i_have_a_key);
+		init_graphics(w, h);
 
-	// 获取可用的Vertex Attributes数量
-	GLint nrAttributes;
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
-}
+		// 初始化声音
+		Audio::init();
 
-//-----------------------------------------------------------------------------
-// ● 加载着色器
-//-----------------------------------------------------------------------------
-void reload_shaders() {
-	// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
-	xefree(main_shader);
-	xefree(temp_vertexShaderSource);
-	xefree(temp_fragmentShaderSource);
-	temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
-	temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
-	main_shader = new Shaders();
-	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	main_shader->link_program();
-}
+		log("initialized the engine");
+	}
 
-//-----------------------------------------------------------------------------
-// ● 初始化引擎
-//-----------------------------------------------------------------------------
-void init_engine(int w, int h) {
-	log("initializing the engine");
+	//-------------------------------------------------------------------------
+	// ● 初始化VMDE结构体
+	//-------------------------------------------------------------------------
+	void init_vmde(int w, int h) {
+		VMDE = new struct VMDE;
+		VMDE->state.frozen = false;
+		VMDE->state.brightness = 1.0;
 
-	srand(time(NULL));
+		VMDE->frame_count = 0;
+		VMDE->fps = 0;
+		VMDE->width = w;
+		VMDE->height = h;
+	}
 
-	init_vmde(w, h);
-	glfwSetKeyCallback(window, i_have_a_key);
-	init_graphics(w, h);
-
-	// 初始化声音
-	Audio::init();
-
-	log("initialized the engine");
-}
-
-//-----------------------------------------------------------------------------
-// ● 初始化VMDE结构体
-//-----------------------------------------------------------------------------
-void init_vmde(int w, int h) {
-	VMDE = new struct VMDE;
-	VMDE->state.frozen = false;
-	VMDE->state.brightness = 1.0;
-
-	VMDE->frame_count = 0;
-	VMDE->fps = 0;
-	VMDE->width = w;
-	VMDE->height = h;
+	//-------------------------------------------------------------------------
+	// ● 按键回调
+	//-------------------------------------------------------------------------
+	void key(GLFWwindow* window, int key, int scancode, int action, int mode) {
+		aaa
+	}
 }

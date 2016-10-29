@@ -115,16 +115,6 @@ namespace VM76 {
 	}
 }
 
-extern "C" {
-	void client_terminate() {
-		VM76::terminate();
-	}
-
-	void i_have_a_key(GLFWwindow* window UNUSED, int key UNUSED, int scancode UNUSED, int action UNUSED, int mode UNUSED) {
-		log("Something happened");
-	}
-}
-
 int main() {
 	log("Starting game");
 	VM76::start_game();
