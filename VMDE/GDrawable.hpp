@@ -9,8 +9,9 @@
 
 #include "global.hpp"
 
-namespace GDrawable {
-	struct GDrawable {
+class GDrawable {
+public:
+	struct Data {
 		GLfloat* vertices;
 		int vtx_c;
 		GLuint* indices;
@@ -20,14 +21,16 @@ namespace GDrawable {
 		GLuint EBO;
 		GLuint tri_mesh_count;
 		glm::mat4 model;
-	};
-	void prepare(GDrawable* s, glm::mat4 projection, glm::mat4 view);
-	void draw(struct GDrawable* s, GLuint start, GLuint end);
-	void draw(struct GDrawable* s);
-	void fbind(GDrawable* s);
-	void update(GDrawable* s);
-	void dispose(GDrawable* s);
-	GDrawable* create();
-}
+	} data;
+
+	void prepare(glm::mat4 projection, glm::mat4 view);
+	void draw(GLuint start, GLuint end);
+	void draw();
+	void fbind();
+	void update();
+	void dispose();
+
+	GDrawable();
+};
 
 #endif
