@@ -6,7 +6,7 @@
 namespace VM76 {
 	class Tile {
 	public:
-		GDrawable::GDrawable* obj = NULL;
+		GDrawable* obj = NULL;
 
 	private:
 		GLfloat *vtx = NULL;

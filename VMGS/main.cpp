@@ -44,13 +44,13 @@ namespace VM76 {
 			0,1,3,    1,2,3,    7,5,4,    7,6,5,
 			8,9,11,   9,10,11,  15,13,12, 15,14,13,
 			16,17,19, 17,18,19, 23,21,20, 23,22,21};
-		obj = GDrawable::create();
-		obj->vtx_c = 6 * 9 * 4;
-		obj->ind_c = 12 * 3;
-		obj->vertices = vtx;
-		obj->indices = itx;
-		obj->tri_mesh_count = 6 * 2;
-		GDrawable::fbind(obj);
+		obj = new GDrawable();
+		obj->data.vtx_c = 6 * 9 * 4;
+		obj->data.ind_c = 12 * 3;
+		obj->data.vertices = vtx;
+		obj->data.indices = itx;
+		obj->data.tri_mesh_count = 6 * 2;
+		obj->fbind();
 	}
 
 	Tile* t[16];
@@ -96,8 +96,8 @@ namespace VM76 {
 			//for (int x = -2; x < 3; x++) {
 			//	for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
 //					t[3]->obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.0f, -0.5f));
-					GDrawable::prepare(t[4]->obj, projection, view);
-					GDrawable::draw(t[4]->obj);
+					t[4]->obj->prepare(projection, view);
+					t[4]->obj->draw();
 			//	}
 			//}
 
@@ -122,7 +122,7 @@ namespace VM76 {
 
 	void terminate() {
 		for (int i = 0; i < 16; i++) {
-			GDrawable::dispose(t[i]->obj);
+			t[i]->obj->dispose();
 			free(t[i]);
 		}
 	}
