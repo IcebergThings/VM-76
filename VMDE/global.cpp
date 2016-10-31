@@ -10,5 +10,3 @@
 GLFWwindow* window;
 
 struct VMDE* VMDE;
-
-RenderChainNode* render_chain = NULL;
