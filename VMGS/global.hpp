@@ -1,3 +1,9 @@
+//=============================================================================
+// ■ global.hpp
+//-----------------------------------------------------------------------------
+//   关于为什么用global.hpp而非一个个的小头，请参阅/VMDE/global.hpp。
+//=============================================================================
+
 #include "VMDE/VMDE.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
@@ -23,10 +29,5 @@ namespace VM76 {
 	void loop();
 	void start_game();
 	void terminate();
-}
-
-extern "C" {
-	void client_terminate();
-	void i_have_a_key(GLFWwindow* window, int key, int scancode, int action, int mode);
 }
 #endif

@@ -116,6 +116,6 @@ namespace VM76 {
 }
 
 int main() {
-	log("Starting game");
+	puts("Starting game");
 	VM76::start_game();
 }

@@ -1,1 +1,21 @@
-ruby make.rb -ID:\Prgm\Ruby\include\ruby-2.3.0 -DGLFW_DLL -UGLEW_STATIC -IY:\glfw-3.2.bin.WIN32\include -IY:\glew-2.0.0\include -IY:\glm-0.9.7.5 -O0 -LY:\bin -llibstdc++ -Wl,-subsystem,windows Y:\SOIL\SOIL.a -LY:\glfw-3.2.bin.WIN32\lib-mingw-w64 -lglfw3dll -lglew32 -IY:\SOIL\src -lopengl32 -IY:\portaudio\include -IY:\libogg-1.3.2\include -IY:\libvorbis-1.3.5\include -lportaudio_x86 -lvorbisfile
+@ruby make.rb ^
+-DGLFW_DLL ^
+-UGLEW_STATIC ^
+-IY:\glfw-3.2.bin.WIN32\include ^
+-IY:\glew-2.0.0\include ^
+-IY:\glm-0.9.7.5 ^
+-O0 ^
+-LY:\bin ^
+-llibstdc++ ^
+-Wl,-subsystem,windows ^
+Y:\SOIL\SOIL.a ^
+-LY:\glfw-3.2.bin.WIN32\lib-mingw-w64 ^
+-lglfw3dll ^
+-lglew32 ^
+-IY:\SOIL\src ^
+-lopengl32 ^
+-IY:\portaudio\include ^
+-IY:\libogg-1.3.2\include ^
+-IY:\libvorbis-1.3.5\include ^
+-lportaudio_x86 ^
+-lvorbisfile

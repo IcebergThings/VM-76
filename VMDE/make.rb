@@ -59,7 +59,7 @@ class WindogixMake
 	# ● 请按任意键继续. . .
 	#--------------------------------------------------------------------------
 	def pause
-		system @@windows ? "pause" : "echo 'PRESS BUTTON'; read -n 1"
+		system @@windows ? "pause" : "echo -n 'PRESS BUTTON'; read -n 1"
 	end
 	#--------------------------------------------------------------------------
 	# ● 主程序
@@ -74,26 +74,22 @@ class WindogixMake
 		compiling_args = []
 		linking_args = []
 		@argv.each do |arg|
-			(
-				case arg
-				when /^-[UgDIO]/
-					compiling_args
-				when /^-[lL]/
-					linking_args
-				when /\.(?:a|lib)$/
-					linking_args
-				else
-					linking_args
-				end
-			) << arg
+			case arg
+			when /^-[gDUO]|^-Wp,/
+				compiling_args << arg
+			when /^-[lL]|^-Wl,|\.(?:a|lib)$/
+				linking_args << arg
+			when /^-I/
+				compiling_args << "-isystem"
+				compiling_args << arg[2, arg.size]
+			else
+				puts "option not recognized: #{arg}"
+				exit
+			end
 		end
-		compiling_args.map! { |a| a[1, 1] == "I" ? ["-isystem", a[2, a.size]] : a }
-		compiling_args.flatten!
 		sources = Dir.glob("*.cpp")
 		objects = []
-		# some ugly hacks for Windoge
-		dll_name = "VMDE.dll" # .dll: required to build DLL (maybe?)
-		so_name = "VMDE.so" # .so: required for Ruby to work
+		dll_name = "VMDE.dll"
 		# 如果不这么搞就会无法编译
 		sources.each do |source_name|
 			name = File.basename(source_name, ".cpp")
@@ -113,10 +109,6 @@ class WindogixMake
 		command.concat(objects)
 		command.concat(linking_args)
 		make command
-		# For tools like exeScope, the file must have correct suffix.
-		# However for Ruby, the DLL must have corrupted suffix.
-		# 而这就是PY交易。
-		File.rename(dll_name, so_name)
 		# 如果没有错误，输出脚本以便下次运行
 		output_shortcut
 	end
@@ -143,11 +135,13 @@ class WindogixMake
 		if FileTest.exist?(SHORTCUT_NAME)
 			return if File.mtime(SHORTCUT_NAME) > File.mtime(__FILE__)
 		end
-		File.write(
-			SHORTCUT_NAME,
-			"#{@@windows ? "@" : "#/bin/sh\n"}ruby make.rb ^\n#{@argv.join(" ^\n")}"
-		)
-		File.chmod(0755, SHORTCUT_NAME)
+		File.open(SHORTCUT_NAME, "w") do |f|
+			f.write <<~EOF
+				#{@@windows ? "@" : "#!/bin/sh\n"}ruby make.rb ^
+				#{@argv.join(" ^\n")}
+			EOF
+			f.chmod(0755)
+		end
 	end
 #------------------------------------------------------------------------------
 # ◇ 为了避免不好的事发生而添加的类级错误处理
