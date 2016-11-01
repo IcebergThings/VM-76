@@ -23,7 +23,7 @@ public:
 		glm::mat4 model;
 	} data;
 
-	void prepare(glm::mat4 projection, glm::mat4 view);
+	void prepare(Shaders* sh, glm::mat4 projection, glm::mat4 view);
 	void draw(GLuint start, GLuint end);
 	void draw();
 	void fbind();

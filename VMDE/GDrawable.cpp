@@ -5,16 +5,16 @@
 //=============================================================================
 #include "GDrawable.hpp"
 
-void GDrawable::prepare(glm::mat4 projection, glm::mat4 view) {
-	GLuint loc = glGetUniformLocation(main_shader->shaderProgram, "Model");
+void GDrawable::prepare(Shaders* sh, glm::mat4 projection, glm::mat4 view) {
+	GLuint loc = glGetUniformLocation(sh->shaderProgram, "Model");
 	GLfloat* ptrM = glm::value_ptr(data.model);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrM);
 
-	loc = glGetUniformLocation(main_shader->shaderProgram, "View");
+	loc = glGetUniformLocation(sh->shaderProgram, "View");
 	GLfloat* ptrV = glm::value_ptr(view);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrV);
 
-	loc = glGetUniformLocation(main_shader->shaderProgram, "Projection");
+	loc = glGetUniformLocation(sh->shaderProgram, "Projection");
 	GLfloat* ptrP = glm::value_ptr(projection);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrP);
 }

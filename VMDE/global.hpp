@@ -99,21 +99,20 @@
 		GLuint shaderProgram;
 
 	public:
-		void init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
+		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
 		void link_program();
+		void use();
 	};
 
 	extern GLchar* temp_vertexShaderSource;
 	extern GLchar* temp_fragmentShaderSource;
 
-	extern Shaders* main_shader;
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
 	void init_engine(int w, int h);
 	void setup_viewport();
 	void init_vmde(int w, int h);
-	void reload_shaders();
 	//-------------------------------------------------------------------------
 	// ● main.cpp
 	//-------------------------------------------------------------------------
@@ -121,8 +120,6 @@
 	void main_draw_start();
 	void main_draw_end();
 	void main_set_brightness(float b);
-	void matrix2D();
-	void matrix3D();
 
 	extern glm::mat4 projection, view;
 	//-------------------------------------------------------------------------
