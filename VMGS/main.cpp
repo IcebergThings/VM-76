@@ -1,7 +1,7 @@
 #include "global.hpp"
 
 namespace VM76 {
-
+	Shaders* main_shader = NULL;
 	Tile::Tile(int tid) {
 		int x = tid % 16;
 		int y = tid / 16;
@@ -71,9 +71,7 @@ namespace VM76 {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glDepthMask(GL_TRUE);
-
-			// Activate Shader
-			glUseProgram(main_shader->shaderProgram);
+			main_shader->use();
 
 			// Setup uniforms
 			GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "brightness");
@@ -96,7 +94,7 @@ namespace VM76 {
 			//for (int x = -2; x < 3; x++) {
 			//	for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
 //					t[3]->obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.0f, -0.5f));
-					t[4]->obj->prepare(projection, view);
+					t[4]->obj->prepare(main_shader, projection, view);
 					t[4]->obj->draw();
 			//	}
 			//}
@@ -113,6 +111,11 @@ namespace VM76 {
 		for (int i = 0; i < 16; i++) {
 			t[i] = new Tile(i);
 		}
+
+		temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
+		temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
+		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
+		main_shader->link_program();
 
 		projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), 1.0f, -1.0f);
 		view = glm::lookAt(glm::vec3(2.0, 3.0, 2.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
