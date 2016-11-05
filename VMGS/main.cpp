@@ -44,12 +44,17 @@ namespace VM76 {
 			0,1,3,    1,2,3,    7,5,4,    7,6,5,
 			8,9,11,   9,10,11,  15,13,12, 15,14,13,
 			16,17,19, 17,18,19, 23,21,20, 23,22,21};
+		mat = new glm::mat4[2];
+		mat[0] = glm::mat4(1.0);
+		mat[1] = glm::translate(glm::mat4(1.0), glm::vec3(-1.0,0.0,-1.0));
 		obj = new GDrawable();
 		obj->data.vtx_c = 6 * 9 * 4;
 		obj->data.ind_c = 12 * 3;
 		obj->data.vertices = vtx;
 		obj->data.indices = itx;
 		obj->data.tri_mesh_count = 6 * 2;
+		obj->data.mat_c = 2;
+		obj->data.mat = (GLuint*) &mat[0];
 		obj->fbind();
 	}
 

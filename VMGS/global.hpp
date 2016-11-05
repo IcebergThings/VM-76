@@ -11,6 +11,7 @@ namespace VM76 {
 	private:
 		GLfloat *vtx = NULL;
 		GLuint *itx = NULL;
+		glm::mat4 *mat = NULL;
 
 	public:
 		Tile(int tid);
