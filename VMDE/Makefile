@@ -7,7 +7,10 @@ Objects = $(patsubst %.cpp, %.o, $(Src))
 
 LIBS = $(shell pkg-config --libs glfw3 gl glm glew portaudio-2.0 ogg) -lstdc++ -lSOIL
 LDFLAGS = -shared -O4
-CXXFLAGS = -I../lib/SOIL/include  -I../ $(shell pkg-config --cflags glfw3 gl glm glew portaudio-2.0) -std=c++14 -Wall -Wextra -O3 -c -fPIC
+CXXFLAGS = -I../lib/SOIL/include  -I../ \
+	$(shell pkg-config --cflags glfw3 gl glm glew portaudio-2.0) \
+	-std=c++14 -Wall -Wextra -O3 -c -fPIC \
+	-Ofast -msse4.1 -mtune=core2
 
 all: $(OBJ)
 

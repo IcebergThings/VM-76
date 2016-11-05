@@ -4,6 +4,8 @@
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 #define _INCLUDE_VMGS_GLOBAL_H
 
+#define GLM_FORCE_SSE41
+
 namespace VM76 {
 
 	enum TileList {

@@ -7,7 +7,10 @@ Objects = $(patsubst %.cpp, %.o, $(Src))
 
 LIBS = $(shell pkg-config --libs --static glfw3 gl glm glew portaudio-2.0)  -lstdc++ -lSOIL
 LDFLAGS = -O4 ../VMDE/libVMDE.so
-CXXFLAGS = -I../lib/SOIL/include  $(shell pkg-config --cflags glfw3 gl glm glew portaudio-2.0)  -I../ -std=c++14 -Wall -Wextra -O3 -c
+CXXFLAGS = -I../lib/SOIL/include \
+	$(shell pkg-config --cflags glfw3 gl glm glew portaudio-2.0) \
+	-I../ -std=c++14 -Wall -Wextra -O3 -c \
+	-Ofast -msse4.1 -mtune=core2
 
 all: $(OBJ)
 run: all
@@ -23,6 +26,6 @@ VM_76: $(Objects)
 	$(CCLD) $(LIBS) $(LDFLAGS) $^ -o VM_76
 
 clean:
-	rm -rf $(OBJ) $(Objects)
+	rm -rf $(OBJ) $(Objects)mcpu
 
 .PHONY: all run clean

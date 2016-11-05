@@ -9,7 +9,7 @@ namespace VM76 {
 		for (;;) {
 			::main_draw_start();
 
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClearColor(0.66f, 0.81f, 0.96f, 1.0f);
 			glClearDepth(1.0f);
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -49,7 +49,7 @@ namespace VM76 {
 
 	void start_game() {
 		::init_engine(800, 600);
-
+glfwSwapInterval(0);
 		new Res::Texture((char*)"../Media/terrain.png", 0);
 		init_tiles();
 
