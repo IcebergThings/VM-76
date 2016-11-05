@@ -15,6 +15,8 @@
 	#else
 		#define EXPORTED extern "C"
 	#endif
+	// API
+	EXPORTED void init_engine(int w, int h);
 	// 全局事件
 	EXPORTED bool (*on_terminate)();
 	EXPORTED void (*on_key)(int key, int scancode, int action, int mode);
