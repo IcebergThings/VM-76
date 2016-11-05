@@ -46,10 +46,10 @@ namespace VM76 {
 		};
 		itx[0] = new GLuint[6] {0,1,3,  1,2,3};
 		itx[1] = new GLuint[6] {3,1,0,  3,2,1};
-		itx[2] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[3] = new GLuint[6] {3,1,0,  3,2,1};
-		itx[4] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[5] = new GLuint[6] {3,1,0,  3,2,1};
+		itx[2] = itx[0];
+		itx[3] = itx[1];
+		itx[4] = itx[0];
+		itx[5] = itx[1];
 
 		mat = new glm::mat4[256 * 256];
 		for (int x = 0; x < 256; x++) {
