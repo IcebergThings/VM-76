@@ -22,6 +22,12 @@ namespace VM76 {
 
 	const GLfloat tile_size = 1.0f / 16.0f;
 
+	class Player {
+		bool in_gui;
+		glm::vec3 pos;
+		glm::vec3 look_at;
+	};
+
 	void loop();
 	void start_game();
 	void terminate();

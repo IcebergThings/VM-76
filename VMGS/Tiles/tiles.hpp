@@ -15,7 +15,7 @@ namespace VM76 {
 
 	public:
 		Tile(int tid);
-		void render(Shaders* shader, glm::mat4 projection, glm::mat4 view);
+		void render();
 		void dispose();
 	};
 }

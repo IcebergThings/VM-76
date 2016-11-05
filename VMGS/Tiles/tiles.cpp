@@ -71,8 +71,7 @@ namespace VM76 {
 		}
 	}
 
-	void Tile::render(Shaders* shader, glm::mat4 projection, glm::mat4 view) {
-		obj[2]->prepare(shader, projection, view);
+	void Tile::render() {
 		obj[2]->draw();
 	}
 

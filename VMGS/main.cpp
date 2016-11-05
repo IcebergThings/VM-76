@@ -40,7 +40,8 @@ namespace VM76 {
 			float y = 55.4f * sin(0.005f * VMDE->frame_count);
 			view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
-			t[GRASS]->render(main_shader, projection, view);
+			main_shader->ProjectionView(projection, view);
+			t[GRASS]->render();
 
 			::main_draw_end();
 		}
@@ -52,8 +53,8 @@ namespace VM76 {
 		new Res::Texture((char*)"../Media/terrain.png", 0);
 		init_tiles();
 
-		temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
-		temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
+		char* temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
+		char* temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
 		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 		main_shader->link_program();
 
