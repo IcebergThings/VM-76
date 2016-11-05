@@ -1,20 +1,21 @@
 #include <VMDE/VMDE.hpp>
+#include "Tiles/tiles.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 #define _INCLUDE_VMGS_GLOBAL_H
 
 namespace VM76 {
-	class Tile {
-	public:
-		GDrawable* obj = NULL;
 
-	private:
-		GLfloat *vtx = NULL;
-		GLuint *itx = NULL;
-		glm::mat4 *mat = NULL;
-
-	public:
-		Tile(int tid);
+	enum TileList {
+		GRASS,
+		STONE,
+		DIRT,
+		GLASS,
+		WOOD,
+		STONE_BRICK,
+		WALL,
+		TNT,
+		COBBLE_STONE
 	};
 
 	extern Tile* t[16];
@@ -24,6 +25,7 @@ namespace VM76 {
 	void loop();
 	void start_game();
 	void terminate();
+	void init_tiles();
 
 }
 
