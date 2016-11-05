@@ -31,6 +31,7 @@
 	extern "C" {
 		extern void client_terminate();
 		extern void i_have_a_key(GLFWwindow* window, int key, int scancode, int action, int mode);
+		extern void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 	}
 
 #endif
