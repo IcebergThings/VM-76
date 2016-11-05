@@ -2,74 +2,65 @@
 
 namespace VM76 {
 	Shaders* main_shader = NULL;
-	Tile::Tile(int tid) {
-		int x = tid % 16;
-		int y = tid / 16;
-		float T = 1.0f / 16.0f;
-		float S = 0.0f;
-		float xs = x * T;
-		float ys = y * T;
-		vtx = new GLfloat[6 * 9 * 4] {
-			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-
-			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-
-			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-
-			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-
-			0.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-			0.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-			0.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			0.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-
-			1.0, 0.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+S,
-			1.0, 0.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+S,
-			1.0, 1.0, 1.0,  1.0, 1.0, 1.0, 1.0,  xs+T, ys+T,
-			1.0, 1.0, 0.0,  1.0, 1.0, 1.0, 1.0,  xs+S, ys+T,
-		};
-		itx = new GLuint[3 * 12] {
-			0,1,3,    1,2,3,    7,5,4,    7,6,5,
-			8,9,11,   9,10,11,  15,13,12, 15,14,13,
-			16,17,19, 17,18,19, 23,21,20, 23,22,21};
-
-		mat = new glm::mat4[256 * 256];
-		for (int x = 0; x < 256; x++) {
-			for (int y = 0; y < 256; y++) {
-				mat[x * 256 + y] = glm::translate(glm::mat4(1.0), glm::vec3(float(x) - 128.0f, 0.0, float(y) - 128.0f));
-			}
-		}
-
-		obj = new GDrawable();
-		obj->data.vtx_c = 6 * 9 * 4;
-		obj->data.ind_c = 12 * 3;
-		obj->data.vertices = vtx;
-		obj->data.indices = itx;
-		obj->data.tri_mesh_count = 6 * 2;
-		obj->data.mat_c = 256 * 256;
-		obj->data.mat = (GLuint*) &mat[0];
-		obj->fbind();
-	}
 
 	Tile* t[16];
+
+	void control_update() {
+		// Mouse Input
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		game_player.horizontal_angle -= 0.005 * (xpos - VMDE->width / 2.0);
+		game_player.vertical_angle   -= 0.005 * (ypos - VMDE->height / 2.0);
+		game_player.vertical_angle = glm::clamp(- PI / 2 + 0.04f, game_player.vertical_angle, PI / 2);
+		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
+		glm::vec3 direction = glm::vec3(
+			cos(game_player.vertical_angle) * sin(game_player.horizontal_angle),
+			sin(game_player.vertical_angle),
+			cos(game_player.vertical_angle) * cos(game_player.horizontal_angle)
+		);
+		glm::vec3 right = glm::vec3(
+			sin(game_player.horizontal_angle - PI / 2.0f),
+			0,
+			cos(game_player.horizontal_angle - PI / 2.0f)
+		);
+		glm::vec3 up = glm::cross(right, direction);
+		glm::vec3 cam_pos = game_player.wpos + glm::vec3(0.0, 1.68, 0.0);
+		view = glm::lookAt(cam_pos, cam_pos + direction, up);
+
+		// Key Input
+		float speed = 3.0f / 60.0f;
+
+		int state = glfwGetKey(window, game.forward);
+		if (state == GLFW_PRESS) {
+			game_player.wpos += glm::vec3(
+				sin(game_player.horizontal_angle),
+				0.0,
+				cos(game_player.horizontal_angle)
+			) * glm::vec3(speed);
+			game_player.speed += 0.1;
+		}
+		state = glfwGetKey(window, game.back);
+		if (state == GLFW_PRESS)
+			game_player.wpos -= glm::vec3(
+				sin(game_player.horizontal_angle),
+				0.0,
+				cos(game_player.horizontal_angle)
+			) * glm::vec3(speed);
+		state = glfwGetKey(window, game.left);
+		if (state == GLFW_PRESS)
+			game_player.wpos -= right * glm::vec3(speed);
+		state = glfwGetKey(window, game.right);
+		if (state == GLFW_PRESS)
+			game_player.wpos += right * glm::vec3(speed);
+
+	}
 
 	void loop() {
 		for (;;) {
 			::main_draw_start();
+			control_update();
 
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClearColor(0.66f, 0.81f, 0.96f, 1.0f);
 			glClearDepth(1.0f);
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -96,18 +87,12 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			float x = 55.4f * cos(0.005f * VMDE->frame_count);
-			float y = 55.4f * sin(0.005f * VMDE->frame_count);
-			view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+			//float x = 55.4f * cos(0.005f * VMDE->frame_count);
+			//float y = 55.4f * sin(0.005f * VMDE->frame_count);
+			//view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
-			//test_obj->model = glm::rotate(glm::mat4(1.0f), 0.01f * VMDE->frame_count, glm::vec3(0.0f, 1.0f, 0.0f));
-			//for (int x = -2; x < 3; x++) {
-			//	for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
-//					t[3]->obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.0f, -0.5f));
-					t[4]->obj->prepare(main_shader, projection, view);
-					t[4]->obj->draw();
-			//	}
-			//}
+			main_shader->ProjectionView(projection, view);
+			t[GRASS]->render();
 
 			::main_draw_end();
 		}
@@ -115,27 +100,33 @@ namespace VM76 {
 
 	void start_game() {
 		::init_engine(800, 600);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 
 		new Res::Texture((char*)"../Media/terrain.png", 0);
+		init_tiles();
 
-		for (int i = 0; i < 16; i++) {
-			t[i] = new Tile(i);
-		}
-
-		temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
-		temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
+		char* temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
+		char* temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
 		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 		main_shader->link_program();
 
-		projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), 1.0f, -1.0f);
-		view = glm::lookAt(glm::vec3(2.0, 3.0, 2.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 1.0f, -1.0f);
+		view = glm::lookAt(glm::vec3(0.0, 2.6, 0.0), glm::vec3(1.0, 2.6, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 		loop();
 	}
 
+	void init_tiles() {
+		t[GRASS] = new Tile(0);
+		t[STONE] = new Tile(1);
+		t[DIRT] = new Tile(2);
+		t[WOOD] = new Tile(4);
+	}
+
 	void terminate() {
 		for (int i = 0; i < 16; i++) {
-			t[i]->obj->dispose();
+			t[i]->dispose();
 			free(t[i]);
 		}
 	}
@@ -146,8 +137,11 @@ extern "C" {
 		VM76::terminate();
 	}
 
-	void i_have_a_key(GLFWwindow* window UNUSED, int key UNUSED, int scancode UNUSED, int action UNUSED, int mode UNUSED) {
-		log("Something happened");
+	void i_have_a_key(GLFWwindow* window UNUSED, int key, int scancode, int action, int mode) {
+		//log("Something happened");
+	}
+
+	void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 

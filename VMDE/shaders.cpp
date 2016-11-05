@@ -62,4 +62,12 @@ void Shaders::use() {
 	glUseProgram(this->shaderProgram);
 }
 
-Shaders* main_shader;
+void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
+	GLuint loc = glGetUniformLocation(shaderProgram, "View");
+	GLfloat* ptrV = glm::value_ptr(view);
+	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrV);
+
+	loc = glGetUniformLocation(shaderProgram, "Projection");
+	GLfloat* ptrP = glm::value_ptr(projection);
+	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrP);
+}

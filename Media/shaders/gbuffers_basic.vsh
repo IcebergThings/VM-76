@@ -7,12 +7,14 @@ layout (location = 3) in mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
 
-out vec4 texcolor;
-out vec2 texcoord;
+out vertex_in {
+	vec4 texcolor;
+	vec2 texcoord;
+} Vertex;
 
 void main() {
 	vec4 v = vec4(position, 1.0);
 	gl_Position = Projection * (View * (Model * v));
-	texcolor = vertex_color;
-	texcoord = texc;
+	Vertex.texcolor = vertex_color;
+	Vertex.texcoord = texc;
 }
