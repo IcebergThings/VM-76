@@ -102,10 +102,8 @@
 		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
 		void link_program();
 		void use();
+		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 	};
-
-	extern GLchar* temp_vertexShaderSource;
-	extern GLchar* temp_fragmentShaderSource;
 
 	//-------------------------------------------------------------------------
 	// ● init.cpp
