@@ -5,9 +5,60 @@ namespace VM76 {
 
 	Tile* t[16];
 
+	void control_update() {
+		// Mouse Input
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		game_player.horizontal_angle -= 0.005 * (xpos - VMDE->width / 2.0);
+		game_player.vertical_angle   -= 0.005 * (ypos - VMDE->height / 2.0);
+		game_player.vertical_angle = glm::clamp(- PI / 2 + 0.04f, game_player.vertical_angle, PI / 2);
+		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
+		glm::vec3 direction = glm::vec3(
+			cos(game_player.vertical_angle) * sin(game_player.horizontal_angle),
+			sin(game_player.vertical_angle),
+			cos(game_player.vertical_angle) * cos(game_player.horizontal_angle)
+		);
+		glm::vec3 right = glm::vec3(
+			sin(game_player.horizontal_angle - PI / 2.0f),
+			0,
+			cos(game_player.horizontal_angle - PI / 2.0f)
+		);
+		glm::vec3 up = glm::cross(right, direction);
+		glm::vec3 cam_pos = game_player.wpos + glm::vec3(0.0, 1.68, 0.0);
+		view = glm::lookAt(cam_pos, cam_pos + direction, up);
+
+		// Key Input
+		float speed = 3.0f / 60.0f;
+
+		int state = glfwGetKey(window, game.forward);
+		if (state == GLFW_PRESS) {
+			game_player.wpos += glm::vec3(
+				sin(game_player.horizontal_angle),
+				0.0,
+				cos(game_player.horizontal_angle)
+			) * glm::vec3(speed);
+			game_player.speed += 0.1;
+		}
+		state = glfwGetKey(window, game.back);
+		if (state == GLFW_PRESS)
+			game_player.wpos -= glm::vec3(
+				sin(game_player.horizontal_angle),
+				0.0,
+				cos(game_player.horizontal_angle)
+			) * glm::vec3(speed);
+		state = glfwGetKey(window, game.left);
+		if (state == GLFW_PRESS)
+			game_player.wpos -= right * glm::vec3(speed);
+		state = glfwGetKey(window, game.right);
+		if (state == GLFW_PRESS)
+			game_player.wpos += right * glm::vec3(speed);
+
+	}
+
 	void loop() {
 		for (;;) {
 			::main_draw_start();
+			control_update();
 
 			glClearColor(0.66f, 0.81f, 0.96f, 1.0f);
 			glClearDepth(1.0f);
@@ -36,9 +87,9 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			float x = 55.4f * cos(0.005f * VMDE->frame_count);
-			float y = 55.4f * sin(0.005f * VMDE->frame_count);
-			view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+			//float x = 55.4f * cos(0.005f * VMDE->frame_count);
+			//float y = 55.4f * sin(0.005f * VMDE->frame_count);
+			//view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 			main_shader->ProjectionView(projection, view);
 			t[GRASS]->render();
@@ -49,6 +100,8 @@ namespace VM76 {
 
 	void start_game() {
 		::init_engine(800, 600);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 
 		new Res::Texture((char*)"../Media/terrain.png", 0);
 		init_tiles();
@@ -58,8 +111,8 @@ namespace VM76 {
 		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 		main_shader->link_program();
 
-		projection = glm::perspective(1.0f, float(VMDE->width) / float(VMDE->height), 1.0f, -1.0f);
-		view = glm::lookAt(glm::vec3(2.0, 3.0, 2.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 1.0f, -1.0f);
+		view = glm::lookAt(glm::vec3(0.0, 2.6, 0.0), glm::vec3(1.0, 2.6, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 		loop();
 	}
@@ -84,8 +137,11 @@ extern "C" {
 		VM76::terminate();
 	}
 
-	void i_have_a_key(GLFWwindow* window UNUSED, int key UNUSED, int scancode UNUSED, int action UNUSED, int mode UNUSED) {
-		log("Something happened");
+	void i_have_a_key(GLFWwindow* window UNUSED, int key, int scancode, int action, int mode) {
+		//log("Something happened");
+	}
+
+	void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 
