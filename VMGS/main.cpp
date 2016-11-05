@@ -104,8 +104,8 @@ namespace VM76 {
 			//for (int x = -2; x < 3; x++) {
 			//	for (int y = -2; y < 3; y++) if (x != 0 && y != 0) {
 //					t[3]->obj->model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 0.0f, -0.5f));
-					t[4]->obj->prepare(main_shader, projection, view);
-					t[4]->obj->draw();
+					t[0]->obj->prepare(main_shader, projection, view);
+					t[0]->obj->draw();
 			//	}
 			//}
 
