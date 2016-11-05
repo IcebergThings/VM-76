@@ -16,6 +16,9 @@ public:
 		int vtx_c;
 		GLuint* indices;
 		int ind_c;
+		GLuint* mat;
+		int mat_c;
+		GLuint MBO;
 		GLuint VAO;
 		GLuint VBO;
 		GLuint EBO;

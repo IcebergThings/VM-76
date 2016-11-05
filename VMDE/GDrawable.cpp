@@ -27,7 +27,8 @@ void GDrawable::draw(GLuint start, GLuint end) {
 
 void GDrawable::draw() {
 	glBindVertexArray(data.VAO);
-	glDrawElements(GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0);
+	glDrawElementsInstanced(
+		GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0, data.mat_c);
 	glBindVertexArray(0);
 }
 
@@ -46,6 +47,23 @@ void GDrawable::fbind() {
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (7 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
 
+	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
+	glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
+	size_t vec4Size = sizeof(glm::vec4);
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) 0);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (vec4Size));
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (2 * vec4Size));
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (3 * vec4Size));
+
+	glVertexAttribDivisor(3, 1);
+	glVertexAttribDivisor(4, 1);
+	glVertexAttribDivisor(5, 1);
+	glVertexAttribDivisor(6, 1);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -63,6 +81,11 @@ void GDrawable::update() {
 	memcpy(bufi, data.indices, data.ind_c * sizeof(GLuint));
 	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
+	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
+	void *bufm = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+	memcpy(bufm, data.mat, data.mat_c * sizeof(glm::vec4) * 4);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
@@ -77,7 +100,9 @@ GDrawable::GDrawable() {
 	glGenVertexArrays(1, &data.VAO);
 	glGenBuffers(1, &data.VBO);
 	glGenBuffers(1, &data.EBO);
+	glGenBuffers(1, &data.MBO);
 	data.vertices = NULL;
 	data.indices = NULL;
+	data.mat = NULL;
 	data.model = glm::mat4(1.0);
 }
