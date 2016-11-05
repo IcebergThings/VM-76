@@ -4,10 +4,13 @@
 
 # General output files
 *.gch
+*.lib
+*.a
 *.o
 *.so
 *.dll
 
 # Generated source files; 这些文件可能会存储个人设置（例如路径）
-VMDE/make.bat
+*/make
+*/make.bat
 VMGS/VM_76
