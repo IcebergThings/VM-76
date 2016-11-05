@@ -40,8 +40,7 @@ namespace VM76 {
 			float y = 55.4f * sin(0.005f * VMDE->frame_count);
 			view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
-			t[GRASS]->obj->prepare(main_shader, projection, view);
-			t[GRASS]->obj->draw();
+			t[GRASS]->render(main_shader, projection, view);
 
 			::main_draw_end();
 		}
@@ -73,7 +72,7 @@ namespace VM76 {
 
 	void terminate() {
 		for (int i = 0; i < 16; i++) {
-			t[i]->obj->dispose();
+			t[i]->dispose();
 			free(t[i]);
 		}
 	}

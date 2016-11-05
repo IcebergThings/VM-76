@@ -6,15 +6,17 @@
 namespace VM76 {
 	class Tile {
 	public:
-		GDrawable* obj = NULL;
+		GDrawable* obj[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
 
 	private:
-		GLfloat *vtx = NULL;
-		GLuint *itx = NULL;
+		GLfloat *vtx[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
+		GLuint *itx[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
 		glm::mat4 *mat = NULL;
 
 	public:
 		Tile(int tid);
+		void render(Shaders* shader, glm::mat4 projection, glm::mat4 view);
+		void dispose();
 	};
 }
 
