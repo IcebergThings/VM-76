@@ -44,16 +44,21 @@ namespace VM76 {
 			0,1,3,    1,2,3,    7,5,4,    7,6,5,
 			8,9,11,   9,10,11,  15,13,12, 15,14,13,
 			16,17,19, 17,18,19, 23,21,20, 23,22,21};
-		mat = new glm::mat4[2];
-		mat[0] = glm::mat4(1.0);
-		mat[1] = glm::translate(glm::mat4(1.0), glm::vec3(-1.0,0.0,-1.0));
+
+		mat = new glm::mat4[256 * 256];
+		for (int x = 0; x < 256; x++) {
+			for (int y = 0; y < 256; y++) {
+				mat[x * 256 + y] = glm::translate(glm::mat4(1.0), glm::vec3(float(x) - 128.0f, 0.0, float(y) - 128.0f));
+			}
+		}
+
 		obj = new GDrawable();
 		obj->data.vtx_c = 6 * 9 * 4;
 		obj->data.ind_c = 12 * 3;
 		obj->data.vertices = vtx;
 		obj->data.indices = itx;
 		obj->data.tri_mesh_count = 6 * 2;
-		obj->data.mat_c = 2;
+		obj->data.mat_c = 256 * 256;
 		obj->data.mat = (GLuint*) &mat[0];
 		obj->fbind();
 	}
@@ -91,9 +96,9 @@ namespace VM76 {
 				glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
 			}
 
-			float x = 5.4f * cos(0.01f * VMDE->frame_count);
-			float y = 5.4f * sin(0.01f * VMDE->frame_count);
-			view = glm::lookAt(glm::vec3(x, 3.5f * cos(VMDE->frame_count * 0.01f), y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+			float x = 55.4f * cos(0.005f * VMDE->frame_count);
+			float y = 55.4f * sin(0.005f * VMDE->frame_count);
+			view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 			//test_obj->model = glm::rotate(glm::mat4(1.0f), 0.01f * VMDE->frame_count, glm::vec3(0.0f, 1.0f, 0.0f));
 			//for (int x = -2; x < 3; x++) {
