@@ -7,9 +7,6 @@
 #include "VMDE.hpp"
 #include "audio.hpp"
 
-GLuint basic_2D_vsh;
-GLuint basic_2D_fsh;
-
 //-----------------------------------------------------------------------------
 // ● 设置视口
 //-----------------------------------------------------------------------------
@@ -64,30 +61,11 @@ void init_graphics(int w, int h) {
 	// 深度测试是必要的
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	// 混合是极度必要的
-	//glEnable(GL_BLEND);
-
-	reload_shaders();
 
 	// 获取可用的Vertex Attributes数量
 	GLint nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
-}
-
-//-----------------------------------------------------------------------------
-// ● 加载着色器
-//-----------------------------------------------------------------------------
-void reload_shaders() {
-	// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
-	xefree(main_shader);
-	xefree(temp_vertexShaderSource);
-	xefree(temp_fragmentShaderSource);
-	temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
-	temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
-	main_shader = new Shaders();
-	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	main_shader->link_program();
 }
 
 //-----------------------------------------------------------------------------

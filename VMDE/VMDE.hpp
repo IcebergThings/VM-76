@@ -23,18 +23,9 @@
 		double frame_time;
 	};
 
-	#define RCN struct RenderChainNode
-	struct RenderChainNode {
-		RenderChainNode* prev;
-		GDrawable::GDrawable* gd;
-		bool visible;
-		RenderChainNode* next;
-	};
-
 	// VMDE操控的全局变量
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
-	extern RenderChainNode* render_chain;
 
 	// 关闭函数要在client里
 	extern "C" {
