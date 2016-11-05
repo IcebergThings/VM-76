@@ -4,11 +4,14 @@
 //   所有初始化相关的代码都被放置在这里。
 //=============================================================================
 
-#include "VMDE.hpp"
-#include "audio.hpp"
+#include "global.hpp"
 
-GLuint basic_2D_vsh;
-GLuint basic_2D_fsh;
+//-----------------------------------------------------------------------------
+// ● 临时的按键回调
+//-----------------------------------------------------------------------------
+void tmp_key(GLFWwindow* window UNUSED, int key, int scancode, int action, int mode) {
+	on_key(key, scancode, action, mode);
+}
 
 //-----------------------------------------------------------------------------
 // ● 设置视口
@@ -22,7 +25,7 @@ void setup_viewport() {
 //-----------------------------------------------------------------------------
 // ● 初始化图形
 //-----------------------------------------------------------------------------
-void init_graphics(int w, int h) {
+void init_graphics(int w, int h, const char* title) {
 	init_vmde(w, h);
 
 	// GLFW库初始化
@@ -40,7 +43,7 @@ void init_graphics(int w, int h) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	window = glfwCreateWindow(VMDE->width, VMDE->height, GAME_NAME, NULL, NULL);
+	window = glfwCreateWindow(VMDE->width, VMDE->height, title, NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
@@ -64,10 +67,6 @@ void init_graphics(int w, int h) {
 	// 深度测试是必要的
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	// 混合是极度必要的
-	//glEnable(GL_BLEND);
-
-	reload_shaders();
 
 	// 获取可用的Vertex Attributes数量
 	GLint nrAttributes;
@@ -76,31 +75,16 @@ void init_graphics(int w, int h) {
 }
 
 //-----------------------------------------------------------------------------
-// ● 加载着色器
-//-----------------------------------------------------------------------------
-void reload_shaders() {
-	// 初始化着色器「OpenGL 3.1开始没有固定管线了，着色器是被钦定的」
-	xefree(main_shader);
-	xefree(temp_vertexShaderSource);
-	xefree(temp_fragmentShaderSource);
-	temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
-	temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
-	main_shader = new Shaders();
-	main_shader->init_shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	main_shader->link_program();
-}
-
-//-----------------------------------------------------------------------------
 // ● 初始化引擎
 //-----------------------------------------------------------------------------
-void init_engine(int w, int h) {
+void init_engine(int w, int h, const char* title) {
 	log("initializing the engine");
 
 	srand(time(NULL));
 
 	init_vmde(w, h);
-	glfwSetKeyCallback(window, i_have_a_key);
-	init_graphics(w, h);
+	glfwSetKeyCallback(window, tmp_key);
+	init_graphics(w, h, title);
 
 	// 初始化声音
 	Audio::init();

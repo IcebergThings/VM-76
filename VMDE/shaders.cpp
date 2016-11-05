@@ -9,7 +9,7 @@
 GLchar* temp_vertexShaderSource = NULL;
 GLchar* temp_fragmentShaderSource = NULL;
 
-void Shaders::init_shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
+Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
 	const GLchar* basic_2D_vsh_src = vsh_src_ptr;
 	GLint success;
 	GLchar info_log[512];
@@ -56,6 +56,10 @@ void Shaders::link_program() {
 	}
 	glDeleteShader(this->basic_2D_vsh);
 	glDeleteShader(this->basic_2D_fsh);
+}
+
+void Shaders::use() {
+	glUseProgram(this->shaderProgram);
 }
 
 Shaders* main_shader;

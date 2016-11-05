@@ -4,11 +4,11 @@
 //   VMDE范围内的全局变量表。
 //=============================================================================
 
-#include "VMDE.hpp"
-#include "GDrawable.hpp"
+#include "global.hpp"
 
 GLFWwindow* window;
 
 struct VMDE* VMDE;
 
-RenderChainNode* render_chain = NULL;
+bool (*on_terminate)();
+void (*on_key)(int key, int scancode, int action, int mode);

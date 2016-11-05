@@ -4,42 +4,21 @@
 //   VMDE头文件。
 //=============================================================================
 
-#include "GDrawable.hpp"
-
 #ifndef _INCLUDE_VMDE_H
 	#define _INCLUDE_VMDE_H
-
-	struct VMDEState {
-		bool frozen;
-		float brightness;
-	};
-
-	struct VMDE {
-		VMDEState state;
-		long frame_count;
-		long millisecond;
-		int width, height;
-		int fps;
-		double frame_time;
-	};
-
-	#define RCN struct RenderChainNode
-	struct RenderChainNode {
-		RenderChainNode* prev;
-		GDrawable::GDrawable* gd;
-		bool visible;
-		RenderChainNode* next;
-	};
-
-	// VMDE操控的全局变量
-	extern struct VMDE* VMDE;
-	extern GLFWwindow* window;
-	extern RenderChainNode* render_chain;
-
-	// 关闭函数要在client里
-	extern "C" {
-		extern void client_terminate();
-		extern void i_have_a_key(GLFWwindow* window, int key, int scancode, int action, int mode);
-	}
-
+	//-------------------------------------------------------------------------
+	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
+	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
+	//-------------------------------------------------------------------------
+	#ifdef __MINGW32__
+		#define EXPORTED extern "C" __declspec(dllexport)
+	#else
+		#define EXPORTED extern "C"
+	#endif
+	// API
+	EXPORTED void init_engine(int w, int h);
+	// 全局事件
+	EXPORTED bool (*on_terminate)();
+	EXPORTED void (*on_key)(int key, int scancode, int action, int mode);
+	#undef EXPORTED
 #endif
