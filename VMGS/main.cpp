@@ -49,7 +49,7 @@ namespace VM76 {
 
 	void start_game() {
 		::init_engine(800, 600);
-glfwSwapInterval(0);
+
 		new Res::Texture((char*)"../Media/terrain.png", 0);
 		init_tiles();
 
