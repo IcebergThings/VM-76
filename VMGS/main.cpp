@@ -40,8 +40,8 @@ namespace VM76 {
 			float y = 55.4f * sin(0.005f * VMDE->frame_count);
 			view = glm::lookAt(glm::vec3(x, 6.0, y), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
-			t[0]->obj->prepare(main_shader, projection, view);
-			t[0]->obj->draw();
+			t[GRASS]->obj->prepare(main_shader, projection, view);
+			t[GRASS]->obj->draw();
 
 			::main_draw_end();
 		}
