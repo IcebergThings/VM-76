@@ -77,7 +77,7 @@ void init_graphics(int w, int h, const char* title) {
 //-----------------------------------------------------------------------------
 // ● 初始化引擎
 //-----------------------------------------------------------------------------
-void init_engine(int w, int h, const char* title) {
+EXPORTED void init_engine(int w, int h, const char* title) {
 	log("initializing the engine");
 
 	srand(time(NULL));

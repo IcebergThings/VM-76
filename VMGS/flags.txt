@@ -1,0 +1,6 @@
+Typical arguments for Windoge:
+	-I..\VMDE
+	-O3
+	-L..\VMDE
+	-lVMDE
+Mean, lean and make clean.

@@ -26,6 +26,10 @@
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
 	using namespace std;
+	#include "VMDE.hpp"
+	#ifdef __CYGWIN__
+		#warning This will not work in Cygwin. Try at your own risk.
+	#endif
 	//-------------------------------------------------------------------------
 	// ● 定义类型
 	//-------------------------------------------------------------------------
@@ -72,19 +76,6 @@
 		do { if (pointer) { \
 		free(pointer); pointer = NULL; \
 		} } while (false)
-	//-------------------------------------------------------------------------
-	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
-	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
-	//-------------------------------------------------------------------------
-	#ifdef __CYGWIN__
-		#warning This wont work in Cygwin. Try at your own risk.
-	#endif
-	#ifdef __MINGW32__
-		#define EXPORTED extern "C" __declspec(dllexport)
-	#else
-		#define EXPORTED extern "C"
-	#endif
-	#include "VMDE.hpp"
 	//-------------------------------------------------------------------------
 	// ● shaders.cpp
 	//-------------------------------------------------------------------------
