@@ -4,8 +4,7 @@
 //   处理主渲染循环等主要过程。
 //=============================================================================
 
-#include "VMDE.hpp"
-#include "GDrawable.hpp"
+#include "global.hpp"
 
 //-----------------------------------------------------------------------------
 // ● 为GLFW提供的通用错误回调函数
@@ -30,7 +29,7 @@ time_t now;
 void main_draw_start() {
 	glfwPollEvents();
 	if (glfwWindowShouldClose(window)) {
-		client_terminate();
+		on_terminate();
 		// Terminate GLFW, clearing any resources allocated by GLFW.
 		glfwTerminate();
 		exit(0);

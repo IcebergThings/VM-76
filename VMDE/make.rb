@@ -1,18 +1,19 @@
 # 如果在第一行加了这个 → #!/usr/bin/cat ← 就不能用了。
 # ruby: no Ruby script found in input (LoadError)
 #==============================================================================
-# ■ windoge_make.rb
+# ■ make.rb
 #------------------------------------------------------------------------------
-#   君住Linux中，我住Windows里。日日思君不见君，共通编译器。
-#   警告几时休，错误何时已？但愿我心藏君境，定不负移植技。
-#   ——Frog Chen《伪·卜算子·编译》
+#   往日生成按至鄙，而今欲有所依赖，奈何扳手不开怀。
+#   工程图日新月异，Makefile有百弊，是适时一返梦里。
+#   ——Frog Chen《伪·浣溪沙·构建》
 #==============================================================================
 
-class WindogeMake
+class WindogixMake
 	#--------------------------------------------------------------------------
-	# ● 常量
+	# ● 常量与类变量
 	#--------------------------------------------------------------------------
-	BATCH_FILENAME = "windoge_make.bat"
+	@@windows = (ENV["OS"] == "Windows_NT")
+	SHORTCUT_NAME = (@@windows ? "make.bat" : "make")
 	#--------------------------------------------------------------------------
 	# ● 初始化对象
 	#--------------------------------------------------------------------------
@@ -25,9 +26,9 @@ class WindogeMake
 	def display_help
 		puts <<~EOF
 			= Usage =
-			> ruby windoge_make.rb -D<...> -I<...> <...>.a <...>.lib -L<...> -l<...>
+			> ruby windoge_make.rb -D... -I... *.a *.lib -L... -l...
 			> rem 作为开发者，你不应该在库目录的名称中包含空格。
-			Typical arguments:
+			Typical arguments for Windoge:
 				-IC:\\Ruby23\\include\\ruby-2.3.0
 				-IC:\\Ruby23\\include\\ruby-2.3.0\\i386-mingw32
 				-DGLFW_DLL -DGLEW_STATIC
@@ -38,25 +39,28 @@ class WindogeMake
 				-ID:\\libogg-1.3.2\\include
 				-ID:\\libvorbis-1.3.5\\include
 				-ID:\\SOIL\\src
-				-O3 -LD:\\bin -llibstdc++
-				-LC:\\Ruby23\\lib
-				-Wl,--enable-auto-image-base,-subsystem,windows
-				-lmsvcrt-ruby230 -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi
+				-O3 -Wl,--enable-auto-image-base,-subsystem,windows
 				D:\\SOIL\\lib\\libSOIL.a
+				-LD:\\bin -llibstdc++
 				-LD:\\glfw-3.2.bin.WIN32\\lib-mingw-w64
 				-LD:\\glew-1.13.0\\lib\\Release\\Win32
 				-lglfw3dll -lglew32s -lopengl32 -lportaudio_x86 -lvorbisfile
+			And for *nix:
+				-I~/SOIL/lib/include -I. -I..
+				$(pkg-config --cflags --libs glfw3 gl glm glew portaudio-2.0 ogg)
+				-lstdc++ -lSOIL
 			All ‘-Idir’ options will be translated to ‘-isystem dir’ and no way back.
 			libstdc艹 is for exceptions and other random stuff; omit it if not used.
-			-Wall, -Wextra and some required arguments are built into this script.
-			‘D:\\bin’ above is where you put all libraries (.lib files) and DLLs.
+			-Wall, -Wextra and some necessary switches are built into this script.
+			‘D:\\bin’ above is where you put DLLs you've built yourself.
+			I recommend you to do ‘make.rb clean’ when you've changed build options.
 		EOF
 	end
 	#--------------------------------------------------------------------------
 	# ● 请按任意键继续. . .
 	#--------------------------------------------------------------------------
 	def pause
-		system "pause"
+		system @@windows ? "pause" : "echo -n 'PRESS BUTTON'; read -n 1"
 	end
 	#--------------------------------------------------------------------------
 	# ● 主程序
@@ -67,30 +71,31 @@ class WindogeMake
 			display_help
 			return
 		end
+		# make clean; make c l e a n
+		if [@argv.join, @argv.first].include?("clean")
+			Dir["*.o"].each { |filename| File.delete(filename) }
+			return
+		end
 		# 获取参数
 		compiling_args = []
 		linking_args = []
 		@argv.each do |arg|
-			(
-				case arg
-				when /^-[gDIO]/
-					compiling_args
-				when /^-[lL]/
-					linking_args
-				when /\.(?:a|lib)$/
-					linking_args
-				else
-					linking_args
-				end
-			) << arg
+			case arg
+			when /^-[gDUO]|^-Wp,/
+				compiling_args << arg
+			when /^-[lL]|^-Wl,|\.(?:[ao]|lib)$/
+				linking_args << arg
+			when /^-I/
+				compiling_args << "-isystem"
+				compiling_args << arg[2, arg.size]
+			else
+				puts "option not recognized: #{arg}"
+				exit
+			end
 		end
-		compiling_args.map! { |a| a[1, 1] == "I" ? ["-isystem", a[2, a.size]] : a }
-		compiling_args.flatten!
 		sources = Dir.glob("*.cpp")
 		objects = []
-		# some ugly hacks for Windoge
-		dll_name = "VMDE.dll" # .dll: required to build DLL (maybe?)
-		so_name = "VMDE.so" # .so: required for Ruby to work
+		dll_name = "VMDE.dll"
 		# 如果不这么搞就会无法编译
 		sources.each do |source_name|
 			name = File.basename(source_name, ".cpp")
@@ -110,22 +115,20 @@ class WindogeMake
 		command.concat(objects)
 		command.concat(linking_args)
 		make command
-		# For tools like exeScope, the file must have correct suffix.
-		# However for Ruby, the DLL must have corrupted suffix.
-		# 而这就是PY交易。
-		File.rename(dll_name, so_name)
 		# 如果没有错误，输出脚本以便下次运行
-		output_batch
+		output_shortcut
 	end
 	#--------------------------------------------------------------------------
 	# ● 模拟Make的一步行动
 	#    command : 参数数组
 	#--------------------------------------------------------------------------
 	def make(command)
-		puts command.join(" ")
+		print "▎"
+		puts command.reject { |a| /^[A-Za-z]:|^\/|^-/ === a }.join(" ")
 		success = system(*command)
 		unless success
-			system "title !! ERROR !!"
+			system "title !! ERROR !!" if @@windows
+			puts "△ when executing this command:\n#{command.join(" ")}"
 			pause
 			exit
 		end
@@ -134,11 +137,21 @@ class WindogeMake
 	# ● 输出能够快捷地执行本脚本的批处理文件
 	#   如果批处理存在且比本脚本更新，则不做事。
 	#--------------------------------------------------------------------------
-	def output_batch
-		if FileTest.exist?(BATCH_FILENAME)
-			return if File.mtime(BATCH_FILENAME) > File.mtime(__FILE__)
+	def output_shortcut
+		if FileTest.exist?(SHORTCUT_NAME)
+			return if File.mtime(SHORTCUT_NAME) > File.mtime(__FILE__)
 		end
-		File.write(BATCH_FILENAME, "ruby windoge_make.rb #{@argv.join(" ")}")
+		File.open(SHORTCUT_NAME, "w") do |f|
+			f.write @@windows ? <<~BATCH : <<~SHELL
+				@ruby make.rb %1 ^
+				#{@argv.join(" ^\n")}
+			BATCH
+				#!/bin/sh
+				ruby make.rb $1 \\
+				#{@argv.join(" \\\n")}
+			SHELL
+			f.chmod(0755)
+		end
 	end
 #------------------------------------------------------------------------------
 # ◇ 为了避免不好的事发生而添加的类级错误处理
@@ -152,4 +165,4 @@ end
 #------------------------------------------------------------------------------
 # ◇ “各种定义结束后，从这里开始实际运行。”
 #------------------------------------------------------------------------------
-WindogeMake.new.main if __FILE__ == $0
+WindogixMake.new.main if __FILE__ == $0

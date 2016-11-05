@@ -3,7 +3,8 @@
 //-----------------------------------------------------------------------------
 //   VMDE中GDrawable的控制与类。
 //=============================================================================
-#include "GDrawable.hpp"
+
+#include "global.hpp"
 
 void GDrawable::prepare(Shaders* sh, glm::mat4 projection, glm::mat4 view) {
 	GLuint loc = glGetUniformLocation(sh->shaderProgram, "Model");
