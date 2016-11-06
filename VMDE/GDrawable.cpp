@@ -3,7 +3,8 @@
 //-----------------------------------------------------------------------------
 //   VMDE中GDrawable的控制与类。
 //=============================================================================
-#include "GDrawable.hpp"
+
+#include "global.hpp"
 
 void GDrawable::draw(GLuint start, GLuint end) {
 	glBindVertexArray(data.VAO);

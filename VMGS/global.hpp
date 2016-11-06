@@ -1,4 +1,6 @@
-#include <VMDE/VMDE.hpp>
+#include <cstdlib>
+#include <cstdio>
+#include <global.hpp>
 #include "Tiles/tiles.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
@@ -52,8 +54,6 @@ namespace VM76 {
 
 extern "C" {
 	void client_terminate();
-	void i_have_a_key(GLFWwindow* window, int key, int scancode, int action, int mode);
-	void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 }
 
 #endif

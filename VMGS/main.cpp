@@ -99,7 +99,7 @@ namespace VM76 {
 	}
 
 	void start_game() {
-		::init_engine(800, 600);
+		::init_engine(800, 600, "VM / 76");
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 
@@ -136,16 +136,9 @@ extern "C" {
 	void client_terminate() {
 		VM76::terminate();
 	}
-
-	void i_have_a_key(GLFWwindow* window UNUSED, int key, int scancode, int action, int mode) {
-		//log("Something happened");
-	}
-
-	void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
-	}
 }
 
 int main() {
-	log("Starting game");
+	puts("Starting game");
 	VM76::start_game();
 }
