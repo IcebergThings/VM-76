@@ -119,7 +119,7 @@ class WindogixMake
 				return
 			end
 		end
-		sources = Dir.glob("*.cpp")
+		sources = Dir.glob("**/*.cpp")
 		objects = []
 		# 如果不这么搞就会无法编译
 		sources.each do |source_name|
