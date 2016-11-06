@@ -51,12 +51,9 @@ namespace VM76 {
 		itx[4] = itx[0];
 		itx[5] = itx[1];
 
-		mat = new glm::mat4[256 * 256];
-		for (int x = 0; x < 256; x++) {
-			for (int y = 0; y < 256; y++) {
-				mat[x * 256 + y] = glm::translate(glm::mat4(1.0), glm::vec3(float(x) - 128.0f, 0.0, float(y) - 128.0f));
-			}
-		}
+		// Prepare an empty space
+		glm::mat4* mat = new glm::mat4[512];
+		for (int x = 0; x < 512; x++) mat[x] = glm::mat4(1.0);
 
 		for (int x = 0; x < 6; x++) {
 			obj[x] = new GDrawable();
@@ -65,14 +62,29 @@ namespace VM76 {
 			obj[x]->data.vertices = vtx[x];
 			obj[x]->data.indices = itx[x];
 			obj[x]->data.tri_mesh_count = 2;
-			obj[x]->data.mat_c = 256 * 256;
+			obj[x]->data.mat_c = 512;
 			obj[x]->data.mat = (GLuint*) &mat[0];
 			obj[x]->fbind();
+			//obj[x]->data.mat_c = 0;
+		}
+		xefree(mat);
+	}
+
+	void Tile::update_instance(int mat_c, glm::mat4* mat) {
+		for (int x = 0; x < 6; x++) {
+			obj[x]->data.mat_c = mat_c;
+			obj[x]->data.mat = (GLuint*) mat;
+			obj[x]->update_instance();
 		}
 	}
 
-	void Tile::render() {
-		obj[2]->draw();
+	void Tile::render(bool r1, bool r2, bool r3, bool r4, bool r5, bool r6) {
+		if (r1) obj[0]->draw();
+		if (r2) obj[1]->draw();
+		if (r3) obj[2]->draw();
+		if (r4) obj[3]->draw();
+		if (r5) obj[4]->draw();
+		if (r6) obj[5]->draw();
 	}
 
 	void Tile::dispose() {
