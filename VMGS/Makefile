@@ -7,7 +7,7 @@ Objects = $(patsubst %.cpp, %.o, $(Src))
 
 LIBS = $(shell pkg-config --libs --static glfw3 gl glm glew portaudio-2.0)  -lstdc++ -lSOIL
 LDFLAGS = -O4 ../VMDE/libVMDE.so
-CXXFLAGS = -I../lib/SOIL/include \
+CXXFLAGS = -I../lib/SOIL/include -I../VMDE \
 	$(shell pkg-config --cflags glfw3 gl glm glew portaudio-2.0) \
 	-I../ -std=c++14 -Wall -Wextra -O3 -c \
 	-Ofast -msse4.1 -mtune=core2
