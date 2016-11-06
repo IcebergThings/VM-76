@@ -98,7 +98,7 @@ namespace VM76 {
 		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 		main_shader->link_program();
 
-		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 1.0f, -10.0f);
+		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 0.0f, -10.0f);
 		view = glm::lookAt(glm::vec3(0.0, 2.6, 0.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 		loop();
