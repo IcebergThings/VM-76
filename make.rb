@@ -10,14 +10,16 @@
 
 module Kernel
 	#--------------------------------------------------------------------------
-	# ● 历史遗留问题
+	# ● Windoge or *nix, this is a problem.
 	#--------------------------------------------------------------------------
 	@@windows = (ENV["OS"] == "Windows_NT")
 	#--------------------------------------------------------------------------
 	# ● 请按任意键继续. . .
 	#--------------------------------------------------------------------------
 	def pause
-		system @@windows ? "pause" : "echo -n 'PRESS BUTTON'; read -n 1"
+		system "pause" if @@windows
+		# We think *nix users always have an open terminal.
+		# They're forced to check their windows frequently.
 	end
 end
 
@@ -75,7 +77,7 @@ class WindogixMake
 			Dir.chdir("..")
 			return
 		end
-		# make clean; make c l e a n
+		# make clean
 		if [@argv.join, @argv.first].include?("clean")
 			Dir["*.o"].each { |filename| File.delete(filename) }
 			return
@@ -131,7 +133,12 @@ class WindogixMake
 		puts command.reject { |a| /^[A-Za-z]:|^\/|^-/ === a }.join(" ")
 		success = system(*command)
 		unless success
-			system "title !! ERROR !!" if @@windows
+			if @@windows
+				system "title !! ERROR !!"
+			else
+				# I kindly alerts the user.
+				print "\a"
+			end
 			puts "△ when executing this command:\n#{command.join(" ")}"
 			pause
 			exit
