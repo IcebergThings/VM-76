@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <cstdio>
-#include "VMDE/global.hpp"
+#include <global.hpp>
+#include "Tiles/tiles.hpp"
+#include "Physics/phys.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 #define _INCLUDE_VMGS_GLOBAL_H
@@ -21,27 +23,10 @@ namespace VM76 {
 		COBBLE_STONE
 	};
 
-	class Tile {
-	public:
-		GDrawable* obj[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
-
-	private:
-		GLfloat* vtx[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
-		GLuint* itx[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
-		glm::mat4 *mat = NULL;
-
-	public:
-		Tile(int tid);
-		void render();
-		void dispose();
-	};
-
-	extern Tile* t[16];
-
 	const GLfloat tile_size = 1.0f / 16.0f;
 
 	struct Game {
-		int forward, left, right, back;
+		int	forward, left, right, back;
 	};
 	extern Game game;
 
@@ -54,6 +39,29 @@ namespace VM76 {
 		glm::vec3 wpos = glm::vec3(0.0, 1.0, 0.0);
 	};
 	extern Player game_player;
+
+	class Block {
+	public:
+		GLuint tid;
+		Block(int id);
+	};
+
+	class Structure {
+	private:
+		Tile* t[16];
+		int block_count[16];
+		glm::mat4* mats[16];
+		void init_tiles();
+
+	public:
+		Block* str[64][64][64];
+		glm::vec3 wpos = glm::vec3(0.0);
+
+		void dispose();
+		void update();
+		void render();
+		Structure();
+	};
 
 	void loop();
 	void start_game();

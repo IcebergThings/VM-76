@@ -250,6 +250,7 @@
 		void draw();
 		void fbind();
 		void update();
+		void update_instance();
 		void dispose();
 
 		GDrawable();
