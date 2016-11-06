@@ -44,6 +44,8 @@ void init_graphics(int w, int h) {
 		return;
 	}
 
+	glfwSetKeyCallback(window, i_have_a_key);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 	// 垂直同步，拒绝鬼畜
@@ -77,7 +79,6 @@ void init_engine(int w, int h) {
 	srand(time(NULL));
 
 	init_vmde(w, h);
-	glfwSetKeyCallback(window, i_have_a_key);
 	init_graphics(w, h);
 
 	// 初始化声音

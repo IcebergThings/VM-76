@@ -5,20 +5,6 @@
 //=============================================================================
 #include "GDrawable.hpp"
 
-void GDrawable::prepare(Shaders* sh, glm::mat4 projection, glm::mat4 view) {
-	GLuint loc = glGetUniformLocation(sh->shaderProgram, "Model");
-	GLfloat* ptrM = glm::value_ptr(data.model);
-	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrM);
-
-	loc = glGetUniformLocation(sh->shaderProgram, "View");
-	GLfloat* ptrV = glm::value_ptr(view);
-	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrV);
-
-	loc = glGetUniformLocation(sh->shaderProgram, "Projection");
-	GLfloat* ptrP = glm::value_ptr(projection);
-	glUniformMatrix4fv(loc, 1, GL_FALSE, ptrP);
-}
-
 void GDrawable::draw(GLuint start, GLuint end) {
 	glBindVertexArray(data.VAO);
 	glDrawRangeElements(GL_TRIANGLES, start, end, end + 1, GL_UNSIGNED_INT, 0);
@@ -104,5 +90,4 @@ GDrawable::GDrawable() {
 	data.vertices = NULL;
 	data.indices = NULL;
 	data.mat = NULL;
-	data.model = glm::mat4(1.0);
 }
