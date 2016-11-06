@@ -8,16 +8,20 @@
 #   ——Frog Chen《伪·浣溪沙·构建》
 #==============================================================================
 
+require 'json'
+
 module Kernel
 	#--------------------------------------------------------------------------
-	# ● 历史遗留问题
+	# ● Windoge or *nix, this is a problem.
 	#--------------------------------------------------------------------------
 	@@windows = (ENV["OS"] == "Windows_NT")
 	#--------------------------------------------------------------------------
 	# ● 请按任意键继续. . .
 	#--------------------------------------------------------------------------
 	def pause
-		system @@windows ? "pause" : "echo -n 'PRESS BUTTON'; read -n 1"
+		system "pause" if @@windows
+		# We think *nix users always have an open terminal.
+		# They're forced to check their windows frequently.
 	end
 end
 
@@ -26,6 +30,12 @@ class WindogixMake
 	# ● 常量与类变量
 	#--------------------------------------------------------------------------
 	SHORTCUT_NAME = (@@windows ? "make.bat" : "make")
+	DEFAULT_OPTIONS = {
+		"output" => "b.out",
+		"link the target" => true,
+		"link together with" => [],
+		"target type" => "executable",
+	}
 	#--------------------------------------------------------------------------
 	# ● 初始化对象
 	#--------------------------------------------------------------------------
@@ -43,7 +53,6 @@ class WindogixMake
 				> ruby make.rb --help [directory]
 				> ruby ..\\make.rb -D... -I... *.a *.lib -L... -l...
 				> ruby ..\\make.rb clean <garbage>
-				> rem 作为开发者，你不应该在库目录的名称中包含空格。
 				All ‘-Idir’ options will be translated to ‘-isystem dir’ and no way back.
 				-Wall, -Wextra and some necessary switches are built into this script.
 				I recommend you to do ‘make.rb clean’ when build options are changed.
@@ -51,7 +60,10 @@ class WindogixMake
 			EOF
 		else
 			puts "= #{dir} ="
-			puts File.read("#{dir}/flags.txt", :external_encoding => "utf-8")
+			File.open("#{dir}/flags.txt", "r", :external_encoding => "utf-8") do |f|
+				f.readline
+				puts l while l = f.gets
+			end
 		end
 	end
 	#--------------------------------------------------------------------------
@@ -65,21 +77,31 @@ class WindogixMake
 		end
 		# make <project>
 		if !FileTest.exist?("flags.txt")
-			Dir.chdir(@argv.first)
-			args = nil
-			File.open(SHORTCUT_NAME, "r") do |f|
-				f.readline
-				args = f.readline[4..-1].split(" ")
+			if FileTest.exist?("#{@argv[0]}/flags.txt")
+				Dir.chdir(@argv.first)
+				args = nil
+				File.open(SHORTCUT_NAME, "r") do |f|
+					f.readline
+					args = f.readline[4..-1].split(" ")
+				end
+				WindogixMake.new(args).main
+				Dir.chdir("..")
+			else
+				puts "not a project: #{@argv[0]}"
 			end
-			WindogixMake.new(args).main
-			Dir.chdir("..")
 			return
 		end
-		# make clean; make c l e a n
+		# make clean
 		if [@argv.join, @argv.first].include?("clean")
 			Dir["*.o"].each { |filename| File.delete(filename) }
 			return
 		end
+		# 调查选项
+		options = nil
+		File.open("flags.txt", "r", :external_encoding => "utf-8") do |f|
+			options = f.readline
+		end
+		options = DEFAULT_OPTIONS.merge(JSON.parse(options))
 		# 获取参数
 		compiling_args = []
 		linking_args = []
@@ -97,9 +119,8 @@ class WindogixMake
 				return
 			end
 		end
-		sources = Dir.glob("*.cpp")
+		sources = Dir.glob("**/*.cpp")
 		objects = []
-		dll_name = "VMDE.dll"
 		# 如果不这么搞就会无法编译
 		sources.each do |source_name|
 			name = File.basename(source_name, ".cpp")
@@ -114,11 +135,26 @@ class WindogixMake
 			command.concat(compiling_args)
 			make command
 		end
-		command = %w(gcc -shared -o)
-		command.push(dll_name)
-		command.concat(objects)
-		command.concat(linking_args)
-		make command
+		# 如果不这么搞也会无法编译
+		if options["link the target"]
+			case options["target type"]
+			when "executable", "exe"
+				command = %w(gcc -o)
+			when "archive", "a"
+				command = %w(ar -r)
+			when "so", "shared", "shared object", "dll"
+				command = %w(gcc -shared -o)
+			end
+			command.push(options["output"])
+			command.concat(objects)
+			options["link together with"].each do |project|
+				together = Dir["../#{project}/*.a"]
+				together = Dir["../#{project}/*.o"] if together.empty?
+				command.concat(together)
+			end
+			command.concat(linking_args)
+			make command
+		end
 		# 如果没有错误，输出脚本以便下次运行
 		output_shortcut
 	end
@@ -128,10 +164,15 @@ class WindogixMake
 	#--------------------------------------------------------------------------
 	def make(command)
 		print "▎"
-		puts command.reject { |a| /^[A-Za-z]:|^\/|^-/ === a }.join(" ")
+		puts command.reject { |a| /^[A-Za-z]:|^(-|\.?\.?[\/\\]\w)/ === a }.join(" ")
 		success = system(*command)
 		unless success
-			system "title !! ERROR !!" if @@windows
+			if @@windows
+				system "title !! ERROR !!"
+			else
+				# I kindly alert the user.
+				print "\a"
+			end
 			puts "△ when executing this command:\n#{command.join(" ")}"
 			pause
 			exit

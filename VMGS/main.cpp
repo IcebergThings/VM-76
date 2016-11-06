@@ -3,8 +3,6 @@
 namespace VM76 {
 	Shaders* main_shader = NULL;
 
-	Tile* t[16];
-
 	void control_update() {
 		// Mouse Input
 		double xpos, ypos;

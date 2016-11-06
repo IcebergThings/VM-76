@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include <cstdio>
-#include <global.hpp>
-#include "Tiles/tiles.hpp"
+#include "VMDE/global.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 #define _INCLUDE_VMGS_GLOBAL_H
@@ -10,7 +9,6 @@
 #define PI 3.1415926f
 
 namespace VM76 {
-
 	enum TileList {
 		GRASS,
 		STONE,
@@ -23,17 +21,29 @@ namespace VM76 {
 		COBBLE_STONE
 	};
 
+	class Tile {
+	public:
+		GDrawable* obj[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
+
+	private:
+		GLfloat* vtx[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
+		GLuint* itx[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
+		glm::mat4 *mat = NULL;
+
+	public:
+		Tile(int tid);
+		void render();
+		void dispose();
+	};
+
 	extern Tile* t[16];
 
 	const GLfloat tile_size = 1.0f / 16.0f;
 
 	struct Game {
-		int
-			forward = GLFW_KEY_W,
-			left = GLFW_KEY_A,
-			right = GLFW_KEY_D,
-			back = GLFW_KEY_S;
-	} game;
+		int forward, left, right, back;
+	};
+	extern Game game;
 
 	class Player {
 	public:
@@ -43,13 +53,12 @@ namespace VM76 {
 		float speed = 0.0;
 		glm::vec3 wpos = glm::vec3(0.0, 1.0, 0.0);
 	};
-	Player game_player;
+	extern Player game_player;
 
 	void loop();
 	void start_game();
 	void terminate();
 	void init_tiles();
-
 }
 
 extern "C" {

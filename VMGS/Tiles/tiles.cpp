@@ -1,4 +1,4 @@
-#include "tiles.hpp"
+#include "global.hpp"
 
 namespace VM76 {
 	Tile::Tile(int tid) {
