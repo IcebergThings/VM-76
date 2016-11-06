@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <global.hpp>
 #include "Tiles/tiles.hpp"
+#include "Physics/phys.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 #define _INCLUDE_VMGS_GLOBAL_H
@@ -23,7 +24,6 @@ namespace VM76 {
 		COBBLE_STONE
 	};
 
-	extern Tile* t[16];
 
 	const GLfloat tile_size = 1.0f / 16.0f;
 
@@ -33,7 +33,8 @@ namespace VM76 {
 			left = GLFW_KEY_A,
 			right = GLFW_KEY_D,
 			back = GLFW_KEY_S;
-	} game;
+	};
+	extern Game* game;
 
 	class Player {
 	public:
@@ -43,7 +44,30 @@ namespace VM76 {
 		float speed = 0.0;
 		glm::vec3 wpos = glm::vec3(0.0, 1.0, 0.0);
 	};
-	Player game_player;
+	extern Player* game_player;
+
+	class Block {
+	public:
+		GLuint tid;
+		Block(int id);
+	};
+
+	class Structure {
+	private:
+		Tile* t[16];
+		int block_count[16];
+		glm::mat4* mats[16];
+		void init_tiles();
+
+	public:
+		Block* str[64][64][64];
+		glm::vec3 wpos = glm::vec3(0.0);
+
+		void dispose();
+		void update();
+		void render();
+		Structure();
+	};
 
 	void loop();
 	void start_game();
