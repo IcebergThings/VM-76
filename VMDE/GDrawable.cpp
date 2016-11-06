@@ -22,9 +22,9 @@ void GDrawable::draw() {
 void GDrawable::fbind() {
 	glBindVertexArray(data.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
-	glBufferData(GL_ARRAY_BUFFER, data.vtx_c * sizeof(GLfloat), data.vertices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, data.vtx_c * sizeof(GLfloat), data.vertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.ind_c * sizeof(GLuint), data.indices, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.ind_c * sizeof(GLuint), data.indices, GL_STATIC_DRAW);
 
 	size_t vertex_size = (3 + 4 + 2) * sizeof(GLfloat); // X,Y,Z,  R,G,B,A,  S,T
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
@@ -59,19 +59,28 @@ void GDrawable::update() {
 	glBindVertexArray(data.VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
-	void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+	void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
 	memcpy(bufv, data.vertices, data.vtx_c * sizeof(GLfloat));
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.EBO);
-	void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+	void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 	memcpy(bufi, data.indices, data.ind_c * sizeof(GLuint));
 	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
 	void *bufm = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
-	memcpy(bufm, data.mat, data.mat_c * sizeof(glm::vec4) * 4);
+	memcpy(bufm, data.mat, data.mat_c * sizeof(glm::mat4));
 	glUnmapBuffer(GL_ARRAY_BUFFER);
+
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void GDrawable::update_instance() {
+	glBindVertexArray(data.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data.mat_c * sizeof(glm::mat4), data.mat);
+	//glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
@@ -80,6 +89,7 @@ void GDrawable::dispose() {
 	glDeleteVertexArrays(1, &data.VAO);
 	glDeleteBuffers(1, &data.VBO);
 	glDeleteBuffers(1, &data.EBO);
+	glDeleteBuffers(1, &data.MBO);
 	// 都在类里面了，一个free就完事了
 }
 
