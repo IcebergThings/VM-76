@@ -26,7 +26,9 @@ namespace VM76 {
 	const GLfloat tile_size = 1.0f / 16.0f;
 
 	struct Game {
-		int	forward, left, right, back;
+		int
+			key_forward, key_left, key_right, key_back,
+			key_up, key_down;
 	};
 	extern Game game;
 

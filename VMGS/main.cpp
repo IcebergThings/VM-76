@@ -27,19 +27,25 @@ namespace VM76 {
 
 		// Key Input
 		glm::vec3 speed = glm::vec3(0.1);
-		int state = glfwGetKey(window, game.forward);
+		int state = glfwGetKey(window, game.key_forward);
 		if (state == GLFW_PRESS) {
-			game_player.wpos += direction * speed;
+			game_player.wpos += glm::vec3(direction.x, 0.0, direction.z) * speed;
 		}
-		state = glfwGetKey(window, game.back);
+		state = glfwGetKey(window, game.key_back);
 		if (state == GLFW_PRESS)
-			game_player.wpos -= direction * speed;
-		state = glfwGetKey(window, game.left);
+			game_player.wpos -= glm::vec3(direction.x, 0.0, direction.z) * speed;
+		state = glfwGetKey(window, game.key_left);
 		if (state == GLFW_PRESS)
 			game_player.wpos -= right * speed;
-		state = glfwGetKey(window, game.right);
+		state = glfwGetKey(window, game.key_right);
 		if (state == GLFW_PRESS)
 			game_player.wpos += right * speed;
+		state = glfwGetKey(window, game.key_up);
+		if (state == GLFW_PRESS)
+			game_player.wpos += glm::vec3(0.0, 1.0, 0.0) * speed;
+		state = glfwGetKey(window, game.key_down);
+		if (state == GLFW_PRESS)
+			game_player.wpos -= glm::vec3(0.0, 1.0, 0.0) * speed;
 
 	}
 
