@@ -144,4 +144,10 @@ namespace Audio {
 		data->value = sine_table[(size_t) (int) data->index];
 		if (data->minus) data->value = -data->value;
 	}
+	//-------------------------------------------------------------------------
+	// ● I'd like to throw something here silently. Nobody'd find them.
+	//   They'll eat up at least 10 bytes of no use. That's fine.
+	//-------------------------------------------------------------------------
+	long long ago; // in a galaxy far far away
+	short life; // play more
 }
