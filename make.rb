@@ -86,14 +86,16 @@ class WindogixMake
 				end
 				WindogixMake.new(args).main
 				Dir.chdir("..")
+			elsif @argv[0] == "clean"
+				clean
 			else
 				puts "not a project: #{@argv[0]}"
 			end
 			return
 		end
-		# make clean
+		# make clean; make c l e a n
 		if [@argv.join, @argv.first].include?("clean")
-			Dir["*.o"].each { |filename| File.delete(filename) }
+			clean
 			return
 		end
 		# 调查选项
@@ -176,6 +178,15 @@ class WindogixMake
 			puts "△ when executing this command:\n#{command.join(" ")}"
 			pause
 			exit
+		end
+	end
+	#--------------------------------------------------------------------------
+	# ● make clean
+	#--------------------------------------------------------------------------
+	def clean
+		Dir["**/*.{o,a,dll}"].each do |filename|
+			puts "removing #{filename}"
+			File.delete(filename)
 		end
 	end
 	#--------------------------------------------------------------------------
