@@ -42,11 +42,11 @@ namespace Audio {
 	// ● 播放波形时使用的回调函数
 	//-------------------------------------------------------------------------
 	int play_wave_callback(
-		const void* input_buffer UNUSED,
+		const void* input_buffer,
 		void* output_buffer,
 		unsigned long frame_count,
-		const PaStreamCallbackTimeInfo* time_info UNUSED,
-		PaStreamCallbackFlags status_flags UNUSED,
+		const PaStreamCallbackTimeInfo* time_info,
+		PaStreamCallbackFlags status_flags,
 		void* user_data
 	) {
 		float* output = (float*) output_buffer;
@@ -144,4 +144,10 @@ namespace Audio {
 		data->value = sine_table[(size_t) (int) data->index];
 		if (data->minus) data->value = -data->value;
 	}
+	//-------------------------------------------------------------------------
+	// ● I'd like to throw something here silently. Nobody'd find them.
+	//   They'll eat up at least 10 bytes of no use. That's fine.
+	//-------------------------------------------------------------------------
+	long long ago; // in a galaxy far far away
+	short life; // play more
 }
