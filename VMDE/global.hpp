@@ -1,7 +1,5 @@
 //=============================================================================
 // ■ VMDE/global.hpp
-//-----------------------------------------------------------------------------
-//   VMDE通用C++头文件。
 //=============================================================================
 
 #include <cstdlib>
@@ -26,14 +24,26 @@
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
 	using namespace std;
-	#include "VMDE.hpp"
+	//-------------------------------------------------------------------------
+	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
+	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
+	//-------------------------------------------------------------------------
+	#ifdef __MINGW32__
+		#define EXPORTED extern "C" __declspec(dllexport)
+	#else
+		#define EXPORTED extern "C"
+	#endif
 	#ifdef __CYGWIN__
 		#warning This will not work in Cygwin. Try at your own risk.
 	#endif
 	//-------------------------------------------------------------------------
-	// ● 定义类型
+	// ● 全局变量表
 	//-------------------------------------------------------------------------
-	typedef void (*type_free_function)(void*);
+	// API
+	EXPORTED void init_engine(int w, int h, const char* title);
+	// 全局事件
+	EXPORTED void (*on_terminate)();
+	EXPORTED void (*on_key)(int key, int scancode, int action, int mode);
 	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
 	//-------------------------------------------------------------------------
