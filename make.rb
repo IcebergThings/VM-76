@@ -61,8 +61,26 @@ class WindogixMake
 		else
 			puts "= #{dir} ="
 			File.open("#{dir}/flags.txt", "r", :external_encoding => "utf-8") do |f|
-				f.readline
-				puts l while l = f.gets
+				options = JSON.parse(f.readline)
+				unless options.empty?
+					puts "Additional options configured for this project: "
+					if options["target type"]
+						puts "\tTarget type = #{options["target type"]}"
+					end
+					if options["output"]
+						puts "\tTarget filename = #{options["output"]}"
+					end
+					if options["link the target"] == false
+						puts "\tNo linking"
+					end
+					if options["link together with"]
+						puts "\tLink together with:"
+						options["link together with"].each do |v|
+							puts "\t\t#{v}"
+						end
+					end
+				end
+				f.each_line { |l| puts l }
 			end
 		end
 	end
