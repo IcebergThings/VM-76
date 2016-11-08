@@ -1,3 +1,7 @@
+//=============================================================================
+// ■ VMGS/global.hpp
+//=============================================================================
+
 #include <cstdlib>
 #include <cstdio>
 #include <global.hpp>
@@ -7,8 +11,9 @@
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 #define _INCLUDE_VMGS_GLOBAL_H
 
+#undef DEBUG_ENVIRONMENT
+#define DEBUG_ENVIRONMENT "VMGS"
 #define GLM_FORCE_SSE41
-#define PI 3.1415926f
 
 namespace VM76 {
 	enum TileList {

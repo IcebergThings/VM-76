@@ -1,5 +1,5 @@
 //=============================================================================
-// ■ global.hpp
+// ■ VMDE/global.hpp
 //-----------------------------------------------------------------------------
 //   VMDE通用C++头文件。
 //=============================================================================
@@ -116,15 +116,15 @@
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//-------------------------------------------------------------------------
-	#define DEBUG_ENVIRONMENT "VMDrawEngine"
+	#define DEBUG_ENVIRONMENT "VMDE"
 	// log - Util::log_internal的方便缩写，可以直接得到当前函数名
 	//     log("%p", log);
-	#define log(...) Util::log_internal(__func__, __VA_ARGS__)
+	#define log(...) Util::log_internal(DEBUG_ENVIRONMENT, __func__, __VA_ARGS__)
 	namespace Util {
 		extern const float PIf;
 		extern const double PI;
 		#define PId PI
-		void log_internal(const char* function_name, const char* format, ...);
+		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
 	}
 	//-------------------------------------------------------------------------
