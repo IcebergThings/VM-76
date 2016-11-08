@@ -100,7 +100,7 @@ namespace VM76 {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 
-		new Res::Texture((char*)"../Media/terrain.png", 0);
+		new Res::Texture("../Media/terrain.png", 0);
 
 		main_str = new Structure();
 

@@ -109,7 +109,7 @@
 		public:
 			GLuint texture;
 			int width, height;
-			Texture(char* file, GLuint index);
+			Texture(const char* file, GLuint index);
 		};
 		extern Texture* tex_unit[16];
 	}
