@@ -25,7 +25,7 @@ namespace VM76 {
 		STONE_BRICK,
 		WALL,
 		TNT,
-		COBBLE_STONE
+		COBBLE_STONE,
 	};
 
 	const GLfloat tile_size = 1.0f / 16.0f;
@@ -74,10 +74,6 @@ namespace VM76 {
 	void start_game();
 	void terminate();
 	void init_tiles();
-}
-
-extern "C" {
-	void client_terminate();
 }
 
 #endif

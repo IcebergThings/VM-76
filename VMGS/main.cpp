@@ -9,7 +9,11 @@ namespace VM76 {
 		glfwGetCursorPos(window, &xpos, &ypos);
 		game_player.horizontal_angle -= 0.005 * (xpos - VMDE->width / 2.0);
 		game_player.vertical_angle   -= 0.005 * (ypos - VMDE->height / 2.0);
-		game_player.vertical_angle = glm::clamp(- Util::PIf / 2 + 0.04f, game_player.vertical_angle, Util::PIf / 2);
+		game_player.vertical_angle = glm::clamp(
+			- Util::PIf / 2 + 0.04f,
+			game_player.vertical_angle,
+			Util::PIf / 2
+		);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 		glm::vec3 direction = glm::vec3(
 			cos(game_player.vertical_angle) * sin(game_player.horizontal_angle),
@@ -28,9 +32,8 @@ namespace VM76 {
 		// Key Input
 		glm::vec3 speed = glm::vec3(0.1);
 		int state = glfwGetKey(window, game.key_forward);
-		if (state == GLFW_PRESS) {
+		if (state == GLFW_PRESS)
 			game_player.wpos += glm::vec3(direction.x, 0.0, direction.z) * speed;
-		}
 		state = glfwGetKey(window, game.key_back);
 		if (state == GLFW_PRESS)
 			game_player.wpos -= glm::vec3(direction.x, 0.0, direction.z) * speed;
@@ -64,7 +67,7 @@ namespace VM76 {
 			glEnable(GL_BLEND);
 			glFrontFace(GL_CCW);
 			glEnable(GL_CULL_FACE);
-			log("FPS %d",VMDE->fps);
+			log("FPS %d", VMDE->fps);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glDepthMask(GL_TRUE);

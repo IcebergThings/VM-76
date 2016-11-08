@@ -71,7 +71,7 @@ void init_graphics(int w, int h, const char* title) {
 	// 获取可用的Vertex Attributes数量
 	GLint nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
+	log("Maximum number of vertex attributes supported: %d", nrAttributes);
 }
 
 //-----------------------------------------------------------------------------
