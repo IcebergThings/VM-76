@@ -134,11 +134,11 @@ namespace Audio {
 	// ● 播放声音的回调函数
 	//-------------------------------------------------------------------------
 	int play_sound_callback(
-		const void* input_buffer UNUSED,
+		const void* input_buffer,
 		void* output_buffer,
 		unsigned long frame_count,
-		const PaStreamCallbackTimeInfo* time_info UNUSED,
-		PaStreamCallbackFlags status_flags UNUSED,
+		const PaStreamCallbackTimeInfo* time_info,
+		PaStreamCallbackFlags status_flags,
 		void* user_data
 	) {
 		float* output = (float*) output_buffer;

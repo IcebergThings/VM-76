@@ -9,7 +9,7 @@
 //-----------------------------------------------------------------------------
 // ● 临时的按键回调
 //-----------------------------------------------------------------------------
-void tmp_key(GLFWwindow* window UNUSED, int key, int scancode, int action, int mode) {
+void tmp_key(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	on_key(key, scancode, action, mode);
 }
 

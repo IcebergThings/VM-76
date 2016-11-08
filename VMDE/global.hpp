@@ -37,9 +37,6 @@
 	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
 	//-------------------------------------------------------------------------
-	// UNUSED - 标记无用函数参数
-	//     int random(int n UNUSED) { return 4; }
-	#define UNUSED __attribute__((unused))
 	// ARRAY_SIZE - 获取定义的数组大小
 	//     int a[56]; → ARRAY_SIZE(a) == 56
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
@@ -198,11 +195,11 @@
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
 		int play_wave_callback(
-			const void* input_buffer UNUSED,
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frames_per_buffer,
-			const PaStreamCallbackTimeInfo* time_info UNUSED,
-			PaStreamCallbackFlags status_flags UNUSED,
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void stop();
@@ -215,11 +212,11 @@
 		void compact_active_sounds_array();
 		void play_sound(const char* filename, bool loop);
 		int play_sound_callback(
-			const void* input_buffer UNUSED,
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frame_count,
-			const PaStreamCallbackTimeInfo* time_info UNUSED,
-			PaStreamCallbackFlags status_flags UNUSED,
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void decode_vorbis(struct active_sound* sound);

@@ -150,7 +150,7 @@ class WindogixMake
 			if File.exist?(object_name)
 				next if File.mtime(object_name) > File.mtime(source_name)
 			end
-			command = %w(g++ -c -Wall -Wextra -std=c++11 -o)
+			command = %w(g++ -c -Wall -Wextra -Wno-unused-parameter -std=c++14 -o)
 			command.push(object_name, source_name)
 			command.concat(compiling_args)
 			make command
