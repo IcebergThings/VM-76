@@ -91,6 +91,9 @@ namespace VM76 {
 	}
 
 	void start_game() {
+		// 先设好事件回调
+		on_terminate = terminate;
+		// 然后再启动引擎
 		::init_engine(860, 540, "VM / 76");
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
@@ -116,13 +119,8 @@ namespace VM76 {
 	}
 }
 
-extern "C" {
-	void client_terminate() {
-		VM76::terminate();
-	}
-}
-
 int main() {
-	puts("Starting game");
+	puts("[VM76] Hello! This is VM76. Nice to meet you!");
 	VM76::start_game();
+	return 0;
 }

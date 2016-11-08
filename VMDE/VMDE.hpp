@@ -18,7 +18,7 @@
 	// API
 	EXPORTED void init_engine(int w, int h, const char* title);
 	// 全局事件
-	EXPORTED bool (*on_terminate)();
+	EXPORTED void (*on_terminate)();
 	EXPORTED void (*on_key)(int key, int scancode, int action, int mode);
 	#undef EXPORTED
 #endif
