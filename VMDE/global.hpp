@@ -42,7 +42,6 @@
 	EXPORTED void init_engine(int w, int h, const char* title);
 	// 全局事件
 	EXPORTED void (*on_terminate)();
-	EXPORTED void (*on_key)(int key, int scancode, int action, int mode);
 	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
 	//-------------------------------------------------------------------------

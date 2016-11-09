@@ -7,16 +7,6 @@
 #include "global.hpp"
 
 //-----------------------------------------------------------------------------
-// ● 专门给GLFW用的按键回调
-//-----------------------------------------------------------------------------
-void key_callback_for_glfw(
-	GLFWwindow* window,
-	int key, int scancode, int action, int mods
-) {
-	if (on_key) on_key(key, scancode, action, mods);
-}
-
-//-----------------------------------------------------------------------------
 // ● 设置视口
 //-----------------------------------------------------------------------------
 void setup_viewport() {
@@ -52,9 +42,6 @@ void init_graphics(int w, int h, const char* title) {
 		log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
 		return;
 	}
-
-	// 随便搞个按键回调
-	glfwSetKeyCallback(window, key_callback_for_glfw);
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);

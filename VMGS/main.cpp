@@ -92,7 +92,6 @@ namespace VM76 {
 	void start_game() {
 		// 先设好事件回调然后再启动引擎，最大地避免段错误
 		on_terminate = terminate;
-		on_key = NULL;
 		::init_engine(860, 540, "VM / 76");
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
