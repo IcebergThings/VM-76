@@ -13,4 +13,6 @@ all:
 	-lstdc++ -lSOIL
 clean:
 	../make.rb clean
-.PHONY: all clean
+run: all
+	./VMGS
+.PHONY: all clean run

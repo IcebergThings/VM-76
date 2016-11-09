@@ -9,4 +9,6 @@ all:
 	./make.rb VMGS
 clean:
 	./make.rb clean
-.PHONY: all clean
+run: all
+	cd VMGS && ./VMGS
+.PHONY: all clean run
