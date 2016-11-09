@@ -143,20 +143,25 @@ class WindogixMake
 				return
 			end
 		end
-		sources = Dir.glob("**/*.cpp")
+		sources = Dir["**/*.{cpp,rc}"]
 		objects = []
 		# 如果不这么搞就会无法编译
 		sources.each do |source_name|
-			name = File.basename(source_name, ".cpp")
+			name = File.basename(source_name, ".*")
 			object_name = "#{name}.o"
 			objects << object_name
 			# Look, I'm Ruby 'make' now!
 			if File.exist?(object_name)
 				next if File.mtime(object_name) > File.mtime(source_name)
 			end
-			command = %w(g++ -c -Wall -Wextra -Wno-unused-parameter -std=c++14 -o)
-			command.push(object_name, source_name)
-			command.concat(compiling_args)
+			case File.extname(source_name)
+			when ".cpp"
+				command = %w(g++ -c -Wall -Wextra -Wno-unused-parameter -std=c++14 -o)
+				command.push(object_name, source_name)
+				command.concat(compiling_args)
+			when ".rc"
+				command = ["windres", source_name, object_name]
+			end
 			make command
 		end
 		# 如果不这么搞也会无法编译
