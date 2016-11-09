@@ -1,4 +1,4 @@
-{"link together with": ["VMDE"], "output": "VMGS.exe"}
+{"link together with": ["VMDE"], "output": "VMGS"}
 (VMGS)
 Typical arguments for Windoge:
 	-DGLFW_DLL -DGLEW_STATIC
@@ -17,7 +17,7 @@ Typical arguments for Windoge:
 	-lglfw3dll -lopengl32 -lportaudio_x86 -lvorbisfile
 And for Linux:
 	-DGLM_FORCE_SSE41
-	-I../lib/SOIL/include  -I../VMDE
+	-I../lib/SOIL/include -I../VMDE
 	-O3 -Ofast -msse4.1 -mtune=core2
 	$(pkg-config --cflags --libs glfw3 gl glm glew portaudio-2.0 vorbisfile)
 	-lstdc++ -lSOIL

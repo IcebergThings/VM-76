@@ -164,6 +164,7 @@ class WindogixMake
 			case options["target type"]
 			when "executable", "exe"
 				command = %w(gcc -o)
+				options["output"] += ".exe" if @@windows
 			when "archive", "a"
 				command = %w(ar -r)
 				linking_args.clear
