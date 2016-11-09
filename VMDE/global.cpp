@@ -11,4 +11,3 @@ GLFWwindow* window;
 struct VMDE* VMDE;
 
 void (*on_terminate)();
-void (*on_key)(int key, int scancode, int action, int mode);

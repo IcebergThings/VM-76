@@ -3,6 +3,12 @@
 namespace VM76 {
 	Shaders* main_shader = NULL;
 
+	void update_fps() {
+		char s[256];
+		snprintf(s, 256, "VM / 76 - FPS: %d", VMDE->fps);
+		glfwSetWindowTitle(window, s);
+	}
+
 	void control_update() {
 		// Mouse Input
 		double xpos, ypos;
@@ -31,25 +37,21 @@ namespace VM76 {
 
 		// Key Input
 		glm::vec3 speed = glm::vec3(0.1);
-		int state = glfwGetKey(window, game.key_forward);
-		if (state == GLFW_PRESS)
+		#define PRESS(key) glfwGetKey(window, game.key_##key) == GLFW_PRESS
+		if (PRESS(quit)) VMDE->done = true;
+		if (PRESS(forward))
 			game_player.wpos += glm::vec3(direction.x, 0.0, direction.z) * speed;
-		state = glfwGetKey(window, game.key_back);
-		if (state == GLFW_PRESS)
+		if (PRESS(back))
 			game_player.wpos -= glm::vec3(direction.x, 0.0, direction.z) * speed;
-		state = glfwGetKey(window, game.key_left);
-		if (state == GLFW_PRESS)
+		if (PRESS(left))
 			game_player.wpos -= right * speed;
-		state = glfwGetKey(window, game.key_right);
-		if (state == GLFW_PRESS)
+		if (PRESS(right))
 			game_player.wpos += right * speed;
-		state = glfwGetKey(window, game.key_up);
-		if (state == GLFW_PRESS)
+		if (PRESS(up))
 			game_player.wpos += glm::vec3(0.0, 1.0, 0.0) * speed;
-		state = glfwGetKey(window, game.key_down);
-		if (state == GLFW_PRESS)
+		if (PRESS(down))
 			game_player.wpos -= glm::vec3(0.0, 1.0, 0.0) * speed;
-
+		#undef PRESS
 	}
 
 	Structure* main_str;
@@ -67,7 +69,7 @@ namespace VM76 {
 			glEnable(GL_BLEND);
 			glFrontFace(GL_CCW);
 			glEnable(GL_CULL_FACE);
-			log("FPS %d", VMDE->fps);
+			update_fps();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glDepthMask(GL_TRUE);
@@ -90,6 +92,7 @@ namespace VM76 {
 			main_str->render();
 
 			::main_draw_end();
+			if (VMDE->done) break;
 		}
 	}
 

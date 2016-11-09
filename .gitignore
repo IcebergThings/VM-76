@@ -2,16 +2,15 @@
 # ■ .gitignore
 #==============================================================================
 
-# General output files
-*.gch
+# output files
 *.lib
 *.a
 *.o
 *.so
 *.dll
 *.exe
+VMGS/VMGS
 
 # Generated source files; 这些文件可能会存储个人设置（例如路径）
 */make
 */make.bat
-VMGS/VM_76

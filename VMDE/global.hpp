@@ -13,7 +13,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
-#define GLM_FORCE_SSE41
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -43,7 +42,6 @@
 	EXPORTED void init_engine(int w, int h, const char* title);
 	// 全局事件
 	EXPORTED void (*on_terminate)();
-	EXPORTED void (*on_key)(int key, int scancode, int action, int mode);
 	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
 	//-------------------------------------------------------------------------
@@ -152,6 +150,7 @@
 		int width, height;
 		int fps;
 		double frame_time;
+		bool done;
 	};
 
 	// VMDE操控的全局变量
