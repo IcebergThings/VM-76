@@ -151,6 +151,7 @@
 		int width, height;
 		int fps;
 		double frame_time;
+		bool done;
 	};
 
 	// VMDE操控的全局变量

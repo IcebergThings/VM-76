@@ -7,10 +7,13 @@
 #include "global.hpp"
 
 //-----------------------------------------------------------------------------
-// ● 临时的按键回调
+// ● 专门给GLFW用的按键回调
 //-----------------------------------------------------------------------------
-void tmp_key(GLFWwindow* window, int key, int scancode, int action, int mode) {
-	on_key(key, scancode, action, mode);
+void key_callback_for_glfw(
+	GLFWwindow* window,
+	int key, int scancode, int action, int mods
+) {
+	if (on_key) on_key(key, scancode, action, mods);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +54,7 @@ void init_graphics(int w, int h, const char* title) {
 	}
 
 	// 随便搞个按键回调
-	glfwSetKeyCallback(window, tmp_key);
+	glfwSetKeyCallback(window, key_callback_for_glfw);
 
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);

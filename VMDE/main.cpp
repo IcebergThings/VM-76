@@ -29,7 +29,7 @@ time_t now;
 void main_draw_start() {
 	glfwPollEvents();
 	if (glfwWindowShouldClose(window)) {
-		on_terminate();
+		if (on_terminate) on_terminate();
 		// Terminate GLFW, clearing any resources allocated by GLFW.
 		glfwTerminate();
 		exit(0);

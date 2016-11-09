@@ -33,6 +33,7 @@
 
 		struct Game {
 			int
+				key_quit,
 				key_forward, key_left, key_right, key_back,
 				key_up, key_down;
 		};
