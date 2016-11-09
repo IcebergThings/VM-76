@@ -7,10 +7,9 @@
 #include "global.hpp"
 
 namespace Res {
-
 	Texture* tex_unit[16];
 
-	Texture::Texture(char* file, GLuint index) {
+	Texture::Texture(const char* file, GLuint index) {
 		glGenTextures(1, &this->texture);
 		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_2D, this->texture);

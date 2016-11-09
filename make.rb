@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # 如果在第一行加了这个 → #!/usr/bin/cat ← 就不能用了。
 # ruby: no Ruby script found in input (LoadError)
 #==============================================================================
@@ -61,8 +62,26 @@ class WindogixMake
 		else
 			puts "= #{dir} ="
 			File.open("#{dir}/flags.txt", "r", :external_encoding => "utf-8") do |f|
-				f.readline
-				puts l while l = f.gets
+				options = JSON.parse(f.readline)
+				unless options.empty?
+					puts "Additional options configured for this project: "
+					if options["target type"]
+						puts "\tTarget type = #{options["target type"]}"
+					end
+					if options["output"]
+						puts "\tTarget filename = #{options["output"]}"
+					end
+					if options["link the target"] == false
+						puts "\tNo linking"
+					end
+					if options["link together with"]
+						puts "\tLink together with:"
+						options["link together with"].each do |v|
+							puts "\t\t#{v}"
+						end
+					end
+				end
+				f.each_line { |l| puts l }
 			end
 		end
 	end
@@ -86,14 +105,16 @@ class WindogixMake
 				end
 				WindogixMake.new(args).main
 				Dir.chdir("..")
+			elsif @argv[0] == "clean"
+				clean
 			else
 				puts "not a project: #{@argv[0]}"
 			end
 			return
 		end
-		# make clean
+		# make clean; make c l e a n
 		if [@argv.join, @argv.first].include?("clean")
-			Dir["*.o"].each { |filename| File.delete(filename) }
+			clean
 			return
 		end
 		# 调查选项
@@ -107,13 +128,16 @@ class WindogixMake
 		linking_args = []
 		@argv.each do |arg|
 			case arg
-			when /^-[gDUO]|^-Wp,/
+			when /^-[mgDUO]|^-Wp,/
 				compiling_args << arg
 			when /^-[lL]|^-Wl,|\.(?:[ao]|lib)$/
 				linking_args << arg
 			when /^-I/
 				compiling_args << "-isystem"
 				compiling_args << arg[2, arg.size]
+			when "-pthread"
+				compiling_args << arg
+				linking_args << arg
 			else
 				puts "option not recognized: #{arg}"
 				return
@@ -130,7 +154,7 @@ class WindogixMake
 			if File.exist?(object_name)
 				next if File.mtime(object_name) > File.mtime(source_name)
 			end
-			command = %w(g++ -c -Wall -Wextra -std=c++11 -o)
+			command = %w(g++ -c -Wall -Wextra -Wno-unused-parameter -std=c++14 -o)
 			command.push(object_name, source_name)
 			command.concat(compiling_args)
 			make command
@@ -140,8 +164,10 @@ class WindogixMake
 			case options["target type"]
 			when "executable", "exe"
 				command = %w(gcc -o)
+				options["output"] += ".exe" if @@windows
 			when "archive", "a"
 				command = %w(ar -r)
+				linking_args.clear
 			when "so", "shared", "shared object", "dll"
 				command = %w(gcc -shared -o)
 			end
@@ -179,12 +205,21 @@ class WindogixMake
 		end
 	end
 	#--------------------------------------------------------------------------
+	# ● make clean
+	#--------------------------------------------------------------------------
+	def clean
+		Dir["**/*.{o,a,dll}"].each do |filename|
+			puts "removing #{filename}"
+			File.delete(filename)
+		end
+	end
+	#--------------------------------------------------------------------------
 	# ● 输出能够快捷地执行本脚本的批处理文件
 	#   如果批处理存在且比本脚本更新，则不做事。
 	#--------------------------------------------------------------------------
 	def output_shortcut
 		if FileTest.exist?(SHORTCUT_NAME)
-			return if File.mtime(SHORTCUT_NAME) > File.mtime(__FILE__)
+			return if File.mtime(SHORTCUT_NAME) > File.mtime(ABSOLUTE_FILE)
 		end
 		File.open(SHORTCUT_NAME, "w") do |f|
 			f.write @@windows ? <<~BATCH : <<~SHELL
@@ -207,6 +242,7 @@ end
 # ◇ “各种定义结束后，从这里开始实际运行。”
 #------------------------------------------------------------------------------
 begin
+	ABSOLUTE_FILE = File.expand_path(__FILE__)
 	WindogixMake.new.main if __FILE__ == $0
 rescue
 	p $!

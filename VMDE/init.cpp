@@ -7,13 +7,6 @@
 #include "global.hpp"
 
 //-----------------------------------------------------------------------------
-// ● 临时的按键回调
-//-----------------------------------------------------------------------------
-void tmp_key(GLFWwindow* window UNUSED, int key, int scancode, int action, int mode) {
-	on_key(key, scancode, action, mode);
-}
-
-//-----------------------------------------------------------------------------
 // ● 设置视口
 //-----------------------------------------------------------------------------
 void setup_viewport() {
@@ -71,7 +64,7 @@ void init_graphics(int w, int h, const char* title) {
 	// 获取可用的Vertex Attributes数量
 	GLint nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	log("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
+	log("Maximum number of vertex attributes supported: %d", nrAttributes);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,7 +76,6 @@ void init_engine(int w, int h, const char* title) {
 	srand(time(NULL));
 
 	init_vmde(w, h);
-	glfwSetKeyCallback(window, tmp_key);
 	init_graphics(w, h, title);
 
 	// 初始化声音

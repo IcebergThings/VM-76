@@ -1,7 +1,5 @@
 //=============================================================================
-// ■ global.hpp
-//-----------------------------------------------------------------------------
-//   VMDE通用C++头文件。
+// ■ VMDE/global.hpp
 //=============================================================================
 
 #include <cstdlib>
@@ -15,7 +13,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <SOIL.h>
-#define GLM_FORCE_SSE41
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -26,20 +23,28 @@
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
 	using namespace std;
-	#include "VMDE.hpp"
+	//-------------------------------------------------------------------------
+	// ● PY Deal For ＭICR0$○F┬ Ｗindoges (ᴚ)
+	//Becuase it;s Windoges,I jsut dno't want to use CORERCT ENGRISh &忠闻吔屎炉此
+	//-------------------------------------------------------------------------
+	#ifdef __MINGW32__
+		#define EXPORTED extern "C" __declspec(dllexport)
+	#else
+		#define EXPORTED extern "C"
+	#endif
 	#ifdef __CYGWIN__
 		#warning This will not work in Cygwin. Try at your own risk.
 	#endif
 	//-------------------------------------------------------------------------
-	// ● 定义类型
+	// ● 全局变量表
 	//-------------------------------------------------------------------------
-	typedef void (*type_free_function)(void*);
+	// API
+	EXPORTED void init_engine(int w, int h, const char* title);
+	// 全局事件
+	EXPORTED void (*on_terminate)();
 	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
 	//-------------------------------------------------------------------------
-	// UNUSED - 标记无用函数参数
-	//     int random(int n UNUSED) { return 4; }
-	#define UNUSED __attribute__((unused))
 	// ARRAY_SIZE - 获取定义的数组大小
 	//     int a[56]; → ARRAY_SIZE(a) == 56
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))
@@ -91,7 +96,6 @@
 		void use();
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 	};
-
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
@@ -113,22 +117,22 @@
 		public:
 			GLuint texture;
 			int width, height;
-			Texture(char* file, GLuint index);
+			Texture(const char* file, GLuint index);
 		};
 		extern Texture* tex_unit[16];
 	}
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//-------------------------------------------------------------------------
-	#define DEBUG_ENVIRONMENT "VMDrawEngine"
+	#define DEBUG_ENVIRONMENT "VMDE"
 	// log - Util::log_internal的方便缩写，可以直接得到当前函数名
 	//     log("%p", log);
-	#define log(...) Util::log_internal(__func__, __VA_ARGS__)
+	#define log(...) Util::log_internal(DEBUG_ENVIRONMENT, __func__, __VA_ARGS__)
 	namespace Util {
 		extern const float PIf;
 		extern const double PI;
 		#define PId PI
-		void log_internal(const char* function_name, const char* format, ...);
+		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
 	}
 	//-------------------------------------------------------------------------
@@ -146,6 +150,7 @@
 		int width, height;
 		int fps;
 		double frame_time;
+		bool done;
 	};
 
 	// VMDE操控的全局变量
@@ -199,11 +204,11 @@
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
 		int play_wave_callback(
-			const void* input_buffer UNUSED,
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frames_per_buffer,
-			const PaStreamCallbackTimeInfo* time_info UNUSED,
-			PaStreamCallbackFlags status_flags UNUSED,
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void stop();
@@ -216,11 +221,11 @@
 		void compact_active_sounds_array();
 		void play_sound(const char* filename, bool loop);
 		int play_sound_callback(
-			const void* input_buffer UNUSED,
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frame_count,
-			const PaStreamCallbackTimeInfo* time_info UNUSED,
-			PaStreamCallbackFlags status_flags UNUSED,
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void decode_vorbis(struct active_sound* sound);
