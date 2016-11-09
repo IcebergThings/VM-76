@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # 如果在第一行加了这个 → #!/usr/bin/cat ← 就不能用了。
 # ruby: no Ruby script found in input (LoadError)
 #==============================================================================
@@ -127,13 +128,16 @@ class WindogixMake
 		linking_args = []
 		@argv.each do |arg|
 			case arg
-			when /^-[gDUO]|^-Wp,/
+			when /^-[mgDUO]|^-Wp,/
 				compiling_args << arg
 			when /^-[lL]|^-Wl,|\.(?:[ao]|lib)$/
 				linking_args << arg
 			when /^-I/
 				compiling_args << "-isystem"
 				compiling_args << arg[2, arg.size]
+			when "-pthread"
+				compiling_args << arg
+				linking_args << arg
 			else
 				puts "option not recognized: #{arg}"
 				return
@@ -162,6 +166,7 @@ class WindogixMake
 				command = %w(gcc -o)
 			when "archive", "a"
 				command = %w(ar -r)
+				linking_args.clear
 			when "so", "shared", "shared object", "dll"
 				command = %w(gcc -shared -o)
 			end
@@ -213,7 +218,7 @@ class WindogixMake
 	#--------------------------------------------------------------------------
 	def output_shortcut
 		if FileTest.exist?(SHORTCUT_NAME)
-			return if File.mtime(SHORTCUT_NAME) > File.mtime(__FILE__)
+			return if File.mtime(SHORTCUT_NAME) > File.mtime(ABSOLUTE_FILE)
 		end
 		File.open(SHORTCUT_NAME, "w") do |f|
 			f.write @@windows ? <<~BATCH : <<~SHELL
@@ -236,6 +241,7 @@ end
 # ◇ “各种定义结束后，从这里开始实际运行。”
 #------------------------------------------------------------------------------
 begin
+	ABSOLUTE_FILE = File.expand_path(__FILE__)
 	WindogixMake.new.main if __FILE__ == $0
 rescue
 	p $!

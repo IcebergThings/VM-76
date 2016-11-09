@@ -50,6 +50,9 @@ void init_graphics(int w, int h, const char* title) {
 		return;
 	}
 
+	// 随便搞个按键回调
+	glfwSetKeyCallback(window, tmp_key);
+
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 	// 垂直同步，拒绝鬼畜
@@ -83,7 +86,6 @@ void init_engine(int w, int h, const char* title) {
 	srand(time(NULL));
 
 	init_vmde(w, h);
-	glfwSetKeyCallback(window, tmp_key);
 	init_graphics(w, h, title);
 
 	// 初始化声音
