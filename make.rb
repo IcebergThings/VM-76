@@ -195,7 +195,7 @@ class WindogixMake
 				command = %w(gcc -o)
 			when "archive"
 				command = %w(ar -r)
-				linking_args.clear
+				@linking_args.clear
 			when "shared"
 				command = %w(gcc -shared -o)
 			end
