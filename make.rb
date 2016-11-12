@@ -143,7 +143,8 @@ class WindogixMake
 				return
 			end
 		end
-		sources = Dir["**/*.{cpp,rc}"]
+		sources = Dir["**/*.cpp"]
+		sources.concat(Dir["*.rc"]) if @@windows
 		objects = []
 		# 如果不这么搞就会无法编译
 		sources.each do |source_name|
