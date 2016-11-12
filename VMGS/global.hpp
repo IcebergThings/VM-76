@@ -4,7 +4,7 @@
 
 #include <global.hpp>
 
-#include "Tiles/tiles.hpp"
+#include "Tiles/tile.hpp"
 #include "Physics/phys.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
