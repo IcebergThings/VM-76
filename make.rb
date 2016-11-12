@@ -30,7 +30,7 @@ class WindogixMake
 	#--------------------------------------------------------------------------
 	# ● 常量与类变量
 	#--------------------------------------------------------------------------
-	SHORTCUT_NAME = (@@windows ? "make.bat" : "make")
+	SHORTCUT_NAME = (@@windows ? "make.bat" : "makefile")
 	DEFAULT_OPTIONS = {
 		"output" => "b.out",
 		"link the target" => true,
@@ -117,37 +117,60 @@ class WindogixMake
 			clean
 			return
 		end
-		# 调查选项
-		options = nil
+		parse_options
+		populate_args
+		do_compilation
+		# 如果没有错误，输出脚本以便下次运行
+		output_shortcut
+	end
+	#--------------------------------------------------------------------------
+	# ● 调查选项
+	#--------------------------------------------------------------------------
+	def parse_options
 		File.open("flags.txt", "r", :external_encoding => "utf-8") do |f|
-			options = f.readline
+			@options = f.readline
 		end
-		options = DEFAULT_OPTIONS.merge(JSON.parse(options))
-		# 获取参数
-		compiling_args = []
-		linking_args = []
+		@options = DEFAULT_OPTIONS.merge(JSON.parse(@options))
+		case @options["target type"]
+		when "executable"
+			@options["output"] += ".exe" if @@windows
+		when "shared"
+			@options["output"] += (@@windows ? ".dll" : ".so")
+		end
+	end
+	#--------------------------------------------------------------------------
+	# ● 获取参数
+	#--------------------------------------------------------------------------
+	def populate_args
+		@compiling_args = []
+		@linking_args = []
 		@argv.each do |arg|
 			case arg
 			when /^-[mgDUO]|^-Wp,/
-				compiling_args << arg
+				@compiling_args << arg
 			when /^-[lL]|^-Wl,|\.(?:[ao]|lib)$/
-				linking_args << arg
+				@linking_args << arg
 			when /^-I/
-				compiling_args << "-isystem"
-				compiling_args << arg[2, arg.size]
+				@compiling_args << "-isystem"
+				@compiling_args << arg[2, arg.size]
 			when "-pthread"
-				compiling_args << arg
-				linking_args << arg
+				@compiling_args << arg
+				@linking_args << arg
 			else
 				puts "option not recognized: #{arg}"
 				return
 			end
 		end
-		sources = Dir["**/*.cpp"]
-		sources.concat(Dir["*.rc"]) if @@windows
+		@sources = Dir["**/*.cpp"]
+		@sources.concat(Dir["*.rc"]) if @@windows
+	end
+	#--------------------------------------------------------------------------
+	# ● 执行编译
+	#--------------------------------------------------------------------------
+	def do_compilation
 		objects = []
 		# 如果不这么搞就会无法编译
-		sources.each do |source_name|
+		@sources.each do |source_name|
 			name = File.basename(source_name, ".*")
 			object_name = "#{name}.o"
 			objects << object_name
@@ -159,36 +182,33 @@ class WindogixMake
 			when ".cpp"
 				command = %w(g++ -c -Wall -Wextra -Wno-unused-parameter -std=c++14 -o)
 				command.push(object_name, source_name)
-				command.concat(compiling_args)
+				command.concat(@compiling_args)
 			when ".rc"
 				command = ["windres", source_name, object_name]
 			end
 			make command
 		end
 		# 如果不这么搞也会无法编译
-		if options["link the target"]
-			case options["target type"]
-			when "executable", "exe"
+		if @options["link the target"]
+			case @options["target type"]
+			when "executable"
 				command = %w(gcc -o)
-				options["output"] += ".exe" if @@windows
-			when "archive", "a"
+			when "archive"
 				command = %w(ar -r)
 				linking_args.clear
-			when "so", "shared", "shared object", "dll"
+			when "shared"
 				command = %w(gcc -shared -o)
 			end
-			command.push(options["output"])
+			command.push(@options["output"])
 			command.concat(objects)
-			options["link together with"].each do |project|
+			@options["link together with"].each do |project|
 				together = Dir["../#{project}/*.a"]
 				together = Dir["../#{project}/*.o"] if together.empty?
 				command.concat(together)
 			end
-			command.concat(linking_args)
+			command.concat(@linking_args)
 			make command
 		end
-		# 如果没有错误，输出脚本以便下次运行
-		output_shortcut
 	end
 	#--------------------------------------------------------------------------
 	# ● 模拟Make的一步行动
@@ -199,13 +219,9 @@ class WindogixMake
 		puts command.reject { |a| /^[A-Za-z]:|^(-|\.?\.?[\/\\]\w)/ === a }.join(" ")
 		success = system(*command)
 		unless success
-			if @@windows
-				system "title !! ERROR !!"
-			else
-				# I kindly alert the user.
-				print "\a"
-			end
-			puts "△ when executing this command:\n#{command.join(" ")}"
+			system "title !! ERROR !!" if @@windows
+			# I kindly alert the user.
+			puts "△\a when executing this command:\n#{command.join(" ")}"
 			pause
 			exit
 		end
@@ -228,17 +244,22 @@ class WindogixMake
 			return if File.mtime(SHORTCUT_NAME) > File.mtime(ABSOLUTE_FILE)
 		end
 		File.open(SHORTCUT_NAME, "w") do |f|
-			f.write @@windows ? <<~BATCH : <<~SHELL
+			f.write @@windows ? <<~BATCH : <<~MAKEFILE
 				@echo off
 				rem #{@argv.join(" ")}
 				ruby ../make.rb %1 ^
 				#{@argv.join(" ^\n")}
 			BATCH
-				#!/bin/sh
+				all:
 				### #{@argv.join(" ")}
-				ruby ../make.rb $1 \\
-				#{@argv.join(" \\\n")}
-			SHELL
+					@ruby ../make.rb $1 \\
+					#{@argv.join(" \\\n\t")}
+				clean:
+					ruby ../make.rb clean
+				run: all
+					./#{@options["output"]}
+				.PHONY: all clean run
+			MAKEFILE
 			f.chmod(0755)
 		end
 	end
