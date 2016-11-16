@@ -29,18 +29,24 @@ void init_graphics(int w, int h, const char* title) {
 	}
 
 	// OpenGL 向前&向后兼容，使用GL 3.3 Core Profile，窗口大小不可变
+	// 如果有更高版本就利用
 	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	window = glfwCreateWindow(VMDE->width, VMDE->height, title, NULL, NULL);
 	if (!window) {
-		glfwTerminate();
-		log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.2.");
-		return;
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		window = glfwCreateWindow(VMDE->width, VMDE->height, title, NULL, NULL);
+		if (!window) {
+			glfwTerminate();
+			log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.3.");
+			return;
+		}
 	}
 
 	// 设置当前窗口GL上下文
@@ -52,6 +58,16 @@ void init_graphics(int w, int h, const char* title) {
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {
 		log("glewInit() (GLEW Initialization) failed.");
+		return;
+	}
+	if (glfwExtensionSupported("GL_ARB_vertex_attrib_binding") == GLFW_TRUE) {
+		VMDE->gl_ver = GL_43;
+	}
+	if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") == GLFW_TRUE) {
+		VMDE->gl_ver = GL_33;
+	} else {
+		glfwTerminate();
+		log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
 		return;
 	}
 
