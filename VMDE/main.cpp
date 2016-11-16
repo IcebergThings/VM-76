@@ -53,6 +53,5 @@ void main_draw_end() {
 		accumulated_frame_time += difftime(time(NULL), now);
 
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
 }

@@ -42,11 +42,14 @@ void init_graphics(int w, int h, const char* title) {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		window = glfwCreateWindow(VMDE->width, VMDE->height, title, NULL, NULL);
+		VMDE->gl_ver = GL_33;
 		if (!window) {
 			glfwTerminate();
 			log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.3.");
 			return;
 		}
+	} else {
+		VMDE->gl_ver = GL_43;
 	}
 
 	// 设置当前窗口GL上下文
@@ -60,12 +63,7 @@ void init_graphics(int w, int h, const char* title) {
 		log("glewInit() (GLEW Initialization) failed.");
 		return;
 	}
-	if (glfwExtensionSupported("GL_ARB_vertex_attrib_binding") == GLFW_TRUE) {
-		VMDE->gl_ver = GL_43;
-	}
-	if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") == GLFW_TRUE) {
-		VMDE->gl_ver = GL_33;
-	} else {
+	if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") != GLFW_TRUE) {
 		glfwTerminate();
 		log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
 		return;

@@ -90,6 +90,8 @@
 		GLuint basic_2D_fsh;
 		GLuint shaderProgram;
 
+		GLuint UBO_matrix;
+
 	public:
 		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
 		void link_program();
