@@ -26,6 +26,13 @@ time_t accumulated_frame_time = 0;
 // ● 渲染
 //-----------------------------------------------------------------------------
 time_t now;
+
+void update_fps() {
+	char s[256];
+	snprintf(s, 256, "VM / 76 - FPS: %d", VMDE->fps);
+	glfwSetWindowTitle(window, s);
+}
+
 void main_draw_start() {
 	glfwPollEvents();
 	if (glfwWindowShouldClose(window)) {
@@ -43,6 +50,7 @@ void main_draw_start() {
 		fps_since = now;
 		VMDE->frame_time = accumulated_frame_time / double((VMDE->fps)) * 1000.0;
 		accumulated_frame_time -= 1.0;
+		update_fps();
 	}
 }
 

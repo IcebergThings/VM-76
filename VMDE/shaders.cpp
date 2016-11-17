@@ -37,7 +37,7 @@ Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
 		log("Shaders error");
 	}
 
-	glGenBuffers(1, &UBO_matrix);
+//	glGenBuffers(1, &UBO_matrix);
 }
 
 void Shaders::link_program() {
@@ -62,7 +62,6 @@ void Shaders::link_program() {
 
 void Shaders::use() {
 	glUseProgram(this->shaderProgram);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO_matrix);
 }
 
 void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
