@@ -90,6 +90,9 @@
 		GLuint basic_2D_fsh;
 		GLuint shaderProgram;
 
+		GLuint UBO_matrix;
+		glm::mat4* mat = new glm::mat4[2];
+
 	public:
 		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
 		void link_program();
@@ -143,6 +146,12 @@
 		float brightness;
 	};
 
+	enum GL_VER {
+		GL_33,
+		GL_43,
+		VULKAN // Not used
+	};
+
 	struct VMDE {
 		VMDEState state;
 		long frame_count;
@@ -151,6 +160,8 @@
 		int fps;
 		double frame_time;
 		bool done;
+
+		int gl_ver;
 	};
 
 	// VMDE操控的全局变量
