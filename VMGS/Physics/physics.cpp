@@ -1,19 +1,19 @@
 //=============================================================================
-// ■ phys.cpp
+// ■ physics.cpp
 //-----------------------------------------------------------------------------
 //   反重力引擎 *（笑
 //=============================================================================
 
-#include "phys.hpp"
+#include "physics.hpp"
 
-namespace PHYS {
+namespace Physics {
 	vec3 gravity = vec3(0.0, -9.8, 0.0);
 
-	void PhyObject::update() {
+	void Object::update() {
 
 	}
 
-	PhyObject::PhyObject(GLuint vtx_c, vec3* vertices) {
+	Object::Object(GLuint vtx_c, vec3* vertices) {
 
 	}
 }
