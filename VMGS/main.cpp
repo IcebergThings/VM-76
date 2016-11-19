@@ -9,12 +9,6 @@
 namespace VM76 {
 	Shaders* main_shader = NULL;
 
-	void update_fps() {
-		char s[256];
-		snprintf(s, 256, "VM / 76 - FPS: %d", VMDE->fps);
-		glfwSetWindowTitle(window, s);
-	}
-
 	void control_update() {
 		// Mouse Input
 		double xpos, ypos;
@@ -69,13 +63,11 @@ namespace VM76 {
 
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClearDepth(1.0f);
-			glClear(GL_DEPTH_BUFFER_BIT);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 			glEnable(GL_BLEND);
 			glFrontFace(GL_CCW);
 			glEnable(GL_CULL_FACE);
-			update_fps();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glDepthMask(GL_TRUE);
