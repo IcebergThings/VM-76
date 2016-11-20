@@ -71,10 +71,6 @@ void init_graphics(int w, int h, const char* title) {
 
 	setup_viewport();
 
-	// 深度测试是必要的
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-
 	// 获取可用的Vertex Attributes数量
 	GLint nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
