@@ -1,4 +1,5 @@
 #version 330 core
+
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec4 vertex_color;
 layout (location = 2) in vec2 texc;
@@ -16,7 +17,7 @@ out vertex_in {
 
 void main() {
 	vec4 v = vec4(position, 1.0);
-	gl_Position = matrices.Projection * (matrices.View * (Model * v));
+	gl_Position = matrices.Projection * matrices.View * Model * v;
 	Vertex.texcolor = vertex_color;
 	Vertex.texcoord = texc;
 }
