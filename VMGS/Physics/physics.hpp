@@ -1,12 +1,16 @@
+//=============================================================================
+// ■ physics.hpp
+//=============================================================================
+
 #include <global.hpp>
 
 #ifndef _INCLUDE_PHYS_H
 #define _INCLUDE_PHYS_H
 
-namespace PHYS {
+namespace Physics {
 	using namespace glm;
 
-	class PhyObject {
+	class Object {
 	public:
 		float mass = 0.0f;
 		vec3 center_of_geometry = vec3(0.0);
@@ -20,7 +24,7 @@ namespace PHYS {
 		void dispose();
 		void update();
 		void accel();
-		PhyObject(GLuint vtx_c, vec3* vertices);
+		Object(GLuint vtx_c, vec3* vertices);
 	};
 
 	extern vec3 gravity;

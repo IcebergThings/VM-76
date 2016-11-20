@@ -34,3 +34,8 @@ design.md
 	- tiles 方块（模版？）
 		- tile 普通的方块
 		- xxx 特殊的方块，继承tile
+
+---
+
+- global.hpp: project-wide header
+- global.cpp: project-wide global variable table

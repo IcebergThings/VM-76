@@ -1,3 +1,9 @@
+//=============================================================================
+// ■ structure.cpp
+//-----------------------------------------------------------------------------
+//   脱离方块系统的结构！
+//=============================================================================
+
 #include "global.hpp"
 
 namespace VM76 {
@@ -28,13 +34,14 @@ namespace VM76 {
 						glm::mat4(1.0),
 						glm::vec3(float(x), float(y), float(z)) + wpos
 					);
-					block_count[tid] ++;
+					block_count[tid]++;
 				}
 			}
 		}
 
-		for (int x = 0; x < 16; x++) if (t[x])
+		for (int x = 0; x < 16; x++) if (t[x]) {
 			t[x]->update_instance(block_count[x], &(mats[x])[0]);
+		}
 	}
 
 	void Structure::dispose() {
@@ -47,7 +54,7 @@ namespace VM76 {
 
 	Structure::Structure() {
 		init_tiles();
-		memset(str, 0x00, sizeof(str));
+		memset(str, 0, sizeof(str));
 
 		for (int x = 0; x < 16; x++)
 			mats[x] = new glm::mat4[128];
@@ -58,5 +65,4 @@ namespace VM76 {
 
 		update();
 	}
-
 }
