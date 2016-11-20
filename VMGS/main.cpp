@@ -1,3 +1,9 @@
+//=============================================================================
+// ■ main.cpp
+//-----------------------------------------------------------------------------
+//   VMGS的主程序。
+//=============================================================================
+
 #include "global.hpp"
 
 namespace VM76 {
@@ -8,7 +14,7 @@ namespace VM76 {
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		game_player.horizontal_angle -= 0.005 * (xpos - VMDE->width / 2.0);
-		game_player.vertical_angle   -= 0.005 * (ypos - VMDE->height / 2.0);
+		game_player.vertical_angle -= 0.005 * (ypos - VMDE->height / 2.0);
 		game_player.vertical_angle = glm::clamp(
 			- Util::PIf / 2 + 0.04f,
 			game_player.vertical_angle,
@@ -130,5 +136,4 @@ namespace VM76 {
 int main() {
 	log("Hello! This is VM76. Nice to meet you!");
 	VM76::start_game();
-	return 0;
 }
