@@ -3,7 +3,7 @@
 CXX = gcc
 CCLD = gcc
 
-OBJ = VM_76
+OBJ = VMGS
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
 
@@ -23,9 +23,9 @@ run: all
 	@echo 编译C++文件$^……
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-VM_76: $(Objects)
+VMGS: $(Objects)
 	@echo 链接最终二进制
-	$(CCLD) $(LIBS) $(LDFLAGS) $^ -o VM_76
+	$(CCLD) $(LIBS) $(LDFLAGS) $^ -o VMGS
 
 clean:
 	rm -rf $(OBJ) $(Objects)mcpu
