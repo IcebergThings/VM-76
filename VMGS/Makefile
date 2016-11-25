@@ -7,8 +7,8 @@ OBJ = VMGS
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
 
-LIBS = $(shell pkg-config --libs --static glfw3 glm glew portaudio-2.0 vorbisfile)  -lstdc++ -lVMDE
-LDFLAGS = -O4 -L../VMDE/ -framework OpenGL
+LIBS = $(shell pkg-config --libs --static glfw3 glm glew portaudio-2.0 vorbisfile)  -lstdc++
+LDFLAGS = -O4 ../VMDE/libVMDE.dylib -framework OpenGL
 CXXFLAGS = -I../lib/SOIL/include -I../VMDE \
 	$(shell pkg-config --cflags glfw3 glm glew portaudio-2.0 vorbisfile) \
 	-I../ -std=c++14 -Wall -Wextra -O3 -c \
