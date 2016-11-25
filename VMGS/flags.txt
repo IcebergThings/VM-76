@@ -1,7 +1,7 @@
-{"link together with": ["VMDE"], "output": "VMGS"}
+{"output": "VMGS"}
 (VMGS)
 Typical arguments for Windoge:
-	-DGLFW_DLL -DGLEW_STATIC
+	-DGLFW_DLL -DGLEW_STATIC -DGLM_FORCE_SSE41
 	-ID:\glfw-3.2.bin.WIN32\include
 	-ID:\glew-2.0.0\include
 	-ID:\glm-0.9.7.5
@@ -15,11 +15,13 @@ Typical arguments for Windoge:
 	-LD:\bin -lstdc++
 	-LD:\glfw-3.2.bin.WIN32\lib-mingw-w64
 	-lglfw3dll -lopengl32 -lportaudio_x86 -lvorbisfile
+	-L..\VMDE -lVMDE
 And for Linux:
 	-DGLM_FORCE_SSE41
 	-I../lib/SOIL/include -I../VMDE
 	-O3 -Ofast -msse4.1 -mtune=core2
 	$(pkg-config --cflags --libs glfw3 gl glm glew portaudio-2.0 vorbisfile)
 	-lstdc++ -lSOIL
+	-L../VMDE -lVMDE
 libstdc艹 is for exceptions and other random stuff; omit it if not used.
 ‘D:\bin’ above is where you put DLLs for portaudio and vorbisfile.

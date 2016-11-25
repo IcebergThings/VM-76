@@ -42,3 +42,16 @@ printf
 - 3dde095：Get rid of C
 
 [贡献者列表](https://github.com/IcebergOS/VM-76/graphs/contributors)里可以看到鬼畜的统计数据。
+
+为什么会有make.rb？
+-------------------
+
+~~make.rb自古以来就是VM/76神圣而不可侵犯的程序。~~
+
+make.rb起初是为了让Ruby在Windoge上顺利运行而诞生的。现在改用纯C++了，照理来说它也没什么用了，为什么还放着呢？
+
+这个问题的答案在每次我思考上述问题，决定取消make.rb的构建系统而审查Makefile时会自然显现。
+
+为什么这个世界上就没有一个更灵活的构建系统呢？
+
+—— @satgo1546
