@@ -63,11 +63,13 @@ void init_graphics(int w, int h, const char* title) {
 		log("glewInit() (GLEW Initialization) failed.");
 		return;
 	}
+	#ifndef __APPLE__
 	if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") != GLFW_TRUE) {
 		glfwTerminate();
 		log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
 		return;
 	}
+	#endif
 
 	setup_viewport();
 
