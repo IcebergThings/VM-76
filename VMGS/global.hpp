@@ -5,7 +5,6 @@
 #include <global.hpp>
 
 #include "Tiles/tile.hpp"
-#include "Physics/physics.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 	#define _INCLUDE_VMGS_GLOBAL_H
