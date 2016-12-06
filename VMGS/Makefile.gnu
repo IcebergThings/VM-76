@@ -28,6 +28,6 @@ VMGS: $(Objects)
 	$(CCLD) $(LIBS) $(LDFLAGS) $^ -o VMGS
 
 clean:
-	rm -rf $(OBJ) $(Objects)mcpu
+	rm -rf $(OBJ) $(Objects)
 
 .PHONY: all run clean
