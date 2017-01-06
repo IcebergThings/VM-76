@@ -59,7 +59,7 @@ void Shaders::link_program() {
 
 	glGenBuffers(1, &UBO_matrix);
 	glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
-	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), 0, GL_STREAM_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), 0, GL_STREAM_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -74,7 +74,8 @@ void Shaders::use() {
 void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
 	mat[0] = projection;
 	mat[1] = view;
+	mat[2] = projection * view;
 	glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, 2 * sizeof(glm::mat4), mat);
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO_matrix, 0, 2 * sizeof(glm::mat4));
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 3 * sizeof(glm::mat4), mat);
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO_matrix, 0, 3 * sizeof(glm::mat4));
 }
