@@ -4,7 +4,7 @@
 //   VMGS的主程序。
 //=============================================================================
 
-#include "global.hpp"
+#include "VMGS.hpp"
 
 namespace VM76 {
 	Shaders* main_shader = NULL;
