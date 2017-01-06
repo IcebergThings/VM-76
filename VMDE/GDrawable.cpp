@@ -24,8 +24,8 @@ void GDrawable::fbind() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.ind_c * sizeof(GLuint), data.indices, GL_STATIC_DRAW);
 
-	size_t vec4Size = sizeof(glm::vec4);
-	size_t vertex_size = (3 + 4 + 2) * sizeof(GLfloat); // X,Y,Z,  R,G,B,A,  S,T
+	const size_t vec4Size = sizeof(glm::vec4);
+	const size_t vertex_size = (3 + 4 + 2) * sizeof(GLfloat); // X,Y,Z,  R,G,B,A,  S,T
 	if (VMDE->gl_ver == GL_43) {
 		// GL43 Vertex Attribute Format & Binding
 		glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
@@ -99,13 +99,9 @@ void GDrawable::update() {
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
 	//glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
-	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
-	//void *bufm = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
-	//memcpy(bufm, data.mat, data.mat_c * sizeof(glm::mat4));
-	glBufferSubData(GL_ARRAY_BUFFER, 0, data.mat_c * sizeof(glm::mat4), data.mat);
-	//glUnmapBuffer(GL_ARRAY_BUFFER);
-
 	glBindBuffer(GL_ARRAY_BUFFER,0);
+
+	update_instance();
 }
 
 void GDrawable::update_instance() {
