@@ -63,7 +63,11 @@ void Shaders::link_program() {
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+Shaders* _shaders_in_use = NULL;
+
 void Shaders::use() {
+	if (this == _shaders_in_use) return;
+	_shaders_in_use = this;
 	glUseProgram(this->shaderProgram);
 }
 
