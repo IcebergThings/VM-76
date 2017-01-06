@@ -84,6 +84,9 @@ void GDrawable::fbind() {
 	glBindVertexArray(0);
 }
 
+#define INSTANCE_UPDATE glBindBuffer(GL_ARRAY_BUFFER, data.MBO); \
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data.mat_c * sizeof(glm::mat4), data.mat);
+
 void GDrawable::update() {
 	glBindVertexArray(data.VAO);
 
@@ -99,17 +102,14 @@ void GDrawable::update() {
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
 	//glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	INSTANCE_UPDATE
 
-	update_instance();
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 void GDrawable::update_instance() {
 	glBindVertexArray(data.VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, data.mat_c * sizeof(glm::mat4), data.mat);
-	//glUnmapBuffer(GL_ARRAY_BUFFER);
-
+	INSTANCE_UPDATE
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
