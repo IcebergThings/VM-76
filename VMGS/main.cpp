@@ -9,7 +9,7 @@
 namespace VM76 {
 	Shaders* main_shader = NULL;
 
-	Structure* main_str;
+	Cube* c;
 
 	void loop() {
 		for (;;) {
@@ -28,7 +28,7 @@ namespace VM76 {
 			glUniform1f(model_location, VMDE->state.brightness);
 
 			main_shader->ProjectionView(projection, view);
-			main_str->render();
+			c->render();
 
 			::main_draw_end();
 			if (VMDE->done) break;
@@ -53,8 +53,6 @@ namespace VM76 {
 
 		new Res::Texture("../Media/terrain.png", 0);
 
-		main_str = new Structure();
-
 		char* temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
 		char* temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
 		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
@@ -77,12 +75,12 @@ namespace VM76 {
 
 		update_textures();
 
+		c = new Cube(1);
+
 		loop();
 	}
 
 	void terminate() {
-		main_str->dispose();
-		free(main_str);
 	}
 }
 
