@@ -1,7 +1,7 @@
 # Mac does not support that make.rb, in a strange way..
 
-CXX = gcc
-CCLD = gcc
+CXX = clang
+CCLD = clang
 
 OBJ = libVMDE.so
 Src = $(shell find . -name "*.cpp")

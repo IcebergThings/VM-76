@@ -2,7 +2,7 @@
 // ■ VMGS/global.cpp
 //=============================================================================
 
-#include "global.hpp"
+#include "VMGS.hpp"
 
 namespace VM76 {
 }
