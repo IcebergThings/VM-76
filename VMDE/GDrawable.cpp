@@ -26,7 +26,8 @@ void GDrawable::fbind() {
 
 	size_t vec4Size = sizeof(glm::vec4);
 	size_t vertex_size = (3 + 4 + 2) * sizeof(GLfloat); // X,Y,Z,  R,G,B,A,  S,T
-/*	if (VMDE->gl_ver == GL_43) {
+	if (VMDE->gl_ver == GL_43) {
+		// GL43 Vertex Attribute Format & Binding
 		glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
 		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * sizeof(GLfloat), data.vertices, GL_STATIC_DRAW);
 
@@ -37,29 +38,9 @@ void GDrawable::fbind() {
 		glVertexAttribBinding(1, 0); // RGBA -> stream 0
 		glVertexAttribBinding(2, 0); // ST -> stream 0
 
-		glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
-		glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
-
-		glVertexAttribFormat(3, 4, GL_FLOAT, false, 0); // mat4
-		glVertexAttribFormat(4, 4, GL_FLOAT, false, vec4Size);
-		glVertexAttribFormat(5, 4, GL_FLOAT, false, 2 * vec4Size);
-		glVertexAttribFormat(6, 4, GL_FLOAT, false, 3 * vec4Size);
-		glVertexAttribBinding(3, 1); // mat4 -> stream 1
-		glVertexAttribBinding(4, 1);
-		glVertexAttribBinding(5, 1);
-		glVertexAttribBinding(6, 1);
-
 		glBindVertexBuffer(0, data.VBO, 0, vertex_size);
-		glBindVertexBuffer(1, data.MBO, 0, 4 * vec4Size);
-	} else {*/
-		glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
-		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * sizeof(GLfloat), data.vertices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (3 * sizeof(GLfloat)));
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (7 * sizeof(GLfloat)));
-
-
+		// GL33 Vertex Attribute Pointer Instanced
 		glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
 		glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
 
@@ -67,7 +48,24 @@ void GDrawable::fbind() {
 		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (vec4Size));
 		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (2 * vec4Size));
 		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (3 * vec4Size));
-//	}
+	} else {
+		// GL33 Vertex Attribute Pointer
+		glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
+		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * sizeof(GLfloat), data.vertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (3 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (7 * sizeof(GLfloat)));
+
+		// GL33 Vertex Attribute Pointer Instanced
+		glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
+		glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
+
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) 0);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (vec4Size));
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (2 * vec4Size));
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (3 * vec4Size));
+	}
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -90,19 +88,22 @@ void GDrawable::update() {
 	glBindVertexArray(data.VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
-	void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-	memcpy(bufv, data.vertices, data.vtx_c * sizeof(GLfloat));
-	glUnmapBuffer(GL_ARRAY_BUFFER);
+	//void *bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+	//memcpy(bufv, data.vertices, data.vtx_c * sizeof(GLfloat));
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data.vtx_c * sizeof(GLfloat), data.vertices);
+	//glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.EBO);
-	void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
-	memcpy(bufi, data.indices, data.ind_c * sizeof(GLuint));
-	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+	//void *bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+	//memcpy(bufi, data.indices, data.ind_c * sizeof(GLuint));
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
+	//glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
-	void *bufm = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
-	memcpy(bufm, data.mat, data.mat_c * sizeof(glm::mat4));
-	glUnmapBuffer(GL_ARRAY_BUFFER);
+	//void *bufm = glMapBuffer(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+	//memcpy(bufm, data.mat, data.mat_c * sizeof(glm::mat4));
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data.mat_c * sizeof(glm::mat4), data.mat);
+	//glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
