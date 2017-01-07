@@ -3,6 +3,7 @@
 #include "control.hpp"
 
 #ifdef Control_DemoView
+#include <config.hpp>
 #include <global.hpp>
 
 namespace VM76 {

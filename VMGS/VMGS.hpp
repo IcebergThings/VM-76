@@ -3,6 +3,7 @@
 //=============================================================================
 
 #include <global.hpp>
+#include <config.hpp>
 
 #include "GameObject/GameObject.hpp"
 #include "Control/control.hpp"
