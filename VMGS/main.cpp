@@ -10,6 +10,27 @@ namespace VM76 {
 	Shaders* main_shader = NULL;
 
 	Cube* c;
+	Cube* c2;
+
+	Object* obj = new Object();
+
+	int map_count = 0;
+
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+		#define PRESS(n) key == n && action == GLFW_PRESS
+		if (PRESS(GLFW_KEY_W)) obj->pos = obj->pos + glm::vec3(1.0, 0.0, 0.0);
+		if (PRESS(GLFW_KEY_S)) obj->pos = obj->pos + glm::vec3(-1.0, 0.0, 0.0);
+		if (PRESS(GLFW_KEY_A)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, -1.0);
+		if (PRESS(GLFW_KEY_D)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, 1.0);
+		if (PRESS(GLFW_KEY_UP)) obj->pos = obj->pos + glm::vec3(0.0, 1.0, 0.0);
+		if (PRESS(GLFW_KEY_DOWN)) obj->pos = obj->pos + glm::vec3(0.0, -1.0, 0.0);
+
+		if (PRESS(GLFW_KEY_SPACE)) {
+			c->mat[map_count] = obj->transform();
+			c->update_instance(map_count + 1);
+			map_count ++;
+		}
+	}
 
 	void loop() {
 		for (;;) {
@@ -28,6 +49,12 @@ namespace VM76 {
 
 			main_shader->ProjectionView(projection, view);
 			c->render();
+
+			// Setup uniforms
+			main_shader->set_float("brightness", 0.5);
+			c2->mat[0] = obj->transform();
+			c2->update_instance(1);
+			c2->render();
 
 			::main_draw_end();
 			if (VMDE->done) break;
@@ -77,6 +104,9 @@ namespace VM76 {
 		update_textures();
 
 		c = new Cube(1);
+		c2 = new Cube(1);
+		c2->obj->data.mat_c = 1;
+		glfwSetKeyCallback(window, key_callback);
 
 		loop();
 	}

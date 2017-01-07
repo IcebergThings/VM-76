@@ -8,8 +8,8 @@
 
 namespace VM76 {
 
-// Yes, does nothing in init
 	void init_control() {
+		glfwSetInputMode(window, GLFW_STICKY_KEYS, 0);
 	}
 
 // That simple and does not need a header
