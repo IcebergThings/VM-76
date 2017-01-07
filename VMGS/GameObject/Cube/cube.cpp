@@ -55,7 +55,7 @@ namespace VM76 {
 		};
 
 		// Prepare an empty space
-		glm::mat4* mat = new glm::mat4[512];
+		mat = new glm::mat4[512];
 		for (int x = 0; x < 512; x++) mat[x] = glm::mat4(1.0);
 
 		obj = new GDrawable();
@@ -71,13 +71,16 @@ namespace VM76 {
 		// Draw none for default
 		obj->data.mat_c = 0;
 
-		mat[1] = glm::translate(glm::mat4(1.0), glm::vec3(1.0));
-		update_instance(2, &mat[0]);
-
-		xefree(mat);
+		//xefree(mat);
 	}
 
 	void Cube::update_instance(int mat_c, glm::mat4* mat) {
+		obj->data.mat_c = mat_c;
+		obj->data.mat = (GLuint*) mat;
+		obj->update_instance();
+	}
+
+	void Cube::update_instance(int mat_c) {
 		obj->data.mat_c = mat_c;
 		obj->data.mat = (GLuint*) mat;
 		obj->update_instance();
