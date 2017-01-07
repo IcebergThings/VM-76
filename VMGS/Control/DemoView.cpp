@@ -16,8 +16,8 @@ namespace VM76 {
 	void update_control() {
 		float stime = float(VMDE->frame_count);
 
-		float x = 5.0f * cos(stime * 0.04f);
-		float z = 5.0f * sin(stime * 0.04f);
+		float x = 5.0f * cos(stime * 0.015f);
+		float z = 5.0f * sin(stime * 0.015f);
 		view = glm::lookAt(glm::vec3(x, 3.5f, z), glm::vec3(0.74f), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
