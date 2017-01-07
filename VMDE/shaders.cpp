@@ -79,3 +79,13 @@ void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, 3 * sizeof(glm::mat4), mat);
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO_matrix, 0, 3 * sizeof(glm::mat4));
 }
+
+void Shaders::set_float(const char* identifier, GLfloat value) {
+	GLuint loc = glGetUniformLocation(this->shaderProgram, identifier);
+	glUniform1f(loc, value);
+}
+
+void Shaders::set_int(const char* identifier, GLint value) {
+	GLuint loc = glGetUniformLocation(this->shaderProgram, identifier);
+	glUniform1i(loc, value);
+}

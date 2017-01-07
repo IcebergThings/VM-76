@@ -117,6 +117,10 @@
 		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
 		void link_program();
 		void use();
+
+		void set_float(const char* identifier, GLfloat value);
+		void set_int(const char* identifier, GLint value);
+
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 	};
 	extern Shaders* _shaders_in_use;

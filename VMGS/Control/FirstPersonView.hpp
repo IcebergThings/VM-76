@@ -1,4 +1,5 @@
 #include <global.hpp>
+#include <config.hpp>
 
 namespace VM76 {
 	struct Game_control {
