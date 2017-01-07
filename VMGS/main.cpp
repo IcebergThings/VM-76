@@ -25,6 +25,9 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_UP)) obj->pos = obj->pos + glm::vec3(0.0, 1.0, 0.0);
 		if (PRESS(GLFW_KEY_DOWN)) obj->pos = obj->pos + glm::vec3(0.0, -1.0, 0.0);
 
+		if (PRESS(GLFW_KEY_O)) obj->scale = obj->scale + glm::vec3(0.1, 0.1, 0.1);
+		if (PRESS(GLFW_KEY_P)) obj->scale = obj->scale - glm::vec3(0.1, 0.1, 0.1);
+
 		if (PRESS(GLFW_KEY_SPACE)) {
 			c->mat[map_count] = obj->transform();
 			c->update_instance(map_count + 1);
