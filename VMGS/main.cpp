@@ -24,8 +24,7 @@ namespace VM76 {
 			main_shader->use();
 
 			// Setup uniforms
-			GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "brightness");
-			glUniform1f(model_location, VMDE->state.brightness);
+			main_shader->set_float("brightness", VMDE->state.brightness);
 
 			main_shader->ProjectionView(projection, view);
 			c->render();
@@ -41,7 +40,7 @@ namespace VM76 {
 			sprintf(uniform_name, "colortex%d", index);
 			glActiveTexture(GL_TEXTURE0 + index);
 			glBindTexture(GL_TEXTURE_2D, Res::tex_unit[index]->texture);
-			glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
+			main_shader->set_float(uniform_name, index);
 		}
 	}
 
