@@ -47,7 +47,9 @@ design.md
 	- [ ] Game
 		- [x] config.hpp
 		- [ ] Game Logic
+
 ---
 
 - global.hpp: project-wide header
+	- There's a VMGS.hpp because we need to avoid conflicts.
 - global.cpp: project-wide global variable table
