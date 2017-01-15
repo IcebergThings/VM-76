@@ -1,4 +1,4 @@
-{"target type": "shared", "output": "VMDE"}
+{"target type": "archive", "output": "VMDE.a"}
 (VMDE)
 Typical arguments for Windoge:
 	-DGLFW_DLL -DGLEW_STATIC -DGLM_FORCE_SSE41
@@ -9,16 +9,8 @@ Typical arguments for Windoge:
 	-ID:\libogg-1.3.2\include
 	-ID:\libvorbis-1.3.5\include
 	-ID:\SOIL\src
-	-O0 -Wl,-subsystem,windows,--exclude-all-symbols -I..\VMDE
-	D:\SOIL\lib\libSOIL.a
-	D:\...\glew.a ← 警告：使用预编译的GLEW会出问题。
-	-LD:\bin -lstdc++
-	-LD:\glfw-3.2.bin.WIN32\lib-mingw-w64
-	-lglfw3dll -lopengl32 -lportaudio_x86 -lvorbisfile
-
 And for Linux:
 	-DGLM_FORCE_SSE41
-	-I../lib/SOIL/include -I../VMDE
+	-I../lib/SOIL/include  -I..
 	-O3 -Ofast -msse4.1 -mtune=core2
-	$(pkg-config --cflags --libs glfw3 gl glm glew portaudio-2.0 vorbisfile)
-	-lstdc++ -lSOIL
+	$(pkg-config --cflags glfw3 gl glm glew portaudio-2.0 vorbisfile)
