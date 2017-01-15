@@ -42,6 +42,13 @@
 		void start_game();
 		void terminate();
 		void init_tiles();
+
+	//-------------------------------------------------------------------------
+	// ● Game Logic
+	//-------------------------------------------------------------------------
+		void init_logic();
+		void update_logic();
+		void render();
 	}
 
 #endif
