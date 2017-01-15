@@ -11,7 +11,8 @@ namespace Util {
 	// ● 常量
 	//-------------------------------------------------------------------------
 	const float PIf = acos(-1.0f);
-	const double PI = acos(-1.0l);
+	const double PI = acos(-1.0); // no suffix
+	const long double PIl = acos(-1.0l);
 	//-------------------------------------------------------------------------
 	// ● 输出调试信息
 	//   凭借宏的力量（global.hpp），这个函数应当直接使用log(format, ...)调用。
