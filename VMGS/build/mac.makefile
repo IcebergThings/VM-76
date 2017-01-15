@@ -26,7 +26,7 @@ run: all
 
 VMGS: $(Objects)
 	@echo 链接最终二进制
-	$(CCLD) $(LIBS) $(LDFLAGS) $^ -o VMGS
+	$(CCLD) $(LDLIBS) $(LDFLAGS) $^ -o VMGS
 
 clean:
 	rm -rf $(OBJ) $(Objects)mcpu

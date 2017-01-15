@@ -23,7 +23,7 @@ all: $(OBJ)
 
 $(OBJ): $(Objects)
 	@echo 链接最终二进制
-	$(CCLD) $(LIBS) $(LDFLAGS) $^ -o $(OBJ)
+	$(CCLD) $(LDLIBS) $(LDFLAGS) $^ -o $(OBJ)
 
 clean:
 	rm -rf $(OBJ) $(Objects)
