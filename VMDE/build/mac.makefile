@@ -1,18 +1,19 @@
-# Mac does not support that make.rb, in a strange way..
+#==============================================================================
+# ■ VMDE - mac.makefile
+#------------------------------------------------------------------------------
+#   Mac does not support that make.rb, in a strange way...
+#==============================================================================
 
-CXX = gcc
-CCLD = gcc
+include ../inc.makefile
 
 OBJ = libVMDE.dylib
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
 
-LIBS = $(shell pkg-config --libs glfw3 glm glew portaudio-2.0 ogg vorbisfile) -lstdc++ /usr/local/lib/libSOIL.a
-LDFLAGS = -dynamiclib -O4 -framework OpenGL
-CXXFLAGS = -I../lib/SOIL/include  -I../ \
-	$(shell pkg-config --cflags glfw3 glm glew portaudio-2.0 vorbisfile) \
-	-std=c++14 -Wall -Wextra -O3 -c -fPIC \
-	-Ofast -msse4.1 -mtune=core2
+LDLIBS += $(shell pkg-config --libs glfw3 glm glew portaudio-2.0 ogg vorbisfile) /usr/local/lib/libSOIL.a
+LDFLAGS += -dynamiclib -framework OpenGL
+CXXFLAGS += -I../lib/SOIL/include  -I.. -c -fPIC \
+	$(shell pkg-config --cflags glfw3 glm glew portaudio-2.0 vorbisfile)
 
 all: $(OBJ)
 

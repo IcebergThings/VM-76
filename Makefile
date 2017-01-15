@@ -2,24 +2,9 @@
 # ■ makefile
 #==============================================================================
 
-PROJECTS = VMDE VMGS
+include inc.makefile
 
-# Determine the PLATFORM.
-# PLATFORM can be one of these: msw, gnu, mac, unknown
-ifeq "$(SHELL)" "/bin/sh"
-	UNAME_S = $(shell uname -s)
-	ifeq "$(UNAME_S)" "Linux"
-		PLATFORM = gnu
-	else ifeq "$(UNAME_S)" "Darwin"
-		PLATFORM = mac
-	else
-		PLATFORM = unknown
-	endif
-else ifeq "$(OS)" "Windows_NT"
-	PLATFORM = msw
-else
-	PLATFORM = unknown
-endif
+PROJECTS = VMDE VMGS
 
 all: $(PROJECTS)
 

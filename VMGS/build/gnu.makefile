@@ -1,18 +1,17 @@
-# make.rb is not working on Mac
+#==============================================================================
+# ■ VMGS - gnu.makefile
+#==============================================================================
 
-CXX = clang++
-CCLD = clang
+include ../inc.makefile
 
 OBJ = VMGS
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
 
-LIBS = $(shell pkg-config --libs --static glfw3 glm gl glew portaudio-2.0 vorbisfile)  -lstdc++
-LDFLAGS = -O4 -fPIC ../VMDE/libVMDE.so
-CXXFLAGS = -I../lib/SOIL/include -I../VMDE -I./Game \
-	$(shell pkg-config --cflags glfw3 glm glew gl portaudio-2.0 vorbisfile) \
-	-I../ -std=c++14 -Wall -Wextra -O3 -c \
-	-Ofast -msse4.1 -mtune=core2
+LDLIBS += $(shell pkg-config --libs --static glfw3 glm gl glew portaudio-2.0 vorbisfile)
+LDFLAGS += -fPIC ../VMDE/libVMDE.so
+CXXFLAGS += -I../lib/SOIL/include -I../VMDE -I./Game -I.. -c \
+	$(shell pkg-config --cflags glfw3 glm glew gl portaudio-2.0 vorbisfile)
 
 all: $(OBJ)
 run: all

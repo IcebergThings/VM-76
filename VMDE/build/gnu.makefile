@@ -1,18 +1,18 @@
-# Mac does not support that make.rb, in a strange way..
+#==============================================================================
+# ■ VMDE - gnu.makefile
+#==============================================================================
 
-CXX = clang
-CCLD = clang
+# 这破include居然是根据cwd来的！
+include ../inc.makefile
 
 OBJ = libVMDE.so
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
 
-LIBS = $(shell pkg-config --libs glfw3 gl glm glew portaudio-2.0 ogg vorbisfile) -lstdc++ /usr/lib/libSOIL.so
-LDFLAGS = -shared -O4
-CXXFLAGS = -I../lib/SOIL/include  -I../ \
-	$(shell pkg-config --cflags gl glfw3 glm glew portaudio-2.0 vorbisfile) \
-	-std=c++14 -Wall -Wextra -O3 -c -fPIC \
-	-Ofast -msse4.1 -mtune=core2
+LDLIBS += $(shell pkg-config --libs glfw3 gl glm glew portaudio-2.0 ogg vorbisfile) /usr/lib/libSOIL.so
+LDFLAGS += -shared
+CXXFLAGS += -I../lib/SOIL/include  -I.. -c -fPIC \
+	$(shell pkg-config --cflags gl glfw3 glm glew portaudio-2.0 vorbisfile)
 
 all: $(OBJ)
 
