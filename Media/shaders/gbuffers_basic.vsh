@@ -8,6 +8,7 @@ layout (location = 3) in mat4 Model;
 layout (std140) uniform Matrices {
 	mat4 Projection;
 	mat4 View;
+	mat4 ProjectionView;
 } matrices;
 
 out vertex_in {
@@ -17,7 +18,7 @@ out vertex_in {
 
 void main() {
 	vec4 v = vec4(position, 1.0);
-	gl_Position = matrices.Projection * matrices.View * Model * v;
+	gl_Position = matrices.ProjectionView * Model * v;
 	Vertex.texcolor = vertex_color;
 	Vertex.texcoord = texc;
 }
