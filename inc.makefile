@@ -15,7 +15,7 @@ ifeq "$(SHELL)" "/bin/sh"
 	else
 		PLATFORM = unknown
 	endif
-	undefine UNAME_S
+	#undefine UNAME_S
 else ifeq "$(OS)" "Windows_NT"
 	PLATFORM = msw
 else
