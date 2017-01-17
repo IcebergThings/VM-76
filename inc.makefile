@@ -35,6 +35,6 @@ ifeq "$(PLATFORM)" "msw"
 	CCLD = gcc
 else ifeq "$(PLATFORM)" "gnu"
 else ifeq "$(PLATFORM)" "mac"
-	CXX = gcc
-	CCLD = gcc
+	CXX = clang
+	CCLD = clang
 endif
