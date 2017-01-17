@@ -4,32 +4,60 @@
 //   VMGS的主程序。
 //=============================================================================
 
-#include "global.hpp"
+#include "VMGS.hpp"
 
 namespace VM76 {
 	Shaders* main_shader = NULL;
 
-	Structure* main_str;
+	Cube* c;
+	Cube* c2;
+
+	Object* obj = new Object();
+
+	int map_count = 0;
+
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+		#define PRESS(n) key == n && action == GLFW_PRESS
+		if (PRESS(GLFW_KEY_A)) obj->pos = obj->pos + glm::vec3(0.5, 0.0, 0.0);
+		if (PRESS(GLFW_KEY_D)) obj->pos = obj->pos + glm::vec3(-0.5, 0.0, 0.0);
+		if (PRESS(GLFW_KEY_W)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, -0.5);
+		if (PRESS(GLFW_KEY_S)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, 0.5);
+		if (PRESS(GLFW_KEY_UP)) obj->pos = obj->pos + glm::vec3(0.0, -0.5, 0.0);
+		if (PRESS(GLFW_KEY_DOWN)) obj->pos = obj->pos + glm::vec3(0.0, 0.5, 0.0);
+
+		if (PRESS(GLFW_KEY_O)) obj->scale = obj->scale + glm::vec3(0.1, 0.1, 0.1);
+		if (PRESS(GLFW_KEY_P)) obj->scale = obj->scale - glm::vec3(0.1, 0.1, 0.1);
+
+		if (PRESS(GLFW_KEY_SPACE)) {
+			c->mat[map_count] = obj->transform();
+			c->update_instance(map_count + 1);
+			map_count ++;
+		}
+	}
 
 	void loop() {
 		for (;;) {
 			::main_draw_start();
 			update_control();
 
-			glClear(GL_COLOR_BUFFER_BIT);
-			glClear(GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//			glEnable(GL_BLEND);
-//			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			main_shader->use();
 
 			// Setup uniforms
-			GLuint model_location = glGetUniformLocation(main_shader->shaderProgram, "brightness");
-			glUniform1f(model_location, VMDE->state.brightness);
+			main_shader->set_float("brightness", VMDE->state.brightness);
 
 			main_shader->ProjectionView(projection, view);
-			main_str->render();
+			c->render();
+
+			// Setup uniforms
+			main_shader->set_float("brightness", 0.5);
+			c2->mat[0] = obj->transform();
+			c2->update_instance(1);
+			c2->render();
 
 			::main_draw_end();
 			if (VMDE->done) break;
@@ -42,7 +70,7 @@ namespace VM76 {
 			sprintf(uniform_name, "colortex%d", index);
 			glActiveTexture(GL_TEXTURE0 + index);
 			glBindTexture(GL_TEXTURE_2D, Res::tex_unit[index]->texture);
-			glUniform1i(glGetUniformLocation(main_shader->shaderProgram, (GLchar*) uniform_name), index);
+			main_shader->set_float(uniform_name, index);
 		}
 	}
 
@@ -54,12 +82,12 @@ namespace VM76 {
 
 		new Res::Texture("../Media/terrain.png", 0);
 
-		main_str = new Structure();
-
 		char* temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
 		char* temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
 		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
 		main_shader->link_program();
+		xefree(temp_vertexShaderSource);
+		xefree(temp_fragmentShaderSource);
 
 		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 0.1f, 1000.0f);
 		view = glm::lookAt(glm::vec3(0.0, 2.6, 0.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
@@ -78,12 +106,15 @@ namespace VM76 {
 
 		update_textures();
 
+		c = new Cube(1);
+		c2 = new Cube(1);
+		c2->obj->data.mat_c = 1;
+		glfwSetKeyCallback(window, key_callback);
+
 		loop();
 	}
 
 	void terminate() {
-		main_str->dispose();
-		free(main_str);
 	}
 }
 

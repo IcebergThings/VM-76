@@ -48,8 +48,10 @@ void init_graphics(int w, int h, const char* title) {
 			log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.3.");
 			return;
 		}
+		log("OpenGL API: 3.3");
 	} else {
 		VMDE->gl_ver = GL_43;
+		log("OpenGL API: 4.3");
 	}
 
 	// 设置当前窗口GL上下文
@@ -69,6 +71,9 @@ void init_graphics(int w, int h, const char* title) {
 		log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
 		return;
 	}
+	log("UBO : GL33 Uniform Buffer Object");
+	#else
+	log("UBO : Apple Uniform Buffer Object");
 	#endif
 
 	setup_viewport();

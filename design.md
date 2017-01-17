@@ -2,18 +2,24 @@ design.md
 =========
 
 - [ ] VMDE: draw engine
-	- [ ] init_engine
-	- [ ] update
-	- [ ] get_frame_count
-	- [ ] get_fps
-	- [ ] GRect: rectangle
-		- [ ] Shape: vertices
-		- [ ] Texture
-		- [ ] Color: per vertex, RGBA
-		- [ ] draw
-	- [ ] GResPic: texture resources
-		- [ ] load_pic
-	- [ ] Audio: audio *drawing* support
+	- [x] init_engine
+	- [x] update
+	- [x] engine state related
+		- [x] get_frame_count
+		- [x] get_fps
+	- [ ] Shaders
+		- [x] Load & Compile shaders
+		- [x] Use & Call shaders
+		- [ ] variables binding functions
+	- [x] GDrawable
+		- [x] Create drawable object
+		- [x] Instanced rendering
+		- [x] Draw Call
+		- [x] Buffer Objects management
+	- [ ] Res::Texture texture resources
+		- [x] load texture
+		- [ ] Texture to shader binding
+	- [x] Audio: audio support
 		- [x] stop: stop_wave in fact
 		- [x] play_wave
 			- [x] triangle
@@ -23,19 +29,27 @@ design.md
 			- [x] play_sound
 			- [x] play_loop
 - [ ] VMGS: game system
-	- main 主程序
-	- gui 图形界面
-	- map 地图
-	- chunk 区块
-	- player 玩家组件
-	- physics 物理组件
-		- 里面的结构没想好
-		- 很有可能是一个巨大的physics.cpp和physics.hpp
-	- tiles 方块（模版？）
-		- tile 普通的方块
-		- xxx 特殊的方块，继承tile
+	- [x] main
+	- [ ] Control
+		- [x] Demo View
+		- [x] FPS View (Free explore)
+		- [x] God View
+		- [ ] Physics binded view
+	- [ ] Game Objects
+		- [x] Cube (Tiled cube)
+		- [ ] Model
+		- [ ] Terrian
+		- [ ] Light source
+		- [ ] Entity
+		- [x] object helper class
+	- [ ] Physics
+	- [ ] Effects
+	- [ ] Game
+		- [x] config.hpp
+		- [ ] Game Logic
 
 ---
 
 - global.hpp: project-wide header
+	- There's a VMGS.hpp because we need to avoid conflicts.
 - global.cpp: project-wide global variable table

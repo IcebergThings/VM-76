@@ -3,8 +3,9 @@
 //=============================================================================
 
 #include <global.hpp>
+#include <config.hpp>
 
-#include "Tiles/tile.hpp"
+#include "GameObject/GameObject.hpp"
 #include "Control/control.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
@@ -37,27 +38,17 @@
 			Block(int id);
 		};
 
-		class Structure {
-		private:
-			Tile* t[16];
-			int block_count[16];
-			glm::mat4* mats[16];
-			void init_tiles();
-
-		public:
-			Block* str[64][64][64];
-			glm::vec3 wpos = glm::vec3(0.0);
-
-			void dispose();
-			void update();
-			void render();
-			Structure();
-		};
-
 		void loop();
 		void start_game();
 		void terminate();
 		void init_tiles();
+
+	//-------------------------------------------------------------------------
+	// ● Game Logic
+	//-------------------------------------------------------------------------
+		void init_logic();
+		void update_logic();
+		void render();
 	}
 
 #endif

@@ -198,6 +198,8 @@ class WindogixMake
 				@linking_args.clear
 			when "shared"
 				command = %w(gcc -shared -o)
+			else
+				raise "Unknown target type"
 			end
 			command.push(@options["output"])
 			command.concat(objects)
