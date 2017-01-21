@@ -15,7 +15,6 @@ ifeq "$(SHELL)" "/bin/sh"
 	else
 		PLATFORM = unknown
 	endif
-	#undefine UNAME_S
 else ifeq "$(OS)" "Windows_NT"
 	PLATFORM = msw
 else
@@ -36,5 +35,4 @@ ifeq "$(PLATFORM)" "msw"
 else ifeq "$(PLATFORM)" "gnu"
 else ifeq "$(PLATFORM)" "mac"
 	CXX = clang
-	CCLD = clang
 endif
