@@ -68,9 +68,7 @@ namespace VM76 {
 		char uniform_name[16];
 		for (int index = 0; index < 16; index++) if (Res::tex_unit[index]) {
 			sprintf(uniform_name, "colortex%d", index);
-			glActiveTexture(GL_TEXTURE0 + index);
-			glBindTexture(GL_TEXTURE_2D, Res::tex_unit[index]->texture);
-			main_shader->set_float(uniform_name, index);
+			main_shader->set_texture(uniform_name, Res::tex_unit[index]);
 		}
 	}
 
