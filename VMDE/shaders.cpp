@@ -9,6 +9,7 @@
 Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
 	const GLchar* basic_2D_vsh_src = vsh_src_ptr;
 	GLint success;
+	bool error_in_shader = false;
 	GLchar info_log[512];
 
 	this->basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
@@ -19,6 +20,8 @@ Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
 		glGetShaderInfoLog(this->basic_2D_vsh, 512, NULL, info_log);
 		log("VSH compilation failed:\n%s", info_log);
 		log("Shaders error");
+
+		error_in_shader = true;
 	}
 
 	// Fragment shader
@@ -32,7 +35,21 @@ Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
 		glGetShaderInfoLog(this->basic_2D_fsh, 512, NULL, info_log);
 		log("FSH compilation failed:\n%s", info_log);
 		log("Shaders error");
+
+		error_in_shader = true;
 	}
+
+	if (!error_in_shader) this->link_program();
+}
+
+Shaders* Shaders::CreateFromFile(const char* vsh_src, const char* fsh_src) {
+	char* temp_vertexShaderSource = Util::read_file(vsh_src);
+	char* temp_fragmentShaderSource = Util::read_file(fsh_src);
+	Shaders* temp_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
+	xefree(temp_vertexShaderSource);
+	xefree(temp_fragmentShaderSource);
+
+	return temp_shader;
 }
 
 void Shaders::link_program() {

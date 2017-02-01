@@ -77,12 +77,7 @@ namespace VM76 {
 
 		tile_texture = new Res::Texture("../Media/terrain.png");
 
-		char* temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
-		char* temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
-		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-		main_shader->link_program();
-		xefree(temp_vertexShaderSource);
-		xefree(temp_fragmentShaderSource);
+		main_shader = Shaders::CreateFromFile("../Media/shaders/gbuffers_basic.vsh", "../Media/shaders/gbuffers_basic.fsh");
 
 		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 0.1f, 1000.0f);
 		view = glm::lookAt(glm::vec3(0.0, 2.6, 0.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
