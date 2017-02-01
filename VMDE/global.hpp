@@ -125,10 +125,9 @@
 		public:
 			GLuint texture, index;
 			int width, height;
-			Texture(const char* file, GLuint index);
+			Texture(const char* file);
 			Texture* dispose();
 		};
-		extern Texture* tex_unit[16];
 	}
 	//-------------------------------------------------------------------------
 	// ● shaders.cpp
@@ -149,7 +148,7 @@
 
 		void set_float(const char* identifier, GLfloat value);
 		void set_int(const char* identifier, GLint value);
-		void set_texture(const char* identifier, Res::Texture* tex);
+		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
 
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 	};
