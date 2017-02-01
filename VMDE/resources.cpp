@@ -7,16 +7,9 @@
 #include "global.hpp"
 
 namespace Res {
-	Texture* tex_unit[16];
 
-	Texture::Texture(const char* file, GLuint index) {
-		if (tex_unit[index]) {
-			log("Texture unit %d is occupied", index);
-			exit(1);
-		}
-
+	Texture::Texture(const char* file) {
 		glGenTextures(1, &this->texture);
-		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_2D, this->texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -31,17 +24,11 @@ namespace Res {
 		SOIL_free_image_data(image);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		log("Texture is loaded from %s to texture unit %d", file, index);
-
-		this->index = index;
-		tex_unit[index] = this;
+		log("Texture is loaded from %s to texture unit", file);
 	}
 
 	Texture* Texture::dispose() {
-		//glDisableTexture(GL_TEXTURE0 + this->index)；
 		glDeleteTextures(1, &this->texture);
-
-		tex_unit[this->index] = NULL;
 
 		return this;
 	}
