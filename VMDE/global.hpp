@@ -96,6 +96,9 @@
 		do { if (pointer) { \
 		free(pointer); pointer = NULL; \
 		} } while (false)
+
+	#define VMDE_Dispose(x) xefree(x->dispose());
+
 	#ifdef __GNUC__
 		#define UNUSED(x) x __attribute__((__unused__))
 	#else
@@ -143,9 +146,10 @@
 	namespace Res {
 		class Texture {
 		public:
-			GLuint texture;
+			GLuint texture, index;
 			int width, height;
 			Texture(const char* file, GLuint index);
+			Texture* dispose();
 		};
 		extern Texture* tex_unit[16];
 	}
@@ -292,7 +296,7 @@
 		void fbind();
 		void update();
 		void update_instance();
-		void dispose();
+		GDrawable* dispose();
 
 		GDrawable();
 	};

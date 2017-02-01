@@ -113,12 +113,13 @@ void GDrawable::update_instance() {
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-void GDrawable::dispose() {
+GDrawable* GDrawable::dispose() {
 	glDeleteVertexArrays(1, &data.VAO);
 	glDeleteBuffers(1, &data.VBO);
 	glDeleteBuffers(1, &data.EBO);
 	glDeleteBuffers(1, &data.MBO);
-	// 都在类里面了，一个free就完事了
+
+	return this;
 }
 
 GDrawable::GDrawable() {
