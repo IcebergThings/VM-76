@@ -8,6 +8,7 @@
 
 namespace VM76 {
 	Shaders* main_shader = NULL;
+	Res::Texture* tile_texture = NULL;
 
 	Cube* c;
 	Cube* c2;
@@ -64,12 +65,8 @@ namespace VM76 {
 		}
 	}
 
-	void update_textures() {
-		char uniform_name[16];
-		for (int index = 0; index < 16; index++) if (Res::tex_unit[index]) {
-			sprintf(uniform_name, "colortex%d", index);
-			main_shader->set_texture(uniform_name, Res::tex_unit[index]);
-		}
+	void init_textures() {
+		main_shader->set_texture("colortex0", tile_texture, 0);
 	}
 
 	void start_game() {
@@ -78,7 +75,7 @@ namespace VM76 {
 		::init_engine(860, 540, "VM / 76");
 		init_control();
 
-		new Res::Texture("../Media/terrain.png", 0);
+		tile_texture = new Res::Texture("../Media/terrain.png");
 
 		char* temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
 		char* temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
@@ -102,7 +99,7 @@ namespace VM76 {
 		glClearDepth(1.0f);
 		glDepthMask(GL_TRUE);
 
-		update_textures();
+		init_textures();
 
 		c = new Cube(1);
 		c2 = new Cube(1);
@@ -113,9 +110,7 @@ namespace VM76 {
 	}
 
 	void terminate() {
-		for (int index = 0; index < 16; index++) if (Res::tex_unit[index]) {
-			VMDE_Dispose(Res::tex_unit[index]);
-		}
+		VMDE_Dispose(tile_texture);
 		VMDE_Dispose(c);VMDE_Dispose(c2);
 	}
 }
