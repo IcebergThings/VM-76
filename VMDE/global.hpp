@@ -105,29 +105,6 @@
 		#define UNUSED(x) x
 	#endif
 	//-------------------------------------------------------------------------
-	// ● shaders.cpp
-	//-------------------------------------------------------------------------
-	class Shaders {
-	public:
-		GLuint basic_2D_vsh;
-		GLuint basic_2D_fsh;
-		GLuint shaderProgram;
-
-		GLuint UBO_matrix;
-		glm::mat4* mat = new glm::mat4[3];
-
-	public:
-		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
-		void link_program();
-		void use();
-
-		void set_float(const char* identifier, GLfloat value);
-		void set_int(const char* identifier, GLint value);
-
-		void ProjectionView(glm::mat4 projection, glm::mat4 view);
-	};
-	extern Shaders* _shaders_in_use;
-	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
 	void setup_viewport();
@@ -153,6 +130,30 @@
 		};
 		extern Texture* tex_unit[16];
 	}
+	//-------------------------------------------------------------------------
+	// ● shaders.cpp
+	//-------------------------------------------------------------------------
+	class Shaders {
+	public:
+		GLuint basic_2D_vsh;
+		GLuint basic_2D_fsh;
+		GLuint shaderProgram;
+
+		GLuint UBO_matrix;
+		glm::mat4* mat = new glm::mat4[3];
+
+	public:
+		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
+		void link_program();
+		void use();
+
+		void set_float(const char* identifier, GLfloat value);
+		void set_int(const char* identifier, GLint value);
+		void set_texture(const char* identifier, Res::Texture* tex);
+
+		void ProjectionView(glm::mat4 projection, glm::mat4 view);
+	};
+	extern Shaders* _shaders_in_use;
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//-------------------------------------------------------------------------
