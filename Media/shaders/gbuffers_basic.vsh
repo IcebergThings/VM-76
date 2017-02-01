@@ -11,14 +11,14 @@ layout (std140) uniform Matrices {
 	mat4 ProjectionView;
 } matrices;
 
-out vertex_in {
+layout (location = 0) out Vertex {
 	vec4 texcolor;
 	vec2 texcoord;
-} Vertex;
+};
 
 void main() {
 	vec4 v = vec4(position, 1.0);
 	gl_Position = matrices.ProjectionView * Model * v;
-	Vertex.texcolor = vertex_color;
-	Vertex.texcoord = texc;
+	texcolor = vertex_color;
+	texcoord = texc;
 }
