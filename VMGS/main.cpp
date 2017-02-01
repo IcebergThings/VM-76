@@ -34,6 +34,7 @@ namespace VM76 {
 			c->update_instance(map_count + 1);
 			map_count ++;
 		}
+		#undef PRESS
 	}
 
 	void loop() {
