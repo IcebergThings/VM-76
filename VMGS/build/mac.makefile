@@ -27,7 +27,11 @@ run: all
 	@echo 编译C++文件$^……
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-VMGS: $(Objects)
+libVMDE.dylib: ../VMDE/libVMDE.dylib
+	@echo 更新动态库
+	cp ../VMDE/libVMDE.dylib .
+
+VMGS: $(Objects) libVMDE.dylib
 	@echo 链接最终二进制
 	$(CCLD) $(LDLIBS) $(LDFLAGS) $^ -o VMGS
 

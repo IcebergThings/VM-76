@@ -91,7 +91,7 @@ namespace VM76 {
 	}
 
 	void Cube::dispose() {
-		obj->dispose();
+		VMDE_Dispose(obj);
 		xefree(vtx); xefree(itx);
 	}
 }

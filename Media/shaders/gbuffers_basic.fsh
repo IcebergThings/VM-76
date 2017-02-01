@@ -2,15 +2,15 @@
 
 out vec4 color;
 
-in vertex_in {
+layout(location = 0) in Vertex {
 	vec4 texcolor;
 	vec2 texcoord;
-} Vertex;
+};
 
 uniform float brightness;
 uniform sampler2D colortex0;
 
 void main() {
-	vec4 finalc = texture(colortex0, Vertex.texcoord.st);
-	color = vec4(finalc * Vertex.texcolor * brightness);
+	vec4 finalc = texture(colortex0, texcoord.st);
+	color = vec4(finalc * texcolor * brightness);
 }
