@@ -118,6 +118,7 @@ namespace VM76 {
 		for (int index = 0; index < 16; index++) if (Res::tex_unit[index]) {
 			VMDE_Dispose(Res::tex_unit[index]);
 		}
+		VMDE_Dispose(c);VMDE_Dispose(c2);
 	}
 }
 
