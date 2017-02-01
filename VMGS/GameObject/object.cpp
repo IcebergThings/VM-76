@@ -11,6 +11,10 @@ namespace VM76 {
 		return glm::translate(t, pos);
 	}
 
+	void Object::move(glm::vec3 vector) {
+		this->pos += vector;
+	}
+
 	Object::Object() { }
 
 	Object::Object(glm::vec3 position) {

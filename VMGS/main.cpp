@@ -19,15 +19,15 @@ namespace VM76 {
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == n && action == GLFW_PRESS
-		if (PRESS(GLFW_KEY_A)) obj->pos = obj->pos + glm::vec3(0.5, 0.0, 0.0);
-		if (PRESS(GLFW_KEY_D)) obj->pos = obj->pos + glm::vec3(-0.5, 0.0, 0.0);
-		if (PRESS(GLFW_KEY_W)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, -0.5);
-		if (PRESS(GLFW_KEY_S)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, 0.5);
-		if (PRESS(GLFW_KEY_UP)) obj->pos = obj->pos + glm::vec3(0.0, -0.5, 0.0);
-		if (PRESS(GLFW_KEY_DOWN)) obj->pos = obj->pos + glm::vec3(0.0, 0.5, 0.0);
+		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(0.5, 0.0, 0.0));
+		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(-0.5, 0.0, 0.0));
+		if (PRESS(GLFW_KEY_W)) obj->move(glm::vec3(0.0, 0.0, -0.5));
+		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 0.5));
+		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, -0.5, 0.0));
+		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, 0.5, 0.0));
 
-		if (PRESS(GLFW_KEY_O)) obj->scale = obj->scale + glm::vec3(0.1, 0.1, 0.1);
-		if (PRESS(GLFW_KEY_P)) obj->scale = obj->scale - glm::vec3(0.1, 0.1, 0.1);
+		if (PRESS(GLFW_KEY_O)) obj->scale += glm::vec3(0.1, 0.1, 0.1);
+		if (PRESS(GLFW_KEY_P)) obj->scale -= glm::vec3(0.1, 0.1, 0.1);
 
 		if (PRESS(GLFW_KEY_SPACE)) {
 			c->mat[map_count] = obj->transform();
