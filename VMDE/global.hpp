@@ -97,7 +97,7 @@
 		free(pointer); pointer = NULL; \
 		} } while (false)
 
-	#define VMDE_Dispose(x) xefree(x->dispose());
+	#define VMDE_Dispose(x) x->dispose();xefree(x);
 
 	#ifdef __GNUC__
 		#define UNUSED(x) x __attribute__((__unused__))
