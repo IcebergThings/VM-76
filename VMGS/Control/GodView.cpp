@@ -23,8 +23,8 @@ namespace VM76 {
 
 	void update_control() {
 		// Key Input
-		glm::vec3 fwd = glm::normalize(glm::vec3(0.0, -1.0, 0.4));
-		glm::vec3 up = glm::normalize(glm::cross(glm::vec3(1.0, 0.0, 0.0), fwd));
+		glm::vec3 fwd = glm::normalize(glm::vec3(0.0, 1.0, 0.4));
+		glm::vec3 up = glm::normalize(glm::cross(fwd, glm::vec3(1.0, 0.0, 0.0)));
 		glm::vec3 speed = glm::vec3(0.1);
 		#define PRESS(key) glfwGetKey(window, game.key_##key) == GLFW_PRESS
 		if (PRESS(quit)) VMDE->done = true;
@@ -33,9 +33,9 @@ namespace VM76 {
 		if (PRESS(back))
 		cam.wpos += glm::vec3(0.0, 0.0, 1.0) * speed;
 		if (PRESS(left))
-		cam.wpos += glm::vec3(1.0, 0.0, 0.0) * speed;
-		if (PRESS(right))
 		cam.wpos -= glm::vec3(1.0, 0.0, 0.0) * speed;
+		if (PRESS(right))
+		cam.wpos += glm::vec3(1.0, 0.0, 0.0) * speed;
 		if (PRESS(zoomout))
 		cam.wpos += fwd * speed;
 		if (PRESS(zoomin))
