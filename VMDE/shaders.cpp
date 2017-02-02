@@ -7,13 +7,21 @@
 #include "global.hpp"
 
 Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
-	const GLchar* basic_2D_vsh_src = vsh_src_ptr;
 	GLint success;
 	bool error_in_shader = false;
 	GLchar info_log[512];
 
+	if (vsh_src_ptr == NULL) {
+		error_in_shader = true;
+		log("null pointer of vertex shader src");
+	}
+	if (fsh_src_ptr == NULL) {
+		error_in_shader = true;
+		log("null pointer of fragment shader src");
+	}
+
 	this->basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(this->basic_2D_vsh, 1, &basic_2D_vsh_src, NULL);
+	glShaderSource(this->basic_2D_vsh, 1, &vsh_src_ptr, NULL);
 	glCompileShader(this->basic_2D_vsh);
 	glGetShaderiv(this->basic_2D_vsh, GL_COMPILE_STATUS, &success);
 	if (!success) {
@@ -25,10 +33,8 @@ Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
 	}
 
 	// Fragment shader
-	const GLchar* basic_2D_fsh_src = fsh_src_ptr;
-
 	this->basic_2D_fsh = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(this->basic_2D_fsh, 1, &basic_2D_fsh_src, NULL);
+	glShaderSource(this->basic_2D_fsh, 1, &fsh_src_ptr, NULL);
 	glCompileShader(this->basic_2D_fsh);
 	glGetShaderiv(this->basic_2D_fsh, GL_COMPILE_STATUS, &success);
 	if (!success) {
@@ -80,11 +86,7 @@ void Shaders::link_program() {
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-Shaders* _shaders_in_use = NULL;
-
 void Shaders::use() {
-	if (this == _shaders_in_use) return;
-	_shaders_in_use = this;
 	glUseProgram(this->shaderProgram);
 }
 
