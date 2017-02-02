@@ -7,7 +7,8 @@
 #include "VMGS.hpp"
 
 namespace VM76 {
-	Shaders* main_shader = NULL;
+	Shaders* shader_textured = NULL;
+	Shaders* shader_basic = NULL;
 	Res::Texture* tile_texture = NULL;
 
 	Cube* c;
@@ -47,16 +48,17 @@ namespace VM76 {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			main_shader->use();
+			shader_textured->use();
 
 			// Setup uniforms
-			main_shader->set_float("brightness", VMDE->state.brightness);
+			shader_textured->set_float("brightness", VMDE->state.brightness);
 
-			main_shader->ProjectionView(projection, view);
+			shader_textured->ProjectionView(projection, view);
 			c->render();
 
 			// Setup uniforms
-			main_shader->set_float("brightness", 0.5);
+			shader_basic->use();
+			shader_textured->ProjectionView(projection, view);
 			c2->mat[0] = obj->transform();
 			c2->update_instance(1);
 			c2->render();
@@ -67,7 +69,7 @@ namespace VM76 {
 	}
 
 	void init_textures() {
-		main_shader->set_texture("colortex0", tile_texture, 0);
+		shader_textured->set_texture("colortex0", tile_texture, 0);
 	}
 
 	void start_game() {
@@ -78,7 +80,8 @@ namespace VM76 {
 
 		tile_texture = new Res::Texture("../Media/terrain.png");
 
-		main_shader = Shaders::CreateFromFile("../Media/shaders/gbuffers_basic.vsh", "../Media/shaders/gbuffers_basic.fsh");
+		shader_textured = Shaders::CreateFromFile("../Media/shaders/gbuffers_textured.vsh", "../Media/shaders/gbuffers_textured.fsh");
+		shader_basic = Shaders::CreateFromFile("../Media/shaders/gbuffers_basic.vsh", "../Media/shaders/gbuffers_basic.fsh");
 
 		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 0.1f, 1000.0f);
 		view = glm::lookAt(glm::vec3(0.0, 2.6, 0.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
