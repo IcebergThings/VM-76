@@ -16,6 +16,30 @@ void setup_viewport() {
 }
 
 //-----------------------------------------------------------------------------
+// ● GL数据查询
+//-----------------------------------------------------------------------------
+void GL_info() {
+	log("==========================");
+	log("OpenGL Info:");
+	GLint a,b;
+	glGetIntegerv(GL_MAJOR_VERSION, &a);
+	glGetIntegerv(GL_MINOR_VERSION, &b);
+	log("Supproted GL Version %d.%d", a,b);
+	log("==========================");
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &a);
+	log("Maximum vertex attributes: %d", a);
+	glGetIntegerv(GL_MAX_VERTEX_OUTPUT_COMPONENTS, &a);
+	log("Maximum vertex output components: %d", a);
+	glGetIntegerv(GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS, &a);
+	log("Maximum fragment shader storage blocks: %d", a);
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &a);
+	log("Maximum texture size: %d", a);
+	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &a);
+	log("Maximum texture unit: %d", a);
+	log("==========================");
+}
+
+//-----------------------------------------------------------------------------
 // ● 初始化图形
 //-----------------------------------------------------------------------------
 void init_graphics(int w, int h, const char* title) {
@@ -78,10 +102,8 @@ void init_graphics(int w, int h, const char* title) {
 
 	setup_viewport();
 
-	// 获取可用的Vertex Attributes数量
-	GLint nrAttributes;
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	log("Maximum number of vertex attributes supported: %d", nrAttributes);
+	// Query GL info
+	GL_info();
 }
 
 //-----------------------------------------------------------------------------

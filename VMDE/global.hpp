@@ -143,6 +143,8 @@
 
 	public:
 		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
+		static Shaders* CreateFromFile(const char* vsh_src, const char* fsh_src);
+
 		void link_program();
 		void use();
 

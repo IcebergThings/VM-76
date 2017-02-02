@@ -7,32 +7,55 @@
 #include "global.hpp"
 
 Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
-	const GLchar* basic_2D_vsh_src = vsh_src_ptr;
 	GLint success;
+	bool error_in_shader = false;
 	GLchar info_log[512];
 
+	if (vsh_src_ptr == NULL) {
+		error_in_shader = true;
+		log("null pointer of vertex shader src");
+	}
+	if (fsh_src_ptr == NULL) {
+		error_in_shader = true;
+		log("null pointer of fragment shader src");
+	}
+
 	this->basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(this->basic_2D_vsh, 1, &basic_2D_vsh_src, NULL);
+	glShaderSource(this->basic_2D_vsh, 1, &vsh_src_ptr, NULL);
 	glCompileShader(this->basic_2D_vsh);
 	glGetShaderiv(this->basic_2D_vsh, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(this->basic_2D_vsh, 512, NULL, info_log);
 		log("VSH compilation failed:\n%s", info_log);
 		log("Shaders error");
+
+		error_in_shader = true;
 	}
 
 	// Fragment shader
-	const GLchar* basic_2D_fsh_src = fsh_src_ptr;
-
 	this->basic_2D_fsh = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(this->basic_2D_fsh, 1, &basic_2D_fsh_src, NULL);
+	glShaderSource(this->basic_2D_fsh, 1, &fsh_src_ptr, NULL);
 	glCompileShader(this->basic_2D_fsh);
 	glGetShaderiv(this->basic_2D_fsh, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(this->basic_2D_fsh, 512, NULL, info_log);
 		log("FSH compilation failed:\n%s", info_log);
 		log("Shaders error");
+
+		error_in_shader = true;
 	}
+
+	if (!error_in_shader) this->link_program();
+}
+
+Shaders* Shaders::CreateFromFile(const char* vsh_src, const char* fsh_src) {
+	char* temp_vertexShaderSource = Util::read_file(vsh_src);
+	char* temp_fragmentShaderSource = Util::read_file(fsh_src);
+	Shaders* temp_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
+	xefree(temp_vertexShaderSource);
+	xefree(temp_fragmentShaderSource);
+
+	return temp_shader;
 }
 
 void Shaders::link_program() {
@@ -63,11 +86,7 @@ void Shaders::link_program() {
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-Shaders* _shaders_in_use = NULL;
-
 void Shaders::use() {
-	if (this == _shaders_in_use) return;
-	_shaders_in_use = this;
 	glUseProgram(this->shaderProgram);
 }
 

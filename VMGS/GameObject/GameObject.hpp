@@ -2,6 +2,7 @@
 #define _INCLUDE_GAME_OBJECT_H
 
 #include "Cube/cube.hpp"
+#include "GLAxis/axis.hpp"
 
 namespace VM76 {
 	class Object {
@@ -12,6 +13,7 @@ namespace VM76 {
 
 	public:
 		glm::mat4 transform();
+		void move(glm::vec3 vector);
 
 		Object();
 		Object(glm::vec3 position);

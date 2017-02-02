@@ -7,11 +7,14 @@
 #include "VMGS.hpp"
 
 namespace VM76 {
-	Shaders* main_shader = NULL;
+	Shaders* shader_textured = NULL;
+	Shaders* shader_basic = NULL;
 	Res::Texture* tile_texture = NULL;
 
 	Cube* c;
 	Cube* c2;
+
+	Axis* axe;
 
 	Object* obj = new Object();
 
@@ -19,21 +22,22 @@ namespace VM76 {
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == n && action == GLFW_PRESS
-		if (PRESS(GLFW_KEY_A)) obj->pos = obj->pos + glm::vec3(0.5, 0.0, 0.0);
-		if (PRESS(GLFW_KEY_D)) obj->pos = obj->pos + glm::vec3(-0.5, 0.0, 0.0);
-		if (PRESS(GLFW_KEY_W)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, -0.5);
-		if (PRESS(GLFW_KEY_S)) obj->pos = obj->pos + glm::vec3(0.0, 0.0, 0.5);
-		if (PRESS(GLFW_KEY_UP)) obj->pos = obj->pos + glm::vec3(0.0, -0.5, 0.0);
-		if (PRESS(GLFW_KEY_DOWN)) obj->pos = obj->pos + glm::vec3(0.0, 0.5, 0.0);
+		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(-0.5, 0.0, 0.0));
+		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(0.5, 0.0, 0.0));
+		if (PRESS(GLFW_KEY_W)) obj->move(glm::vec3(0.0, 0.0, -0.5));
+		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 0.5));
+		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 0.5, 0.0));
+		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -0.5, 0.0));
 
-		if (PRESS(GLFW_KEY_O)) obj->scale = obj->scale + glm::vec3(0.1, 0.1, 0.1);
-		if (PRESS(GLFW_KEY_P)) obj->scale = obj->scale - glm::vec3(0.1, 0.1, 0.1);
+		if (PRESS(GLFW_KEY_O)) obj->scale += glm::vec3(0.1, 0.1, 0.1);
+		if (PRESS(GLFW_KEY_P)) obj->scale -= glm::vec3(0.1, 0.1, 0.1);
 
 		if (PRESS(GLFW_KEY_SPACE)) {
 			c->mat[map_count] = obj->transform();
 			c->update_instance(map_count + 1);
 			map_count ++;
 		}
+		#undef PRESS
 	}
 
 	void loop() {
@@ -46,19 +50,22 @@ namespace VM76 {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			main_shader->use();
+			shader_textured->use();
 
 			// Setup uniforms
-			main_shader->set_float("brightness", VMDE->state.brightness);
+			shader_textured->set_float("brightness", VMDE->state.brightness);
 
-			main_shader->ProjectionView(projection, view);
+			shader_textured->ProjectionView(projection, view);
 			c->render();
 
 			// Setup uniforms
-			main_shader->set_float("brightness", 0.5);
+			shader_basic->use();
+			shader_textured->ProjectionView(projection, view);
 			c2->mat[0] = obj->transform();
 			c2->update_instance(1);
 			c2->render();
+
+			axe->render();
 
 			::main_draw_end();
 			if (VMDE->done) break;
@@ -66,7 +73,7 @@ namespace VM76 {
 	}
 
 	void init_textures() {
-		main_shader->set_texture("colortex0", tile_texture, 0);
+		shader_textured->set_texture("colortex0", tile_texture, 0);
 	}
 
 	void start_game() {
@@ -77,12 +84,8 @@ namespace VM76 {
 
 		tile_texture = new Res::Texture("../Media/terrain.png");
 
-		char* temp_vertexShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.vsh");
-		char* temp_fragmentShaderSource = Util::read_file("../Media/shaders/gbuffers_basic.fsh");
-		main_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-		main_shader->link_program();
-		xefree(temp_vertexShaderSource);
-		xefree(temp_fragmentShaderSource);
+		shader_textured = Shaders::CreateFromFile("../Media/shaders/gbuffers_textured.vsh", "../Media/shaders/gbuffers_textured.fsh");
+		shader_basic = Shaders::CreateFromFile("../Media/shaders/gbuffers_basic.vsh", "../Media/shaders/gbuffers_basic.fsh");
 
 		projection = glm::perspective(1.3f, float(VMDE->width) / float(VMDE->height), 0.1f, 1000.0f);
 		view = glm::lookAt(glm::vec3(0.0, 2.6, 0.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
@@ -103,6 +106,7 @@ namespace VM76 {
 
 		c = new Cube(1);
 		c2 = new Cube(1);
+		axe = new Axis();
 		c2->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
 
