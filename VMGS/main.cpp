@@ -14,6 +14,8 @@ namespace VM76 {
 	Cube* c;
 	Cube* c2;
 
+	Axis* axe;
+
 	Object* obj = new Object();
 
 	int map_count = 0;
@@ -63,6 +65,8 @@ namespace VM76 {
 			c2->update_instance(1);
 			c2->render();
 
+			axe->render();
+
 			::main_draw_end();
 			if (VMDE->done) break;
 		}
@@ -102,6 +106,7 @@ namespace VM76 {
 
 		c = new Cube(1);
 		c2 = new Cube(1);
+		axe = new Axis();
 		c2->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
 

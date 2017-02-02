@@ -2,6 +2,7 @@
 #define _INCLUDE_GAME_OBJECT_H
 
 #include "Cube/cube.hpp"
+#include "GLAxis/axis.hpp"
 
 namespace VM76 {
 	class Object {
