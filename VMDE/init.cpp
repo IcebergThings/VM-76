@@ -135,4 +135,5 @@ void init_vmde(int w, int h) {
 	VMDE->fps = 0;
 	VMDE->width = w;
 	VMDE->height = h;
+	VMDE->done = false;
 }
