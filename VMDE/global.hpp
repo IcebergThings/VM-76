@@ -246,11 +246,11 @@
 		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
 		void ensure_no_error(PaError err);
 		int play_wave_callback(
-			UNUSED(const void* input_buffer),
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frames_per_buffer,
-			UNUSED(const PaStreamCallbackTimeInfo* time_info),
-			UNUSED(PaStreamCallbackFlags status_flags),
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void stop();
@@ -263,11 +263,11 @@
 		void compact_active_sounds_array();
 		void play_sound(const char* filename, bool loop);
 		int play_sound_callback(
-			UNUSED(const void* input_buffer),
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frame_count,
-			UNUSED(const PaStreamCallbackTimeInfo* time_info),
-			UNUSED(PaStreamCallbackFlags status_flags),
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void decode_vorbis(struct active_sound* sound);
