@@ -19,7 +19,11 @@ else
 endif
 
 run: all
+ifeq "$(PLATFORM)" "msw"
+	cd VMGS && VMGS.exe
+else
 	cd VMGS && ./VMGS
+endif
 
 platform:
 	@echo $(PLATFORM)
