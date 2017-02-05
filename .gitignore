@@ -14,5 +14,5 @@ VMGS/VMGS
 
 # personal configurations
 # 这些文件可能会存储个人设置，例如路径。
-*/windows_flags.txt
-*/windows_libs.txt
+*/build/windows_flags.txt
+*/build/windows_libs.txt
