@@ -92,13 +92,18 @@
 	// * 这个实现不会导致SIGSEGV。
 	#define EXP_ASM (__asm__("UD2"))
 	// xeFree - 释放内存黑魔法
-	#define xefree(pointer) \
-		do { if (pointer) { \
-		free(pointer); pointer = NULL; \
-		} } while (false)
-
-	#define VMDE_Dispose(x) x->dispose();xefree(x);
-
+	#define xefree(pointer) do { \
+		if (pointer) { \
+			free(pointer); pointer = NULL; \
+		} \
+	} while (false)
+	// VMDE_Dispose - 一键销毁宏魔法
+	#define VMDE_Dispose(x) do { \
+		x->dispose(); \
+		xefree(x); \
+	} while (false)
+	// UNUSED - 标记未使用的参数
+	// 我记得我把这个宏删掉过了？
 	#ifdef __GNUC__
 		#define UNUSED(x) x __attribute__((__unused__))
 	#else
