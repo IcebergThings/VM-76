@@ -11,7 +11,7 @@ SOURCES = $(shell dir /b /s *.cpp)
 OBJECTS = $(patsubst %.cpp, %.o, $(SOURCES))
 
 LDLIBS += $(shell type windows_libs.txt)
-LDFLAGS += -shared
+LDFLAGS += -shared -Wl,--export-all-symbols
 CXXFLAGS += -I../lib/SOIL/include -I.. $(shell type windows_flags.txt)
 
 all: $(TARGET)

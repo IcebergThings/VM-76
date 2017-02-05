@@ -6,9 +6,6 @@
 
 include ../inc.makefile
 
-# mac_build.sh存在的唯一意义被化为了一行代码：
-$(shell cp ../VMDE/libVMDE.dylib .)
-
 OBJ = VMGS
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
@@ -27,6 +24,7 @@ run: all
 	@echo 编译C++文件$^……
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
+# mac_build.sh存在的唯一意义被融化进了这个Makefile：
 libVMDE.dylib: ../VMDE/libVMDE.dylib
 	@echo 更新动态库
 	cp ../VMDE/libVMDE.dylib .
