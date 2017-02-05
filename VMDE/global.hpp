@@ -55,6 +55,7 @@
 	//-------------------------------------------------------------------------
 	// API
 	EXPORTED void init_engine(int w, int h, const char* title);
+	EXPORTED void terminate_engine();
 	// 全局事件
 	EXPORTED void (*on_terminate)();
 	//-------------------------------------------------------------------------
@@ -109,6 +110,10 @@
 	//-------------------------------------------------------------------------
 	void setup_viewport();
 	void init_vmde(int w, int h);
+	//-------------------------------------------------------------------------
+	// ● terminate.cpp
+	//-------------------------------------------------------------------------
+	void terminate_vmde();
 	//-------------------------------------------------------------------------
 	// ● main.cpp
 	//-------------------------------------------------------------------------
@@ -168,6 +173,8 @@
 		#define PId PI
 		extern const long double PIl;
 		extern FILE* log_file;
+		void init();
+		void terminate();
 		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
 	}
@@ -245,7 +252,7 @@
 		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
 		void init();
 		void init_waves();
-		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
+		void terminate();
 		void ensure_no_error(PaError err);
 		int play_wave_callback(
 			const void* input_buffer,

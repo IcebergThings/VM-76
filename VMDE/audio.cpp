@@ -21,9 +21,9 @@ namespace Audio {
 		ensure_no_error(Pa_StartStream(wave_stream));
 	}
 	//-------------------------------------------------------------------------
-	// ● 释放
+	// ● 结束处理
 	//-------------------------------------------------------------------------
-	void wobuzhidaozhegefangfayinggaijiaoshenmemingzi() {
+	void terminate() {
 		ensure_no_error(Pa_StopStream(wave_stream));
 		ensure_no_error(Pa_CloseStream(wave_stream));
 		Pa_Terminate();
