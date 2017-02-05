@@ -24,13 +24,17 @@ endif
 # Global project settings.
 CXX = clang++
 CCLD = clang
-CXXFLAGS = -std=c++14 -Wall -Wextra -Wno-unused-parameter -O3 -Ofast -msse4.1 -mtune=core2
+CFLAGS = -Wall -Wextra -Wno-unused-parameter -O3 -Ofast
+CXXFLAGS = $(CFLAGS) -std=c++14 -msse4.1 -mtune=core2 -DGLM_FORCE_SSE41
 LDFLAGS = -O4
 LDLIBS = -lstdc++
 
 ifeq "$(PLATFORM)" "msw"
-	# TODO: configure the headers on my Windows machine for use with clang
-	CXX = gcc
+	ifdef GCC
+		CXX = g++
+	else
+		CFLAGS += --target=i686-pc-mingw32
+	endif
 	CCLD = gcc
 else ifeq "$(PLATFORM)" "gnu"
 else ifeq "$(PLATFORM)" "mac"
