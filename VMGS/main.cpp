@@ -114,8 +114,10 @@ namespace VM76 {
 	}
 
 	void terminate() {
+		log("starting to terminate");
 		VMDE_Dispose(tile_texture);
 		VMDE_Dispose(c);VMDE_Dispose(c2);
+		log("terminated successfully");
 	}
 }
 

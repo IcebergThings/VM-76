@@ -164,6 +164,8 @@
 		extern const float PIf;
 		extern const double PI;
 		#define PId PI
+		extern const long double PIl;
+		extern FILE* log_file;
 		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
 	}

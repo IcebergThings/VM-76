@@ -14,6 +14,10 @@ namespace Util {
 	const double PI = acos(-1.0); // no suffix
 	const long double PIl = acos(-1.0l);
 	//-------------------------------------------------------------------------
+	// ● 变量
+	//-------------------------------------------------------------------------
+	FILE* log_file = NULL;
+	//-------------------------------------------------------------------------
 	// ● 输出调试信息
 	//   凭借宏的力量（global.hpp），这个函数应当直接使用log(format, ...)调用。
 	//    environment   : 如无意外，应当传入DEBUG_ENVIRONMENT。
@@ -39,6 +43,18 @@ namespace Util {
 		vprintf(format, ap);
 		putchar('\n');
 		va_end(ap);
+		if (log_file) {
+			// do it again rudely
+			va_start(ap, format);
+			fprintf(log_file,
+				"[%02d:%02d:%02d][%s][%s] ",
+				t->tm_hour, t->tm_min, t->tm_sec,
+				environment, function_name
+			);
+			vfprintf(log_file, format, ap);
+			fputc('\n', log_file);
+			va_end(ap);
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 一次性读入文件并加零（固定大小1KB，超出将截断）
