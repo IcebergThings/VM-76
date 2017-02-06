@@ -281,10 +281,17 @@
 	//-------------------------------------------------------------------------
 	// ● GDrawable
 	//-------------------------------------------------------------------------
+	struct Vertex {
+		glm::vec3 world_position;
+		glm::vec4 color;
+		glm::vec2 st;
+		glm::vec3 normal;
+	};
+
 	class GDrawable {
 	public:
 		struct Data {
-			GLfloat* vertices;
+			Vertex* vertices;
 			int vtx_c;
 			GLuint* indices;
 			int ind_c;
