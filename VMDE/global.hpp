@@ -203,6 +203,15 @@
 	//-------------------------------------------------------------------------
 	// ● Audio
 	//-------------------------------------------------------------------------
+	#define pa_callback(name) \
+		int name( \
+			const void* input_buffer, \
+			void* output_buffer, \
+			unsigned long frame_count, \
+			const PaStreamCallbackTimeInfo* time_info, \
+			PaStreamCallbackFlags status_flags, \
+			void* user_data \
+		)
 	namespace Audio {
 		struct triangle_data {
 			float value;
@@ -247,14 +256,7 @@
 		void init_waves();
 		void terminate();
 		void ensure_no_error(PaError err);
-		int play_wave_callback(
-			const void* input_buffer,
-			void* output_buffer,
-			unsigned long frames_per_buffer,
-			const PaStreamCallbackTimeInfo* time_info,
-			PaStreamCallbackFlags status_flags,
-			void* user_data
-		);
+		pa_callback(play_wave_callback);
 		void stop();
 		void stop_waves();
 		void play_triangle(float freq);
@@ -264,14 +266,7 @@
 		void get_next_sine_value(struct sine_data* data);
 		void compact_active_sounds_array();
 		void play_sound(const char* filename, bool loop);
-		int play_sound_callback(
-			const void* input_buffer,
-			void* output_buffer,
-			unsigned long frame_count,
-			const PaStreamCallbackTimeInfo* time_info,
-			PaStreamCallbackFlags status_flags,
-			void* user_data
-		);
+		pa_callback(play_sound_callback);
 		void decode_vorbis(struct active_sound* sound);
 		void decode_vorbis_thread(struct active_sound* sound);
 	}
