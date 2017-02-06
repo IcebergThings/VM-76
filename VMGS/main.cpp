@@ -104,7 +104,7 @@ namespace VM76 {
 
 		block_pointer = new Cube(1);
 		axe = new Axis();
-		map = new TiledMap(16, 16, 16);
+		map = new TiledMap(16, 16, 16, glm::vec3(0.0));
 		block_pointer->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
 

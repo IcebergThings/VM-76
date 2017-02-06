@@ -7,12 +7,14 @@
 #include "tiled_map.hpp"
 
 namespace VM76 {
-	TiledMap::TiledMap(int x, int y, int z) {
+	TiledMap::TiledMap(int x, int y, int z, glm::vec3 wp) {
 		width = x; length = z; height = y;
 
 		for (int i = 0; i < 16; i++)
 			cinstance[i] = new Cube(i);
 		tiles = new TileData[x * y * z];
+
+		mount_point = wp;
 
 		generate_flat();
 		bake_tiles();
@@ -29,7 +31,7 @@ namespace VM76 {
 					if (id > 0) {
 						id --;
 
-						cinstance[id]->mat[count[id]] = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z));
+						cinstance[id]->mat[count[id]] = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z) + mount_point);
 						count[id] ++;
 					}
 				}
