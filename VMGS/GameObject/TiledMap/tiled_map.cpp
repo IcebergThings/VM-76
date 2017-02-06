@@ -10,8 +10,7 @@ namespace VM76 {
 	TiledMap::TiledMap(int x, int y, int z) {
 		width = x; length = z; height = y;
 
-		for (int i = 0; i < 16; i++)
-			cinstance[i] = new Cube(i);
+		for (int i = 0; i < 16; i++) cinstance[i] = new Cube(i);
 		tiles = new TileData[x * y * z];
 
 		generate_flat();
@@ -25,12 +24,13 @@ namespace VM76 {
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < length; z++) {
 				for (int y = 0; y < height; y++) {
-					int id = tiles[calcTileIndex(x,y,z)].tid;
+					int id = tiles[calcTileIndex(x, y, z)].tid;
 					if (id > 0) {
-						id --;
+						id--;
 
-						cinstance[id]->mat[count[id]] = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z));
-						count[id] ++;
+						cinstance[id]->mat[count[id]] =
+							glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
+						count[id]++;
 					}
 				}
 			}
@@ -42,7 +42,7 @@ namespace VM76 {
 	}
 
 	void TiledMap::generate_flat() {
-		for (int i = 0; i < width; i ++)
+		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < length; j++) {
 				// Generate rocks
 				tiles[calcTileIndex(i, 0, j)].tid = 2; // 2 = rock
@@ -53,6 +53,7 @@ namespace VM76 {
 				// Fill the rest with air
 				for (int k = 2; k < height; k++) tiles[calcTileIndex(i, k, j)].tid = 0;
 			}
+		}
 	}
 
 	int TiledMap::calcTileIndex(int x, int y, int z) {
@@ -60,16 +61,14 @@ namespace VM76 {
 	}
 
 	int TiledMap::calcTileIndex(glm::vec3 pos) {
-		return (width * length) * pos.y + (length) * pos.z + pos.x;
+		return calcTileIndex(pos.x, pos.y, pos.z);
 	}
 
 	void TiledMap::render() {
-		for (int i = 0; i < 16; i++)
-			cinstance[i]->render();
+		for (int i = 0; i < 16; i++) cinstance[i]->render();
 	}
 
 	void TiledMap::dispose() {
-		for (int i = 0; i < 16; i++)
-			VMDE_Dispose(cinstance[i]);
+		for (int i = 0; i < 16; i++) VMDE_Dispose(cinstance[i]);
 	}
 }
