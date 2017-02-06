@@ -10,9 +10,10 @@ OBJ = libVMDE.dylib
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
 
-LDLIBS += $(shell pkg-config --libs glfw3 glm glew portaudio-2.0 ogg vorbisfile) /usr/local/lib/libSOIL.a
+LDLIBS += /usr/local/lib/libSOIL.a \
+	$(shell pkg-config --libs glfw3 glm glew portaudio-2.0 ogg vorbisfile)
 LDFLAGS += -dynamiclib -framework OpenGL
-CXXFLAGS += -I../lib/SOIL/include  -I.. -c -fPIC \
+CXXFLAGS += -I../lib/SOIL/include -I.. -c -fPIC \
 	$(shell pkg-config --cflags glfw3 glm glew portaudio-2.0 vorbisfile)
 
 all: $(OBJ)

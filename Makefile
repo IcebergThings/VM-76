@@ -14,8 +14,10 @@ $(PROJECTS):
 clean:
 ifeq "$(PLATFORM)" "msw"
 	del /s *.o
+	del VMGS\output.log
 else
 	find . -name "*.o" -print -delete
+	$(RM) VMGS/output.log
 endif
 
 run: all
