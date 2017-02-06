@@ -19,7 +19,9 @@ namespace VM76 {
 	public:
 		glm::mat4 transform();
 		void move(glm::vec3 vector);
-		void move_to(glm::vec3 vector);
+		inline void move_to(glm::vec3 vector) {
+			this->pos = vector;
+		}
 
 		Object(
 			glm::vec3 position = glm::vec3(0.0),

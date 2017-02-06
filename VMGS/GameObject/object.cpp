@@ -21,10 +21,6 @@ namespace VM76 {
 		this->pos += vector;
 	}
 
-	void Object::move_to(glm::vec3 vector) {
-		this->pos = vector;
-	}
-
 	Object::Object(
 		glm::vec3 position,
 		glm::vec3 rotation,
