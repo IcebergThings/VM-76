@@ -7,5 +7,3 @@
 GLFWwindow* window;
 
 struct VMDE* VMDE;
-
-void (*on_terminate)();

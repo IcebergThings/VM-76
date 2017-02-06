@@ -7,17 +7,11 @@
 #include "global.hpp"
 
 //-----------------------------------------------------------------------------
-// ● 释放VMDE结构体
-//-----------------------------------------------------------------------------
-void terminate_vmde() {
-	delete VMDE;
-}
-
-//-----------------------------------------------------------------------------
 // ● 结束
 //-----------------------------------------------------------------------------
 void terminate_engine() {
-	terminate_vmde();
+	delete VMDE;
+	glfwTerminate(); // Terminate GLFW, clearing any resources allocated by GLFW.
 	Audio::terminate();
 	Util::terminate();
 	log("engine terminated");

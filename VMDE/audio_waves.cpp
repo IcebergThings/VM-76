@@ -41,14 +41,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 播放波形时使用的回调函数
 	//-------------------------------------------------------------------------
-	int play_wave_callback(
-		const void* input_buffer,
-		void* output_buffer,
-		unsigned long frame_count,
-		const PaStreamCallbackTimeInfo* time_info,
-		PaStreamCallbackFlags status_flags,
-		void* user_data
-	) {
+	pa_callback(play_wave_callback) {
 		float* output = (float*) output_buffer;
 		struct wave_callback_data* data = (struct wave_callback_data*) user_data;
 		// Magic. 吔屎啦PortAudio！

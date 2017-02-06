@@ -21,10 +21,10 @@ void setup_viewport() {
 void GL_info() {
 	log("==========================");
 	log("OpenGL Info:");
-	GLint a,b;
+	GLint a, b;
 	glGetIntegerv(GL_MAJOR_VERSION, &a);
 	glGetIntegerv(GL_MINOR_VERSION, &b);
-	log("Supproted GL Version %d.%d", a,b);
+	log("Supproted GL Version %d.%d", a, b);
 	log("==========================");
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &a);
 	log("Maximum vertex attributes: %d", a);
@@ -89,15 +89,15 @@ void init_graphics(int w, int h, const char* title) {
 		log("glewInit() (GLEW Initialization) failed.");
 		return;
 	}
-	#ifndef __APPLE__
-	if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") != GLFW_TRUE) {
-		glfwTerminate();
-		log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
-		return;
-	}
-	log("UBO : GL33 Uniform Buffer Object");
+	#ifdef __APPLE__
+		log("UBO: Apple Uniform Buffer Object （__APPLE__)");
 	#else
-	log("UBO : Apple Uniform Buffer Object");
+		if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") != GLFW_TRUE) {
+			glfwTerminate();
+			log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
+			return;
+		}
+		log("UBO: GL33 Uniform Buffer Object");
 	#endif
 
 	setup_viewport();
@@ -112,13 +112,10 @@ void init_graphics(int w, int h, const char* title) {
 void init_engine(int w, int h, const char* title) {
 	Util::init();
 	log("initializing the engine");
-
 	srand(time(NULL));
 
 	init_vmde(w, h);
 	init_graphics(w, h, title);
-
-	// 初始化声音
 	Audio::init();
 
 	log("initialized the engine");
@@ -131,7 +128,6 @@ void init_vmde(int w, int h) {
 	VMDE = new struct VMDE;
 	VMDE->state.frozen = false;
 	VMDE->state.brightness = 1.0;
-
 	VMDE->frame_count = 0;
 	VMDE->fps = 0;
 	VMDE->width = w;
