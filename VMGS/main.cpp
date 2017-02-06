@@ -41,7 +41,7 @@ namespace VM76 {
 	}
 
 	void loop() {
-		for (;;) {
+		do {
 			::main_draw_start();
 			update_control();
 
@@ -68,8 +68,7 @@ namespace VM76 {
 			axe->render();
 
 			::main_draw_end();
-			if (VMDE->done) break;
-		}
+		} while (!VMDE->done);
 	}
 
 	void init_textures() {
@@ -77,8 +76,6 @@ namespace VM76 {
 	}
 
 	void start_game() {
-		// 先设好事件回调然后再启动引擎，最大地避免段错误
-		on_terminate = terminate;
 		::init_engine(860, 540, "VM / 76");
 		init_control();
 
@@ -111,6 +108,7 @@ namespace VM76 {
 		glfwSetKeyCallback(window, key_callback);
 
 		loop();
+		terminate();
 	}
 
 	void terminate() {
