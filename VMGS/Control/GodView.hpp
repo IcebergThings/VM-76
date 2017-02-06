@@ -1,12 +1,15 @@
+//=============================================================================
+// ■ GodView.hpp
+//=============================================================================
+
 #include <global.hpp>
 #include <config.hpp>
 
 namespace VM76 {
 	struct Game_control {
-		int
-		key_quit,
-		key_forward, key_left, key_right, key_back,
-		key_zoomin, key_zoomout;
+		int key_quit;
+		int key_forward, key_left, key_right, key_back;
+		int key_zoomin, key_zoomout;
 	};
 	extern Game_control game;
 
