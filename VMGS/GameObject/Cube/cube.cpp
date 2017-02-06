@@ -59,9 +59,9 @@ namespace VM76 {
 		for (int x = 0; x < 512; x++) mat[x] = glm::mat4(1.0);
 
 		obj = new GDrawable();
-		obj->data.vtx_c = 12 * 4 * 6;
+		obj->data.vtx_c = 4 * 6;
 		obj->data.ind_c = 2 * 3 * 6;
-		obj->data.vertices = vtx;
+		obj->data.vertices = (Vertex*) vtx;
 		obj->data.indices = itx;
 		obj->data.tri_mesh_count = 2 * 6;
 		// Reserve 512 spaces

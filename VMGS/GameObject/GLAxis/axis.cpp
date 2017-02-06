@@ -32,9 +32,9 @@ namespace VM76 {
 		mat = new glm::mat4[1] {glm::mat4(1.0)};
 
 		obj = new GDrawable();
-		obj->data.vtx_c = 12 * 3 * 3;
+		obj->data.vtx_c = 3 * 3;
 		obj->data.ind_c = 3 * 3;
-		obj->data.vertices = vtx;
+		obj->data.vertices = (Vertex*) vtx;
 		obj->data.indices = itx;
 		obj->data.tri_mesh_count = 3;
 		obj->data.mat_c = 1;
