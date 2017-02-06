@@ -53,11 +53,11 @@ namespace VM76 {
 	}
 
 	int TiledMap::calcTileIndex(int x, int y, int z) {
-		return (width * length) * y + (length) * x + z;
+		return (width * length) * y + (length) * z + x;
 	}
 
 	int TiledMap::calcTileIndex(glm::vec3 pos) {
-		return (width * length) * pos.y + (length) * pos.x + pos.z;
+		return (width * length) * pos.y + (length) * pos.z + pos.x;
 	}
 
 	void TiledMap::render() {
