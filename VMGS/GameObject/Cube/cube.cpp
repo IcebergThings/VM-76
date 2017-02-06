@@ -55,8 +55,8 @@ namespace VM76 {
 		};
 
 		// Prepare an empty space
-		mat = new glm::mat4[512];
-		for (int x = 0; x < 512; x++) mat[x] = glm::mat4(1.0);
+		mat = new glm::mat4[4096];
+		for (int x = 0; x < 4096; x++) mat[x] = glm::mat4(1.0);
 
 		obj = new GDrawable();
 		obj->data.vtx_c = 4 * 6;
