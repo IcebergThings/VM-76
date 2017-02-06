@@ -51,14 +51,6 @@
 		#warning This will not work in Cygwin. Try at your own risk.
 	#endif
 	//-------------------------------------------------------------------------
-	// ● 全局变量表
-	//-------------------------------------------------------------------------
-	// API
-	EXPORTED void init_engine(int w, int h, const char* title);
-	EXPORTED void terminate_engine();
-	// 全局事件
-	EXPORTED void (*on_terminate)();
-	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
 	//-------------------------------------------------------------------------
 	// ARRAY_SIZE - 获取定义的数组大小
@@ -95,7 +87,8 @@
 	// xeFree - 释放内存黑魔法
 	#define xefree(pointer) do { \
 		if (pointer) { \
-			free(pointer); pointer = NULL; \
+			free(pointer); \
+			pointer = NULL; \
 		} \
 	} while (false)
 	// VMDE_Dispose - 一键销毁宏魔法
@@ -105,15 +98,23 @@
 	} while (false)
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
+	// error - 抛出错误并终止程序
+	#define error(format, ...) do { \
+		log(format, __VA_ARGS__); \
+		perror("perror()"); \
+		fputs("The errno may not help.\n", stderr); \
+		exit(1); \
+	}
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
+	EXPORTED void init_engine(int w, int h, const char* title);
 	void setup_viewport();
 	void init_vmde(int w, int h);
 	//-------------------------------------------------------------------------
 	// ● terminate.cpp
 	//-------------------------------------------------------------------------
-	void terminate_vmde();
+	EXPORTED void terminate_engine();
 	//-------------------------------------------------------------------------
 	// ● main.cpp
 	//-------------------------------------------------------------------------
@@ -210,6 +211,15 @@
 	//-------------------------------------------------------------------------
 	// ● Audio
 	//-------------------------------------------------------------------------
+	#define pa_callback(name) \
+		int name( \
+			const void* input_buffer, \
+			void* output_buffer, \
+			unsigned long frame_count, \
+			const PaStreamCallbackTimeInfo* time_info, \
+			PaStreamCallbackFlags status_flags, \
+			void* user_data \
+		)
 	namespace Audio {
 		struct triangle_data {
 			float value;
@@ -254,14 +264,7 @@
 		void init_waves();
 		void terminate();
 		void ensure_no_error(PaError err);
-		int play_wave_callback(
-			const void* input_buffer,
-			void* output_buffer,
-			unsigned long frames_per_buffer,
-			const PaStreamCallbackTimeInfo* time_info,
-			PaStreamCallbackFlags status_flags,
-			void* user_data
-		);
+		pa_callback(play_wave_callback);
 		void stop();
 		void stop_waves();
 		void play_triangle(float freq);
@@ -271,14 +274,7 @@
 		void get_next_sine_value(struct sine_data* data);
 		void compact_active_sounds_array();
 		void play_sound(const char* filename, bool loop);
-		int play_sound_callback(
-			const void* input_buffer,
-			void* output_buffer,
-			unsigned long frame_count,
-			const PaStreamCallbackTimeInfo* time_info,
-			PaStreamCallbackFlags status_flags,
-			void* user_data
-		);
+		pa_callback(play_sound_callback);
 		void decode_vorbis(struct active_sound* sound);
 		void decode_vorbis_thread(struct active_sound* sound);
 	}

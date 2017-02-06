@@ -51,6 +51,9 @@ namespace VM76 {
 
 				// Generate grass
 				tiles[calcTileIndex(i, 1, j)].tid = 1; // 1 = grass
+
+				// Fill the rest with air
+				for (int k = 2; k < height; k++) tiles[calcTileIndex(i, k, j)].tid = 0;
 			}
 	}
 

@@ -8,25 +8,20 @@ OBJ = VMGS
 Src = $(shell find . -name "*.cpp")
 Objects = $(patsubst %.cpp, %.o, $(Src))
 
-LDLIBS += $(shell pkg-config --libs --static glfw3 glm gl glew portaudio-2.0 vorbisfile)
+LDLIBS += \
+	$(shell pkg-config --libs --static glfw3 glm gl glew portaudio-2.0 vorbisfile)
 LDFLAGS += -fPIC ../VMDE/libVMDE.so
-CXXFLAGS += -I../lib/SOIL/include -I../VMDE -I./Game -I.. -c \
+CXXFLAGS += -I../lib/SOIL/include -I../VMDE -IGame -I.. \
 	$(shell pkg-config --cflags glfw3 glm glew gl portaudio-2.0 vorbisfile)
 
 all: $(OBJ)
-run: all
-	@echo 运行
-	./$(OBJ)
 
-.cpp.o: .cpp
+%.o: %.cpp
 	@echo 编译C++文件$^……
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
-VMGS: $(Objects)
+$(OBJ): $(Objects)
 	@echo 链接最终二进制
-	$(CCLD) $(LDLIBS) $(LDFLAGS) $^ -o VMGS
+	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
-clean:
-	rm -rf $(OBJ) $(Objects)
-
-.PHONY: all run clean
+.PHONY: all
