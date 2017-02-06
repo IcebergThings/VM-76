@@ -87,7 +87,8 @@
 	// xeFree - 释放内存黑魔法
 	#define xefree(pointer) do { \
 		if (pointer) { \
-			free(pointer); pointer = NULL; \
+			free(pointer); \
+			pointer = NULL; \
 		} \
 	} while (false)
 	// VMDE_Dispose - 一键销毁宏魔法
@@ -97,6 +98,13 @@
 	} while (false)
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
+	// error - 抛出错误并终止程序
+	#define error(format, ...) do { \
+		log(format, __VA_ARGS__); \
+		perror("perror()"); \
+		fputs("The errno may not help.\n", stderr); \
+		exit(1); \
+	}
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
