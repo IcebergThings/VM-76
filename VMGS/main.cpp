@@ -29,10 +29,9 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 0.5, 0.0));
 		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -0.5, 0.0));
 
-		if (PRESS(GLFW_KEY_O)) obj->scale += glm::vec3(0.1, 0.1, 0.1);
-		if (PRESS(GLFW_KEY_P)) obj->scale -= glm::vec3(0.1, 0.1, 0.1);
-
 		if (PRESS(GLFW_KEY_SPACE)) {
+			map->tiles[map->calcTileIndex(obj->pos * 2.0f)].tid = 2;
+			map->bake_tiles();
 		}
 		#undef PRESS
 	}
