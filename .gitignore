@@ -11,7 +11,9 @@
 *.dll
 *.exe
 VMGS/VMGS
+output.log
 
-# generated source files
+# personal configurations
 # 这些文件可能会存储个人设置，例如路径。
-*/make.bat
+*/build/windows_flags.txt
+*/build/windows_libs.txt

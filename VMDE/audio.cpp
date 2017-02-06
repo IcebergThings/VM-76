@@ -21,9 +21,9 @@ namespace Audio {
 		ensure_no_error(Pa_StartStream(wave_stream));
 	}
 	//-------------------------------------------------------------------------
-	// ● 释放
+	// ● 结束处理
 	//-------------------------------------------------------------------------
-	void wobuzhidaozhegefangfayinggaijiaoshenmemingzi() {
+	void terminate() {
 		ensure_no_error(Pa_StopStream(wave_stream));
 		ensure_no_error(Pa_CloseStream(wave_stream));
 		Pa_Terminate();
@@ -134,11 +134,11 @@ namespace Audio {
 	// ● 播放声音的回调函数
 	//-------------------------------------------------------------------------
 	int play_sound_callback(
-		UNUSED(const void* input_buffer),
+		const void* input_buffer,
 		void* output_buffer,
 		unsigned long frame_count,
-		UNUSED(const PaStreamCallbackTimeInfo* time_info),
-		UNUSED(PaStreamCallbackFlags status_flags),
+		const PaStreamCallbackTimeInfo* time_info,
+		PaStreamCallbackFlags status_flags,
 		void* user_data
 	) {
 		float* output = (float*) output_buffer;

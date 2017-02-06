@@ -110,6 +110,7 @@ void init_graphics(int w, int h, const char* title) {
 // ● 初始化引擎
 //-----------------------------------------------------------------------------
 void init_engine(int w, int h, const char* title) {
+	Util::init();
 	log("initializing the engine");
 
 	srand(time(NULL));
@@ -135,4 +136,5 @@ void init_vmde(int w, int h) {
 	VMDE->fps = 0;
 	VMDE->width = w;
 	VMDE->height = h;
+	VMDE->done = false;
 }

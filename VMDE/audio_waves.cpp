@@ -42,11 +42,11 @@ namespace Audio {
 	// ● 播放波形时使用的回调函数
 	//-------------------------------------------------------------------------
 	int play_wave_callback(
-		UNUSED(const void* input_buffer),
+		const void* input_buffer,
 		void* output_buffer,
 		unsigned long frame_count,
-		UNUSED(const PaStreamCallbackTimeInfo* time_info),
-		UNUSED(PaStreamCallbackFlags status_flags),
+		const PaStreamCallbackTimeInfo* time_info,
+		PaStreamCallbackFlags status_flags,
 		void* user_data
 	) {
 		float* output = (float*) output_buffer;

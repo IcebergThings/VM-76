@@ -12,16 +12,18 @@ $(PROJECTS):
 	cd $@ && $(MAKE) -f build/$(PLATFORM).makefile
 
 clean:
-ifeq "$(OS)" "msw"
-	-del *.o
-	# TODO: I shall test this on Windows.
-	#for /f %f in ('dir *.o /b /s') do del %f
+ifeq "$(PLATFORM)" "msw"
+	del /s *.o
 else
 	find . -name "*.o" -print -delete
 endif
 
 run: all
+ifeq "$(PLATFORM)" "msw"
+	cd VMGS && VMGS.exe
+else
 	cd VMGS && ./VMGS
+endif
 
 platform:
 	@echo $(PLATFORM)

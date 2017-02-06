@@ -55,6 +55,7 @@
 	//-------------------------------------------------------------------------
 	// API
 	EXPORTED void init_engine(int w, int h, const char* title);
+	EXPORTED void terminate_engine();
 	// 全局事件
 	EXPORTED void (*on_terminate)();
 	//-------------------------------------------------------------------------
@@ -92,23 +93,27 @@
 	// * 这个实现不会导致SIGSEGV。
 	#define EXP_ASM (__asm__("UD2"))
 	// xeFree - 释放内存黑魔法
-	#define xefree(pointer) \
-		do { if (pointer) { \
-		free(pointer); pointer = NULL; \
-		} } while (false)
-
-	#define VMDE_Dispose(x) x->dispose();xefree(x);
-
-	#ifdef __GNUC__
-		#define UNUSED(x) x __attribute__((__unused__))
-	#else
-		#define UNUSED(x) x
-	#endif
+	#define xefree(pointer) do { \
+		if (pointer) { \
+			free(pointer); pointer = NULL; \
+		} \
+	} while (false)
+	// VMDE_Dispose - 一键销毁宏魔法
+	#define VMDE_Dispose(x) do { \
+		x->dispose(); \
+		xefree(x); \
+	} while (false)
+	// mark - 逐行打log的偷懒大法
+	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
 	void setup_viewport();
 	void init_vmde(int w, int h);
+	//-------------------------------------------------------------------------
+	// ● terminate.cpp
+	//-------------------------------------------------------------------------
+	void terminate_vmde();
 	//-------------------------------------------------------------------------
 	// ● main.cpp
 	//-------------------------------------------------------------------------
@@ -166,6 +171,10 @@
 		extern const float PIf;
 		extern const double PI;
 		#define PId PI
+		extern const long double PIl;
+		extern FILE* log_file;
+		void init();
+		void terminate();
 		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
 	}
@@ -243,14 +252,14 @@
 		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
 		void init();
 		void init_waves();
-		void wobuzhidaozhegefangfayinggaijiaoshenmemingzi();
+		void terminate();
 		void ensure_no_error(PaError err);
 		int play_wave_callback(
-			UNUSED(const void* input_buffer),
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frames_per_buffer,
-			UNUSED(const PaStreamCallbackTimeInfo* time_info),
-			UNUSED(PaStreamCallbackFlags status_flags),
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void stop();
@@ -263,11 +272,11 @@
 		void compact_active_sounds_array();
 		void play_sound(const char* filename, bool loop);
 		int play_sound_callback(
-			UNUSED(const void* input_buffer),
+			const void* input_buffer,
 			void* output_buffer,
 			unsigned long frame_count,
-			UNUSED(const PaStreamCallbackTimeInfo* time_info),
-			UNUSED(PaStreamCallbackFlags status_flags),
+			const PaStreamCallbackTimeInfo* time_info,
+			PaStreamCallbackFlags status_flags,
 			void* user_data
 		);
 		void decode_vorbis(struct active_sound* sound);
