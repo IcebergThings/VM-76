@@ -3,6 +3,7 @@
 
 #include "Cube/cube.hpp"
 #include "GLAxis/axis.hpp"
+#include "TiledMap/tiled_map.hpp"
 
 namespace VM76 {
 	class Object {
