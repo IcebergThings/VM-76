@@ -11,8 +11,8 @@ namespace VM76 {
 	Shaders* shader_basic = NULL;
 	Res::Texture* tile_texture = NULL;
 
-	Cube* c;
-	Cube* c2;
+	Cube* block_pointer;
+	TiledMap* map;
 
 	Axis* axe;
 
@@ -29,13 +29,9 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 0.5, 0.0));
 		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -0.5, 0.0));
 
-		if (PRESS(GLFW_KEY_O)) obj->scale += glm::vec3(0.1, 0.1, 0.1);
-		if (PRESS(GLFW_KEY_P)) obj->scale -= glm::vec3(0.1, 0.1, 0.1);
-
 		if (PRESS(GLFW_KEY_SPACE)) {
-			c->mat[map_count] = obj->transform();
-			c->update_instance(map_count + 1);
-			map_count++;
+			map->tiles[map->calcTileIndex(obj->pos * 2.0f)].tid = 2;
+			map->bake_tiles();
 		}
 		#undef PRESS
 	}
@@ -56,14 +52,15 @@ namespace VM76 {
 			shader_textured->set_float("brightness", VMDE->state.brightness);
 
 			shader_textured->ProjectionView(projection, view);
-			c->render();
+			map->render();
+
 
 			// Setup uniforms
 			shader_basic->use();
 			shader_textured->ProjectionView(projection, view);
-			c2->mat[0] = obj->transform();
-			c2->update_instance(1);
-			c2->render();
+			block_pointer->mat[0] = obj->transform();
+			block_pointer->update_instance(1);
+			block_pointer->render();
 
 			axe->render();
 
@@ -101,10 +98,10 @@ namespace VM76 {
 
 		init_textures();
 
-		c = new Cube(1);
-		c2 = new Cube(1);
+		block_pointer = new Cube(1);
 		axe = new Axis();
-		c2->obj->data.mat_c = 1;
+		map = new TiledMap(16, 16, 16);
+		block_pointer->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
 
 		loop();
@@ -115,7 +112,8 @@ namespace VM76 {
 		log("starting to terminate");
 		terminate_engine();
 		VMDE_Dispose(tile_texture);
-		VMDE_Dispose(c); VMDE_Dispose(c2);
+		VMDE_Dispose(block_pointer);
+		VMDE_Dispose(map);
 		log("terminated successfully");
 	}
 }
