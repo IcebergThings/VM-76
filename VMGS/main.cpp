@@ -30,6 +30,7 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -0.5, 0.0));
 
 		if (PRESS(GLFW_KEY_SPACE)) {
+			Audio::play_sound("../Media/soft-ping.ogg", false);
 			map->tiles[map->calcTileIndex(obj->pos * 2.0f)].tid = 2;
 			map->bake_tiles();
 		}
