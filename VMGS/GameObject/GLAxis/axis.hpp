@@ -14,7 +14,7 @@ namespace VM76 {
 		glm::mat4 *mat = NULL;
 
 	private:
-		GLfloat *vtx = NULL;
+		Vertex *vtx = NULL;
 		GLuint *itx = NULL;
 
 	public:
