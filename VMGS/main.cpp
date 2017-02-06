@@ -35,7 +35,7 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_SPACE)) {
 			c->mat[map_count] = obj->transform();
 			c->update_instance(map_count + 1);
-			map_count ++;
+			map_count++;
 		}
 		#undef PRESS
 	}

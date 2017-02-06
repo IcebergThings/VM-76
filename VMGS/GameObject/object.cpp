@@ -1,3 +1,9 @@
+//=============================================================================
+// ■ object.cpp
+//-----------------------------------------------------------------------------
+//   
+//=============================================================================
+
 #include "GameObject.hpp"
 
 namespace VM76 {
@@ -19,18 +25,11 @@ namespace VM76 {
 		this->pos = vector;
 	}
 
-	Object::Object() {}
-
-	Object::Object(glm::vec3 position) {
-		this->pos = position;
-	}
-
-	Object::Object(glm::vec3 position, glm::vec3 rotation) {
-		this->pos = position;
-		this->rotation = rotation;
-	}
-
-	Object::Object(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) {
+	Object::Object(
+		glm::vec3 position,
+		glm::vec3 rotation,
+		glm::vec3 scale
+	) {
 		this->pos = position;
 		this->rotation = rotation;
 		this->scale = scale;

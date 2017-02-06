@@ -19,7 +19,7 @@ namespace Util {
 	FILE* log_file = NULL;
 	// log用（每条至多1K，超出部分将截断；每条5毛，括号内删除）
 	#define TMP_LOG_LINE_SIZE ((size_t) 1024)
-	static char tmp_log_line[1024];
+	static char tmp_log_line[TMP_LOG_LINE_SIZE];
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
