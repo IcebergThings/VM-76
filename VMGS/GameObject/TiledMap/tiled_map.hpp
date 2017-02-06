@@ -26,6 +26,7 @@ namespace VM76 {
 
 	public:
 		int calcTileIndex(int x, int y, int z);
+		int calcTileIndex(glm::vec3 pos);
 
 		TiledMap(int x, int y, int z);
 		void render();

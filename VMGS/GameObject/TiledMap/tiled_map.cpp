@@ -56,6 +56,10 @@ namespace VM76 {
 		return (width * length) * y + (length) * x + z;
 	}
 
+	int TiledMap::calcTileIndex(glm::vec3 pos) {
+		return (width * length) * pos.y + (length) * pos.x + pos.z;
+	}
+
 	void TiledMap::render() {
 		for (int i = 0; i < 16; i++)
 			cinstance[i]->render();
