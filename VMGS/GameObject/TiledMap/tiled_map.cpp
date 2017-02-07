@@ -11,7 +11,7 @@ namespace VM76 {
 		width = x; length = z; height = y;
 
 		for (int i = 0; i < 16; i++)
-			cinstance[i] = new Cube(i);
+			cinstance[i] = new Tiles(i);
 		tiles = new TileData[x * y * z];
 
 		mount_point = wp;
@@ -20,9 +20,18 @@ namespace VM76 {
 		bake_tiles();
 	}
 
+	TileData air = {0, 0};
+
+	TileData TiledMap::tileQuery(int x, int y, int z) {
+		if (x < 0 || x >= width || y < 0 || y >= height || z < 0 || z >= length) return air;
+		return tiles[calcTileIndex(x, y, z)];
+	}
+
 	void TiledMap::bake_tiles() {
-		int count[16];
-		for (int id = 0; id < 16; id++) count[id] = 0;
+		int count[16][6];
+		for (int id = 0; id < 16; id++)
+			for (int face = 0; face < 6; face++)
+				count[id][face] = 0;
 
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < length; z++) {
@@ -31,15 +40,47 @@ namespace VM76 {
 					if (id > 0) {
 						id --;
 
-						cinstance[id]->mat[count[id]] = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z) + mount_point);
-						count[id] ++;
+						glm::mat4 translate = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z) + mount_point);
+
+						if (tileQuery(x, y, z - 1).tid == 0) {
+							cinstance[id]->mat[0][count[id][0]] = translate;
+							count[id][0] ++;
+						}
+
+						if (tileQuery(x, y, z + 1).tid == 0) {
+							cinstance[id]->mat[1][count[id][1]] = translate;
+							count[id][1] ++;
+						}
+
+						if (tileQuery(x, y + 1, z).tid == 0) {
+							cinstance[id]->mat[2][count[id][2]] = translate;
+							count[id][2] ++;
+						}
+
+						if (tileQuery(x, y - 1, z).tid == 0) {
+							cinstance[id]->mat[3][count[id][3]] = translate;
+							count[id][3] ++;
+						}
+
+						if (tileQuery(x - 1, y, z).tid == 0) {
+							cinstance[id]->mat[4][count[id][4]] = translate;
+							count[id][4] ++;
+						}
+
+						if (tileQuery(x + 1, y, z).tid == 0) {
+							cinstance[id]->mat[5][count[id][5]] = translate;
+							count[id][5] ++;
+						}
 					}
 				}
 			}
 		}
 
 		for (int id = 0; id < 16; id++) {
-			cinstance[id]->update_instance(count[id], cinstance[id]->mat);
+			cinstance[id]->update_instance(
+				count[id][0],count[id][1],count[id][2],
+				count[id][3],count[id][4],count[id][5]
+			);
 		}
 	}
 

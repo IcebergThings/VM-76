@@ -7,7 +7,7 @@
 #ifndef _INCLUDE_TILED_MAP_H
 #define _INCLUDE_TILED_MAP_H
 
-#include "../Cube/cube.hpp"
+#include "tile.hpp"
 
 namespace VM76 {
 
@@ -23,11 +23,12 @@ namespace VM76 {
 		glm::vec3 mount_point = glm::vec3(0.0);
 
 	private:
-		Cube* cinstance[16];
+		Tiles* cinstance[16];
 
 	public:
 		int calcTileIndex(int x, int y, int z);
 		int calcTileIndex(glm::vec3 pos);
+		TileData tileQuery(int x, int y, int z);
 
 		TiledMap(int x, int y, int z, glm::vec3 wp);
 		void render();
