@@ -45,7 +45,6 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_8)) hand_id = 8;
 		if (PRESS(GLFW_KEY_9)) hand_id = 9;
 
-
 		if (PRESS(GLFW_KEY_SPACE)) {
 			Audio::play_sound("../Media/soft-ping.ogg", false);
 			map->tiles[map->calcTileIndex(obj->pos)].tid = hand_id;
@@ -77,6 +76,7 @@ namespace VM76 {
 			// Setup uniforms
 			// Non textured rendering
 			shader_basic->use();
+			shader_basic->set_float("opaque", 0.5);
 			shader_textured->ProjectionView(projection, view);
 			block_pointer->mat[0] = obj->transform();
 			block_pointer->update_instance(1);
