@@ -23,7 +23,8 @@
 #include <math.h>
 #include <ctime>
 #include <thread>
-#include <stdarg.h>
+#include <cstdarg>
+#include <cassert>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
