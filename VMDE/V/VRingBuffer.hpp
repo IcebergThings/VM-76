@@ -20,6 +20,7 @@ public:
 	// ● 构造
 	//-------------------------------------------------------------------------
 	VRingBuffer(size_t size) {
+		assert(size > 0);
 		buf_start = front = back = new T[size];
 		buf_end = buf_start + size;
 	}
@@ -66,5 +67,14 @@ public:
 		front++;
 		if (front >= buf_end) front = buf_start;
 		return true;
+	}
+	//-------------------------------------------------------------------------
+	// ● 查询元素个数
+	//-------------------------------------------------------------------------
+	size_t size() {
+		ptrdiff_t r = back - front;
+		if (r < 0) r += buf_end - buf_start;
+		assert(r >= 0);
+		return (size_t) r;
 	}
 };
