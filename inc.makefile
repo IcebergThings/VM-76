@@ -24,10 +24,17 @@ endif
 # Global project settings.
 CXX = clang++
 CCLD = clang
-CFLAGS = -Wall -Wextra -Wno-unused-parameter -O3 -Ofast
-CXXFLAGS = $(CFLAGS) -std=c++14 -msse4.1 -mtune=core2 -DGLM_FORCE_SSE41
-LDFLAGS = -O4
+CFLAGS = -Wall -Wextra -Wno-unused-parameter -msse4.1 -mtune=core2
+CXXFLAGS = $(CFLAGS) -std=c++14 -DGLM_FORCE_SSE41
+LDFLAGS =
 LDLIBS = -lstdc++
+ifdef DEBUG
+	CXXFLAGS += -O0 -g -DDEBUG
+	LDFLAGS += -O0
+else
+	CXXFLAGS += -O3 -Ofast
+	LDFLAGS += -O4
+endif
 
 ifeq "$(PLATFORM)" "msw"
 	ifdef GCC
@@ -39,4 +46,19 @@ ifeq "$(PLATFORM)" "msw"
 else ifeq "$(PLATFORM)" "gnu"
 else ifeq "$(PLATFORM)" "mac"
 	CXX = clang
+endif
+
+# Useful variables.
+ifdef DEBUG
+	OBJECTS = $(patsubst %.cpp, %.debug.o, $(SOURCES))
+else
+	OBJECTS = $(patsubst %.cpp, %.o, $(SOURCES))
+endif
+
+ifeq "$(PLATFORM)" "msw"
+	SOURCES = $(shell dir /b /s *.cpp)
+else ifeq "$(PLATFORM)" "gnu"
+	SOURCES = $(shell find . -name "*.cpp")
+else ifeq "$(PLATFORM)" "mac"
+	SOURCES = $(shell find . -name "*.cpp")
 endif

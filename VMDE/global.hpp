@@ -53,6 +53,13 @@
 	//-------------------------------------------------------------------------
 	// ● 定义宏魔法
 	//-------------------------------------------------------------------------
+	// NDEBUG - 给assert用的，虽然好像这项目里没人用assert
+	// 这个DEBUG在make的时候加（make debug）。
+	#ifdef DEBUG
+		#define NDEBUG
+	#else
+		#undef NDEBUG
+	#endif
 	// ARRAY_SIZE - 获取定义的数组大小
 	//     int a[56]; → ARRAY_SIZE(a) == 56
 	#define ARRAY_SIZE(a) (sizeof(a) / sizeof(*(a)))

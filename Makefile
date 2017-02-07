@@ -27,7 +27,11 @@ else
 	cd VMGS && ./VMGS
 endif
 
+debug:
+	$(MAKE) $(PROJECTS) DEBUG=1
+	cd VMGS && gdb VMGS
+
 platform:
 	@echo $(PLATFORM)
 
-.PHONY: all clean run $(PROJECTS) platform
+.PHONY: all clean run debug $(PROJECTS) platform
