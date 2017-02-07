@@ -48,7 +48,7 @@ namespace VM76 {
 
 		if (PRESS(GLFW_KEY_SPACE)) {
 			Audio::play_sound("../Media/soft-ping.ogg", false);
-			map->tiles[map->calcTileIndex(obj->pos)].tid = 2;
+			map->tiles[map->calcTileIndex(obj->pos)].tid = hand_id;
 			map->bake_tiles();
 		}
 		#undef PRESS
