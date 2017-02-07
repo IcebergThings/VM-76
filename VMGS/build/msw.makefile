@@ -13,7 +13,7 @@ CXXFLAGS += -I../lib/SOIL/include -I../VMDE -I./Game -I.. \
 
 all: $(TARGET)
 
-%.debug.o %.o: %.cpp
+%.o %.debug.o: %.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(TARGET): VMDE.dll $(OBJECTS)

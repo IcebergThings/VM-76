@@ -14,7 +14,7 @@ CXXFLAGS += -I../lib/SOIL/include -I.. $(shell type build\windows_flags.txt)
 
 all: $(TARGET)
 
-%.debug.o %.o: %.cpp
+%.o %.debug.o: %.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(TARGET): $(OBJECTS)
