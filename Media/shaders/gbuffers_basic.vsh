@@ -12,9 +12,11 @@ layout (std140) uniform Matrices {
 	mat4 ProjectionView;
 } matrices;
 
+uniform float opaque;
+
 out vec4 texcolor;
 
 void main() {
 	gl_Position = matrices.ProjectionView * Model * vec4(position, 1.0);
-	texcolor = vertex_color;
+	texcolor = vec4(vertex_color.rgb, vertex_color.a * opaque);
 }
