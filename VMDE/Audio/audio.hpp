@@ -20,21 +20,25 @@ namespace Audio {
 	// ● Channel
 	//-------------------------------------------------------------------------
 	class Channel {
+		bool active = true;
 	};
 	class Channel_Mute : public Channel {
 	};
 	class Channel_Triangle : public Channel {
 		float value;
 		float delta;
+		void play_triangle(float freq);
+		void get_next_triangle_value(struct triangle_data* data);
 	};
 	class Channel_Sine : public Channel {
 		float index;
 		float index_delta;
 		bool minus;
 		float value; // for convenience only
+		void play_sine(float freq);
+		void get_next_sine_value(struct sine_data* data);
 	};
 	class Channel_Vorbis : public Channel {
-		PaStream* stream;
 		FILE* file;
 		OggVorbis_File vf;
 		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
@@ -61,10 +65,6 @@ namespace Audio {
 	pa_callback(callback);
 	void stop();
 	void stop_waves();
-	void play_triangle(float freq);
-	void get_next_triangle_value(struct triangle_data* data);
-	void play_sine(float freq);
-	void get_next_sine_value(struct sine_data* data);
 	void compact_active_sounds_array();
 	void play_sound(const char* filename, bool loop);
 	void decode_vorbis(struct active_sound* sound);

@@ -4,7 +4,7 @@
 //   提供声音支持。
 //=============================================================================
 
-#include "global.hpp"
+#include "audio.hpp"
 
 namespace Audio {
 	//-------------------------------------------------------------------------
@@ -105,11 +105,6 @@ namespace Audio {
 			log("unseekable file requested to be looped: %s", filename);
 			log("Isn't that plain weird?");
 		}
-		// sound->stream
-		ensure_no_error(Pa_OpenDefaultStream(
-			&sound->stream, 0, 2, paFloat32, 44100,
-			256, play_sound_callback, sound
-		));
 		// sound->*_head
 		sound->play_head = 0;
 		sound->load_head = 0;
@@ -126,19 +121,16 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 扔掉active_sounds中已经播放完的条目
 	//-------------------------------------------------------------------------
-	void compact_active_sounds_array() {
-		for (size_t i = 0; i < AUDIO_ACTIVE_SOUND_SIZE; i++) {
-			if (!active_sounds[i]) continue;
-			PaError active = Pa_IsStreamActive(active_sounds[i]->stream);
-			ensure_no_error(active);
-			if (!active) {
-				Pa_CloseStream(active_sounds[i]->stream);
-				ov_clear(&active_sounds[i]->vf);
-				fclose(active_sounds[i]->file);
-				active_sounds[i]->decode_thread->join();
-				delete active_sounds[i]->decode_thread;
-				delete active_sounds[i];
-				active_sounds[i] = NULL;
+	void compact_channels() {
+		for (size_t i = 0; i < AUDIO_CHANNELS_SIZE; i++) {
+			if (!channels[i]) continue;
+			if (!channels[i]->active) {
+				//ov_clear(&active_sounds[i]->vf);
+				//fclose(active_sounds[i]->file);
+				//active_sounds[i]->decode_thread->join();
+				//delete active_sounds[i]->decode_thread;
+				delete channels[i];
+				channels[i] = NULL;
 			}
 		}
 	}
