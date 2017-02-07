@@ -20,6 +20,7 @@ namespace VM76 {
 	public:
 		TileData* tiles;
 		int width, length, height;
+		glm::vec3 mount_point = glm::vec3(0.0);
 
 	private:
 		Cube* cinstance[16];
@@ -28,7 +29,7 @@ namespace VM76 {
 		int calcTileIndex(int x, int y, int z);
 		int calcTileIndex(glm::vec3 pos);
 
-		TiledMap(int x, int y, int z);
+		TiledMap(int x, int y, int z, glm::vec3 wp);
 		void render();
 		void generate_flat();
 		void bake_tiles();
