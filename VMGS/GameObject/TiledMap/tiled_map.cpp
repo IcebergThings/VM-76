@@ -20,6 +20,13 @@ namespace VM76 {
 		bake_tiles();
 	}
 
+	TileData air = {0, 0};
+
+	TileData TiledMap::tileQuery(int x, int y, int z) {
+		if (x < 0 || x >= width || y < 0 || y >= height || z < 0 || z >= length) return air;
+		return tiles[calcTileIndex(x, y, z)];
+	}
+
 	void TiledMap::bake_tiles() {
 		int count[16][6];
 		for (int id = 0; id < 16; id++)
@@ -35,32 +42,32 @@ namespace VM76 {
 
 						glm::mat4 translate = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z) + mount_point);
 
-						if (z == 0 || tiles[calcTileIndex(x, y, z - 1)].tid == 0) {
+						if (tileQuery(x, y, z - 1).tid == 0) {
 							cinstance[id]->mat[0][count[id][0]] = translate;
 							count[id][0] ++;
 						}
 
-						if (z == length - 1 || tiles[calcTileIndex(x, y, z + 1)].tid == 0) {
+						if (tileQuery(x, y, z + 1).tid == 0) {
 							cinstance[id]->mat[1][count[id][1]] = translate;
 							count[id][1] ++;
 						}
 
-						if (y == height - 1 || tiles[calcTileIndex(x, y + 1, z)].tid == 0) {
+						if (tileQuery(x, y + 1, z).tid == 0) {
 							cinstance[id]->mat[2][count[id][2]] = translate;
 							count[id][2] ++;
 						}
 
-						if (y == 0 || tiles[calcTileIndex(x, y - 1, z)].tid == 0) {
+						if (tileQuery(x, y - 1, z).tid == 0) {
 							cinstance[id]->mat[3][count[id][3]] = translate;
 							count[id][3] ++;
 						}
 
-						if (x == 0 || tiles[calcTileIndex(x - 1, y, z)].tid == 0) {
+						if (tileQuery(x - 1, y, z).tid == 0) {
 							cinstance[id]->mat[4][count[id][4]] = translate;
 							count[id][4] ++;
 						}
 
-						if (x == width - 1 || tiles[calcTileIndex(x + 1, y, z)].tid == 0) {
+						if (tileQuery(x + 1, y, z).tid == 0) {
 							cinstance[id]->mat[5][count[id][5]] = translate;
 							count[id][5] ++;
 						}
