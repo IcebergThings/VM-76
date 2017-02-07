@@ -1,7 +1,7 @@
 //=============================================================================
 // ■ object.cpp
 //-----------------------------------------------------------------------------
-//   
+//
 //=============================================================================
 
 #include "GameObject.hpp"
@@ -14,7 +14,7 @@ namespace VM76 {
 		t = glm::rotate(t, rotation.x, glm::vec3(1.0, 0.0, 0.0));
 		t = glm::rotate(t, rotation.y, glm::vec3(0.0, 1.0, 0.0));
 		t = glm::rotate(t, rotation.z, glm::vec3(0.0, 0.0, 1.0));
-		return glm::translate(t, pos);
+		return t;
 	}
 
 	void Object::move(glm::vec3 vector) {
