@@ -44,7 +44,7 @@ void GDrawable::fbind() {
 	} else {
 		// GL33 Vertex Attribute Pointer
 		glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
-		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * sizeof(GLfloat), data.vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * vertex_size, data.vertices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (3 * sizeof(GLfloat)));
