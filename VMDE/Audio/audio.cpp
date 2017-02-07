@@ -10,22 +10,34 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 全局变量
 	//-------------------------------------------------------------------------
+	// 唯一的输出流
+	PaStream* stream;
 	// 活动（正在播放中）的声音列表
-	struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE] = {NULL};
+	struct channel channels[AUDIO_CHANNELS_SIZE] = {NULL};
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
 	void init() {
 		ensure_no_error(Pa_Initialize());
-		init_waves();
-		ensure_no_error(Pa_StartStream(wave_stream));
+		ensure_no_error(Pa_OpenDefaultStream(
+			&stream,
+			// 无声输入 - 立体声输出、32位浮点数
+			0, 2, paFloat32,
+			// 48000Hz
+			48000.0,
+			// 256格缓冲区
+			256,
+			callback,
+			NULL
+		));
+		ensure_no_error(Pa_StartStream(stream));
 	}
 	//-------------------------------------------------------------------------
 	// ● 结束处理
 	//-------------------------------------------------------------------------
 	void terminate() {
-		ensure_no_error(Pa_StopStream(wave_stream));
-		ensure_no_error(Pa_CloseStream(wave_stream));
+		ensure_no_error(Pa_StopStream(stream));
+		ensure_no_error(Pa_CloseStream(stream));
 		Pa_Terminate();
 	}
 	//-------------------------------------------------------------------------
@@ -133,7 +145,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 播放声音的回调函数
 	//-------------------------------------------------------------------------
-	pa_callback(play_sound_callback) {
+	pa_callback(callback) {
 		float* output = (float*) output_buffer;
 		struct active_sound* sound = (struct active_sound*) user_data;
 		while (frame_count > 0) {

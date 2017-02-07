@@ -113,6 +113,10 @@
 		exit(1); \
 	}
 	//-------------------------------------------------------------------------
+	// ● 子文件夹中的头文件
+	//-------------------------------------------------------------------------
+	#include "Audio/audio.hpp"
+	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
 	EXPORTED void init_engine(int w, int h, const char* title);
@@ -185,6 +189,9 @@
 		void terminate();
 		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
+		#define UTIL_SINE_TABLE_SIZE ((size_t) 256)
+		extern float sine_table[UTIL_SINE_TABLE_SIZE];
+		void populate_sine_table();
 	}
 	//-------------------------------------------------------------------------
 	// ● VMDE
@@ -215,76 +222,6 @@
 	// VMDE操控的全局变量
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
-	//-------------------------------------------------------------------------
-	// ● Audio
-	//-------------------------------------------------------------------------
-	#define pa_callback(name) \
-		int name( \
-			const void* input_buffer, \
-			void* output_buffer, \
-			unsigned long frame_count, \
-			const PaStreamCallbackTimeInfo* time_info, \
-			PaStreamCallbackFlags status_flags, \
-			void* user_data \
-		)
-	namespace Audio {
-		struct triangle_data {
-			float value;
-			float delta;
-		};
-		struct sine_data {
-			float index;
-			float index_delta;
-			bool minus;
-			float value; // for convenience only
-		};
-		struct wave_callback_data {
-			double sample_rate;
-			// type = 0……静音；1……三角波；2……正弦波；3……白噪音
-			// 为啥不用枚举？因为太麻烦了！
-			int type;
-			union {
-				struct triangle_data triangle;
-				struct sine_data sine;
-			} data;
-		};
-		struct active_sound {
-			PaStream* stream;
-			FILE* file;
-			OggVorbis_File vf;
-			#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
-			float vf_buffer[2][AUDIO_VF_BUFFER_SIZE];
-			size_t play_head;
-			size_t load_head;
-			bool eof;
-			bool loop;
-			int bitstream;
-			thread* decode_thread;
-		};
-		extern PaStream* wave_stream;
-		extern struct wave_callback_data wave_data;
-		#define AUDIO_ACTIVE_SOUND_SIZE ((size_t) 16)
-		extern struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE];
-		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
-		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
-		void init();
-		void init_waves();
-		void terminate();
-		void ensure_no_error(PaError err);
-		pa_callback(play_wave_callback);
-		void stop();
-		void stop_waves();
-		void play_triangle(float freq);
-		void get_next_triangle_value(struct triangle_data* data);
-		void play_sine(float freq);
-		void populate_sine_table();
-		void get_next_sine_value(struct sine_data* data);
-		void compact_active_sounds_array();
-		void play_sound(const char* filename, bool loop);
-		pa_callback(play_sound_callback);
-		void decode_vorbis(struct active_sound* sound);
-		void decode_vorbis_thread(struct active_sound* sound);
-	}
 	//-------------------------------------------------------------------------
 	// ● GDrawable
 	//-------------------------------------------------------------------------

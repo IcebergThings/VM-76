@@ -8,40 +8,9 @@
 
 namespace Audio {
 	//-------------------------------------------------------------------------
-	// ● 全局变量
-	//   一些宏常量被定义在global.hpp中。
-	//-------------------------------------------------------------------------
-	PaStream* wave_stream;
-	struct wave_callback_data wave_data;
-	// 为了避免反复计算，将正弦值存储在这里。
-	// 当AUDIO_SINE_TABLE_SIZE为256时，其分布为
-	// [0] = sin 0
-	// [64] = sin ⅛π
-	// [128] = sin ¼π
-	// [192] = sin ⅜π
-	float sine_table[AUDIO_SINE_TABLE_SIZE];
-	//-------------------------------------------------------------------------
-	// ● 初始化
-	//-------------------------------------------------------------------------
-	void init_waves() {
-		populate_sine_table();
-		wave_data.type = 0;
-		// 44100Hz
-		wave_data.sample_rate = 44100.0;
-		ensure_no_error(Pa_OpenDefaultStream(
-			&wave_stream,
-			// 无声输入 - 立体声输出、32位浮点数
-			0, 2, paFloat32,
-			wave_data.sample_rate,
-			// 256格缓冲区
-			256,
-			play_wave_callback, &wave_data
-		));
-	}
-	//-------------------------------------------------------------------------
 	// ● 播放波形时使用的回调函数
 	//-------------------------------------------------------------------------
-	pa_callback(play_wave_callback) {
+	pa_callback(play_callback) {
 		float* output = (float*) output_buffer;
 		struct wave_callback_data* data = (struct wave_callback_data*) user_data;
 		// Magic. 吔屎啦PortAudio！
@@ -113,13 +82,6 @@ namespace Audio {
 			AUDIO_SINE_TABLE_SIZE / ((float) wave_data.sample_rate / 4 / freq);
 		wave_data.data.sine.minus = false;
 		wave_data.type = 2;
-	}
-	//-------------------------------------------------------------------------
-	// ● 向正弦表中填充数据
-	//-------------------------------------------------------------------------
-	void populate_sine_table() {
-		float k = 0.5f / (float) AUDIO_SINE_TABLE_SIZE * Util::PIf;
-		for (size_t i = 0; i < AUDIO_SINE_TABLE_SIZE; i++) sine_table[i] = sin(i * k);
 	}
 	//-------------------------------------------------------------------------
 	// ● 计算正弦函数的下一值
