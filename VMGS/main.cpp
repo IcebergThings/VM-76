@@ -12,6 +12,7 @@ namespace VM76 {
 	Res::Texture* tile_texture = NULL;
 
 	Cube* block_pointer;
+	Cube* clist[16];
 	TiledMap* map;
 
 	Axis* axe;
@@ -22,16 +23,16 @@ namespace VM76 {
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == n && action == GLFW_PRESS
-		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(-0.5, 0.0, 0.0));
-		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(0.5, 0.0, 0.0));
-		if (PRESS(GLFW_KEY_W)) obj->move(glm::vec3(0.0, 0.0, -0.5));
-		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 0.5));
-		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 0.5, 0.0));
-		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -0.5, 0.0));
+		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(-1.0, 0.0, 0.0));
+		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(1.0, 0.0, 0.0));
+		if (PRESS(GLFW_KEY_W)) obj->move(glm::vec3(0.0, 0.0, -1.0));
+		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 1.0));
+		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 1.0, 0.0));
+		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -1.0, 0.0));
 
 		if (PRESS(GLFW_KEY_SPACE)) {
 			Audio::play_sound("../Media/soft-ping.ogg", false);
-			map->tiles[map->calcTileIndex(obj->pos * 2.0f)].tid = 2;
+			map->tiles[map->calcTileIndex(obj->pos)].tid = 2;
 			map->bake_tiles();
 		}
 		#undef PRESS
@@ -52,11 +53,12 @@ namespace VM76 {
 			// Setup uniforms
 			shader_textured->set_float("brightness", VMDE->state.brightness);
 
+			// Textured blocks rendering
 			shader_textured->ProjectionView(projection, view);
 			map->render();
 
-
 			// Setup uniforms
+			// Non textured rendering
 			shader_basic->use();
 			shader_textured->ProjectionView(projection, view);
 			block_pointer->mat[0] = obj->transform();
@@ -64,6 +66,18 @@ namespace VM76 {
 			block_pointer->render();
 
 			axe->render();
+
+			// GUI rendering
+			shader_textured->use();
+			glDisable(GL_DEPTH_TEST);
+			float aspectRatio = float(VMDE->width) / float(VMDE->height);
+			shader_textured->ProjectionView(
+				glm::ortho(0.0, 1.0 * aspectRatio, 0.0, 1.0, -1.0, 1.0),
+				glm::lookAt(glm::vec3(0.0,0.0,1.0), glm::vec3(0.0,0.0,0.0), glm::vec3(0.0,1.0,0.0))
+			);
+			int hand_id = 1;
+			clist[hand_id]->render();
+			glEnable(GL_DEPTH_TEST);
 
 			::main_draw_end();
 		} while (!VMDE->done);
@@ -100,6 +114,17 @@ namespace VM76 {
 		init_textures();
 
 		block_pointer = new Cube(1);
+		// Set up hand block indicator's matrix
+		float aspectRatio = float(VMDE->width) / float(VMDE->height);
+		glm::mat4 block_display = glm::translate(glm::mat4(1.0), glm::vec3(0.02, 0.06, 0.2));
+		block_display = glm::scale(block_display, glm::vec3(0.1f));
+		block_display = glm::rotate(block_display, Util::PIf / 4.0f, glm::vec3(1.0, 0.0, 0.0));
+		block_display = glm::rotate(block_display, Util::PIf / 4.0f, glm::vec3(0.0, 1.0, 0.0));
+		for (int i = 0; i < 16; i++) {
+			clist[i] = new Cube(i);
+			clist[i]->mat[0] = block_display;
+			clist[i]->update_instance(1);
+		}
 		axe = new Axis();
 		map = new TiledMap(16, 16, 16, glm::vec3(0.0));
 		block_pointer->obj->data.mat_c = 1;
@@ -114,6 +139,7 @@ namespace VM76 {
 		terminate_engine();
 		VMDE_Dispose(tile_texture);
 		VMDE_Dispose(block_pointer);
+		for (int i = 0; i < 16; i++) VMDE_Dispose(clist[i]);
 		VMDE_Dispose(map);
 		log("terminated successfully");
 	}
