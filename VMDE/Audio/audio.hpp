@@ -20,17 +20,20 @@ namespace Audio {
 	// ● Channel
 	//-------------------------------------------------------------------------
 	class Channel {
+	public:
 		bool active = true;
 	};
 	class Channel_Mute : public Channel {
 	};
 	class Channel_Triangle : public Channel {
+	private:
 		float value;
 		float delta;
 		void play_triangle(float freq);
 		void get_next_triangle_value(struct triangle_data* data);
 	};
 	class Channel_Sine : public Channel {
+	private:
 		float index;
 		float index_delta;
 		bool minus;
