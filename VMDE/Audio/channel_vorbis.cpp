@@ -30,10 +30,8 @@ namespace Audio {
 		// etc.
 		eof = false;
 		loop = _loop;
-		mark;
 		decode();
 		// thrd
-		mark;
 		thrd = new thread(decode_thread, this);
 	}
 	//-------------------------------------------------------------------------
@@ -103,7 +101,6 @@ namespace Audio {
 					// After this, we can go on ov_read'ing in the next loop.
 					#undef THE_SOUND
 				} else {
-					mark;
 					eof = true;
 					return;
 				}
@@ -121,6 +118,6 @@ namespace Audio {
 	// ● 解码线程函数
 	//-------------------------------------------------------------------------
 	void Channel_Vorbis::decode_thread(Channel_Vorbis* ch) {
-		mark;while (!ch->eof) ch->decode();
+		while (!ch->eof) ch->decode();
 	}
 }

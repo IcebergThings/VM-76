@@ -14,6 +14,8 @@ namespace Audio {
 	PaStream* stream;
 	// 正在播放的声音通道列表
 	Channel* channels[AUDIO_CHANNELS_SIZE] = {NULL};
+	// 给个地方让各个声音通道撒野
+	float channel_buffers[AUDIO_CHANNELS_SIZE][AUDIO_BUFFER_SIZE * 2];
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
@@ -107,11 +109,28 @@ namespace Audio {
 		PaStreamCallbackFlags status_flags,
 		void* user_data
 	) {
-		float* buf = (float*) output_buffer;
-		if (channels[0]) {
-			channels[0]->fill(buf, frame_count);
-		} else {
-			memset(output_buffer, 0, frame_count * sizeof(float));
+		// 寻找想要播放的声音通道
+		size_t active_channels[AUDIO_CHANNELS_SIZE] = {0};
+		size_t active_channels_count = 0;
+		for (size_t i = 0; i < AUDIO_CHANNELS_SIZE; i++) {
+			if (channels[i] && channels[i]->active) {
+				// 让它们在channel_buffers里写入想要播放的内容
+				channels[i]->fill(channel_buffers[i], frame_count);
+				active_channels[active_channels_count] = i;
+				active_channels_count++;
+			}
+		}
+		// 本来是没有声音的，
+		memset(output_buffer, 0, frame_count * sizeof(float) * 2);
+		// 但是对于每个想要播放的声音通道，
+		for (size_t i = 0; i < active_channels_count; i++) {
+			float* buf = (float*) output_buffer;
+			float* chbuf = channel_buffers[active_channels[i]];
+			// 都要对每格缓冲区进行加和。
+			for (size_t j = 0; j < frame_count; j++) {
+				*buf++ += Util::clamp(*chbuf++, -1.0f, 1.0f);
+				*buf++ += Util::clamp(*chbuf++, -1.0f, 1.0f);
+			}
 		}
 		return paContinue;
 	}

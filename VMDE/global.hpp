@@ -194,6 +194,11 @@
 		#define UTIL_SINE_TABLE_SIZE ((size_t) 256)
 		extern float sine_table[UTIL_SINE_TABLE_SIZE];
 		void populate_sine_table();
+		template <class T> T clamp(T x, T min, T max) {
+			if (x < min) return min;
+			if (x > max) return max;
+			return x;
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● VMDE

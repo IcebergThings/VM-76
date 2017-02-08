@@ -80,6 +80,7 @@ namespace Audio {
 	extern PaStream* stream;
 	#define AUDIO_CHANNELS_SIZE ((size_t) 16)
 	extern Channel* channels[AUDIO_CHANNELS_SIZE];
+	extern float channel_buffers[AUDIO_CHANNELS_SIZE][AUDIO_BUFFER_SIZE * 2];
 	//-------------------------------------------------------------------------
 	// ● 模块级函数
 	//-------------------------------------------------------------------------
