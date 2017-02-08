@@ -46,7 +46,7 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_9)) hand_id = 9;
 
 		if (PRESS(GLFW_KEY_SPACE)) {
-			Audio::play_sound("../Media/loop-test.ogg", false);
+			Audio::play_sound("../Media/loop-test.ogg", false, 0.1);
 			Audio::play_sound("../Media/soft-ping.ogg", false);
 			map->tiles[map->calcTileIndex(obj->pos)].tid = hand_id;
 			map->bake_tiles();

@@ -23,6 +23,7 @@ namespace Audio {
 	class Channel {
 	public:
 		bool active = true;
+		float volume = 1.0f;
 		// 在Audio被PortAudio要求回调时，回调函数会调用此函数。
 		virtual void fill(float* buf, unsigned long n) = 0;
 		virtual ~Channel();
@@ -89,7 +90,7 @@ namespace Audio {
 	void ensure_no_error(PaError err);
 	void stop();
 	int free_slot();
-	void play_sound(const char* filename, bool loop);
+	void play_sound(const char* filename, bool loop, float volume = 1.0f);
 	void compact_channels();
 	int callback(
 		const void* input_buffer,

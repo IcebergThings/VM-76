@@ -71,7 +71,7 @@ namespace Audio {
 	// ● 播放声音
 	//   其实这个函数应该叫做draw_sound，不然都对不起Draw Engine这个名字。
 	//-------------------------------------------------------------------------
-	void play_sound(const char* filename, bool loop) {
+	void play_sound(const char* filename, bool loop, float volume) {
 		// Find a blank first.
 		int slot = free_slot();
 		log("play sound %s[%d]", filename, slot);
@@ -85,6 +85,7 @@ namespace Audio {
 		}
 		// Fill in the blanks with the words you have heard.
 		channels[slot] = new Channel_Vorbis(filename, loop);
+		channels[slot]->volume = volume;
 	}
 	//-------------------------------------------------------------------------
 	// ● 扔掉active_sounds中已经播放完的条目
@@ -126,10 +127,12 @@ namespace Audio {
 		for (size_t i = 0; i < active_channels_count; i++) {
 			float* buf = (float*) output_buffer;
 			float* chbuf = channel_buffers[active_channels[i]];
+			Channel* ch = channels[active_channels[i]];
 			// 都要对每格缓冲区进行加和。
 			for (size_t j = 0; j < frame_count; j++) {
-				*buf++ += Util::clamp(*chbuf++, -1.0f, 1.0f);
-				*buf++ += Util::clamp(*chbuf++, -1.0f, 1.0f);
+				TWICE {
+					*buf++ += Util::clamp((*chbuf++) * ch->volume, -1.0f, 1.0f);
+				}
 			}
 		}
 		return paContinue;
