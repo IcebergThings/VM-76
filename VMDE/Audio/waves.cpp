@@ -1,10 +1,10 @@
 //=============================================================================
-// ■ audio_waves.cpp
+// ■ waves.cpp
 //-----------------------------------------------------------------------------
 //   Audio命名空间中播放特定波形的函数组（分割定义）。
 //=============================================================================
 
-#include "audio.hpp"
+#include "../global.hpp"
 
 namespace Audio {
 	//-------------------------------------------------------------------------
@@ -13,16 +13,7 @@ namespace Audio {
 	pa_callback(play_callback) {
 		float* output = (float*) output_buffer;
 		struct wave_callback_data* data = (struct wave_callback_data*) user_data;
-		// Magic. 吔屎啦PortAudio！
-		#define FEED_AUDIO_DATA(value) do { \
-			*output++ = (value); \
-			*output++ = (value); \
-			frame_count--; \
-		} while (false)
 		while (frame_count) switch (data->type) {
-			case 0:
-				FEED_AUDIO_DATA(.0f);
-				break;
 			case 1:
 				get_next_triangle_value(&data->data.triangle);
 				FEED_AUDIO_DATA(data->data.triangle.value);
@@ -32,15 +23,7 @@ namespace Audio {
 				get_next_sine_value(&data->data.sine);
 				FEED_AUDIO_DATA(data->data.sine.value);
 				break;
-			case 3:
-				// Channels are different channels.
-				// Values are different values.
-				FEED_AUDIO_DATA((float) (
-					(double) rand() / (double) RAND_MAX * 2.0 - 1.0
-				));
-				break;
 		}
-		#undef FEED_AUDIO_DATA
 		return paContinue;
 	}
 	//-------------------------------------------------------------------------
