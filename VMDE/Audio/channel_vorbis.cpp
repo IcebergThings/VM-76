@@ -10,7 +10,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
-	Channel_Vorbis(const char* filename, bool _loop) {
+	Channel_Vorbis::Channel_Vorbis(const char* filename, bool _loop) {
 		// f
 		f = fopen(filename, "rb");
 		if (!f) {
@@ -30,18 +30,18 @@ namespace Audio {
 		// etc.
 		eof = false;
 		loop = _loop;
-		decode_vorbis();
-		// decode_thread
-		decode_thread = new thread(decode_vorbis_thread, sound);
+		decode();
+		// thrd
+		thrd = new thread(decode_thread, this);
 	}
 	//-------------------------------------------------------------------------
 	// ● 析构
 	//-------------------------------------------------------------------------
-	~Channel_Vorbis() {
+	Channel_Vorbis::~Channel_Vorbis() {
 		ov_clear(&vf);
 		fclose(f);
-		decode_thread->join();
-		delete decode_thread;
+		thrd->join();
+		delete thrd;
 	}
 	//-------------------------------------------------------------------------
 	// ● 填充缓冲区
@@ -49,10 +49,10 @@ namespace Audio {
 	void Channel_Vorbis::fill(float* buf, unsigned long n) {
 		while (n) {
 			if (vf_buf.is_empty()) {
-				FEED_AUDIO_DATA(.0f);
+				FEED_AUDIO_DATA(buf, .0f);
 			} else {
-				*output++ = vf_buf.dequeue();
-				*output++ = vf_buf.dequeue();
+				*buf++ = vf_buf.dequeue();
+				*buf++ = vf_buf.dequeue();
 			}
 			n--;
 		}
@@ -61,8 +61,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 解码文件来填vf_buf
 	//-------------------------------------------------------------------------
-	void decode() {
-		size_t t;
+	void Channel_Vorbis::decode() {
 		while (!vf_buf.is_full()) {
 			// After ov_read_float(), tmp_buffer will be changed.
 			float** tmp_buffer;
@@ -97,7 +96,7 @@ namespace Audio {
 					// After this, we can go on ov_read'ing in the next loop.
 					#undef THE_SOUND
 				} else {
-					sound->eof = true;
+					eof = true;
 					return;
 				}
 			} else if (ret == OV_EBADLINK) {
@@ -113,7 +112,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 解码线程函数
 	//-------------------------------------------------------------------------
-	static void decode_vorbis_thread(Channel_Vorbis* ch) {
-		while (!ch->eof) ch->();
+	void Channel_Vorbis::decode_thread(Channel_Vorbis* ch) {
+		while (!ch->eof) ch->decode();
 	}
 }

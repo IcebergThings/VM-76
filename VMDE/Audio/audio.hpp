@@ -25,8 +25,13 @@ namespace Audio {
 		bool active = true;
 		// 在Audio被PortAudio要求回调时，回调函数会调用此函数。
 		virtual void fill(float* buf, unsigned long n) = 0;
+		virtual ~Channel();
 	};
 	class Channel_Mute : public Channel {
+		void fill(float* buf, unsigned long n);
+	};
+	class Channel_Noise : public Channel {
+		void fill(float* buf, unsigned long n);
 	};
 	class Channel_Triangle : public Channel {
 	private:
@@ -35,6 +40,7 @@ namespace Audio {
 		float next();
 	public:
 		Channel_Triangle(float freq);
+		void fill(float* buf, unsigned long n);
 	};
 	class Channel_Sine : public Channel {
 	private:
@@ -44,6 +50,7 @@ namespace Audio {
 		float next();
 	public:
 		Channel_Sine(float freq);
+		void fill(float* buf, unsigned long n);
 	};
 	class Channel_Vorbis : public Channel {
 		FILE* f;
@@ -55,12 +62,13 @@ namespace Audio {
 		bool eof;
 		bool loop;
 		int bitstream;
-		thread* decode_thread;
+		thread* thrd;
 	public:
 		void decode();
-		static void decode_vorbis_thread(Channel_Vorbis* ch);
+		static void decode_thread(Channel_Vorbis* ch);
 		Channel_Vorbis(const char* filename, bool loop);
 		~Channel_Vorbis();
+		void fill(float* buf, unsigned long n);
 	};
 	//-------------------------------------------------------------------------
 	// ● 模块常量和变量
@@ -78,6 +86,10 @@ namespace Audio {
 	void init();
 	void terminate();
 	void ensure_no_error(PaError err);
+	void stop();
+	int free_slot();
+	void play_sound(const char* filename, bool loop);
+	void compact_channels();
 	int callback(
 		const void* input_buffer,
 		void* output_buffer,
@@ -86,11 +98,5 @@ namespace Audio {
 		PaStreamCallbackFlags status_flags,
 		void* user_data
 	);
-	void stop();
-	void stop_waves();
-	void compact_channels();
-	void play_sound(const char* filename, bool loop);
-	void decode_vorbis(struct active_sound* sound);
-	void decode_vorbis_thread(struct active_sound* sound);
 }
 #endif

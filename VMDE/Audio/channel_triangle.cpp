@@ -13,7 +13,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	Channel_Triangle::Channel_Triangle(float freq) {
 		value = .0f;
-		delta = 2.0f / ((float) wave_data.sample_rate / freq / 2);
+		delta = 2.0f / ((float) AUDIO_SAMPLE_RATE / freq / 2);
 	}
 	//-------------------------------------------------------------------------
 	// ● 填充缓冲区

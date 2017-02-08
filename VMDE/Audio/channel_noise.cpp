@@ -7,7 +7,7 @@
 #include "../global.hpp"
 
 namespace Audio {
-	void Channel_Mute::fill(float* buf, unsigned long n) {
+	void Channel_Noise::fill(float* buf, unsigned long n) {
 		while (n) {
 			// Channels are different channels.
 			// Values are different values.
