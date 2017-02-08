@@ -8,17 +8,17 @@
 
 TextRenderer::TextRenderer() {
 	obj = new GDrawable();
-
-	obj->data.vtx_c = 0;
-	obj->data.ind_c = 0;
+	/*obj->data.vtx_c = 2000;
+	obj->data.ind_c = 2000;
 	obj->data.vertices = NULL;
 	obj->data.indices = NULL;
-	obj->data.mat_c = 1;
+	obj->data.mat_c = 10;
 	obj->data.mat = NULL;
 	obj->fbind();
+	obj->data.mat_c = 0;*/
 
 	tex = new Res::Texture("../Media/Font.bmp");
-	texshader = new Shaders("../Media/shaders/font.fsh", "../Media/shaders/font.vsh");
+	texshader = Shaders::CreateFromFile("../Media/shaders/text.vsh", "../Media/shaders/text.fsh");
 }
 
 void TextRenderer::BakeText(const char* text, float width, float height) {
@@ -30,16 +30,18 @@ void TextRenderer::BakeText(const char* text, float width, float height) {
 	float lbx = 0.0;
 	for (int i = 0; i < length; i++) {
 		char c = text[i];
-		const float w = 1.0 / 64.0f;
-		const float h = 1.0 / 32.0f;
+		const float w = 1.0 / 32.0f;
+		const float h = 1.0 / 8.0f;
 
-		float stx = (float) (c % 64) * w;
-		float sty = (float) (c / 64) * h;
+		float stx = (float) (c % 32) * w;
+		float sty = (float) ((c >> 5) - 1) * h;
 
-		vtx[i * 4 + 0] = {{lbx, 0.0, 0.0},     {1.0,1.0,1.0,1.0}, {stx,sty + h}, {0.0,0.0,0.0}};
-		vtx[i * 4 + 1] = {{lbx, h, 0.0},       {1.0,1.0,1.0,1.0}, {stx,sty    }, {0.0,0.0,0.0}};
-		vtx[i * 4 + 2] = {{lbx + w, h, 0.0},   {1.0,1.0,1.0,1.0}, {stx + w,sty}, {0.0,0.0,0.0}};
-		vtx[i * 4 + 3] = {{lbx + w, 0.0, 0.0}, {1.0,1.0,1.0,1.0}, {stx+w,sty+h}, {0.0,0.0,0.0}};
+		lbx = (float) (i) * width;
+
+		vtx[i * 4 + 0] = {{lbx, 0.0, 0.0},         {1.0,1.0,1.0,1.0}, {stx,sty + h}, {0.0,0.0,0.0}};
+		vtx[i * 4 + 1] = {{lbx, height, 0.0},      {1.0,1.0,1.0,1.0}, {stx,sty    }, {0.0,0.0,0.0}};
+		vtx[i * 4 + 2] = {{lbx+width, height, 0.0},{1.0,1.0,1.0,1.0}, {stx + w,sty}, {0.0,0.0,0.0}};
+		vtx[i * 4 + 3] = {{lbx+width, 0.0, 0.0},   {1.0,1.0,1.0,1.0}, {stx+w,sty+h}, {0.0,0.0,0.0}};
 
 		itx[i * 6 + 0] = i * 4 + 0;
 		itx[i * 6 + 1] = i * 4 + 1;
@@ -53,11 +55,8 @@ void TextRenderer::BakeText(const char* text, float width, float height) {
 	obj->data.ind_c = length * 6;
 	obj->data.vertices = vtx;
 	obj->data.indices = itx;
-	obj->data.mat_c = 1;
-	obj->data.mat = NULL;
 
-	obj->update();
-
+	obj->fbind();
 	free(vtx); free(itx);
 }
 
@@ -69,9 +68,14 @@ void TextRenderer::render() {
 	glEnable(GL_CULL_FACE);
 }
 
-void TextRenderer::instanceRenderText(const char* text, glm::mat4 projection, glm::mat4 view, float width, float height) {
-	BakeText(text, width, height);
+void TextRenderer::instanceRenderText(const char* text, glm::mat4 projection, glm::mat4 view, glm::mat4 transform, float width, float height) {
 	texshader->ProjectionView(projection, view);
+
+	glm::mat4 foo[1] = {transform};
+	obj->data.mat_c = 1;
+	obj->data.mat = (GLuint*) &foo[0];
+	BakeText(text, width, height);
+
 	render();
 }
 

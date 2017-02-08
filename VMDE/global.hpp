@@ -335,7 +335,7 @@
 		TextRenderer();
 		void BakeText(const char* text, float width, float height);
 		void render();
-		void instanceRenderText(const char* text, glm::mat4 projection, glm::mat4 view, float width, float height);
+		void instanceRenderText(const char* text, glm::mat4 projection, glm::mat4 view, glm::mat4 transform, float width, float height);
 		void dispose();
 	};
 
