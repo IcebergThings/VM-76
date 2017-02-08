@@ -4,6 +4,14 @@
 ## 运行的方法
 在项目根目录执行`make run`（Windows上为`mingw32-make run`）。
 
+### 需要的库
+* [GLFW](http://www.glfw.org/)
+* [GLEW](http://glew.sourceforge.net/)
+* [GLM](http://glm.g-truc.net/)
+* [PortAudio](http://www.portaudio.com)
+* [libogg & libvorbis](https://xiph.org/downloads/)（直接使用的是其中的libvorbisfile）
+* [SOIL](http://www.lonesock.net/soil.html)
+
 ### Windows :dog: Windoge
 对于Windows用户，需要预先配置好库文件目录。做法是：
 
@@ -12,57 +20,61 @@
 
 这些是我电脑上的编译参数，更新于 2a63e7e。仅供参考，但保证能在我的电脑上编译通过。使用时需要根据自己的情况修改其中的路径，因为你肯定不会有个Y:盘的。
 
-* VMDE/build/windows_flags.txt
-	```
-	-DGLFW_DLL
-	-DGLEW_STATIC
-	-isystem Y:\glfw-3.2.bin.WIN32\include
-	-isystem Y:\glew-2.0.0\include
-	-isystem Y:\glm-0.9.7.5
-	-isystem Y:\portaudio\include
-	-isystem Y:\libogg-1.3.2\include
-	-isystem Y:\libvorbis-1.3.5\include
-	-isystem Y:\SOIL\src
-	```
-* VMDE/build/windows_libs.txt
-	```
-	Y:\SOIL\lib\libSOIL.a
-	Y:\glew-2.0.0-src\src\glew.a
-	-LY:\project76-lib
-	-LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
-	-lglfw3dll
-	-lopengl32
-	-lportaudio_x86
-	-lvorbisfile
-	```
-* VMGS/build/windows_flags.txt
-	```
-	-DGLFW_DLL
-	-DGLEW_STATIC
-	-isystem Y:\glfw-3.2.bin.WIN32\include
-	-isystem Y:\glew-2.0.0\include
-	-isystem Y:\glm-0.9.7.5
-	-isystem Y:\portaudio\include
-	-isystem Y:\libogg-1.3.2\include
-	-isystem Y:\libvorbis-1.3.5\include
-	-isystem Y:\SOIL\src
-	-I..\VMDE
-	```
-* VMGS/build/windows_libs.txt
-	```
-	Y:\SOIL\lib\libSOIL.a
-	Y:\glew-2.0.0-src\src\glew.a
-	-LY:\project76-lib
-	-LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
-	-lglfw3dll
-	-lopengl32
-	-lportaudio_x86
-	-lvorbisfile
-	```
-* windows_path.bat
-	```batch
-	path Y:\mingw32\bin;Y:\project76-lib
-	```
+#### VMDE/build/windows_flags.txt
+```
+-DGLFW_DLL
+-DGLEW_STATIC
+-isystem Y:\glfw-3.2.bin.WIN32\include
+-isystem Y:\glew-2.0.0\include
+-isystem Y:\glm-0.9.7.5
+-isystem Y:\portaudio\include
+-isystem Y:\libogg-1.3.2\include
+-isystem Y:\libvorbis-1.3.5\include
+-isystem Y:\SOIL\src
+```
+
+#### VMDE/build/windows_libs.txt
+```
+Y:\SOIL\lib\libSOIL.a
+Y:\glew-2.0.0-src\src\glew.a
+-LY:\project76-lib
+-LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
+-lglfw3dll
+-lopengl32
+-lportaudio_x86
+-lvorbisfile
+```
+
+#### VMGS/build/windows_flags.txt
+```
+-DGLFW_DLL
+-DGLEW_STATIC
+-isystem Y:\glfw-3.2.bin.WIN32\include
+-isystem Y:\glew-2.0.0\include
+-isystem Y:\glm-0.9.7.5
+-isystem Y:\portaudio\include
+-isystem Y:\libogg-1.3.2\include
+-isystem Y:\libvorbis-1.3.5\include
+-isystem Y:\SOIL\src
+-I..\VMDE
+```
+
+#### VMGS/build/windows_libs.txt
+```
+Y:\SOIL\lib\libSOIL.a
+Y:\glew-2.0.0-src\src\glew.a
+-LY:\project76-lib
+-LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
+-lglfw3dll
+-lopengl32
+-lportaudio_x86
+-lvorbisfile
+```
+
+#### windows_path.bat
+```batch
+path Y:\mingw32\bin;Y:\project76-lib
+```
 
 ### *nix (macOS & Linux) :dog: Dogix
 
