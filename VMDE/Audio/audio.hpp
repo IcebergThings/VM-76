@@ -51,18 +51,17 @@ namespace Audio {
 		// AUDIO_VF_BUFFER_SIZE - 解码缓冲区的格数
 		// 由于VRingBuffer的实现，实际可用的格数比此数值少1。
 		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
-		VRingBuffer vf_buf<float, AUDIO_VF_BUFFER_SIZE>;
+		VRingBuffer<float, AUDIO_VF_BUFFER_SIZE> vf_buf;
 		bool eof;
 		bool loop;
 		int bitstream;
 		thread* decode_thread;
 	public:
 		void decode();
-		static void decode_vorbis_thread(Channel_Vorbis* ch)
+		static void decode_vorbis_thread(Channel_Vorbis* ch);
 		Channel_Vorbis(const char* filename, bool loop);
 		~Channel_Vorbis();
-		
-	} vorbis;
+	};
 	//-------------------------------------------------------------------------
 	// ● 模块常量和变量
 	//-------------------------------------------------------------------------
@@ -89,7 +88,7 @@ namespace Audio {
 	);
 	void stop();
 	void stop_waves();
-	void compact_active_sounds_array();
+	void compact_channels();
 	void play_sound(const char* filename, bool loop);
 	void decode_vorbis(struct active_sound* sound);
 	void decode_vorbis_thread(struct active_sound* sound);

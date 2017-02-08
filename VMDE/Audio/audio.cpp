@@ -60,7 +60,7 @@ namespace Audio {
 	int free_slot() {
 		compact_channels();
 		for (size_t i = 0; i < AUDIO_CHANNELS_SIZE; i++) {
-			if (!active_sounds[i]) return i;
+			if (!channels[i]) return i;
 		}
 		log("warning: no free slots in Audio::channels");
 		return -1;
