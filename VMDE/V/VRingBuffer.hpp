@@ -4,7 +4,10 @@
 //   环状队列数据结构模板类。
 //=============================================================================
 
-template <typename T> class VRingBuffer {
+#include <cstddef>
+#include <cassert>
+
+template <class T, size_t size> class VRingBuffer {
 private:
 	//-------------------------------------------------------------------------
 	// ● 一堆指针
@@ -19,8 +22,7 @@ public:
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
-	VRingBuffer(size_t size) {
-		assert(size > 0);
+	VRingBuffer() {
 		buf_start = front = back = new T[size];
 		buf_end = buf_start + size;
 	}
@@ -28,7 +30,7 @@ public:
 	// ● 析构
 	//-------------------------------------------------------------------------
 	~VRingBuffer() {
-		delete buf_start[];
+		delete[] buf_start;
 	}
 	//-------------------------------------------------------------------------
 	// ● 队列是否为空？
@@ -53,9 +55,9 @@ public:
 	//-------------------------------------------------------------------------
 	bool enqueue(T x) {
 		if (is_full()) return false;
+		*back = x;
 		back++;
 		if (back >= buf_end) back = buf_start;
-		*back = x;
 		return true;
 	}
 	//-------------------------------------------------------------------------
@@ -63,17 +65,19 @@ public:
 	//   需要手动在调用前查询队列是否为空。
 	//-------------------------------------------------------------------------
 	T dequeue() {
+		T* r;
 		assert(!is_empty());
+		r = front;
 		front++;
 		if (front >= buf_end) front = buf_start;
-		return true;
+		return *r;
 	}
 	//-------------------------------------------------------------------------
 	// ● 查询元素个数
 	//-------------------------------------------------------------------------
-	size_t size() {
+	size_t length() {
 		ptrdiff_t r = back - front;
-		if (r < 0) r += buf_end - buf_start;
+		if (r < 0) r += size;
 		assert(r >= 0);
 		return (size_t) r;
 	}

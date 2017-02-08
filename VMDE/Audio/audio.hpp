@@ -55,7 +55,7 @@ namespace Audio {
 		void get_next_sine_value(struct sine_data* data);
 	};
 	class Channel_Vorbis : public Channel {
-		FILE* file;
+		FILE* f;
 		OggVorbis_File vf;
 		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
 		float vf_buffer[2][AUDIO_VF_BUFFER_SIZE];

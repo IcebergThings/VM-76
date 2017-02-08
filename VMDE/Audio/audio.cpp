@@ -13,7 +13,7 @@ namespace Audio {
 	// 唯一的输出流
 	PaStream* stream;
 	// 活动（正在播放中）的声音列表
-	struct channel channels[AUDIO_CHANNELS_SIZE] = {NULL};
+	Channel* channels[AUDIO_CHANNELS_SIZE] = {NULL};
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
@@ -52,71 +52,39 @@ namespace Audio {
 	// ● 停止播放
 	//-------------------------------------------------------------------------
 	void stop() {
-		stop_waves();
-		compact_active_sounds_array();
+		// TODO
+		compact_channels();
+	}
+	//-------------------------------------------------------------------------
+	// ● 寻找channels中的空位
+	//   找不到空位时，返回-1。
+	//-------------------------------------------------------------------------
+	int free_slot() {
+		compact_channels();
+		for (size_t i = 0; i < AUDIO_CHANNELS_SIZE; i++) {
+			if (!active_sounds[i]) return i;
+		}
+		log("warning: no free slots in Audio::channels");
+		return -1;
 	}
 	//-------------------------------------------------------------------------
 	// ● 播放声音
 	//   其实这个函数应该叫做draw_sound，不然都对不起Draw Engine这个名字。
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename, bool loop) {
-		compact_active_sounds_array();
 		log("play sound %s", filename);
-		struct active_sound* sound = new struct active_sound;
-		sound->stream = NULL;
 		// Find a blank first.
-		size_t first_free_slot = (size_t) -1;
-		{
-			bool found_a_blank = false;
-			for (size_t i = 0; i < AUDIO_ACTIVE_SOUND_SIZE; i++) {
-				if (!active_sounds[i]) {
-					found_a_blank = true;
-					first_free_slot = i;
-					break;
-				}
-			}
-			if (!found_a_blank) {
-				log(
-					"unable to play sound %s"
-					" because of my stingy programmer that only gave me %zu slots",
-					filename, AUDIO_ACTIVE_SOUND_SIZE
-				);
-				return;
-			}
-		}
-		// sound->file
-		sound->file = fopen(filename, "rb");
-		if (!sound->file) {
-			delete sound;
-			log("can't open this file: %s", filename);
+		int slot = free_slot();
+		if (slot < 0) {
+			log(
+				"unable to play sound %s"
+				" because of my stingy programmer that only gave me %zu slots",
+				filename, AUDIO_CHANNELS_SIZE
+			);
 			return;
 		}
-		// sound->vf
-		if (ov_open_callbacks(
-			sound->file, &sound->vf,
-			NULL, 0, OV_CALLBACKS_NOCLOSE
-		) < 0) {
-			delete sound;
-			fclose(sound->file);
-			log("can't open ogg vorbis file: %s", filename);
-			return;
-		}
-		if (!sound->vf.seekable && loop) {
-			log("unseekable file requested to be looped: %s", filename);
-			log("Isn't that plain weird?");
-		}
-		// sound->*_head
-		sound->play_head = 0;
-		sound->load_head = 0;
-		// etc.
-		sound->eof = false;
-		sound->loop = loop;
-		// Fill in the blanks with the words you hear.
-		active_sounds[first_free_slot] = sound;
-		decode_vorbis(sound);
-		// sound->decode_thread
-		sound->decode_thread = new thread(decode_vorbis_thread, sound);
-		ensure_no_error(Pa_StartStream(sound->stream));
+		// Fill in the blanks with the words you have heard.
+		channels[slot] = new Channel_Vorbis(filename, loop);
 	}
 	//-------------------------------------------------------------------------
 	// ● 扔掉active_sounds中已经播放完的条目
