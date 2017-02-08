@@ -229,6 +229,7 @@
 	// VMDE操控的全局变量
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
+
 	//-------------------------------------------------------------------------
 	// ● GDrawable
 	//-------------------------------------------------------------------------
@@ -252,7 +253,6 @@
 			GLuint VAO;
 			GLuint VBO;
 			GLuint EBO;
-			GLuint tri_mesh_count;
 			glm::mat4 model;
 		} data;
 
@@ -265,4 +265,22 @@
 
 		GDrawable();
 	};
+
+	//-------------------------------------------------------------------------
+	// ● Text
+	//-------------------------------------------------------------------------
+	class TextRenderer {
+	private:
+		GDrawable* obj;
+		Res::Texture* tex;
+		Shaders* texshader;
+
+	public:
+		TextRenderer();
+		void BakeText(const char* text, float width, float height);
+		void render();
+		void instanceRenderText(const char* text, glm::mat4 projection, glm::mat4 view, glm::mat4 transform, float width, float height);
+		void dispose();
+	};
+
 #endif

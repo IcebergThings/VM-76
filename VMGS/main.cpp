@@ -12,6 +12,8 @@ namespace VM76 {
 	Shaders* shader_basic = NULL;
 	Res::Texture* tile_texture = NULL;
 
+	TextRenderer* trex = NULL; // 2333 T-Rex
+
 	Cube* block_pointer;
 	Cube* clist[16];
 	TiledMap* map;
@@ -123,6 +125,15 @@ namespace VM76 {
 			glDisable(GL_DEPTH_TEST);
 			if (hand_id > 0)
 				clist[hand_id - 1]->render();
+
+			char frame_count[32];
+			sprintf(frame_count, "%d", VMDE->frame_count);
+			trex->instanceRenderText(
+				frame_count, gui_2d_projection,
+				glm::mat4(1.0),
+				glm::translate(glm::mat4(1.0), glm::vec3(0.0,0.8,0.0)),
+				0.05, 0.1
+			);
 			glEnable(GL_DEPTH_TEST);
 
 			::main_draw_end();
@@ -168,6 +179,7 @@ namespace VM76 {
 			clist[i]->update_instance(1);
 		}
 		axe = new Axis();
+		trex = new TextRenderer();
 		map = new TiledMap(16, 16, 16, glm::vec3(0.0));
 		block_pointer->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
