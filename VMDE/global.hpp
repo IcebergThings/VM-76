@@ -217,6 +217,22 @@
 	extern GLFWwindow* window;
 
 	//-------------------------------------------------------------------------
+	// ● Text
+	//-------------------------------------------------------------------------
+	class TextRenderer {
+	private:
+		GDrawable* obj;
+
+	public:
+		TextRenderer();
+		void BakeText(const char* text, float width, float height);
+		void render();
+		void instanceRenderText2D(const char* text, float x, float y, float width, float height);
+		void instanceRenderText(const char* text, glm::mat4 transform, float width, float height);
+		void dispose();
+	};
+
+	//-------------------------------------------------------------------------
 	// ● Audio
 	//-------------------------------------------------------------------------
 	#define pa_callback(name) \
