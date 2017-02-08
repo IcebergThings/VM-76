@@ -40,6 +40,7 @@ namespace Audio {
 	Channel_Vorbis::~Channel_Vorbis() {
 		ov_clear(&vf);
 		fclose(f);
+		eof = true; // to make the thread stop
 		thrd->join();
 		delete thrd;
 	}

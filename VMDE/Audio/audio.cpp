@@ -49,13 +49,6 @@ namespace Audio {
 		log("PortAudio error %d: %s", err, Pa_GetErrorText(err));
 	}
 	//-------------------------------------------------------------------------
-	// ● 停止播放
-	//-------------------------------------------------------------------------
-	void stop() {
-		// TODO
-		compact_channels();
-	}
-	//-------------------------------------------------------------------------
 	// ● 寻找channels中的空位
 	//   找不到空位时，返回-1。
 	//-------------------------------------------------------------------------
@@ -71,21 +64,47 @@ namespace Audio {
 	// ● 播放声音
 	//   其实这个函数应该叫做draw_sound，不然都对不起Draw Engine这个名字。
 	//-------------------------------------------------------------------------
-	void play_sound(const char* filename, bool loop, float volume) {
+	Channel_Vorbis* play_sound(const char* filename, bool loop, float volume) {
+		Channel_Vorbis* ch = new Channel_Vorbis(filename, loop);
+		ch->volume = volume;
+		if (!play_channel(ch)) {
+			delete ch;
+			return NULL;
+		}
+		return ch;
+	}
+	//-------------------------------------------------------------------------
+	// ● 播放声音通道
+	//   将声音通道加载到channels数组中，起到“注册”的作用。
+	//-------------------------------------------------------------------------
+	bool play_channel(Channel* ch) {
 		// Find a blank first.
 		int slot = free_slot();
-		log("play sound %s[%d]", filename, slot);
+		log("play channel[%d] (%p)", slot, ch);
 		if (slot < 0) {
 			log(
-				"unable to play sound %s"
-				" because of my stingy programmer that only gave me %zu slots",
-				filename, AUDIO_CHANNELS_SIZE
+				"unable to play the channel (%p) - insufficient slots (max. %zu)",
+				ch, AUDIO_CHANNELS_SIZE
 			);
-			return;
+			return false;
 		}
 		// Fill in the blanks with the words you have heard.
-		channels[slot] = new Channel_Vorbis(filename, loop);
-		channels[slot]->volume = volume;
+		channels[slot] = ch;
+		return true;
+	}
+	//-------------------------------------------------------------------------
+	// ● 停止播放指定声音
+	//   若ch为NULL（默认值），则停止播放所有声音。
+	//-------------------------------------------------------------------------
+	void stop(Channel* ch) {
+		if (ch) {
+			ch->active = false;
+		} else {
+			for (size_t i = 0; i < AUDIO_CHANNELS_SIZE; i++) {
+				if (channels[i]) stop(channels[i]);
+			}
+		}
+		compact_channels();
 	}
 	//-------------------------------------------------------------------------
 	// ● 扔掉active_sounds中已经播放完的条目

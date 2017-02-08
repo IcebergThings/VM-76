@@ -88,9 +88,10 @@ namespace Audio {
 	void init();
 	void terminate();
 	void ensure_no_error(PaError err);
-	void stop();
 	int free_slot();
-	void play_sound(const char* filename, bool loop, float volume = 1.0f);
+	Channel_Vorbis* play_sound(const char* filename, bool loop, float volume = 1.0f);
+	bool play_channel(Channel* ch);
+	void stop(Channel* ch = NULL);
 	void compact_channels();
 	int callback(
 		const void* input_buffer,
