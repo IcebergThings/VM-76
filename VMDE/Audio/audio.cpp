@@ -23,8 +23,7 @@ namespace Audio {
 			&stream,
 			// 无声输入 - 立体声输出、32位浮点数
 			0, 2, paFloat32,
-			// 48000Hz
-			48000.0,
+			AUDIO_SAMPLE_RATE,
 			// 256格缓冲区
 			256,
 			callback,

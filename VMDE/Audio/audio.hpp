@@ -42,17 +42,18 @@ namespace Audio {
 	private:
 		float value;
 		float delta;
-		void play_triangle(float freq);
-		void get_next_triangle_value(struct triangle_data* data);
+		float next();
+	public:
+		Channel_Triangle(float freq);
 	};
 	class Channel_Sine : public Channel {
 	private:
 		float index;
 		float index_delta;
 		bool minus;
-		float value; // for convenience only
-		void play_sine(float freq);
-		void get_next_sine_value(struct sine_data* data);
+		float next();
+	public:
+		Channel_Sine(float freq);
 	};
 	class Channel_Vorbis : public Channel {
 		FILE* f;
@@ -67,8 +68,10 @@ namespace Audio {
 		thread* decode_thread;
 	} vorbis;
 	//-------------------------------------------------------------------------
-	// ● 模块变量
+	// ● 模块常量和变量
 	//-------------------------------------------------------------------------
+	#define AUDIO_SAMPLE_RATE 48000
+	#define AUDIO_BUFFER_SIZE 256
 	extern PaStream* stream;
 	#define AUDIO_CHANNELS_SIZE ((size_t) 16)
 	extern Channel* channels[AUDIO_CHANNELS_SIZE];
