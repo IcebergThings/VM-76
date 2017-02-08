@@ -126,13 +126,17 @@ namespace VM76 {
 			if (hand_id > 0)
 				clist[hand_id - 1]->render();
 
-			char frame_count[32];
-			sprintf(frame_count, "%d", VMDE->frame_count);
+			char frame_count[64];
+			sprintf(frame_count, "FPS: %d Hand ID: %d Pointer ID: %d",
+				VMDE->fps,
+				hand_id,
+				map->tiles[map->calcTileIndex(obj->pos)].tid
+			);
 			trex->instanceRenderText(
 				frame_count, gui_2d_projection,
 				glm::mat4(1.0),
-				glm::translate(glm::mat4(1.0), glm::vec3(0.0,0.8,0.0)),
-				0.05, 0.1
+				glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.94,0.0)),
+				0.025, 0.05
 			);
 			glEnable(GL_DEPTH_TEST);
 
