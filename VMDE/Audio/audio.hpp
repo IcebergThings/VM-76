@@ -10,16 +10,6 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	// ● 宏魔法
 	//-------------------------------------------------------------------------
-	// pa_callback - PortAudio的回调函数（定义/声明用）
-	#define pa_callback(name) \
-		int name( \
-			const void* input_buffer, \
-			void* output_buffer, \
-			unsigned long frame_count, \
-			const PaStreamCallbackTimeInfo* time_info, \
-			PaStreamCallbackFlags status_flags, \
-			void* user_data \
-		)
 	// FEED_AUDIO_DATA - 给buf喂数据的快捷方法
 	// 因为是立体声（两个声道），所以给*buf++赋值两次。
 	// 注意：调用一次此宏，只需减少一次n！
@@ -58,19 +48,27 @@ namespace Audio {
 	class Channel_Vorbis : public Channel {
 		FILE* f;
 		OggVorbis_File vf;
+		// AUDIO_VF_BUFFER_SIZE - 解码缓冲区的格数
+		// 由于VRingBuffer的实现，实际可用的格数比此数值少1。
 		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
-		float vf_buffer[2][AUDIO_VF_BUFFER_SIZE];
-		size_t play_head;
-		size_t load_head;
+		VRingBuffer vf_buf<float, AUDIO_VF_BUFFER_SIZE>;
 		bool eof;
 		bool loop;
 		int bitstream;
 		thread* decode_thread;
+	public:
+		void decode();
+		static void decode_vorbis_thread(Channel_Vorbis* ch)
+		Channel_Vorbis(const char* filename, bool loop);
+		~Channel_Vorbis();
+		
 	} vorbis;
 	//-------------------------------------------------------------------------
 	// ● 模块常量和变量
 	//-------------------------------------------------------------------------
+	// 采样率
 	#define AUDIO_SAMPLE_RATE 48000
+	// 缓冲区格数
 	#define AUDIO_BUFFER_SIZE 256
 	extern PaStream* stream;
 	#define AUDIO_CHANNELS_SIZE ((size_t) 16)
@@ -81,7 +79,14 @@ namespace Audio {
 	void init();
 	void terminate();
 	void ensure_no_error(PaError err);
-	pa_callback(callback);
+	int callback(
+		const void* input_buffer,
+		void* output_buffer,
+		unsigned long frame_count,
+		const PaStreamCallbackTimeInfo* time_info,
+		PaStreamCallbackFlags status_flags,
+		void* user_data
+	);
 	void stop();
 	void stop_waves();
 	void compact_active_sounds_array();
