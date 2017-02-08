@@ -63,7 +63,6 @@ namespace VM76 {
 		obj->data.ind_c = 2 * 3 * 6;
 		obj->data.vertices = vtx;
 		obj->data.indices = itx;
-		obj->data.tri_mesh_count = 2 * 6;
 		// Reserve 4096 spaces
 		obj->data.mat_c = 4096;
 		obj->data.mat = (GLuint*) &mat[0];

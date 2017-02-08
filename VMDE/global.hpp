@@ -215,6 +215,7 @@
 	// VMDE操控的全局变量
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
+
 	//-------------------------------------------------------------------------
 	// ● Audio
 	//-------------------------------------------------------------------------
@@ -308,7 +309,6 @@
 			GLuint VAO;
 			GLuint VBO;
 			GLuint EBO;
-			GLuint tri_mesh_count;
 			glm::mat4 model;
 		} data;
 

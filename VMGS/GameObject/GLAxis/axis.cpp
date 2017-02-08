@@ -36,7 +36,6 @@ namespace VM76 {
 		obj->data.ind_c = 3 * 3;
 		obj->data.vertices = vtx;
 		obj->data.indices = itx;
-		obj->data.tri_mesh_count = 3;
 		obj->data.mat_c = 1;
 		obj->data.mat = (GLuint*) &mat[0];
 		obj->fbind();
