@@ -5,9 +5,12 @@
 在项目根目录执行`make run`（Windows上为`mingw32-make run`）。
 
 ### Windows :dog: Windoge
-对于Windows用户，需要预先配置好库文件目录。做法是在每个msw.makefile旁放置windows_flags.txt和windows_libs.txt两个文件，内容分别为编译和链接的附加参数。
+对于Windows用户，需要预先配置好库文件目录。做法是：
 
-这些是我电脑上的编译参数，更新于 d40f7b5。仅供参考，但保证能在我的电脑上编译通过。使用时需要根据自己的情况修改其中的路径，因为你肯定不会有个Y:盘的。
+* 在每个msw.makefile旁放置windows_flags.txt和windows_libs.txt两个文件，内容分别为编译和链接的附加参数。
+* 在项目根目录下放置windows_path.bat指定%PATH%环境变量。
+
+这些是我电脑上的编译参数，更新于 2a63e7e。仅供参考，但保证能在我的电脑上编译通过。使用时需要根据自己的情况修改其中的路径，因为你肯定不会有个Y:盘的。
 
 * VMDE/build/windows_flags.txt
 	```
@@ -25,7 +28,7 @@
 	```
 	Y:\SOIL\lib\libSOIL.a
 	Y:\glew-2.0.0-src\src\glew.a
-	-LY:\bin
+	-LY:\project76-lib
 	-LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
 	-lglfw3dll
 	-lopengl32
@@ -49,12 +52,16 @@
 	```
 	Y:\SOIL\lib\libSOIL.a
 	Y:\glew-2.0.0-src\src\glew.a
-	-LY:\bin
+	-LY:\project76-lib
 	-LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
 	-lglfw3dll
 	-lopengl32
 	-lportaudio_x86
 	-lvorbisfile
+	```
+* windows_path.bat
+	```batch
+	path Y:\mingw32\bin;Y:\project76-lib
 	```
 
 ### *nix (macOS & Linux) :dog: Dogix
