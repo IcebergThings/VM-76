@@ -30,8 +30,10 @@ namespace Audio {
 		// etc.
 		eof = false;
 		loop = _loop;
+		mark;
 		decode();
 		// thrd
+		mark;
 		thrd = new thread(decode_thread, this);
 	}
 	//-------------------------------------------------------------------------
@@ -51,8 +53,10 @@ namespace Audio {
 			if (vf_buf.is_empty()) {
 				FEED_AUDIO_DATA(buf, .0f);
 			} else {
-				*buf++ = vf_buf.dequeue();
-				*buf++ = vf_buf.dequeue();
+				float a = vf_buf.dequeue();
+				float b = vf_buf.dequeue();
+				*buf++ = a;
+				*buf++ = b;
 			}
 			n--;
 		}
@@ -62,15 +66,18 @@ namespace Audio {
 	// ● 解码文件来填vf_buf
 	//-------------------------------------------------------------------------
 	void Channel_Vorbis::decode() {
-		while (!vf_buf.is_full()) {
+		size_t t;
+		// 在这个除以2（因为立体声）上被坑了半个小时 —— satgo
+		while ((t = vf_buf.remaining() / 2) > 0) {
 			// After ov_read_float(), tmp_buffer will be changed.
 			float** tmp_buffer;
 			long ret = ov_read_float(
 				&vf,
 				&tmp_buffer,
-				vf_buf.remaining(),
+				t,
 				&bitstream
 			);
+			//log("%zu", vf_buf.remaining());
 			if (ret > 0) {
 				// On reading successful:
 				for (long i = 0; i < ret; i++) {
@@ -96,6 +103,7 @@ namespace Audio {
 					// After this, we can go on ov_read'ing in the next loop.
 					#undef THE_SOUND
 				} else {
+					mark;
 					eof = true;
 					return;
 				}
@@ -113,6 +121,6 @@ namespace Audio {
 	// ● 解码线程函数
 	//-------------------------------------------------------------------------
 	void Channel_Vorbis::decode_thread(Channel_Vorbis* ch) {
-		while (!ch->eof) ch->decode();
+		mark;while (!ch->eof) ch->decode();
 	}
 }

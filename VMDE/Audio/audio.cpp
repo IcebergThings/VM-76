@@ -70,9 +70,9 @@ namespace Audio {
 	//   其实这个函数应该叫做draw_sound，不然都对不起Draw Engine这个名字。
 	//-------------------------------------------------------------------------
 	void play_sound(const char* filename, bool loop) {
-		log("play sound %s", filename);
 		// Find a blank first.
 		int slot = free_slot();
+		log("play sound %s[%d]", filename, slot);
 		if (slot < 0) {
 			log(
 				"unable to play sound %s"
@@ -110,6 +110,8 @@ namespace Audio {
 		float* buf = (float*) output_buffer;
 		if (channels[0]) {
 			channels[0]->fill(buf, frame_count);
+		} else {
+			memset(output_buffer, 0, frame_count * sizeof(float));
 		}
 		return paContinue;
 	}
