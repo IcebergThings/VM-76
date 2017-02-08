@@ -46,9 +46,41 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_9)) hand_id = 9;
 
 		if (PRESS(GLFW_KEY_SPACE)) {
-			Audio::play_sound("../Media/soft-ping.ogg", false);
 			map->tiles[map->calcTileIndex(obj->pos)].tid = hand_id;
 			map->bake_tiles();
+		}
+
+		static Audio::Channel_Vorbis* loop = NULL;
+		static Audio::Channel_Triangle* triangle = NULL;
+		static Audio::Channel_Sine* sine = NULL;
+		if (PRESS(GLFW_KEY_SEMICOLON)) {
+			Audio::play_sound("../Media/soft-ping.ogg", false);
+		}
+		if (PRESS(GLFW_KEY_APOSTROPHE)) {
+			if (loop) {
+				Audio::stop(loop);
+				loop = NULL;
+			} else {
+				loop = Audio::play_sound("../Media/loop-test.ogg", true, .1f);
+			}
+		}
+		if (PRESS(GLFW_KEY_LEFT_BRACKET)) {
+			if (triangle) {
+				Audio::stop(triangle);
+				triangle = NULL;
+			} else {
+				triangle = new Audio::Channel_Triangle(440);
+				Audio::play_channel(triangle);
+			}
+		}
+		if (PRESS(GLFW_KEY_RIGHT_BRACKET)) {
+			if (sine) {
+				Audio::stop(sine);
+				sine = NULL;
+			} else {
+				sine = new Audio::Channel_Sine(440);
+				Audio::play_channel(sine);
+			}
 		}
 		#undef PRESS
 	}
