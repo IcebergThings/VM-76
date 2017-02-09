@@ -280,6 +280,7 @@
 		void fbind();
 		void update();
 		void update_instance();
+		void update_instance_alien_size();
 
 		void dispose();
 
