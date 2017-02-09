@@ -29,7 +29,11 @@ endif
 
 debug:
 	$(MAKE) $(PROJECTS) DEBUG=1
+ifeq "$(PLATFORM)" "msw"
+	call windows_path.bat && cd VMGS && gdb VMGS.exe
+else
 	cd VMGS && gdb VMGS
+endif
 
 platform:
 	@echo $(PLATFORM)
