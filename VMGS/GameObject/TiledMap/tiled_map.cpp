@@ -149,14 +149,16 @@ namespace VM76 {
 				pos = pos * 1.5f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.8f;
 				pos = pos * 2.1f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.6f;
 				pos = pos * 2.2f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.45f;
-				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.25f;
-				pos = pos * 4.5f + glm::vec2(0.09f); n += glm::perlin(pos) * 0.13f;
+				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.15f;
+				pos = pos * 4.5f + glm::vec2(0.09f); n += glm::perlin(pos) * 0.06f;
 
 				n = glm::clamp(0.1f, n * 0.5f + 0.5f, 1.0f);
-				int h = n * height * 0.9;
+				int h = n * TERRIAN_MAX_HEIGHT - mount_point.y;
+				int ho = h;
+				h = glm::clamp(0, h, height);
 
 				for (int y = 0; y < h; y++) {
-					tiles[calcTileIndex(i, y, j)].tid = (y == h - 1) ? Grass : Stone;
+					tiles[calcTileIndex(i, y, j)].tid = (y == ho - 1) ? Grass : Stone;
 				}
 				for (int y = h; y < height; y++) tiles[calcTileIndex(i, y, j)].tid = Air;
 			}

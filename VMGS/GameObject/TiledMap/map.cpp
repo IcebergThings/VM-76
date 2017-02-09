@@ -19,21 +19,16 @@ namespace VM76 {
 			for (int z = 0; z < width; z++) {
 				log("Load Chunks group X:%d Z:%d", x, z);
 
-				int y = 0, ind = calcChunkIndex(x,0,z);
-				chunks[ind] = new TiledMap(
-					CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE,
-					glm::vec3(CHUNK_SIZE * x, CHUNK_SIZE * y, CHUNK_SIZE * z)
-				);
-				chunks[ind]->generate_land();
-				chunks[ind]->bake_tiles();
-
-				for (y = y + 1; y < height; y++) {
-					ind = calcChunkIndex(x,y,z);
+				for (int y = 0; y < height; y++) {
+					int ind = calcChunkIndex(x,y,z);
 					chunks[ind] = new TiledMap(
 						CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE,
 						glm::vec3(CHUNK_SIZE * x, CHUNK_SIZE * y, CHUNK_SIZE * z)
 					);
-					chunks[ind]->generate_void();
+					if (y * CHUNK_SIZE > TERRIAN_MAX_HEIGHT)
+						chunks[ind]->generate_void();
+					else
+						chunks[ind]->generate_land();
 					chunks[ind]->bake_tiles();
 				}
 			}

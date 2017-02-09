@@ -16,6 +16,8 @@ namespace VM76 {
 		unsigned char data_flag;
 	};
 
+	#define TERRIAN_MAX_HEIGHT 60
+
 	class TiledMap : public RenderObject {
 	public:
 		TileData* tiles;
