@@ -11,10 +11,10 @@ namespace VM76 {
 	class Tiles : public RenderObject {
 	public:
 		GDrawable* obj[6];
-		glm::mat4 *mat[6];
+		glm::mat4* mat[6];
 
-		Vertex *vtx[6];
-		GLuint *itx[6];
+		Vertex* vtx[6];
+		GLuint* itx[6];
 
 	public:
 		virtual ~Tiles();
