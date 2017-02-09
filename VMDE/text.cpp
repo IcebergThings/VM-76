@@ -17,7 +17,7 @@ TextRenderer::TextRenderer() {
 	obj->fbind();
 	obj->data.mat_c = 0;*/
 
-	tex = new Res::Texture("../Media/Font.bmp");
+	tex = new Res::Texture("../Media/Font.bmp", true);
 	texshader = Shaders::CreateFromFile("../Media/shaders/text.vsh", "../Media/shaders/text.fsh");
 }
 
@@ -37,7 +37,7 @@ void TextRenderer::BakeText(const char* text, float width, float height, bool sh
 		const float h = 1.0 / 8.0f;
 
 		float stx = (float) (c % 32) * w;
-		float sty = (float) ((c >> 5) - 1) * h;
+		float sty = (float) (c >> 5) * h;
 
 		lbx = (float) (i) * width;
 
