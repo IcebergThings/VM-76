@@ -139,6 +139,7 @@
 			GLuint texture, index;
 			int width, height;
 			Texture(const char* file);
+			Texture(const char* file, bool useLinear);
 			Texture* dispose();
 		};
 	}
