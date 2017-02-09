@@ -31,7 +31,14 @@ namespace VM76 {
 	}
 
 	void DataMap::generate_V1() {
-		for (int i = 0; i < width; i ++)
+		log("Start generating maps");
+		for (int i = 0; i < width; i ++) {
+			if (i % (width / 12) == 0)
+				log("Generated %d%% (%d / %d)",
+					(int) (100.0 / width * i),
+					i * length * height, width * length * height
+				);
+
 			for (int j = 0; j < length; j++) {
 				glm::vec2 pos = glm::vec2(i, j) * 0.002f;
 				float n = glm::perlin(pos);
@@ -51,6 +58,8 @@ namespace VM76 {
 				}
 				for (int y = h; y < height; y++) map[calcIndex(i, y, j)].tid = Air;
 			}
+		}
+		log("Generated 100%%, Complete");
 	}
 
 	Map::Map(int w, int h, int l, int csize) {
@@ -63,10 +72,12 @@ namespace VM76 {
 
 		map = new DataMap(bw, bh, bl);
 
-		for (int x = 0; x < length; x++)
-			for (int z = 0; z < width; z++) {
-				log("Load Chunks group X:%d Z:%d", x, z);
-
+		for (int x = 0; x < length; x++) {
+			log("Baking Chunks: %d%% (%d / %d)",
+				(int) (100.0 / length * x),
+				x * width * height, width * length * height
+			);
+			for (int z = 0; z < width; z++)
 				for (int y = 0; y < height; y++) {
 					int ind = calcChunkIndex(x,y,z);
 					chunks[ind] = new TiledMap(
@@ -76,9 +87,9 @@ namespace VM76 {
 					);
 					chunks[ind]->bake_tiles();
 				}
-			}
+		}
 
-		log("Map initialized");
+		log("Baking Chunks: 100%%, map initialized");
 	}
 
 	void Map::place_block(glm::vec3 dir, int tid) {
