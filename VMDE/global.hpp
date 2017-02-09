@@ -333,9 +333,13 @@
 
 	public:
 		TextRenderer();
-		void BakeText(const char* text, float width, float height);
+		void BakeText(const char* text, float width, float height, bool shadow);
 		void render();
-		void instanceRenderText(const char* text, glm::mat4 projection, glm::mat4 view, glm::mat4 transform, float width, float height);
+		void instanceRenderText(
+				const char* text,
+				glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
+				float width, float height, bool shadow
+		);
 		void dispose();
 	};
 
