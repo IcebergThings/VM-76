@@ -5,13 +5,14 @@
 //=============================================================================
 
 #include "tiled_map.hpp"
+#include "glm/gtc/noise.hpp"
 
 namespace VM76 {
 
 	void TiledMap::init_cinstances (Tiles* cinstance[]) {
 		#define FILL_ID(id, f) cinstance[id - 1] = new f;
 
-		FILL_ID(Grass, SimpleCubeTile(0))
+		FILL_ID(Grass, MultiFaceCubeTile(49,49,0,2,49,49))
 		FILL_ID(Stone, SimpleCubeTile(1))
 		FILL_ID(Dirt, SimpleCubeTile(2))
 		FILL_ID(Glass, SimpleCubeTile(3))
@@ -51,7 +52,7 @@ namespace VM76 {
 		glm::mat4* temp[16][6];
 		for (int x = 0; x < 16; x++)
 			for (int y = 0; y < 6; y++)
-				temp[x][y] = new glm::mat4[4096];
+				temp[x][y] = new glm::mat4[8192];
 
 		memset(count, 0, sizeof(count));
 
@@ -138,6 +139,25 @@ namespace VM76 {
 		for (int i = 0; i < width; i ++)
 			for (int j = 0; j < length; j++)
 				for (int k = 0; k < height; k++) tiles[calcTileIndex(i, k, j)].tid = 0;
+	}
+
+	void TiledMap::generate_land() {
+		for (int i = 0; i < width; i ++)
+			for (int j = 0; j < length; j++) {
+				glm::vec2 pos = (glm::vec2(i, j) + glm::vec2(mount_point.x, mount_point.z)) * 0.005f;
+				float n = glm::perlin(pos);
+				pos = pos * 2.0f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.8f;
+				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.6f;
+				pos = pos * 4.5f + glm::vec2(0.09f); n += glm::perlin(pos) * 0.3f;
+
+				n = glm::clamp(0.1f, n * 0.5f + 0.5f, 1.0f);
+				int h = n * height * 0.9;
+
+				for (int y = 0; y < h; y++) {
+					tiles[calcTileIndex(i, y, j)].tid = (y == h - 1) ? Grass : Stone;
+				}
+				for (int y = h; y < height; y++) tiles[calcTileIndex(i, y, j)].tid = Air;
+			}
 	}
 
 	void TiledMap::render() {

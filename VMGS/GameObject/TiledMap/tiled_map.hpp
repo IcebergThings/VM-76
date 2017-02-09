@@ -36,6 +36,7 @@ namespace VM76 {
 		void render();
 		void generate_flat();
 		void generate_void();
+		void generate_land();
 		void bake_tiles();
 		void dispose();
 	};

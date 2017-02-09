@@ -24,7 +24,7 @@ namespace VM76 {
 					CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE,
 					glm::vec3(CHUNK_SIZE * x, CHUNK_SIZE * y, CHUNK_SIZE * z)
 				);
-				chunks[ind]->generate_flat();
+				chunks[ind]->generate_land();
 				chunks[ind]->bake_tiles();
 
 				for (y = y + 1; y < height; y++) {
