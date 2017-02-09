@@ -144,11 +144,13 @@ namespace VM76 {
 	void TiledMap::generate_land() {
 		for (int i = 0; i < width; i ++)
 			for (int j = 0; j < length; j++) {
-				glm::vec2 pos = (glm::vec2(i, j) + glm::vec2(mount_point.x, mount_point.z)) * 0.005f;
+				glm::vec2 pos = (glm::vec2(i, j) + glm::vec2(mount_point.x, mount_point.z)) * 0.002f;
 				float n = glm::perlin(pos);
-				pos = pos * 2.0f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.8f;
-				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.6f;
-				pos = pos * 4.5f + glm::vec2(0.09f); n += glm::perlin(pos) * 0.3f;
+				pos = pos * 1.5f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.8f;
+				pos = pos * 2.1f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.6f;
+				pos = pos * 2.2f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.45f;
+				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.25f;
+				pos = pos * 4.5f + glm::vec2(0.09f); n += glm::perlin(pos) * 0.13f;
 
 				n = glm::clamp(0.1f, n * 0.5f + 0.5f, 1.0f);
 				int h = n * height * 0.9;
