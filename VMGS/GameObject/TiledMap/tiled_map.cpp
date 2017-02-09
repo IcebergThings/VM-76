@@ -9,8 +9,10 @@
 namespace VM76 {
 
 
-	void TiledMap::init_cinstances () {
+	void TiledMap::init_cinstances (Tiles* cinstance[]) {
 		#define FILL_ID(id, f) cinstance[id - 1] = new f;
+
+		cinstance[0 ] = new SimpleCubeTile(0);
 
 		FILL_ID(Grass, SimpleCubeTile(0))
 		FILL_ID(Stone, SimpleCubeTile(1))
@@ -33,7 +35,7 @@ namespace VM76 {
 	TiledMap::TiledMap(int x, int y, int z, glm::vec3 wp) {
 		width = x; length = z; height = y;
 
-		init_cinstances();
+		init_cinstances(cinstance);
 		tiles = new TileData[x * y * z];
 
 		mount_point = wp;

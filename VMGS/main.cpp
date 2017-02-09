@@ -15,7 +15,7 @@ namespace VM76 {
 	TextRenderer* trex = NULL; // 2333 T-Rex
 
 	Cube* block_pointer;
-	Cube* clist[16];
+	Tiles* clist[16];
 	TiledMap* map;
 
 	glm::mat4 gui_2d_projection;
@@ -177,10 +177,16 @@ namespace VM76 {
 		block_display = glm::scale(block_display, glm::vec3(0.1f));
 		block_display = glm::rotate(block_display, Util::PIf / 4.0f, glm::vec3(1.0, 0.0, 0.0));
 		block_display = glm::rotate(block_display, Util::PIf / 4.0f, glm::vec3(0.0, 1.0, 0.0));
+
+		TiledMap::init_cinstances(clist);
 		for (int i = 0; i < 16; i++) {
-			clist[i] = new Cube(i);
-			clist[i]->mat[0] = block_display;
-			clist[i]->update_instance(1);
+			clist[i]->mat[0][0] = block_display;
+			clist[i]->mat[1][0] = block_display;
+			clist[i]->mat[2][0] = block_display;
+			clist[i]->mat[3][0] = block_display;
+			clist[i]->mat[4][0] = block_display;
+			clist[i]->mat[5][0] = block_display;
+			clist[i]->update_instance(1,1,1,1,1,1);
 		}
 		axe = new Axis();
 		trex = new TextRenderer();
