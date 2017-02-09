@@ -167,6 +167,8 @@
 		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
 
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
+
+		void dispose();
 	};
 	extern Shaders* _shaders_in_use;
 	//-------------------------------------------------------------------------

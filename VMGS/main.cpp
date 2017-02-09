@@ -167,6 +167,10 @@ namespace VM76 {
 		VMDE_Dispose(block_pointer);
 		for (int i = 0; i < 16; i++) VMDE_Dispose(clist[i]);
 		VMDE_Dispose(map);
+		VMDE_Dispose(trex);
+		VMDE_Dispose(gui);
+		VMDE_Dispose(shader_textured);
+		VMDE_Dispose(shader_basic);
 		log("terminated successfully");
 	}
 }
