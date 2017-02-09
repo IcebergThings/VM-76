@@ -16,7 +16,7 @@ namespace VM76 {
 
 	Cube* block_pointer;
 	Tiles* clist[16];
-	TiledMap* map;
+	Map* map;
 
 	glm::mat4 gui_2d_projection;
 
@@ -48,8 +48,7 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_9)) hand_id = 9;
 
 		if (PRESS(GLFW_KEY_SPACE)) {
-			map->tiles[map->calcTileIndex(obj->pos)].tid = hand_id;
-			map->bake_tiles();
+			map->place_block(obj->pos, hand_id);
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;
@@ -130,7 +129,7 @@ namespace VM76 {
 			sprintf(frame_count, "FPS: %d Hand ID: %d Pointer ID: %d",
 				VMDE->fps,
 				hand_id,
-				map->tiles[map->calcTileIndex(obj->pos)].tid
+				0//map->tiles[map->calcTileIndex(obj->pos)].tid
 			);
 			trex->instanceRenderText(
 				frame_count, gui_2d_projection,
@@ -180,17 +179,17 @@ namespace VM76 {
 
 		TiledMap::init_cinstances(clist);
 		for (int i = 0; i < 16; i++) {
-			clist[i]->mat[0][0] = block_display;
-			clist[i]->mat[1][0] = block_display;
-			clist[i]->mat[2][0] = block_display;
-			clist[i]->mat[3][0] = block_display;
-			clist[i]->mat[4][0] = block_display;
-			clist[i]->mat[5][0] = block_display;
+			clist[i]->mat[0] = new glm::mat4[1]; clist[i]->mat[0][0] = block_display;
+			clist[i]->mat[1] = new glm::mat4[1]; clist[i]->mat[1][0] = block_display;
+			clist[i]->mat[2] = new glm::mat4[1]; clist[i]->mat[2][0] = block_display;
+			clist[i]->mat[3] = new glm::mat4[1]; clist[i]->mat[3][0] = block_display;
+			clist[i]->mat[4] = new glm::mat4[1]; clist[i]->mat[4][0] = block_display;
+			clist[i]->mat[5] = new glm::mat4[1]; clist[i]->mat[5][0] = block_display;
 			clist[i]->update_instance(1,1,1,1,1,1);
 		}
 		axe = new Axis();
 		trex = new TextRenderer();
-		map = new TiledMap(16, 16, 16, glm::vec3(0.0));
+		map = new Map(6,6,6,16);
 		block_pointer->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
 

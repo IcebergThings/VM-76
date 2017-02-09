@@ -61,20 +61,17 @@ namespace VM76 {
 
 		// Prepare an empty space
 		for (int i = 0; i < 6; i++) {
-			mat[i] = new glm::mat4[4096];
-			for (int x = 0; x < 4096; x++) mat[i][x] = glm::mat4(1.0);
+			mat[i] = NULL;//new glm::mat4[256];
+			//for (int x = 0; x < 256; x++) mat[i][x] = glm::mat4(1.0);
 
 			obj[i] = new GDrawable();
 			obj[i]->data.vtx_c = 4;
 			obj[i]->data.ind_c = 2 * 3;
 			obj[i]->data.vertices = vtx[i];
 			obj[i]->data.indices = itx[i];
-			// Reserve 512 spaces
-			obj[i]->data.mat_c = 4096;
-			obj[i]->data.mat = (GLuint*) &mat[i][0];
-			obj[i]->fbind();
-			// Draw none for default
 			obj[i]->data.mat_c = 0;
+			obj[i]->data.mat = NULL;//(GLuint*) &mat[i][0];
+			obj[i]->fbind();
 		}
 	}
 
@@ -171,27 +168,27 @@ namespace VM76 {
 	void Tiles::update_instance(int c1, int c2, int c3, int c4, int c5, int c6) {
 		obj[0]->data.mat_c = c1;
 		obj[0]->data.mat = (GLuint*) mat[0];
-		obj[0]->update_instance();
+		obj[0]->update_instance_alien_size();
 
 		obj[1]->data.mat_c = c2;
 		obj[1]->data.mat = (GLuint*) mat[1];
-		obj[1]->update_instance();
+		obj[1]->update_instance_alien_size();
 
 		obj[2]->data.mat_c = c3;
 		obj[2]->data.mat = (GLuint*) mat[2];
-		obj[2]->update_instance();
+		obj[2]->update_instance_alien_size();
 
 		obj[3]->data.mat_c = c4;
 		obj[3]->data.mat = (GLuint*) mat[3];
-		obj[3]->update_instance();
+		obj[3]->update_instance_alien_size();
 
 		obj[4]->data.mat_c = c5;
 		obj[4]->data.mat = (GLuint*) mat[4];
-		obj[4]->update_instance();
+		obj[4]->update_instance_alien_size();
 
 		obj[5]->data.mat_c = c6;
 		obj[5]->data.mat = (GLuint*) mat[5];
-		obj[5]->update_instance();
+		obj[5]->update_instance_alien_size();
 	}
 
 	void Tiles::render() {

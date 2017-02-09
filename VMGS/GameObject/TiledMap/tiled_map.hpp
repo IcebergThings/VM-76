@@ -26,8 +26,8 @@ namespace VM76 {
 		Tiles* cinstance[16];
 
 	public:
-		int calcTileIndex(int x, int y, int z);
-		int calcTileIndex(glm::vec3 pos);
+		inline int calcTileIndex(int x, int y, int z) { return (width * length) * y + (length) * z + x; }
+		inline int calcTileIndex(glm::vec3 pos) { return (width * length) * pos.y + (length) * pos.z + pos.x; }
 		TileData tileQuery(int x, int y, int z);
 
 		static void init_cinstances(Tiles* cinstance[]);
@@ -35,6 +35,7 @@ namespace VM76 {
 		TiledMap(int x, int y, int z, glm::vec3 wp);
 		void render();
 		void generate_flat();
+		void generate_void();
 		void bake_tiles();
 		void dispose();
 	};
