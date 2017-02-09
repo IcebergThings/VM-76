@@ -8,7 +8,7 @@
 #define _INCLUDE_TILES_H
 
 namespace VM76 {
-	class Tiles {
+	class Tiles : public RenderObject {
 	public:
 		GDrawable* obj[6];
 		glm::mat4 *mat[6];

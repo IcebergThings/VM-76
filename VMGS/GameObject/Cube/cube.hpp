@@ -8,7 +8,7 @@
 #define _INCLUDE_CUBES_H
 
 namespace VM76 {
-	class Cube {
+	class Cube : public RenderObject {
 	public:
 		GDrawable* obj = NULL;
 		glm::mat4 *mat = NULL;

@@ -17,3 +17,4 @@ output.log
 # 这些文件可能会存储个人设置，例如路径。
 */build/windows_flags.txt
 */build/windows_libs.txt
+windows_path.bat

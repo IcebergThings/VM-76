@@ -8,7 +8,7 @@
 #define _INCLUDE_GLAXIS_H
 
 namespace VM76 {
-	class Axis {
+	class Axis : public RenderObject {
 	public:
 		GDrawable* obj = NULL;
 		glm::mat4 *mat = NULL;

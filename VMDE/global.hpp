@@ -23,7 +23,8 @@
 #include <math.h>
 #include <ctime>
 #include <thread>
-#include <stdarg.h>
+#include <cstdarg>
+#include <cassert>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -113,6 +114,26 @@
 		exit(1); \
 	}
 	//-------------------------------------------------------------------------
+	// ● 子文件夹中的头文件
+	//-------------------------------------------------------------------------
+	#include "V/VRingBuffer.hpp"
+	#include "Audio/audio.hpp"
+
+	//-------------------------------------------------------------------------
+	// ● RenderObject.cpp
+	//-------------------------------------------------------------------------
+	class Object {
+	public:
+		virtual void dispose();
+	};
+
+	class RenderObject : public Object {
+	public:
+		virtual void render();
+		virtual ~RenderObject();
+	};
+
+	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
 	EXPORTED void init_engine(int w, int h, const char* title);
@@ -134,19 +155,20 @@
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
 	namespace Res {
-		class Texture {
+		class Texture : public Object {
 		public:
 			GLuint texture, index;
 			int width, height;
 			Texture(const char* file);
 			Texture(const char* file, bool useLinear);
-			Texture* dispose();
+
+			void dispose();
 		};
 	}
 	//-------------------------------------------------------------------------
 	// ● shaders.cpp
 	//-------------------------------------------------------------------------
-	class Shaders {
+	class Shaders : public Object {
 	public:
 		GLuint basic_2D_vsh;
 		GLuint basic_2D_fsh;
@@ -188,6 +210,14 @@
 		void terminate();
 		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
+		#define UTIL_SINE_TABLE_SIZE ((size_t) 256)
+		extern float sine_table[UTIL_SINE_TABLE_SIZE];
+		void populate_sine_table();
+		template <class T> T clamp(T x, T min, T max) {
+			if (x < min) return min;
+			if (x > max) return max;
+			return x;
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● VMDE
@@ -220,76 +250,6 @@
 	extern GLFWwindow* window;
 
 	//-------------------------------------------------------------------------
-	// ● Audio
-	//-------------------------------------------------------------------------
-	#define pa_callback(name) \
-		int name( \
-			const void* input_buffer, \
-			void* output_buffer, \
-			unsigned long frame_count, \
-			const PaStreamCallbackTimeInfo* time_info, \
-			PaStreamCallbackFlags status_flags, \
-			void* user_data \
-		)
-	namespace Audio {
-		struct triangle_data {
-			float value;
-			float delta;
-		};
-		struct sine_data {
-			float index;
-			float index_delta;
-			bool minus;
-			float value; // for convenience only
-		};
-		struct wave_callback_data {
-			double sample_rate;
-			// type = 0……静音；1……三角波；2……正弦波；3……白噪音
-			// 为啥不用枚举？因为太麻烦了！
-			int type;
-			union {
-				struct triangle_data triangle;
-				struct sine_data sine;
-			} data;
-		};
-		struct active_sound {
-			PaStream* stream;
-			FILE* file;
-			OggVorbis_File vf;
-			#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
-			float vf_buffer[2][AUDIO_VF_BUFFER_SIZE];
-			size_t play_head;
-			size_t load_head;
-			bool eof;
-			bool loop;
-			int bitstream;
-			thread* decode_thread;
-		};
-		extern PaStream* wave_stream;
-		extern struct wave_callback_data wave_data;
-		#define AUDIO_ACTIVE_SOUND_SIZE ((size_t) 16)
-		extern struct active_sound* active_sounds[AUDIO_ACTIVE_SOUND_SIZE];
-		#define AUDIO_SINE_TABLE_SIZE ((size_t) 256)
-		extern float sine_table[AUDIO_SINE_TABLE_SIZE];
-		void init();
-		void init_waves();
-		void terminate();
-		void ensure_no_error(PaError err);
-		pa_callback(play_wave_callback);
-		void stop();
-		void stop_waves();
-		void play_triangle(float freq);
-		void get_next_triangle_value(struct triangle_data* data);
-		void play_sine(float freq);
-		void populate_sine_table();
-		void get_next_sine_value(struct sine_data* data);
-		void compact_active_sounds_array();
-		void play_sound(const char* filename, bool loop);
-		pa_callback(play_sound_callback);
-		void decode_vorbis(struct active_sound* sound);
-		void decode_vorbis_thread(struct active_sound* sound);
-	}
-	//-------------------------------------------------------------------------
 	// ● GDrawable
 	//-------------------------------------------------------------------------
 	struct Vertex {
@@ -299,7 +259,7 @@
 		glm::vec3 normal;
 	};
 
-	class GDrawable {
+	class GDrawable : public RenderObject {
 	public:
 		struct Data {
 			Vertex* vertices;
@@ -315,12 +275,13 @@
 			glm::mat4 model;
 		} data;
 
-		void draw(GLuint start, GLuint end);
-		void draw();
+		void render(GLuint start, GLuint end);
+		void render();
 		void fbind();
 		void update();
 		void update_instance();
-		GDrawable* dispose();
+
+		void dispose();
 
 		GDrawable();
 	};
@@ -328,7 +289,7 @@
 	//-------------------------------------------------------------------------
 	// ● Text
 	//-------------------------------------------------------------------------
-	class TextRenderer {
+	class TextRenderer : public RenderObject {
 	private:
 		GDrawable* obj;
 		Res::Texture* tex;

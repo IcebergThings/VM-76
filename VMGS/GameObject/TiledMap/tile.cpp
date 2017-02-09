@@ -104,7 +104,7 @@ namespace VM76 {
 
 	void Tiles::render() {
 		for (int i = 0; i < 6; i++)
-			if (obj[i]->data.mat_c) obj[i]->draw();
+			if (obj[i]->data.mat_c) obj[i]->render();
 	}
 
 	void Tiles::dispose() {

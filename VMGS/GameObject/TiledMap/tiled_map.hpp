@@ -16,7 +16,7 @@ namespace VM76 {
 		unsigned char data_flag;
 	};
 
-	class TiledMap {
+	class TiledMap : public RenderObject {
 	public:
 		TileData* tiles;
 		int width, length, height;

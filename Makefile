@@ -22,7 +22,7 @@ endif
 
 run: all
 ifeq "$(PLATFORM)" "msw"
-	cd VMGS && VMGS.exe
+	call windows_path.bat && cd VMGS && VMGS.exe
 else
 	cd VMGS && ./VMGS
 endif

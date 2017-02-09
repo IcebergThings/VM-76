@@ -20,11 +20,14 @@ design.md
 		- [x] load texture
 		- [ ] Texture to shader binding
 	- [x] Audio: audio support
-		- [x] stop: stop_wave in fact
-		- [x] play_wave
-			- [x] triangle
-			- [x] sine
-			- [x] white_noise
+		- [x] Channel: a logical representation of one audio source
+			- [ ] Channel_Mute: outputs no sound
+			- [ ] Channel_Noise: outputs white noise
+			- [ ] Channel_Triangle
+			- [ ] Channel_Sine
+			- [x] Channel_Vorbis
+		- [ ] stop
+		- [x] play_channel
 		- [x] play_sound
 			- [x] play_sound
 			- [x] play_loop
