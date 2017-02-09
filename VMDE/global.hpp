@@ -297,13 +297,22 @@
 		Shaders* texshader;
 
 	public:
+		enum TextDecorationType {
+			NONE,
+			SHADOW,
+			OUTLINE,
+		};
 		TextRenderer();
-		void BakeText(const char* text, float width, float height, bool shadow);
+		void BakeText(
+			const char* text,
+			float width, float height,
+			TextDecorationType decoration
+		);
 		void render();
 		void instanceRenderText(
 				const char* text,
 				glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-				float width, float height, bool shadow
+				float width, float height, TextDecorationType decoration
 		);
 		void dispose();
 	};
