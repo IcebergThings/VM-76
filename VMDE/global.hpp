@@ -122,10 +122,14 @@
 	//-------------------------------------------------------------------------
 	// ● RenderObject.cpp
 	//-------------------------------------------------------------------------
-	class RenderObject {
+	class Object {
+	public:
+		virtual void dispose();
+	};
+
+	class RenderObject : public Object {
 	public:
 		virtual void render();
-		virtual void dispose();
 		virtual ~RenderObject();
 	};
 
@@ -151,19 +155,20 @@
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
 	namespace Res {
-		class Texture {
+		class Texture : public Object {
 		public:
 			GLuint texture, index;
 			int width, height;
 			Texture(const char* file);
 			Texture(const char* file, bool useLinear);
-			Texture* dispose();
+
+			void dispose();
 		};
 	}
 	//-------------------------------------------------------------------------
 	// ● shaders.cpp
 	//-------------------------------------------------------------------------
-	class Shaders {
+	class Shaders : public Object {
 	public:
 		GLuint basic_2D_vsh;
 		GLuint basic_2D_fsh;
@@ -254,7 +259,7 @@
 		glm::vec3 normal;
 	};
 
-	class GDrawable {
+	class GDrawable : public RenderObject {
 	public:
 		struct Data {
 			Vertex* vertices;
@@ -270,12 +275,13 @@
 			glm::mat4 model;
 		} data;
 
-		void draw(GLuint start, GLuint end);
-		void draw();
+		void render(GLuint start, GLuint end);
+		void render();
 		void fbind();
 		void update();
 		void update_instance();
-		GDrawable* dispose();
+
+		void dispose();
 
 		GDrawable();
 	};
@@ -283,7 +289,7 @@
 	//-------------------------------------------------------------------------
 	// ● Text
 	//-------------------------------------------------------------------------
-	class TextRenderer {
+	class TextRenderer : public RenderObject {
 	private:
 		GDrawable* obj;
 		Res::Texture* tex;

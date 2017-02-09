@@ -86,7 +86,7 @@ namespace VM76 {
 	}
 
 	void Cube::render() {
-		obj->draw();
+		obj->render();
 	}
 
 	void Cube::dispose() {

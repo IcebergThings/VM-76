@@ -6,13 +6,13 @@
 
 #include "global.hpp"
 
-void GDrawable::draw(GLuint start, GLuint end) {
+void GDrawable::render(GLuint start, GLuint end) {
 	glBindVertexArray(data.VAO);
 	glDrawRangeElements(GL_TRIANGLES, start, end, end + 1, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
-void GDrawable::draw() {
+void GDrawable::render() {
 	glBindVertexArray(data.VAO);
 	glDrawElementsInstanced(
 		GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0, data.mat_c);
@@ -107,13 +107,11 @@ void GDrawable::update_instance() {
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-GDrawable* GDrawable::dispose() {
+void GDrawable::dispose() {
 	glDeleteVertexArrays(1, &data.VAO);
 	glDeleteBuffers(1, &data.VBO);
 	glDeleteBuffers(1, &data.EBO);
 	glDeleteBuffers(1, &data.MBO);
-
-	return this;
 }
 
 GDrawable::GDrawable() {

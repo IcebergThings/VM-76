@@ -90,7 +90,7 @@ void TextRenderer::render() {
 	glDisable(GL_CULL_FACE);
 	texshader->use();
 	texshader->set_texture("fontmap", tex, 0);
-	obj->draw();
+	obj->render();
 	glEnable(GL_CULL_FACE);
 }
 

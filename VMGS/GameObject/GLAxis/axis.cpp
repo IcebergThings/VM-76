@@ -44,7 +44,7 @@ namespace VM76 {
 	void Axis::render() {
 		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		obj->draw();
+		obj->render();
 		glEnable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
