@@ -145,6 +145,7 @@
 			GLuint texture, index;
 			int width, height;
 			Texture(const char* file);
+			Texture(const char* file, bool useLinear);
 			Texture* dispose();
 		};
 	}
@@ -172,6 +173,8 @@
 		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
 
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
+
+		void dispose();
 	};
 	extern Shaders* _shaders_in_use;
 	//-------------------------------------------------------------------------
@@ -277,9 +280,13 @@
 
 	public:
 		TextRenderer();
-		void BakeText(const char* text, float width, float height);
+		void BakeText(const char* text, float width, float height, bool shadow);
 		void render();
-		void instanceRenderText(const char* text, glm::mat4 projection, glm::mat4 view, glm::mat4 transform, float width, float height);
+		void instanceRenderText(
+				const char* text,
+				glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
+				float width, float height, bool shadow
+		);
 		void dispose();
 	};
 

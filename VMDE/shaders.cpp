@@ -114,3 +114,7 @@ void Shaders::set_texture(const char* identifier, Res::Texture* tex, GLuint inde
 	glBindTexture(GL_TEXTURE_2D, tex->texture);
 	set_float(identifier, index);
 }
+
+void Shaders::dispose() {
+	glDeleteProgram(shaderProgram);
+}

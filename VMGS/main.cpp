@@ -136,7 +136,7 @@ namespace VM76 {
 				frame_count, gui_2d_projection,
 				glm::mat4(1.0),
 				glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.94,0.0)),
-				0.025, 0.05
+				0.025, 0.05, true
 			);
 			glEnable(GL_DEPTH_TEST);
 
@@ -199,6 +199,10 @@ namespace VM76 {
 		VMDE_Dispose(block_pointer);
 		for (int i = 0; i < 16; i++) VMDE_Dispose(clist[i]);
 		VMDE_Dispose(map);
+		VMDE_Dispose(trex);
+		VMDE_Dispose(gui);
+		VMDE_Dispose(shader_textured);
+		VMDE_Dispose(shader_basic);
 		log("terminated successfully");
 	}
 }

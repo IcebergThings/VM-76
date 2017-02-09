@@ -11,6 +11,6 @@ in Vertex {
 uniform sampler2D fontmap;
 
 void main() {
-	vec4 finalc = texture(fontmap, texcoord.st);
-	color = vec4(texcolor.rgb, texcolor.a * finalc.r);
+	vec3 finalc = texture(fontmap, texcoord.st).rgb;
+	color = vec4(texcolor.rgb, texcolor.a * dot(finalc,vec3(0.2126, 0.7152, 0.0722)));
 }
