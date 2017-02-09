@@ -15,8 +15,8 @@ namespace VM76 {
 		bw = CHUNK_SIZE * w; bl = CHUNK_SIZE * l; bh = CHUNK_SIZE * h;
 
 		chunks = new TiledMap*[w * l * h];
-		for (int x = 0; x < width; x++)
-			for (int z = 0; z < length; z++) {
+		for (int x = 0; x < length; x++)
+			for (int z = 0; z < width; z++) {
 				log("Load Chunks group X:%d Z:%d", x, z);
 
 				int y = 0, ind = calcChunkIndex(x,0,z);

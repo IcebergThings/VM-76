@@ -189,7 +189,7 @@ namespace VM76 {
 		}
 		axe = new Axis();
 		trex = new TextRenderer();
-		map = new Map(6,6,6,16);
+		map = new Map(7,6,6,32);
 		block_pointer->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
 
