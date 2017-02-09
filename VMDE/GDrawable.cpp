@@ -107,6 +107,13 @@ void GDrawable::update_instance() {
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
+void GDrawable::update_instance_alien_size() {
+	glBindVertexArray(data.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
+	glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
 void GDrawable::dispose() {
 	glDeleteVertexArrays(1, &data.VAO);
 	glDeleteBuffers(1, &data.VBO);

@@ -7,17 +7,35 @@
 #include "tiled_map.hpp"
 
 namespace VM76 {
+
+	void TiledMap::init_cinstances (Tiles* cinstance[]) {
+		#define FILL_ID(id, f) cinstance[id - 1] = new f;
+
+		FILL_ID(Grass, SimpleCubeTile(0))
+		FILL_ID(Stone, SimpleCubeTile(1))
+		FILL_ID(Dirt, SimpleCubeTile(2))
+		FILL_ID(Glass, SimpleCubeTile(3))
+		FILL_ID(WoodPlank, SimpleCubeTile(4))
+		FILL_ID(HalfBrick, MultiFaceCubeTile(5,5,6,6,5,5))
+		FILL_ID(Brick, SimpleCubeTile(7))
+		FILL_ID(TNT, MultiFaceCubeTile(8,8,9,10,8,8))
+		FILL_ID(CobbleStone, SimpleCubeTile(16))
+
+		// Fill the rest with MISSING TEXTURE
+		for (int i = CobbleStone; i < 16; i ++) {
+			FILL_ID(i + 1, SimpleCubeTile(31))
+		}
+
+		#undef FILL_ID
+	}
+
 	TiledMap::TiledMap(int x, int y, int z, glm::vec3 wp) {
 		width = x; length = z; height = y;
 
-		for (int i = 0; i < 16; i++)
-			cinstance[i] = new Tiles(i);
+		init_cinstances(cinstance);
 		tiles = new TileData[x * y * z];
 
 		mount_point = wp;
-
-		generate_flat();
-		bake_tiles();
 	}
 
 	TileData air = {0, 0};
@@ -32,6 +50,34 @@ namespace VM76 {
 		for (int id = 0; id < 16; id++)
 			for (int face = 0; face < 6; face++)
 				count[id][face] = 0;
+
+		for (int x = 0; x < width; x++) {
+			for (int z = 0; z < length; z++) {
+				for (int y = 0; y < height; y++) {
+					int id = tiles[calcTileIndex(x,y,z)].tid;
+					if (id > 0) {
+						id --;
+
+						if (tileQuery(x, y, z - 1).tid == 0) count[id][0] ++;
+						if (tileQuery(x, y, z + 1).tid == 0) count[id][1] ++;
+						if (tileQuery(x, y + 1, z).tid == 0) count[id][2] ++;
+						if (tileQuery(x, y - 1, z).tid == 0) count[id][3] ++;
+						if (tileQuery(x - 1, y, z).tid == 0) count[id][4] ++;
+						if (tileQuery(x + 1, y, z).tid == 0) count[id][5] ++;
+					}
+				}
+			}
+		}
+
+		for (int id = 0; id < 16; id ++) {
+			for (int x = 0; x < 6; x++) {
+				xefree(cinstance[id]->mat[x]);
+				if (count[id][x] > 0) {
+					cinstance[id]->mat[x] = new glm::mat4[count[id][x]];
+				}
+				count[id][x] = 0;
+			}
+		}
 
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < length; z++) {
@@ -98,12 +144,10 @@ namespace VM76 {
 			}
 	}
 
-	int TiledMap::calcTileIndex(int x, int y, int z) {
-		return (width * length) * y + (length) * z + x;
-	}
-
-	int TiledMap::calcTileIndex(glm::vec3 pos) {
-		return (width * length) * pos.y + (length) * pos.z + pos.x;
+	void TiledMap::generate_void() {
+		for (int i = 0; i < width; i ++)
+			for (int j = 0; j < length; j++)
+				for (int k = 0; k < height; k++) tiles[calcTileIndex(i, k, j)].tid = 0;
 	}
 
 	void TiledMap::render() {

@@ -18,18 +18,6 @@
 	// ● TODO
 	//-------------------------------------------------------------------------
 	namespace VM76 {
-		enum TileList {
-			GRASS,
-			STONE,
-			DIRT,
-			GLASS,
-			WOOD,
-			STONE_BRICK,
-			WALL,
-			TNT,
-			COBBLE_STONE,
-		};
-
 		const GLfloat tile_size = 1.0f / 16.0f;
 
 		class Block {
