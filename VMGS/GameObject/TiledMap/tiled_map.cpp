@@ -7,11 +7,33 @@
 #include "tiled_map.hpp"
 
 namespace VM76 {
+
+
+	void TiledMap::init_cinstances () {
+		#define FILL_ID(id, f) cinstance[id - 1] = new f;
+
+		FILL_ID(Grass, SimpleCubeTile(0))
+		FILL_ID(Stone, SimpleCubeTile(1))
+		FILL_ID(Dirt, SimpleCubeTile(2))
+		FILL_ID(Glass, SimpleCubeTile(3))
+		FILL_ID(WoodPlank, SimpleCubeTile(4))
+		FILL_ID(HalfBrick, MultiFaceCubeTile(5,5,6,6,5,5))
+		FILL_ID(Brick, SimpleCubeTile(7))
+		FILL_ID(TNT, MultiFaceCubeTile(8,8,9,10,8,8))
+		FILL_ID(CobbleStone, SimpleCubeTile(16))
+
+		// Fill the rest with MISSING TEXTURE
+		for (int i = CobbleStone; i < 16; i ++) {
+			FILL_ID(i + 1, SimpleCubeTile(31))
+		}
+
+		#undef FILL_ID
+	}
+
 	TiledMap::TiledMap(int x, int y, int z, glm::vec3 wp) {
 		width = x; length = z; height = y;
 
-		for (int i = 0; i < 16; i++)
-			cinstance[i] = new Tiles(i);
+		init_cinstances();
 		tiles = new TileData[x * y * z];
 
 		mount_point = wp;
