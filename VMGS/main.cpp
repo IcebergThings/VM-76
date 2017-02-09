@@ -192,7 +192,7 @@ namespace VM76 {
 		map = new Map(7,6,6,32);
 		block_pointer->obj->data.mat_c = 1;
 		glfwSetKeyCallback(window, key_callback);
-
+glfwSwapInterval(0);
 		loop();
 		terminate();
 	}
