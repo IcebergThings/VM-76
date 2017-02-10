@@ -33,6 +33,31 @@ namespace V {
 			return r;
 		}
 	};
+	//-------------------------------------------------------------------------
+	// ● VBinaryFileWriter
+	//-------------------------------------------------------------------------
+	class VBinaryFileWriter {
+	private:
+		FILE* f;
+	public:
+		VBinaryFileWriter(const char* filename);
+		~VBinaryFileWriter();
+		template <class T> void write_directly(T value) {
+			fwrite(&value, sizeof(T), 1, f);
+		}
+		 write_i32();
+		 write_i64();
+		 write_u8();
+		 write_u32();
+		 write_u64();
+		 write_float();
+		 write_double();
+		template <class T> T write_directly() {
+			T r;
+			fread(&r, sizeof(T), 1, f);
+			return r;
+		}
+	};
 }
 
 // 自杀式命名空间
