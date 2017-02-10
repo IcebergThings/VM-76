@@ -169,6 +169,6 @@ namespace VM76 {
 
 	void TiledMap::dispose() {
 		for (int i = 0; i < 16; i++)
-			VMDE_Dispose(cinstance[i]);
+			if (cinstance[i]) VMDE_Dispose(cinstance[i]);
 	}
 }
