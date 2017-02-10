@@ -125,22 +125,8 @@
 	//-------------------------------------------------------------------------
 	// ● 子文件夹中的头文件
 	//-------------------------------------------------------------------------
-	#include "V/VRingBuffer.hpp"
+	#include "V/V.hpp"
 	#include "Audio/audio.hpp"
-
-	//-------------------------------------------------------------------------
-	// ● RenderObject.cpp
-	//-------------------------------------------------------------------------
-	class Object {
-	public:
-		virtual ~Object();
-	};
-
-	class RenderObject : public Object {
-	public:
-		virtual void render();
-	};
-
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
@@ -159,6 +145,18 @@
 	void main_draw_end();
 	void main_set_brightness(float b);
 	extern glm::mat4 projection, view;
+	//-------------------------------------------------------------------------
+	// ● RenderObject.cpp
+	//-------------------------------------------------------------------------
+	class Object {
+	public:
+		virtual ~Object();
+	};
+
+	class RenderObject : public Object {
+	public:
+		virtual void render() = 0;
+	};
 	//-------------------------------------------------------------------------
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
@@ -209,23 +207,11 @@
 	//     log("%p", log);
 	#define log(...) Util::log_internal(DEBUG_ENVIRONMENT, __func__, __VA_ARGS__)
 	namespace Util {
-		extern const float PIf;
-		extern const double PI;
-		#define PId PI
-		extern const long double PIl;
 		extern FILE* log_file;
 		void init();
 		void terminate();
 		void log_internal(const char*, const char*, const char*, ...);
 		char* read_file(const char* filename);
-		#define UTIL_SINE_TABLE_SIZE ((size_t) 256)
-		extern float sine_table[UTIL_SINE_TABLE_SIZE];
-		void populate_sine_table();
-		template <class T> T clamp(T x, T min, T max) {
-			if (x < min) return min;
-			if (x > max) return max;
-			return x;
-		}
 	}
 	//-------------------------------------------------------------------------
 	// ● VMDE

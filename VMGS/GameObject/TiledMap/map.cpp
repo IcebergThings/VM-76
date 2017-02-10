@@ -43,11 +43,11 @@ namespace VM76 {
 				hm = hm * hm;
 				pos = pos * 1.8f; float n = glm::perlin(pos) * (hm * 0.5 + 0.5);
 				pos = pos * 1.5f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.85f * (hm * 0.5 + 0.5);
-				pos = pos * 2.1f + glm::vec2(0.1f, 0.13f); n += sin(glm::perlin(pos) * Util::PIf * 0.5) * 0.65f * hm;
+				pos = pos * 2.1f + glm::vec2(0.1f, 0.13f); n += sin(glm::perlin(pos) * VMath::PIf * 0.5) * 0.65f * hm;
 				pos = pos * 2.2f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.35f;
 				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.18f;
 				pos = pos * 1.9f + glm::vec2(0.2f);
-				n += sin(glm::perlin(pos) * Util::PIf * 0.5) * 0.1f;
+				n += sin(glm::perlin(pos) * VMath::PIf * 0.5) * 0.1f;
 
 				n = glm::clamp(1.0f / (float) TERRIAN_MAX_HEIGHT, n * 0.5f + 0.5f, 1.0f);
 				int h = n * TERRIAN_MAX_HEIGHT;

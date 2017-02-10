@@ -13,7 +13,7 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	Channel_Sine::Channel_Sine(float freq) {
 		index = .0f;
-		index_delta = UTIL_SINE_TABLE_SIZE / ((float) AUDIO_SAMPLE_RATE / 4 / freq);
+		index_delta = VMATH_SINE_TABLE_SIZE / ((float) AUDIO_SAMPLE_RATE / 4 / freq);
 		minus = false;
 	}
 	//-------------------------------------------------------------------------
@@ -31,15 +31,15 @@ namespace Audio {
 	//-------------------------------------------------------------------------
 	float Channel_Sine::next() {
 		index += index_delta;
-		if (index >= (float) UTIL_SINE_TABLE_SIZE) {
-			index = UTIL_SINE_TABLE_SIZE * 2.0f - index;
+		if (index >= (float) VMATH_SINE_TABLE_SIZE) {
+			index = VMATH_SINE_TABLE_SIZE * 2.0f - index;
 			index_delta = -index_delta;
 		} else if (index < 0) {
 			index = -index;
 			index_delta = -index_delta;
 			minus = !minus;
 		}
-		float value = Util::sine_table[(size_t) (int) index];
+		float value = VMath::sine_table[(size_t) (int) index];
 		if (minus) value = -value;
 		return value;
 	}

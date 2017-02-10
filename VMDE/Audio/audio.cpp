@@ -150,7 +150,17 @@ namespace Audio {
 			// 都要对每格缓冲区进行加和。
 			for (size_t j = 0; j < frame_count; j++) {
 				TWICE {
-					*buf++ += Util::clamp((*chbuf++) * ch->volume, -1.0f, 1.0f);
+					*buf++ += (*chbuf++) * ch->volume;
+				}
+			}
+		}
+		// 后期处理（笑）
+		{
+			float* buf = (float*) output_buffer;
+			for (size_t j = 0; j < frame_count; j++) {
+				TWICE {
+					*buf = glm::clamp(*buf, -1.0f, 1.0f);
+					buf++;
 				}
 			}
 		}
