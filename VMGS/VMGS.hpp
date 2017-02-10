@@ -81,13 +81,12 @@
 	//-------------------------------------------------------------------------
 	// ● Scene Management
 	//-------------------------------------------------------------------------
-		class SceneManager : public Object {
-		public:
-			static bool render_debug_info;
-			static void load_scene(Scene* c);
-			static void render_scene();
-			static void update_scene();
-			static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		namespace SceneManager {
+			extern bool render_debug_info;
+			void load_scene(Scene* c);
+			void render_scene();
+			void update_scene();
+			void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		};
 
 	//-------------------------------------------------------------------------

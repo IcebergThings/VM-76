@@ -11,6 +11,8 @@ namespace VM76 {
 	void Scene::update() {}
 	void Scene::dispose() {}
 
+	bool SceneManager::render_debug_info = true;
+
 	void SceneManager::load_scene(Scene* c) {
 		context = c;
 	}
