@@ -29,10 +29,46 @@ namespace VM76 {
 		#undef FILL_ID
 	}
 
+	Tiles* TiledMap::get_instances (int id) {
+		switch (id) {
+			case Grass:
+				return new MultiFaceCubeTile(49,49,0,2,49,49);
+				break;
+			case Stone:
+				return new SimpleCubeTile(1);
+				break;
+			case Dirt:
+				return new SimpleCubeTile(2);
+				break;
+			case Glass:
+				return new SimpleCubeTile(3);
+				break;
+			case WoodPlank:
+				return new SimpleCubeTile(4);
+				break;
+			case HalfBrick:
+				return new MultiFaceCubeTile(5,5,6,6,5,5);
+				break;
+			case Brick:
+				return new SimpleCubeTile(7);
+				break;
+			case TNT:
+				return new MultiFaceCubeTile(8,8,9,10,8,8);
+				break;
+			case CobbleStone:
+				return new SimpleCubeTile(16);
+				break;
+			default:
+				return NULL;
+				break;
+		}
+	}
+
 	TiledMap::TiledMap(int x, int y, int z, glm::vec3 wp, DataMap* m) {
 		width = x; length = z; height = y;
 
-		init_cinstances(cinstance);
+		//init_cinstances(cinstance);
+		memset(cinstance, 0, sizeof(cinstance));
 		map = m;
 
 		mount_point = wp;
@@ -91,12 +127,26 @@ namespace VM76 {
 		}
 
 		for (int id = 0; id < 16; id ++) {
-			for (int x = 0; x < 6; x++) {
-				xefree(cinstance[id]->mat[x]);
-				if (count[id][x] > 0) {
-					cinstance[id]->mat[x] = new glm::mat4[count[id][x]];
-					memcpy(cinstance[id]->mat[x], temp[id][x], sizeof(glm::mat4) * count[id][x]);
+
+			bool has_block_valid = false;
+			for (int x = 0; x < 6; x++) if (count[id][x]) {
+				has_block_valid = true;
+				break;
+			}
+
+			if (has_block_valid) {
+				if (!cinstance[id]) cinstance[id] = get_instances(id + 1);
+
+				for (int x = 0; x < 6; x++) {
+					if (count[id][x] > 0) {
+						xefree(cinstance[id]->mat[x]);
+
+						cinstance[id]->mat[x] = new glm::mat4[count[id][x]];
+						memcpy(cinstance[id]->mat[x], temp[id][x], sizeof(glm::mat4) * count[id][x]);
+					}
 				}
+			} else if (cinstance[id]) {
+				VMDE_Dispose(cinstance[id]);
 			}
 		}
 
@@ -105,7 +155,7 @@ namespace VM76 {
 				xefree(temp[x][y]);
 
 		for (int id = 0; id < 16; id++) {
-			cinstance[id]->update_instance(
+			if (cinstance[id]) cinstance[id]->update_instance(
 				count[id][0],count[id][1],count[id][2],
 				count[id][3],count[id][4],count[id][5]
 			);
@@ -114,7 +164,7 @@ namespace VM76 {
 
 	void TiledMap::render() {
 		for (int i = 0; i < 16; i++)
-			cinstance[i]->render();
+			if (cinstance[i]) cinstance[i]->render();
 	}
 
 	void TiledMap::dispose() {

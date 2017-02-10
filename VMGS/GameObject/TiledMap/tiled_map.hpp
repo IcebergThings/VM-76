@@ -59,6 +59,7 @@ namespace VM76 {
 		inline int calcTileIndex(glm::vec3 pos) { return (width * length) * pos.y + (length) * pos.z + pos.x; }
 
 		static void init_cinstances(Tiles* cinstance[]);
+		static Tiles* get_instances(int id);
 
 		TiledMap(int x, int y, int z, glm::vec3 wp, DataMap* m);
 		void render();
