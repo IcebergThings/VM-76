@@ -128,6 +128,7 @@ namespace VM76 {
 				Audio::play_channel(sine);
 			}
 		}
+		#undef PRESS
 	}
 	//-------------------------------------------------------------------------
 	// ● 刷新
@@ -168,17 +169,19 @@ namespace VM76 {
 		if (hand_id > 0)
 			clist[hand_id - 1]->render();
 
-		char info[64];
-		sprintf(info, "Hand ID: %d Pointer ID: %d",
-			hand_id,
-			map->map->tidQuery(obj->pos.x, obj->pos.y, obj->pos.z)
-		);
-		trex->instanceRenderText(
-			info, gui_2d_projection,
-			glm::mat4(1.0),
-			glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.87,0.0)),
-			0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
-		);
+		if (SceneManager::render_debug_info) {
+			char info[64];
+			sprintf(info, "Hand ID: %d Pointer ID: %d",
+				hand_id,
+				map->map->tidQuery(obj->pos.x, obj->pos.y, obj->pos.z)
+			);
+			trex->instanceRenderText(
+				info, gui_2d_projection,
+				glm::mat4(1.0),
+				glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.87,0.0)),
+				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+			);
+		}
 		glEnable(GL_DEPTH_TEST);
 	}
 	//-------------------------------------------------------------------------

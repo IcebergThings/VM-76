@@ -28,12 +28,12 @@
 		extern float aspect_ratio;
 
 	//-------------------------------------------------------------------------
-	// ● Scene Management
+	// ● Scenes
 	//-------------------------------------------------------------------------
 		class Scene : public Object {
 		public:
 			virtual void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-			virtual void render(); // Graphics update
+			virtual void render() = 0; // Graphics update
 			virtual void update(); // Tick update
 			virtual void dispose();
 		};
@@ -78,8 +78,12 @@
 			void dispose();
 		};
 
+	//-------------------------------------------------------------------------
+	// ● Scene Management
+	//-------------------------------------------------------------------------
 		class SceneManager : public Object {
 		public:
+			static bool render_debug_info;
 			static void load_scene(Scene* c);
 			static void render_scene();
 			static void update_scene();
