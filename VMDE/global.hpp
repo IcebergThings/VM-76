@@ -128,21 +128,6 @@
 	#include "V/VMath.hpp"
 	#include "V/VRingBuffer.hpp"
 	#include "Audio/audio.hpp"
-
-	//-------------------------------------------------------------------------
-	// ● RenderObject.cpp
-	//-------------------------------------------------------------------------
-	class Object {
-	public:
-		virtual void dispose();
-	};
-
-	class RenderObject : public Object {
-	public:
-		virtual void render() = 0;
-		virtual ~RenderObject();
-	};
-
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------
@@ -161,6 +146,19 @@
 	void main_draw_end();
 	void main_set_brightness(float b);
 	extern glm::mat4 projection, view;
+	//-------------------------------------------------------------------------
+	// ● RenderObject.cpp
+	//-------------------------------------------------------------------------
+	class Object {
+	public:
+		virtual void dispose();
+	};
+
+	class RenderObject : public Object {
+	public:
+		virtual void render() = 0;
+		virtual ~RenderObject();
+	};
 	//-------------------------------------------------------------------------
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
