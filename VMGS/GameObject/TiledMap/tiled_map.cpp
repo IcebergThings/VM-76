@@ -123,20 +123,20 @@ namespace VM76 {
 
 				for (int x = 0; x < 6; x++) {
 					if (count[id][x] > 0) {
-						xefree(cinstance[id]->mat[x]);
+						XE(free, cinstance[id]->mat[x]);
 
 						cinstance[id]->mat[x] = new glm::mat4[count[id][x]];
 						memcpy(cinstance[id]->mat[x], temp[id][x], sizeof(glm::mat4) * count[id][x]);
 					}
 				}
 			} else if (cinstance[id]) {
-				VMDE_Dispose(cinstance[id]);
+				VMDE_Dispose(delete, cinstance[id]);
 			}
 		}
 
 		for (int x = 0; x < 16; x++)
 			for (int y = 0; y < 6; y++)
-				xefree(temp[x][y]);
+				XE(free, temp[x][y]);
 
 		for (int id = 0; id < 16; id++) {
 			if (cinstance[id]) cinstance[id]->update_instance(
@@ -153,6 +153,6 @@ namespace VM76 {
 
 	void TiledMap::dispose() {
 		for (int i = 0; i < 16; i++)
-			if (cinstance[i]) VMDE_Dispose(cinstance[i]);
+			if (cinstance[i]) VMDE_Dispose(delete, cinstance[i]);
 	}
 }

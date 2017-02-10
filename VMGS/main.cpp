@@ -47,7 +47,7 @@ namespace VM76 {
 
 	void terminate() {
 		log("starting to terminate");
-		VMDE_Dispose(editor);
+		VMDE_Dispose(delete, editor);
 		terminate_engine();
 		log("terminated successfully");
 	}

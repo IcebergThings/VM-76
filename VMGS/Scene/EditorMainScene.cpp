@@ -157,14 +157,14 @@ namespace VM76 {
 	}
 
 	void EditorMainScene::dispose() {
-		VMDE_Dispose(tile_texture);
-		VMDE_Dispose(block_pointer);
-		for (int i = 0; i < 16; i++) VMDE_Dispose(clist[i]);
-		VMDE_Dispose(map);
-		VMDE_Dispose(trex);
-		VMDE_Dispose(gui);
-		VMDE_Dispose(shader_textured);
-		VMDE_Dispose(shader_basic);
+		VMDE_Dispose(delete, tile_texture);
+		VMDE_Dispose(delete, block_pointer);
+		for (int i = 0; i < 16; i++) VMDE_Dispose(delete, clist[i]);
+		VMDE_Dispose(delete, map);
+		VMDE_Dispose(delete, trex);
+		VMDE_Dispose(delete, gui);
+		VMDE_Dispose(delete, shader_textured);
+		VMDE_Dispose(delete, shader_basic);
 	}
 
 }

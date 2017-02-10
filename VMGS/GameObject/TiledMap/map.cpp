@@ -110,7 +110,9 @@ namespace VM76 {
 	}
 
 	void Map::dispose() {
-		for (int x = 0; x < width * length * height; x++) VMDE_Dispose(chunks[x]);
-		xefree(chunks);
+		for (int x = 0; x < width * length * height; x++) {
+			VMDE_Dispose(delete, chunks[x]);
+		}
+		XE(delete[], chunks);
 	}
 }

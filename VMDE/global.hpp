@@ -92,17 +92,26 @@
 	// EXP_ASM - EXPLOSION的Pentium Pro指令实现
 	// * 这个实现不会导致SIGSEGV。
 	#define EXP_ASM (__asm__("UD2"))
-	// xeFree - 释放内存黑魔法
-	#define xefree(pointer) do { \
+	// XE - 释放内存黑魔法
+	// “X掉Exceptions”！
+	//     void* m;
+	//     m = malloc(1); xe(free, m);
+	//     m = (void*) 0; xe(free, m);
+	//     m = new float; xe(delete, m);
+	//     m = new tm[4]; xe(delete[], m);
+	#define XE(method, pointer) do { \
 		if (pointer) { \
-			free(pointer); \
-			pointer = NULL; \
+			method(pointer); \
+			(pointer) = NULL; \
 		} \
 	} while (false)
 	// VMDE_Dispose - 一键销毁宏魔法
-	#define VMDE_Dispose(x) do { \
-		x->dispose(); \
-		xefree(x); \
+	#define VMDE_Dispose(method, object) do { \
+		if (object) { \
+			(object)->dispose(); \
+			method(object); \
+			(object) = NULL; \
+		} \
 	} while (false)
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)

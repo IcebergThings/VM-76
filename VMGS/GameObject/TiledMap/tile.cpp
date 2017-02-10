@@ -194,8 +194,9 @@ namespace VM76 {
 
 	void Tiles::dispose() {
 		for (int i = 0; i < 6; i++) {
-			VMDE_Dispose(obj[i]);
-			xefree(vtx[i]); xefree(itx[i]);
+			VMDE_Dispose(delete, obj[i]);
+			XE(delete[], vtx[i]);
+			XE(delete[], itx[i]);
 		}
 	}
 }

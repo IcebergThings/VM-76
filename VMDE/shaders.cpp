@@ -52,8 +52,8 @@ Shaders* Shaders::CreateFromFile(const char* vsh_src, const char* fsh_src) {
 	char* temp_vertexShaderSource = Util::read_file(vsh_src);
 	char* temp_fragmentShaderSource = Util::read_file(fsh_src);
 	Shaders* temp_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	xefree(temp_vertexShaderSource);
-	xefree(temp_fragmentShaderSource);
+	XE(free, temp_vertexShaderSource);
+	XE(free, temp_fragmentShaderSource);
 
 	return temp_shader;
 }
