@@ -10,6 +10,29 @@ namespace V {
 	//-------------------------------------------------------------------------
 	#include "VMath.hpp"
 	#include "VRingBuffer.hpp"
+	//-------------------------------------------------------------------------
+	// ● VBinaryFileReader
+	//-------------------------------------------------------------------------
+	class VBinaryFileReader {
+	private:
+		FILE* f;
+	public:
+		VBinaryFileReader(const char* filename);
+		~VBinaryFileReader();
+		int8_t read_i8();
+		int32_t read_i32();
+		int64_t read_i64();
+		uint8_t read_u8();
+		uint32_t read_u32();
+		uint64_t read_u64();
+		float read_float();
+		double read_double();
+		template <class T> T read_directly() {
+			T r;
+			fread(&r, sizeof(T), 1, f);
+			return r;
+		}
+	};
 }
 
 // 自杀式命名空间

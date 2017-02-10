@@ -116,12 +116,12 @@
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
 	// error - 抛出错误并终止程序
-	#define error(format, ...) do { \
-		log(format, __VA_ARGS__); \
+	#define error(...) do { \
+		log(__VA_ARGS__); \
 		perror("perror()"); \
 		fputs("The errno may not help.\n", stderr); \
 		exit(1); \
-	}
+	} while (false)
 	//-------------------------------------------------------------------------
 	// ● 子文件夹中的头文件
 	//-------------------------------------------------------------------------
