@@ -8,6 +8,8 @@ namespace VM76 {
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
 
+		map = new Map(4,4,4,64);
+
 		tile_texture = new Res::Texture("../Media/terrain.png");
 
 		shader_textured = Shaders::CreateFromFile("../Media/shaders/gbuffers_textured.vsh", "../Media/shaders/gbuffers_textured.fsh");

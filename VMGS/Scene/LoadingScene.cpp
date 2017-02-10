@@ -17,15 +17,6 @@ namespace VM76 {
 	void LoadingScene::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
 
 	bool first_load = true;
-	bool sec_load = false;
-	bool load_end = false;
-
-	std::thread load_thr;
-
-	void thread_load_task(EditorMainScene* todo, bool* theend) {
-		todo->map = new Map(4,4,4,64); // Maximum capability of the card
-		*theend = true;
-	}
 
 	void LoadingScene::render() {
 		glDisable(GL_DEPTH_TEST);
@@ -43,18 +34,9 @@ namespace VM76 {
 		glEnable(GL_DEPTH_TEST);
 
 		if (first_load) {
-			sec_load = true;
 			first_load = false;
-		}
-		if (sec_load) {
-			// Load what we need to load
-			todo = new EditorMainScene();
-			load_thr = std::thread(thread_load_task, (EditorMainScene*) todo, &load_end);
-			load_thr.detach();
-			sec_load = false;
-		}
-
-		if (load_end) {
+		} else {
+			todo = (Scene*) new EditorMainScene();
 			SceneManager::load_scene(todo);
 		}
 	}
