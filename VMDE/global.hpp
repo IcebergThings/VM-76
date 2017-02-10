@@ -133,13 +133,12 @@
 	//-------------------------------------------------------------------------
 	class Object {
 	public:
-		virtual void dispose();
+		virtual ~Object();
 	};
 
 	class RenderObject : public Object {
 	public:
 		virtual void render();
-		virtual ~RenderObject();
 	};
 
 	//-------------------------------------------------------------------------
