@@ -1,7 +1,7 @@
 //=============================================================================
 // ■ text.cpp
 //-----------------------------------------------------------------------------
-//   VMDE中与文字渲染的部分。
+//   VMDE中与文字渲染有关的部分。
 //=============================================================================
 
 #include "global.hpp"
@@ -21,59 +21,94 @@ TextRenderer::TextRenderer() {
 	texshader = Shaders::CreateFromFile("../Media/shaders/text.vsh", "../Media/shaders/text.fsh");
 }
 
-void TextRenderer::BakeText(const char* text, float width, float height, bool shadow) {
+void TextRenderer::BakeText(
+	const char* text,
+	float width, float height,
+	TextDecorationType decoration
+) {
 	int length = strlen(text);
+	int vtx_stride, itx_stride;
+	switch (decoration) {
+	case NONE:
+		vtx_stride = 4;
+		itx_stride = 6;
+		break;
+	case SHADOW:
+		vtx_stride = 8;
+		itx_stride = 12;
+		break;
+	case OUTLINE:
+		vtx_stride = 20;
+		itx_stride = 30;
+		break;
+	}
+	Vertex* vtx = new Vertex[vtx_stride * length];
+	GLuint* itx = new GLuint[itx_stride * length];
 
-	Vertex* vtx = new Vertex[shadow ? length * 8 : length * 4];
-	GLuint* itx = new GLuint[shadow ? length * 12 : length * 6];
-
-	float lbx = 0.0;
-	int vtx_stride = shadow ? 8 : 4;
-	int itx_stride = shadow ? 12 : 6;
+	float lbx = 0.0f;
 
 	for (int i = 0; i < length; i++) {
 		char c = text[i];
-		const float w = 1.0 / 32.0f;
-		const float h = 1.0 / 8.0f;
+		const float w = 1 / 32.0f;
+		const float h = 1 / 8.0f;
 
-		float stx = (float) (c % 32) * w;
+		float stx = (float) (c & 0b11111) * w;
 		float sty = (float) (c >> 5) * h;
 
 		lbx = (float) (i) * width;
 
-		vtx[i * vtx_stride + 0] = {{lbx, 0.0, 0.0},         {1.0,1.0,1.0,1.0}, {stx,sty + h}, {0.0,0.0,0.0}};
-		vtx[i * vtx_stride + 1] = {{lbx, height, 0.0},      {1.0,1.0,1.0,1.0}, {stx,sty    }, {0.0,0.0,0.0}};
-		vtx[i * vtx_stride + 2] = {{lbx+width, height, 0.0},{1.0,1.0,1.0,1.0}, {stx + w,sty}, {0.0,0.0,0.0}};
-		vtx[i * vtx_stride + 3] = {{lbx+width, 0.0, 0.0},   {1.0,1.0,1.0,1.0}, {stx+w,sty+h}, {0.0,0.0,0.0}};
-
+		Vertex* vtxi = vtx + i * vtx_stride;
+		GLuint* itxi = itx + i * itx_stride;
+		#define ADD_VERTICES(j, ox, oy, r, g, b, a) do { \
+			vtxi[(j) + 0] = {{lbx         + (ox),        + (oy), .0}, {r, g, b, a}, {stx    , sty + h}, {.0, .0, .0}}; \
+			vtxi[(j) + 1] = {{lbx         + (ox), height + (oy), .0}, {r, g, b, a}, {stx    , sty    }, {.0, .0, .0}}; \
+			vtxi[(j) + 2] = {{lbx + width + (ox), height + (oy), .0}, {r, g, b, a}, {stx + w, sty    }, {.0, .0, .0}}; \
+			vtxi[(j) + 3] = {{lbx + width + (ox),        + (oy), .0}, {r, g, b, a}, {stx + w, sty + h}, {.0, .0, .0}}; \
+		} while (false);
+		#define ADD_INDEICES(j, a, b, c) do { \
+			itxi[(j) + 0] = i * vtx_stride + (a); \
+			itxi[(j) + 1] = i * vtx_stride + (b); \
+			itxi[(j) + 2] = i * vtx_stride + (c); \
+		} while (false);
+		ADD_VERTICES(0, 0, 0, 1.0, 1.0, 1.0, 1.0);
+		// sd = shadow distance
 		float sd = 0.0016 * (float) VMDE->width / (float) VMDE->height;
-		if (shadow) {
-			vtx[i * vtx_stride + 4] = {{lbx + sd, - sd, 0.0},         {.0,.0,.0,.8}, {stx,sty + h}, {0.0,0.0,0.0}};
-			vtx[i * vtx_stride + 5] = {{lbx + sd, height - sd, 0.0},  {.0,.0,.0,.8}, {stx,sty    }, {0.0,0.0,0.0}};
-			vtx[i * vtx_stride + 6] = {{lbx+width+sd, height-sd, 0.0},{.0,.0,.0,.8}, {stx + w,sty}, {0.0,0.0,0.0}};
-			vtx[i * vtx_stride + 7] = {{lbx+width+sd, -sd, 0.0},      {.0,.0,.0,.8}, {stx+w,sty+h}, {0.0,0.0,0.0}};
+		switch (decoration) {
+		case NONE:
+			break;
+		case SHADOW:
+			ADD_VERTICES(4, sd, -sd, 0.0, 0.0, 0.0, 0.8);
+			break;
+		case OUTLINE:
+			ADD_VERTICES( 4, +sd, +sd, 0.0, 0.0, 0.0, 0.3);
+			ADD_VERTICES( 8, +sd, -sd, 0.0, 0.0, 0.0, 0.3);
+			ADD_VERTICES(12, -sd, +sd, 0.0, 0.0, 0.0, 0.3);
+			ADD_VERTICES(16, -sd, -sd, 0.0, 0.0, 0.0, 0.3);
+			break;
 		}
-
-		if (shadow) {
-			itx[i * itx_stride + 0] = i * vtx_stride + 4;
-			itx[i * itx_stride + 1] = i * vtx_stride + 5;
-			itx[i * itx_stride + 2] = i * vtx_stride + 7;
-			itx[i * itx_stride + 3] = i * vtx_stride + 5;
-			itx[i * itx_stride + 4] = i * vtx_stride + 6;
-			itx[i * itx_stride + 5] = i * vtx_stride + 7;
-			itx[i * itx_stride + 6] = i * vtx_stride + 0;
-			itx[i * itx_stride + 7] = i * vtx_stride + 1;
-			itx[i * itx_stride + 8] = i * vtx_stride + 3;
-			itx[i * itx_stride + 9] = i * vtx_stride + 1;
-			itx[i * itx_stride + 10] = i * vtx_stride + 2;
-			itx[i * itx_stride + 11] = i * vtx_stride + 3;
-		} else {
-			itx[i * itx_stride + 0] = i * vtx_stride + 0;
-			itx[i * itx_stride + 1] = i * vtx_stride + 1;
-			itx[i * itx_stride + 2] = i * vtx_stride + 3;
-			itx[i * itx_stride + 3] = i * vtx_stride + 1;
-			itx[i * itx_stride + 4] = i * vtx_stride + 2;
-			itx[i * itx_stride + 5] = i * vtx_stride + 3;
+		switch (decoration) {
+		case NONE:
+			ADD_INDEICES(0, 0, 1, 3);
+			ADD_INDEICES(3, 1, 2, 3);
+			break;
+		case SHADOW:
+			ADD_INDEICES(0, 4, 5, 7);
+			ADD_INDEICES(3, 5, 6, 7);
+			ADD_INDEICES(6, 0, 1, 3);
+			ADD_INDEICES(9, 1, 2, 3);
+			break;
+		case OUTLINE:
+			ADD_INDEICES(0, 4, 5, 7);
+			ADD_INDEICES(3, 5, 6, 7);
+			ADD_INDEICES(6, 8, 9, 11);
+			ADD_INDEICES(9, 9, 10, 11);
+			ADD_INDEICES(12, 12, 13, 15);
+			ADD_INDEICES(15, 13, 14, 15);
+			ADD_INDEICES(18, 16, 17, 19);
+			ADD_INDEICES(21, 17, 18, 19);
+			ADD_INDEICES(24, 0, 1, 3);
+			ADD_INDEICES(27, 1, 2, 3);
+			break;
 		}
 	}
 
@@ -83,7 +118,8 @@ void TextRenderer::BakeText(const char* text, float width, float height, bool sh
 	obj->data.indices = itx;
 
 	obj->fbind();
-	free(vtx); free(itx);
+	free(vtx);
+	free(itx);
 }
 
 void TextRenderer::render() {
@@ -97,14 +133,14 @@ void TextRenderer::render() {
 void TextRenderer::instanceRenderText(
 		const char* text,
 		glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-		float width, float height, bool shadow
+		float width, float height, TextDecorationType decoration
 ) {
 	texshader->ProjectionView(projection, view);
 
 	glm::mat4 foo[1] = {transform};
 	obj->data.mat_c = 1;
 	obj->data.mat = (GLuint*) &foo[0];
-	BakeText(text, width, height, shadow);
+	BakeText(text, width, height, decoration);
 
 	render();
 }
