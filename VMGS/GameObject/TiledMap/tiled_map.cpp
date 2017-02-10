@@ -9,24 +9,8 @@
 namespace VM76 {
 
 	void TiledMap::init_cinstances (Tiles* cinstance[]) {
-		#define FILL_ID(id, f) cinstance[id - 1] = new f;
-
-		FILL_ID(Grass, MultiFaceCubeTile(49,49,0,2,49,49))
-		FILL_ID(Stone, SimpleCubeTile(1))
-		FILL_ID(Dirt, SimpleCubeTile(2))
-		FILL_ID(Glass, SimpleCubeTile(3))
-		FILL_ID(WoodPlank, SimpleCubeTile(4))
-		FILL_ID(HalfBrick, MultiFaceCubeTile(5,5,6,6,5,5))
-		FILL_ID(Brick, SimpleCubeTile(7))
-		FILL_ID(TNT, MultiFaceCubeTile(8,8,9,10,8,8))
-		FILL_ID(CobbleStone, SimpleCubeTile(16))
-
-		// Fill the rest with MISSING TEXTURE
-		for (int i = CobbleStone; i < 16; i ++) {
-			FILL_ID(i + 1, SimpleCubeTile(31))
-		}
-
-		#undef FILL_ID
+		for (int i = 0; i < 16; i ++)
+			cinstance[i] = get_instances(i + 1);
 	}
 
 	Tiles* TiledMap::get_instances (int id) {
@@ -59,7 +43,7 @@ namespace VM76 {
 				return new SimpleCubeTile(16);
 				break;
 			default:
-				return NULL;
+				return new SimpleCubeTile(31);
 				break;
 		}
 	}
