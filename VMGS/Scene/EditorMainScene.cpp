@@ -166,8 +166,7 @@ namespace VM76 {
 		gui->set_texture("atlastex", tile_texture, 0);
 		gui->ProjectionView(gui_2d_projection, glm::mat4(1.0));
 		glDisable(GL_DEPTH_TEST);
-		if (hand_id > 0)
-			clist[hand_id - 1]->render();
+		if (hand_id > 0) clist[hand_id - 1]->render();
 
 		if (SceneManager::render_debug_info) {
 			char info[64];
