@@ -50,7 +50,8 @@ namespace VM76 {
 	}
 
 	void Axis::dispose() {
-		VMDE_Dispose(obj);
-		xefree(vtx); xefree(itx);
+		VMDE_Dispose(delete, obj);
+		XE(delete[], vtx);
+		XE(delete[], itx);
 	}
 }

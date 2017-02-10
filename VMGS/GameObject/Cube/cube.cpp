@@ -70,7 +70,7 @@ namespace VM76 {
 		// Draw none for default
 		obj->data.mat_c = 0;
 
-		//xefree(mat);
+		//XE(delete[], mat);
 	}
 
 	void Cube::update_instance(int mat_c, glm::mat4* mat) {
@@ -90,7 +90,8 @@ namespace VM76 {
 	}
 
 	void Cube::dispose() {
-		VMDE_Dispose(obj);
-		xefree(vtx); xefree(itx);
+		VMDE_Dispose(delete, obj);
+		XE(delete[], vtx);
+		XE(delete[], itx);
 	}
 }
