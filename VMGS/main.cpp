@@ -13,6 +13,7 @@ namespace VM76 {
 	TextRenderer* trex;
 	static Scene* loading;
 	static Scene* editor;
+	float aspect_ratio;
 	glm::mat4 gui_2d_projection;
 	//-------------------------------------------------------------------------
 	// ● 主循环
@@ -53,8 +54,8 @@ namespace VM76 {
 		init_control();
 
 		trex = new TextRenderer();
-		float aspectRatio = float(VMDE->width) / float(VMDE->height);
-		gui_2d_projection = glm::ortho(0.0, 1.0 * aspectRatio, 0.0, 1.0, -1.0, 1.0);
+		aspect_ratio = (float) VMDE->width / VMDE->height;
+		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);
 
 		// GL settings initialize
 		glFrontFace(GL_CCW);

@@ -25,6 +25,7 @@
 
 		extern TextRenderer* trex;
 		extern glm::mat4 gui_2d_projection;
+		extern float aspect_ratio;
 
 	//-------------------------------------------------------------------------
 	// ● Scene Management

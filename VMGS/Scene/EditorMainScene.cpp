@@ -1,5 +1,7 @@
 //=============================================================================
 // ■ VMGS/Scene/EditorMainScene.cpp
+//-----------------------------------------------------------------------------
+//   编辑器场景。
 //=============================================================================
 
 #include "../VMGS.hpp"
@@ -28,7 +30,7 @@ namespace VM76 {
 			"../Media/shaders/gui.fsh"
 		);
 
-		projection = glm::perspective(1.3f, aspectRatio, 0.1f, 1000.0f);
+		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		view = glm::lookAt(
 			glm::vec3(0.0, 2.6, 0.0),
 			glm::vec3(0.0, 0.0, 0.0),
