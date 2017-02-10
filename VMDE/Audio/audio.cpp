@@ -159,7 +159,7 @@ namespace Audio {
 			float* buf = (float*) output_buffer;
 			for (size_t j = 0; j < frame_count; j++) {
 				TWICE {
-					*buf = VMath::clamp(*buf, -1.0f, 1.0f);
+					*buf = glm::clamp(*buf, -1.0f, 1.0f);
 					buf++;
 				}
 			}
