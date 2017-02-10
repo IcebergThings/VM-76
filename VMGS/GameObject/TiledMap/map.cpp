@@ -10,33 +10,25 @@
 namespace VM76 {
 
 	DataMap::DataMap(int w, int h, int l) {
-		map = new TileData[w * h * l];
+		constStone = {1, 0};
+
+		map = (TileData*) malloc(sizeof(TileData) * w * h * l);
 		width = w; length = l; height = h;
 
 		generate_V1();
-
-		for (int x = 0; x < width; x++)
-			for (int z = 0; z < length; z++)
-				for (int y = 0; y < height; y++)
-					map[calcIndex(x,y,z)].transform = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z));
-	}
-
-	static TileData constStone = {1, 0, glm::mat4(0.0)};
-
-	TileData DataMap::tileQuery(int x, int y, int z) {
-		if (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) return constStone;
-		return map[calcIndex(x,y,z)];
 	}
 
 	void DataMap::generate_flat() {
 		for (int x = 0; x < width; x++)
 			for (int z = 0; z < length; z++)
-				for (int y = 0; y < height; y++)
-					map[calcIndex(x,y,z)].tid = (y == 0) ? Grass : Air;
+				for (int y = 0; y < height; y++) {
+					TileData t = map[calcIndex(x,y,z)];
+					t.tid = (y == 0) ? Grass : Air;
+				}
 	}
 
 	void DataMap::generate_V1() {
-		log("Start generating maps");
+		log("Start generating maps, %d x %d x %d", width, length, height);
 		for (int i = 0; i < width; i ++) {
 			if (i % (width / 12) == 0)
 				log("Generated %d%% (%d / %d)",
@@ -63,9 +55,11 @@ namespace VM76 {
 				h = glm::clamp(0, h, height);
 
 				for (int y = 0; y < h; y++) {
-					map[calcIndex(i, y, j)].tid = (y == ho - 1) ? Grass : Stone;
+					map[calcIndex(i,y,j)].tid = (y == ho - 1) ? Grass : Stone;
 				}
-				for (int y = h; y < height; y++) map[calcIndex(i, y, j)].tid = Air;
+				for (int y = h; y < height; y++) {
+					map[calcIndex(i,y,j)].tid = Air;
+				}
 			}
 		}
 		log("Generated 100%%, Complete");
@@ -118,9 +112,5 @@ namespace VM76 {
 	void Map::dispose() {
 		for (int x = 0; x < width * length * height; x++) VMDE_Dispose(chunks[x]);
 		xefree(chunks);
-	}
-
-	int Map::calcChunkIndex(int x, int y, int z) {
-		return (width * length) * y + (length) * z + x;
 	}
 }

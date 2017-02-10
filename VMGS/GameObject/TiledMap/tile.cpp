@@ -148,20 +148,16 @@ namespace VM76 {
 
 		// Prepare an empty space
 		for (int i = 0; i < 6; i++) {
-			mat[i] = new glm::mat4[4096];
-			for (int x = 0; x < 4096; x++) mat[i][x] = glm::mat4(1.0);
+			mat[i] = NULL;
 
 			obj[i] = new GDrawable();
 			obj[i]->data.vtx_c = 4;
 			obj[i]->data.ind_c = 2 * 3;
 			obj[i]->data.vertices = vtx[i];
 			obj[i]->data.indices = itx[i];
-			// Reserve 512 spaces
-			obj[i]->data.mat_c = 4096;
-			obj[i]->data.mat = (GLuint*) &mat[i][0];
-			obj[i]->fbind();
-			// Draw none for default
 			obj[i]->data.mat_c = 0;
+			obj[i]->data.mat = NULL;
+			obj[i]->fbind();
 		}
 	}
 

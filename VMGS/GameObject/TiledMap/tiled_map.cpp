@@ -44,45 +44,45 @@ namespace VM76 {
 		glm::mat4* temp[16][6];
 		for (int x = 0; x < 16; x++)
 			for (int y = 0; y < 6; y++)
-				temp[x][y] = new glm::mat4[8192];
+				temp[x][y] = (glm::mat4*) malloc(sizeof(glm::mat4) * 8192);
 
 		memset(count, 0, sizeof(count));
 
 		for (int x = mount_point.x; x < mount_point.x + width; x++) {
 			for (int z = mount_point.z; z < length + mount_point.z; z++) {
 				for (int y = mount_point.y; y < height + mount_point.y; y++) {
-					TileData ti = map->tileQuery(x, y, z);
-					int id = ti.tid;
+					int id = map->tidQuery(x, y, z);
 					if (id > 0) {
 						id --;
 
-						if (map->tileQuery(x, y, z - 1).tid == 0) {
-							temp[id][0][count[id][0]] = ti.transform;
+						glm::mat4 tr = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z));
+						if (map->tidQuery(x, y, z - 1) == 0) {
+							temp[id][0][count[id][0]] = tr;
 							count[id][0] ++;
 						}
 
-						if (map->tileQuery(x, y, z + 1).tid == 0) {
-							temp[id][1][count[id][1]] = ti.transform;
+						if (map->tidQuery(x, y, z + 1) == 0) {
+							temp[id][1][count[id][1]] = tr;
 							count[id][1] ++;
 						}
 
-						if (map->tileQuery(x, y + 1, z).tid == 0) {
-							temp[id][2][count[id][2]] = ti.transform;
+						if (map->tidQuery(x, y + 1, z) == 0) {
+							temp[id][2][count[id][2]] = tr;
 							count[id][2] ++;
 						}
 
-						if (map->tileQuery(x, y - 1, z).tid == 0) {
-							temp[id][3][count[id][3]] = ti.transform;
+						if (map->tidQuery(x, y - 1, z) == 0) {
+							temp[id][3][count[id][3]] = tr;
 							count[id][3] ++;
 						}
 
-						if (map->tileQuery(x - 1, y, z).tid == 0) {
-							temp[id][4][count[id][4]] = ti.transform;
+						if (map->tidQuery(x - 1, y, z) == 0) {
+							temp[id][4][count[id][4]] = tr;
 							count[id][4] ++;
 						}
 
-						if (map->tileQuery(x + 1, y, z).tid == 0) {
-							temp[id][5][count[id][5]] = ti.transform;
+						if (map->tidQuery(x + 1, y, z) == 0) {
+							temp[id][5][count[id][5]] = tr;
 							count[id][5] ++;
 						}
 					}

@@ -14,23 +14,32 @@ namespace VM76 {
 	struct TileData {
 		unsigned int tid;
 		unsigned char data_flag;
-
-		glm::mat4 transform;
 	};
 
 	#define TERRIAN_MAX_HEIGHT 60
+
 
 	class DataMap : public Object {
 	public:
 		TileData* map = NULL;
 		int width, length, height;
+		TileData constStone;
 
 	public:
 		DataMap(int w, int h, int l);
-		TileData tileQuery(int x, int y, int z);
 
 		inline int calcIndex(int x, int y, int z) { return (width * length) * y + (length) * z + x; }
 		inline int calcIndex(glm::vec3 v) { return (width * length) * v.y + (length) * v.z + v.x; }
+
+		inline TileData tileQuery(int x, int y, int z) {
+			return (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) ?
+			constStone : map[calcIndex(x,y,z)];
+		}
+
+		inline long tidQuery(int x, int y, int z) {
+			return (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) ?
+			1 : map[calcIndex(x,y,z)].tid;
+		}
 
 		void generate_flat();
 		void generate_V1();
@@ -48,7 +57,6 @@ namespace VM76 {
 	public:
 		inline int calcTileIndex(int x, int y, int z) { return (width * length) * y + (length) * z + x; }
 		inline int calcTileIndex(glm::vec3 pos) { return (width * length) * pos.y + (length) * pos.z + pos.x; }
-		TileData tileQuery(int x, int y, int z);
 
 		static void init_cinstances(Tiles* cinstance[]);
 
@@ -72,7 +80,9 @@ namespace VM76 {
 		void render();
 		void dispose();
 
-		int calcChunkIndex(int x, int y, int z);
+		inline int calcChunkIndex(int x, int y, int z) {
+			return (width * length) * y + (length) * z + x;
+		}
 	};
 }
 
