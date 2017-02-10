@@ -3,3 +3,4 @@
 #==============================================================================
 
 lib/SOIL/include/* linguist-vendored
+*.makefile linguist-language=Makefile
