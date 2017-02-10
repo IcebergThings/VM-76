@@ -23,8 +23,8 @@ namespace VM76 {
 		// Set up hand block indicator's matrix
 		glm::mat4 block_display = glm::translate(glm::mat4(1.0), glm::vec3(0.02, 0.06, 0.2));
 		block_display = glm::scale(block_display, glm::vec3(0.1f));
-		block_display = glm::rotate(block_display, Util::PIf / 4.0f, glm::vec3(1.0, 0.0, 0.0));
-		block_display = glm::rotate(block_display, Util::PIf / 4.0f, glm::vec3(0.0, 1.0, 0.0));
+		block_display = glm::rotate(block_display, VMath::PIf / 4.0f, glm::vec3(1.0, 0.0, 0.0));
+		block_display = glm::rotate(block_display, VMath::PIf / 4.0f, glm::vec3(0.0, 1.0, 0.0));
 
 		TiledMap::init_cinstances(clist);
 		for (int i = 0; i < 16; i++) {

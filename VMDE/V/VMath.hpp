@@ -8,7 +8,7 @@ namespace VMath {
 	//-------------------------------------------------------------------------
 	// ● 声明
 	//-------------------------------------------------------------------------
-	extern const double float PIf;
+	extern const float PIf;
 	extern const double PI;
 	#define PId PI
 	extern const long double PIl;

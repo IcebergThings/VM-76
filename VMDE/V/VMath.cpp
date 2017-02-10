@@ -4,7 +4,7 @@
 //   提供一些标准库里没有的数学常量。
 //=============================================================================
 
-#include <math.h>
+#include "../global.hpp"
 
 namespace VMath {
 	//-------------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace VMath {
 	// ● 变量
 	//-------------------------------------------------------------------------
 	// 为了避免反复计算，将正弦值存储在这里。
-	// 当UTIL_SINE_TABLE_SIZE为256时，其分布为
+	// 当VMATH_SINE_TABLE_SIZE为256时，其分布为
 	// [0] = sin 0
 	// [64] = sin ⅛π
 	// [128] = sin ¼π
@@ -33,7 +33,7 @@ namespace VMath {
 	// ● 向正弦表中填充数据
 	//-------------------------------------------------------------------------
 	void populate_sine_table() {
-		float k = 0.5f / (float) UTIL_SINE_TABLE_SIZE * PIf;
-		for (size_t i = 0; i < UTIL_SINE_TABLE_SIZE; i++) sine_table[i] = sin(i * k);
+		float k = 0.5f / (float) VMATH_SINE_TABLE_SIZE * PIf;
+		for (size_t i = 0; i < VMATH_SINE_TABLE_SIZE; i++) sine_table[i] = sin(i * k);
 	}
 }
