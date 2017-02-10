@@ -13,22 +13,20 @@ namespace VM76 {
 	TextRenderer* trex;
 	static Scene* loading;
 	static Scene* editor;
+	float aspect_ratio;
+	glm::mat4 gui_2d_projection;
 	//-------------------------------------------------------------------------
 	// ● 主循环
 	//-------------------------------------------------------------------------
 	void loop() {
 		do {
 			::main_draw_start();
-
 			SceneManager::update_scene();
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 			SceneManager::render_scene();
-
 			::main_draw_end();
 		} while (!VMDE->done);
 	}
@@ -40,6 +38,8 @@ namespace VM76 {
 		init_control();
 
 		trex = new TextRenderer();
+		aspect_ratio = (float) VMDE->width / VMDE->height;
+		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);
 
 		// GL settings initialize
 		glFrontFace(GL_CCW);

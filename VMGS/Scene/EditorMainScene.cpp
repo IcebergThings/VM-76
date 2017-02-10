@@ -1,5 +1,7 @@
 //=============================================================================
 // ■ VMGS/Scene/EditorMainScene.cpp
+//-----------------------------------------------------------------------------
+//   编辑器场景。
 //=============================================================================
 
 #include "../VMGS.hpp"
@@ -10,6 +12,8 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
+
+		map = new Map(4,4,4,64);
 
 		tile_texture = new Res::Texture("../Media/terrain.png");
 
@@ -25,10 +29,8 @@ namespace VM76 {
 			"../Media/shaders/gui.vsh",
 			"../Media/shaders/gui.fsh"
 		);
-		float aspectRatio = (float) VMDE->width / VMDE->height;
-		gui_2d_projection = glm::ortho(0.0, 1.0 * aspectRatio, 0.0, 1.0, -1.0, 1.0);
 
-		projection = glm::perspective(1.3f, aspectRatio, 0.1f, 1000.0f);
+		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		view = glm::lookAt(
 			glm::vec3(0.0, 2.6, 0.0),
 			glm::vec3(0.0, 0.0, 0.0),
@@ -126,6 +128,7 @@ namespace VM76 {
 				Audio::play_channel(sine);
 			}
 		}
+		#undef PRESS
 	}
 	//-------------------------------------------------------------------------
 	// ● 刷新
@@ -163,20 +166,21 @@ namespace VM76 {
 		gui->set_texture("atlastex", tile_texture, 0);
 		gui->ProjectionView(gui_2d_projection, glm::mat4(1.0));
 		glDisable(GL_DEPTH_TEST);
-		if (hand_id > 0)
-			clist[hand_id - 1]->render();
+		if (hand_id > 0) clist[hand_id - 1]->render();
 
-		char info[64];
-		sprintf(info, "Hand ID: %d Pointer ID: %d",
-			hand_id,
-			map->map->tidQuery(obj->pos.x, obj->pos.y, obj->pos.z)
-		);
-		trex->instanceRenderText(
-			info, gui_2d_projection,
-			glm::mat4(1.0),
-			glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.87,0.0)),
-			0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
-		);
+		if (SceneManager::render_debug_info) {
+			char info[64];
+			sprintf(info, "Hand ID: %d Pointer ID: %d",
+				hand_id,
+				map->map->tidQuery(obj->pos.x, obj->pos.y, obj->pos.z)
+			);
+			trex->instanceRenderText(
+				info, gui_2d_projection,
+				glm::mat4(1.0),
+				glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.87,0.0)),
+				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+			);
+		}
 		glEnable(GL_DEPTH_TEST);
 	}
 	//-------------------------------------------------------------------------
