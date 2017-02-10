@@ -13,12 +13,19 @@ namespace VM76 {
 			::main_draw_start();
 
 			SceneManager::update_scene();
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 			SceneManager::render_scene();
 
 			::main_draw_end();
 		} while (!VMDE->done);
 	}
 
+	Scene* loading;
 	Scene* editor;
 
 	void start_game() {
@@ -37,8 +44,8 @@ namespace VM76 {
 		glClearDepth(1.0f);
 		glDepthMask(GL_TRUE);
 
-		editor = new EditorMainScene();
-		SceneManager::load_scene(editor);
+		loading = new LoadingScene(editor);
+		SceneManager::load_scene(loading);
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
 		loop();

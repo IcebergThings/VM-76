@@ -34,6 +34,20 @@
 			virtual void dispose();
 		};
 
+		class LoadingScene : public Scene {
+		private:
+			glm::mat4 gui_2d_projection;
+			TextRenderer* trex = NULL;
+			Scene* todo = NULL;
+
+		public:
+			LoadingScene(Scene* tobeload);
+			void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+			void render();
+			void update();
+			void dispose();
+		};
+
 		class EditorMainScene : public Scene {
 		private:
 			Shaders* shader_textured = NULL;
