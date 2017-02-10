@@ -148,6 +148,7 @@ namespace VM76 {
 	}
 
 	void EditorMainScene::dispose() {
+		log("wf");
 		VMDE_Dispose(tile_texture);
 		VMDE_Dispose(block_pointer);
 		for (int i = 0; i < 16; i++) VMDE_Dispose(clist[i]);

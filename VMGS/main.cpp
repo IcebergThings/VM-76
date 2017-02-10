@@ -27,12 +27,14 @@ namespace VM76 {
 		} while (!VMDE->done);
 	}
 
-	Scene* loading;
-	Scene* editor;
+	static Scene* loading;
+	static Scene* editor;
 
 	void start_game() {
 		::init_engine(860, 540, "VM / 76");
 		init_control();
+
+		trex = new TextRenderer();
 
 		// GL settings initialize
 		glFrontFace(GL_CCW);
@@ -50,15 +52,13 @@ namespace VM76 {
 		SceneManager::load_scene(loading);
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
-		trex = new TextRenderer();
-
 		loop();
 		terminate();
 	}
 
 	void terminate() {
 		log("starting to terminate");
-		VMDE_Dispose(editor);
+		//VMDE_Dispose(editor);
 		VMDE_Dispose(trex);
 		terminate_engine();
 		log("terminated successfully");

@@ -50,11 +50,11 @@ namespace VM76 {
 			// Load what we need to load
 			todo = new EditorMainScene();
 			load_thr = std::thread(thread_load_task, (EditorMainScene*) todo, &load_end);
+			load_thr.detach();
 			sec_load = false;
 		}
 
 		if (load_end) {
-			dispose();
 			SceneManager::load_scene(todo);
 		}
 	}
