@@ -7,7 +7,6 @@
 
 #include "GameObject/GameObject.hpp"
 #include "Control/control.hpp"
-#include <mutex>
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 	#define _INCLUDE_VMGS_GLOBAL_H
@@ -25,6 +24,7 @@
 		void init_tiles();
 
 		extern TextRenderer* trex;
+		extern glm::mat4 gui_2d_projection;
 
 	//-------------------------------------------------------------------------
 	// ● Scene Management
@@ -37,19 +37,6 @@
 			virtual void dispose();
 		};
 
-		class LoadingScene : public Scene {
-		private:
-			glm::mat4 gui_2d_projection;
-			Scene* todo = NULL;
-
-		public:
-			LoadingScene(Scene* tobeload);
-			void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-			void render();
-			void update();
-			void dispose();
-		};
-
 		class EditorMainScene : public Scene {
 		private:
 			Shaders* shader_textured = NULL;
@@ -59,8 +46,6 @@
 
 			Cube* block_pointer;
 			Tiles* clist[16];
-
-			glm::mat4 gui_2d_projection;
 
 			int hand_id = 1;
 
@@ -73,6 +58,19 @@
 
 		public:
 			EditorMainScene();
+			void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+			void render();
+			void GenerateMap();
+			void update();
+			void dispose();
+		};
+
+		class LoadingScene : public Scene {
+		private:
+			Scene* todo = NULL;
+
+		public:
+			LoadingScene(Scene* tobeload);
 			void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 			void render();
 			void update();

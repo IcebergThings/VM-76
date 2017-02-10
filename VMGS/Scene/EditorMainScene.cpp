@@ -11,6 +11,8 @@ namespace VM76 {
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
 
+		map = new Map(4,4,4,64);
+
 		tile_texture = new Res::Texture("../Media/terrain.png");
 
 		shader_textured = Shaders::CreateFromFile(
@@ -25,8 +27,6 @@ namespace VM76 {
 			"../Media/shaders/gui.vsh",
 			"../Media/shaders/gui.fsh"
 		);
-		float aspectRatio = (float) VMDE->width / VMDE->height;
-		gui_2d_projection = glm::ortho(0.0, 1.0 * aspectRatio, 0.0, 1.0, -1.0, 1.0);
 
 		projection = glm::perspective(1.3f, aspectRatio, 0.1f, 1000.0f);
 		view = glm::lookAt(
