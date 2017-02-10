@@ -9,6 +9,5 @@
 //-------------------------------------------------------------------------
 // ● 占位用的虚函数们
 //-------------------------------------------------------------------------
-void Object::dispose() { }
-RenderObject::~RenderObject() { }
-void RenderObject::render() { }
+void Object::dispose() {}
+RenderObject::~RenderObject() {}

@@ -139,7 +139,7 @@
 
 	class RenderObject : public Object {
 	public:
-		virtual void render();
+		virtual void render() = 0;
 		virtual ~RenderObject();
 	};
 
