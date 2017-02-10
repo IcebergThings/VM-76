@@ -9,6 +9,7 @@
 namespace VM76 {
 
 	TextRenderer* trex;
+	glm::mat4 gui_2d_projection;
 
 	void loop() {
 		do {
@@ -23,6 +24,18 @@ namespace VM76 {
 
 			SceneManager::render_scene();
 
+			glDisable(GL_DEPTH_TEST);
+			char fps[10];
+			sprintf(fps, "FPS: %d", VMDE->fps);
+			trex->instanceRenderText(
+				fps, gui_2d_projection,
+				glm::mat4(1.0),
+				glm::translate(glm::mat4(1.0),
+					glm::vec3(0.01,0.94,0.0)),
+				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+			);
+			glEnable(GL_DEPTH_TEST);
+
 			::main_draw_end();
 		} while (!VMDE->done);
 	}
@@ -35,6 +48,8 @@ namespace VM76 {
 		init_control();
 
 		trex = new TextRenderer();
+		float aspectRatio = float(VMDE->width) / float(VMDE->height);
+		gui_2d_projection = glm::ortho(0.0, 1.0 * aspectRatio, 0.0, 1.0, -1.0, 1.0);
 
 		// GL settings initialize
 		glFrontFace(GL_CCW);

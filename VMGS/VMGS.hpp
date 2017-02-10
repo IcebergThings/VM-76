@@ -24,6 +24,7 @@
 		void init_tiles();
 
 		extern TextRenderer* trex;
+		extern glm::mat4 gui_2d_projection;
 
 	//-------------------------------------------------------------------------
 	// ● Scene Management
@@ -46,8 +47,6 @@
 			Cube* block_pointer;
 			Tiles* clist[16];
 
-			glm::mat4 gui_2d_projection;
-
 			int hand_id = 1;
 
 			Axis* axe;
@@ -68,7 +67,6 @@
 
 		class LoadingScene : public Scene {
 		private:
-			glm::mat4 gui_2d_projection;
 			Scene* todo = NULL;
 
 		public:
