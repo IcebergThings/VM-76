@@ -55,16 +55,16 @@ namespace VM76 {
 		};
 
 		// Prepare an empty space
-		mat = new glm::mat4[4096];
-		for (int x = 0; x < 4096; x++) mat[x] = glm::mat4(1.0);
+		mat = new glm::mat4[1];
+		mat[0] = glm::mat4(1.0);
 
 		obj = new GDrawable();
 		obj->data.vtx_c = 4 * 6;
 		obj->data.ind_c = 2 * 3 * 6;
 		obj->data.vertices = vtx;
 		obj->data.indices = itx;
-		// Reserve 4096 spaces
-		obj->data.mat_c = 4096;
+		// Reserve 1 space
+		obj->data.mat_c = 1;
 		obj->data.mat = (GLuint*) &mat[0];
 		obj->fbind();
 		// Draw none for default
@@ -76,13 +76,13 @@ namespace VM76 {
 	void Cube::update_instance(int mat_c, glm::mat4* mat) {
 		obj->data.mat_c = mat_c;
 		obj->data.mat = (GLuint*) mat;
-		obj->update_instance();
+		obj->update_instance_alien_size();
 	}
 
 	void Cube::update_instance(int mat_c) {
 		obj->data.mat_c = mat_c;
 		obj->data.mat = (GLuint*) mat;
-		obj->update_instance();
+		obj->update_instance_alien_size();
 	}
 
 	void Cube::render() {
