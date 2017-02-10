@@ -62,8 +62,6 @@ namespace VM76 {
 			clist[i]->update_instance(1,1,1,1,1,1);
 		}
 		axe = new Axis();
-		trex = new TextRenderer();
-		map = new Map(4,4,4,64); // Maximum capability of the card
 		block_pointer->obj->data.mat_c = 1;
 	}
 	//-------------------------------------------------------------------------
@@ -139,11 +137,6 @@ namespace VM76 {
 	// ● 渲染
 	//-------------------------------------------------------------------------
 	void EditorMainScene::render() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		shader_textured->use();
 
 		// Setup uniforms
@@ -173,16 +166,15 @@ namespace VM76 {
 		if (hand_id > 0)
 			clist[hand_id - 1]->render();
 
-		char frame_count[64];
-		sprintf(frame_count, "FPS: %d Hand ID: %d Pointer ID: %d",
-			VMDE->fps,
+		char info[64];
+		sprintf(info, "Hand ID: %d Pointer ID: %d",
 			hand_id,
-			0//map->tiles[map->calcTileIndex(obj->pos)].tid
+			map->map->tidQuery(obj->pos.x, obj->pos.y, obj->pos.z)
 		);
 		trex->instanceRenderText(
-			frame_count, gui_2d_projection,
+			info, gui_2d_projection,
 			glm::mat4(1.0),
-			glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.94,0.0)),
+			glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.87,0.0)),
 			0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
 		);
 		glEnable(GL_DEPTH_TEST);

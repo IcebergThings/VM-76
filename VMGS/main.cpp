@@ -11,6 +11,9 @@ namespace VM76 {
 	// ● 变量
 	//-------------------------------------------------------------------------
 	Scene* editor;
+	TextRenderer* trex;
+	static Scene* loading;
+	static Scene* editor;
 	//-------------------------------------------------------------------------
 	// ● 主循环
 	//-------------------------------------------------------------------------
@@ -19,6 +22,12 @@ namespace VM76 {
 			::main_draw_start();
 
 			SceneManager::update_scene();
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 			SceneManager::render_scene();
 
 			::main_draw_end();
@@ -30,6 +39,8 @@ namespace VM76 {
 	void start_game() {
 		::init_engine(860, 540, "VM / 76");
 		init_control();
+
+		trex = new TextRenderer();
 
 		// GL settings initialize
 		glFrontFace(GL_CCW);
@@ -43,8 +54,8 @@ namespace VM76 {
 		glClearDepth(1.0f);
 		glDepthMask(GL_TRUE);
 
-		editor = new EditorMainScene();
-		SceneManager::load_scene(editor);
+		loading = new LoadingScene(editor);
+		SceneManager::load_scene(loading);
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
 		loop();
@@ -56,6 +67,7 @@ namespace VM76 {
 	void terminate() {
 		log("starting to terminate");
 		VMDE_Dispose(delete, editor);
+		VMDE_Dispose(delete, trex);
 		terminate_engine();
 		log("terminated successfully");
 	}
