@@ -14,6 +14,8 @@ namespace VM76 {
 	struct TileData {
 		unsigned int tid;
 		unsigned char data_flag;
+
+		glm::mat4 transform;
 	};
 
 	#define TERRIAN_MAX_HEIGHT 60

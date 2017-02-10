@@ -14,9 +14,14 @@ namespace VM76 {
 		width = w; length = l; height = h;
 
 		generate_V1();
+
+		for (int x = 0; x < width; x++)
+			for (int z = 0; z < length; z++)
+				for (int y = 0; y < height; y++)
+					map[calcIndex(x,y,z)].transform = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z));
 	}
 
-	static TileData constStone = {1, 0};
+	static TileData constStone = {1, 0, glm::mat4(0.0)};
 
 	TileData DataMap::tileQuery(int x, int y, int z) {
 		if (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) return constStone;
@@ -40,13 +45,17 @@ namespace VM76 {
 				);
 
 			for (int j = 0; j < length; j++) {
-				glm::vec2 pos = glm::vec2(i, j) * 0.002f;
-				float n = glm::perlin(pos);
-				pos = pos * 1.5f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.8f;
-				pos = pos * 2.1f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.6f;
-				pos = pos * 2.2f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.45f;
-				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.25f;
-				pos = pos * 4.5f + glm::vec2(0.09f); n += glm::perlin(pos) * 0.11f;
+				glm::vec2 pos = glm::vec2(i, j) * 0.001f;
+				float hm = glm::perlin(pos);
+				pos = pos * 1.3f; hm += glm::perlin(pos) * 0.8;
+				hm = hm * hm;
+				pos = pos * 1.8f; float n = glm::perlin(pos) * (hm * 0.5 + 0.5);
+				pos = pos * 1.5f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.85f * (hm * 0.5 + 0.5);
+				pos = pos * 2.1f + glm::vec2(0.1f, 0.13f); n += sin(glm::perlin(pos) * Util::PIf * 0.5) * 0.65f * hm;
+				pos = pos * 2.2f + glm::vec2(0.1f, 0.13f); n += glm::perlin(pos) * 0.35f;
+				pos = pos * 2.6f + glm::vec2(0.15f, 0.1f); n += glm::perlin(pos) * 0.18f;
+				pos = pos * 1.9f + glm::vec2(0.2f);
+				n += sin(glm::perlin(pos) * Util::PIf * 0.5) * 0.1f;
 
 				n = glm::clamp(1.0f / (float) TERRIAN_MAX_HEIGHT, n * 0.5f + 0.5f, 1.0f);
 				int h = n * TERRIAN_MAX_HEIGHT;
