@@ -8,8 +8,6 @@
 namespace VM76 {
 
 	LoadingScene::LoadingScene(Scene* tobeload) {
-		float aspectRatio = float(VMDE->width) / float(VMDE->height);
-		gui_2d_projection = glm::ortho(0.0, 1.0 * aspectRatio, 0.0, 1.0, -1.0, 1.0);
 		todo = tobeload;
 	}
 
@@ -29,7 +27,7 @@ namespace VM76 {
 			glm::mat4(1.0),
 			glm::translate(glm::mat4(1.0),
 				glm::vec3((1.0 * aspectRatio - 0.05 * 11) * 0.5,0.45,0.0)),
-			0.05, 0.1, TextRenderer::TextDecorationType::OUTLINE
+			0.05, 0.1, TextRenderer::TextDecorationType::NONE
 		);
 		glEnable(GL_DEPTH_TEST);
 
