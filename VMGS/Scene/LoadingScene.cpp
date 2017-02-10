@@ -18,7 +18,6 @@ namespace VM76 {
 
 	void LoadingScene::render() {
 		glDisable(GL_DEPTH_TEST);
-		float aspectRatio = float(VMDE->width) / float(VMDE->height);
 
 		char load_splash[] = "Loading    ";
 		for (int i = 0; i < (VMDE->frame_count / 6) % 4; i++) load_splash[i + 8] = '.';
@@ -26,7 +25,7 @@ namespace VM76 {
 			load_splash, gui_2d_projection,
 			glm::mat4(1.0),
 			glm::translate(glm::mat4(1.0),
-				glm::vec3((1.0 * aspectRatio - 0.05 * 11) * 0.5,0.45,0.0)),
+				glm::vec3((1.0 * aspect_ratio - 0.05 * 11) * 0.5,0.45,0.0)),
 			0.05, 0.1, TextRenderer::TextDecorationType::NONE
 		);
 		glEnable(GL_DEPTH_TEST);
