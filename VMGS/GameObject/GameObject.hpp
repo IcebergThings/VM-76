@@ -10,7 +10,7 @@
 #include "TiledMap/tiled_map.hpp"
 
 namespace VM76 {
-	class Object {
+	class GObject {
 	public:
 		glm::vec3 pos;
 		glm::vec3 rotation;
@@ -23,7 +23,7 @@ namespace VM76 {
 			this->pos = vector;
 		}
 
-		Object(
+		GObject(
 			glm::vec3 position = glm::vec3(0.0),
 			glm::vec3 rotation = glm::vec3(0.0),
 			glm::vec3 scale = glm::vec3(1.0)

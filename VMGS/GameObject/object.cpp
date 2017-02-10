@@ -7,7 +7,7 @@
 #include "GameObject.hpp"
 
 namespace VM76 {
-	glm::mat4 Object::transform() {
+	glm::mat4 GObject::transform() {
 		glm::mat4 t;
 		t = glm::translate(t, pos);
 		t = glm::scale(t, scale);
@@ -17,11 +17,11 @@ namespace VM76 {
 		return t;
 	}
 
-	void Object::move(glm::vec3 vector) {
+	void GObject::move(glm::vec3 vector) {
 		this->pos += vector;
 	}
 
-	Object::Object(
+	GObject::GObject(
 		glm::vec3 position,
 		glm::vec3 rotation,
 		glm::vec3 scale

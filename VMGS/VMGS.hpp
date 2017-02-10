@@ -18,18 +18,58 @@
 	// ● TODO
 	//-------------------------------------------------------------------------
 	namespace VM76 {
-		const GLfloat tile_size = 1.0f / 16.0f;
-
-		class Block {
-		public:
-			GLuint tid;
-			Block(int id);
-		};
-
 		void loop();
 		void start_game();
 		void terminate();
 		void init_tiles();
+
+	//-------------------------------------------------------------------------
+	// ● Scene Management
+	//-------------------------------------------------------------------------
+		class Scene : public Object {
+		public:
+			virtual void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+			virtual void render(); // Graphics update
+			virtual void update(); // Tick update
+			virtual void dispose();
+		};
+
+		class EditorMainScene : public Scene {
+		private:
+			Shaders* shader_textured = NULL;
+			Shaders* gui = NULL;
+			Shaders* shader_basic = NULL;
+			Res::Texture* tile_texture = NULL;
+
+			TextRenderer* trex = NULL;
+
+			Cube* block_pointer;
+			Tiles* clist[16];
+			Map* map;
+
+			glm::mat4 gui_2d_projection;
+
+			int hand_id = 1;
+
+			Axis* axe;
+
+			GObject* obj;
+
+		public:
+			EditorMainScene();
+			void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+			void render();
+			void update();
+			void dispose();
+		};
+
+		class SceneManager : public Object {
+		public:
+			static void load_scene(Scene* c);
+			static void render_scene();
+			static void update_scene();
+			static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		};
 
 	//-------------------------------------------------------------------------
 	// ● Game Logic
