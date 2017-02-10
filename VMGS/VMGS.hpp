@@ -7,6 +7,7 @@
 
 #include "GameObject/GameObject.hpp"
 #include "Control/control.hpp"
+#include <mutex>
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 	#define _INCLUDE_VMGS_GLOBAL_H
@@ -59,7 +60,6 @@
 
 			Cube* block_pointer;
 			Tiles* clist[16];
-			Map* map;
 
 			glm::mat4 gui_2d_projection;
 
@@ -68,6 +68,9 @@
 			Axis* axe;
 
 			GObject* obj;
+
+		public:
+			Map* map;
 
 		public:
 			EditorMainScene();

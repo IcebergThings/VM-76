@@ -38,9 +38,7 @@ namespace VM76 {
 		}
 		axe = new Axis();
 		trex = new TextRenderer();
-		map = new Map(4,4,4,64); // Maximum capability of the card
 		block_pointer->obj->data.mat_c = 1;
-
 	}
 
 	void EditorMainScene::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
