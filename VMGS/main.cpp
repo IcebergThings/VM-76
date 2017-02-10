@@ -8,6 +8,8 @@
 
 namespace VM76 {
 
+	TextRenderer* trex;
+
 	void loop() {
 		do {
 			::main_draw_start();
@@ -48,6 +50,8 @@ namespace VM76 {
 		SceneManager::load_scene(loading);
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
+		trex = new TextRenderer();
+
 		loop();
 		terminate();
 	}
@@ -55,6 +59,7 @@ namespace VM76 {
 	void terminate() {
 		log("starting to terminate");
 		VMDE_Dispose(editor);
+		VMDE_Dispose(trex);
 		terminate_engine();
 		log("terminated successfully");
 	}

@@ -9,7 +9,6 @@ namespace VM76 {
 
 	LoadingScene::LoadingScene(Scene* tobeload) {
 		float aspectRatio = float(VMDE->width) / float(VMDE->height);
-		trex = new TextRenderer();
 		gui_2d_projection = glm::ortho(0.0, 1.0 * aspectRatio, 0.0, 1.0, -1.0, 1.0);
 		todo = tobeload;
 	}
@@ -63,8 +62,6 @@ namespace VM76 {
 	// 这玩意暂时不需要刷新什么数据
 	void LoadingScene::update() {}
 
-	void LoadingScene::dispose() {
-		VMDE_Dispose(trex);
-	}
+	void LoadingScene::dispose() {}
 
 }
