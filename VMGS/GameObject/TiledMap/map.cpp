@@ -28,11 +28,8 @@ namespace VM76 {
 	}
 
 	bool DataMap::read_map() {
-		FILE* f = fopen("map.dat", "rb");
-		if (!f) return false; else fclose(f);
-
 		log("Reading map");
-		V::VBinaryFileReader* fr = new V::VBinaryFileReader("map.dat");
+		VBinaryFileReader* fr = new VBinaryFileReader("map.dat");
 
 		int map_version = fr->read_i32();
 		if (fr->read_u8() == 'V' && fr->read_u8() == 'M'
@@ -52,7 +49,7 @@ namespace VM76 {
 	}
 
 	void DataMap::save_map() {
-		V::VBinaryFileWriter* fw = new V::VBinaryFileWriter("map.dat");
+		VBinaryFileWriter* fw = new VBinaryFileWriter("map.dat");
 		// 版本号
 		fw->write_i32(100);
 		// 文件头标识
