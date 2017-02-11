@@ -15,7 +15,7 @@ namespace VM76 {
 		map = (TileData*) malloc(sizeof(TileData) * w * h * l);
 		width = w; length = l; height = h;
 
-		generate_V1();
+		if (!read_map()) generate_V1();
 	}
 
 	void DataMap::generate_flat() {
@@ -27,14 +27,25 @@ namespace VM76 {
 				}
 	}
 
-	void DataMap::read_map() {
+	bool DataMap::read_map() {
+		FILE* f = fopen("map.dat", "rb");
+		if (!f) return false; else fclose(f);
 
+		log("Reading map");
+		V::VBinaryFileReader* fr = new V::VBinaryFileReader("map.dat");
+
+		for (int x = 0; x < width * length * height; x++) {
+			map[x].tid = fr->read_u8();
+			map[x].data_flag = fr->read_u8();
+		}
+
+		return true;
 	}
 
 	void DataMap::save_map() {
 		V::VBinaryFileWriter* fw = new V::VBinaryFileWriter("map.dat");
 		for (int x = 0; x < width * length * height; x++) {
-			fw->write_u32(map[x].tid);
+			fw->write_u8(map[x].tid);
 			fw->write_u8(map[x].data_flag);
 		}
 		delete fw;

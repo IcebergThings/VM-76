@@ -12,7 +12,7 @@
 namespace VM76 {
 
 	struct TileData {
-		unsigned int tid;
+		unsigned char tid;
 		unsigned char data_flag;
 	};
 
@@ -36,13 +36,13 @@ namespace VM76 {
 			constStone : map[calcIndex(x,y,z)];
 		}
 
-		inline int tidQuery(int x, int y, int z) {
+		inline char tidQuery(int x, int y, int z) {
 			return (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) ?
 			1 : map[calcIndex(x,y,z)].tid;
 		}
 
 		void save_map();
-		void read_map();
+		bool read_map();
 
 		void generate_flat();
 		void generate_V1();
