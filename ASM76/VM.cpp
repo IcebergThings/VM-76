@@ -27,7 +27,7 @@ namespace ASM76 {
 		memcpy(instruct_memory, program, prg_size);
 
 		// 99 registers
-		reg = new uint8_t[99];
+		reg = new uint8_t[100];
 		memset(reg, 0, 99);
 
 		// Setup registers
