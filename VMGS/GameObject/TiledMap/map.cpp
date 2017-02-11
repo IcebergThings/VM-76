@@ -39,6 +39,8 @@ namespace VM76 {
 			&& fr->read_u8() == '7' && fr->read_u8() == '6') {
 				log("Map version : %d", map_version);
 				for (int x = 0; x < width * length * height; x++) {
+					if (x % (width * length * height / 7) == 0)
+						log("Map %d%% loaded", 100 * x / (width * length * height));
 					map[x].tid = fr->read_u8();
 					map[x].data_flag = fr->read_u8();
 				}
@@ -64,6 +66,7 @@ namespace VM76 {
 			fw->write_u8(map[x].data_flag);
 		}
 		delete fw;
+		log("Map saved");
 	}
 
 	void DataMap::generate_V1() {
