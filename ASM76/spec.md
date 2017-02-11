@@ -89,7 +89,7 @@ The VM/76 assembly language and VM/76 virtual machine platform
 		- jump to memory adress stored in `$A` or `[Adress]` when `$97 == 0xFF`
 	-	`$90` is the stack pointer.
 		- It points to `0x100306C` by default, which is Local memory with offset 3KB.
-	-	`CALL $A`, `CALL [Adress]`
+	-	`CALR $A`, `CALA [Adress]`
 		- Jump to memory adress stored in `$A` or `[Adress]`
 		- Push the next instruction's adress into stack
 	-	`PUSH $A, [Length]`
