@@ -29,7 +29,7 @@ namespace V {
 		double read_double();
 		template <class T> T read_directly() {
 			T r;
-			fread(&r, sizeof(T), 1, f);
+			if (fread(&r, sizeof(T), 1, f) < 1) error("read_directly");
 			return r;
 		}
 	};
@@ -43,7 +43,7 @@ namespace V {
 		VBinaryFileWriter(const char* filename);
 		~VBinaryFileWriter();
 		template <class T> void write_directly(T value) {
-			fwrite(&value, sizeof(T), 1, f);
+			if (fwrite(&value, sizeof(T), 1, f) < 1) error("write_directly");
 		}
 		void write_i8(int8_t v);
 		void write_i32(int32_t v);
