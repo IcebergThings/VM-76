@@ -20,8 +20,8 @@ namespace ASM76 {
 
 	VM::VM(Instruct* program, size_t prg_size) {
 		// 16K local memory in default
-		local_memory = new uint8_t[0x4000];
-		memset(local_memory, 0, 0x4000);
+		local_memory = new uint8_t[local_mem_size];
+		memset(local_memory, 0, local_mem_size);
 		instruct_memory = (Instruct*) local_memory;
 		printf("init memory with program sized %zu\n", prg_size);
 		memcpy(instruct_memory, program, prg_size);
@@ -43,10 +43,48 @@ namespace ASM76 {
 		REG99 = (uint8_t*) reg + 99;
 	}
 
+	#define OPC(code) (now->opcode == code)
+
 	void VM::execute() {
 		Instruct* now = memfetch<Instruct>(*REG86);
-		while (now->opcode != _HLT) {
+		while (!OPC(_HLT)) {
 			printf("%x : %x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
+
+			if OPC(LCMM) {
+				uint8_t* new_mem = new uint8_t[now->f];
+				memset(new_mem, 0, now->f);
+				memcpy(new_mem, local_memory, local_mem_size);
+				free(local_memory);
+				local_mem_size = now->f;
+				local_memory = new_mem;
+				instruct_memory = (Instruct*) new_mem;
+
+				printf("Changed local size to %zu bytes\n", local_mem_size);
+			} else if OPC(LDLA) {
+				REG(uint64_t, now->t) = *memfetch<uint64_t>(now->f);
+			} else if OPC(LDIA) {
+				REG(uint32_t, now->t) = *memfetch<uint32_t>(now->f);
+			} else if OPC(LDBA) {
+				REG(uint8_t, now->t) = *memfetch<uint8_t>(now->f);
+			} else if OPC(LDLR) {
+				REG(uint64_t, now->t) = *memfetch<uint64_t>(REG(uint32_t, now->f));
+			} else if OPC(LDIR) {
+				REG(uint32_t, now->t) = *memfetch<uint32_t>(REG(uint32_t, now->f));
+			} else if OPC(LDBR) {
+				REG(uint8_t, now->t) = *memfetch<uint8_t>(REG(uint32_t, now->f));
+			} else if OPC(SLLA) {
+				*memfetch<uint64_t>(now->f) = REG(uint64_t, now->t);
+			} else if OPC(SLIA) {
+				*memfetch<uint32_t>(now->f) = REG(uint32_t, now->t);
+			} else if OPC(SLBA) {
+				*memfetch<uint8_t>(now->f) = REG(uint8_t, now->t);
+			} else if OPC(SLLR) {
+				*memfetch<uint64_t>(REG(uint32_t, now->f)) = REG(uint64_t, now->t);
+			} else if OPC(SLIR) {
+				*memfetch<uint32_t>(REG(uint32_t, now->f)) = REG(uint32_t, now->t);
+			} else if OPC(SLBR) {
+				*memfetch<uint8_t>(REG(uint32_t, now->f)) = REG(uint8_t, now->t);
+			}
 
 			*REG86 += sizeof(Instruct);
 			now = memfetch<Instruct>(*REG86);

@@ -7,7 +7,7 @@
 using namespace ASM76;
 
 Instruct test_prgm[4] = {
-	{0,0,0},
+	{LCMM,0x4000000,0},
 	{0,0,0},
 	{0,0,0},
 	{_HLT, 0, 0},

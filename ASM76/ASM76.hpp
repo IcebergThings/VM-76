@@ -13,11 +13,13 @@
 namespace ASM76 {
 
 	enum InstructionSets {
+		NOOP, // No Operation is always NULL
+
 		// 76-Base
 		LCMM,
 		LDLA, LDIA, LDBA,
 		LDLR, LDIR, LDBR,
-		SLAA, SLIA, SLBA,
+		SLLA, SLIA, SLBA,
 		SLLR, SLIR, SLBR,
 		DATL, DATI, DATB,
 		ADDL, ADDI, ADDB,
@@ -62,6 +64,7 @@ namespace ASM76 {
 	class VM {
 	private:
 		uint8_t* local_memory;
+		size_t local_mem_size = 0x4000;
 		Instruct* instruct_memory;
 		uint8_t* reg;
 
