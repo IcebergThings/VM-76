@@ -41,6 +41,9 @@ namespace VM76 {
 			1 : map[calcIndex(x,y,z)].tid;
 		}
 
+		void save_map();
+		void read_map();
+
 		void generate_flat();
 		void generate_V1();
 	};
@@ -64,7 +67,7 @@ namespace VM76 {
 		TiledMap(int x, int y, int z, glm::vec3 wp, DataMap* m);
 		void render();
 		void bake_tiles();
-		void dispose();
+		~TiledMap();
 	};
 
 	class Map : public RenderObject {
@@ -79,11 +82,12 @@ namespace VM76 {
 		Map(int w, int h, int l, int csize);
 		void place_block(glm::vec3 dir, int tid);
 		void render();
-		void dispose();
 
 		inline int calcChunkIndex(int x, int y, int z) {
 			return (width * length) * y + (length) * z + x;
 		}
+
+		~Map();
 	};
 }
 

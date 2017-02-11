@@ -89,7 +89,7 @@ namespace VM76 {
 		obj->render();
 	}
 
-	void Cube::dispose() {
+	Cube::~Cube() {
 		VMDE_Dispose(delete, obj);
 		XE(delete[], vtx);
 		XE(delete[], itx);

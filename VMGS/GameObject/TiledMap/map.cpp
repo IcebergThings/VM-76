@@ -27,6 +27,19 @@ namespace VM76 {
 				}
 	}
 
+	void DataMap::read_map() {
+
+	}
+
+	void DataMap::save_map() {
+		V::VBinaryFileWriter* fw = new V::VBinaryFileWriter("map.dat");
+		for (int x = 0; x < width * length * height; x++) {
+			fw->write_u32(map[x].tid);
+			fw->write_u8(map[x].data_flag);
+		}
+		delete fw;
+	}
+
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);
 		for (int i = 0; i < width; i ++) {
@@ -109,10 +122,13 @@ namespace VM76 {
 			chunks[x]->render();
 	}
 
-	void Map::dispose() {
+	Map::~Map() {
 		for (int x = 0; x < width * length * height; x++) {
 			VMDE_Dispose(delete, chunks[x]);
 		}
 		XE(delete[], chunks);
+
+		log("Saving map");
+		map->save_map();
 	}
 }

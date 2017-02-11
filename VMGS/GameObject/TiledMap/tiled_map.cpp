@@ -151,7 +151,7 @@ namespace VM76 {
 			if (cinstance[i]) cinstance[i]->render();
 	}
 
-	void TiledMap::dispose() {
+	TiledMap::~TiledMap() {
 		for (int i = 0; i < 16; i++)
 			if (cinstance[i]) VMDE_Dispose(delete, cinstance[i]);
 	}

@@ -35,7 +35,7 @@ namespace VM76 {
 		virtual void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		virtual void render() = 0; // Graphics update
 		virtual void update(); // Tick update
-		virtual void dispose();
+		virtual ~Scene();
 	};
 
 	class EditorMainScene : public Scene {
@@ -63,7 +63,7 @@ namespace VM76 {
 		void render();
 		void GenerateMap();
 		void update();
-		void dispose();
+		~EditorMainScene();
 	};
 
 	class LoadingScene : public Scene {
@@ -71,17 +71,17 @@ namespace VM76 {
 		Scene* todo = NULL;
 
 	public:
-		LoadingScene(Scene* tobeload);
+		LoadingScene(Scene** tobeload);
 		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void render();
 		void update();
-		void dispose();
 	};
 
 	//-------------------------------------------------------------------------
 	// ● Scene Management
 	//-------------------------------------------------------------------------
 	namespace SceneManager {
+		extern Scene* context;
 		extern bool render_debug_info;
 		void load_scene(Scene* c);
 		void render_scene();

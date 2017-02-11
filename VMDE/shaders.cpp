@@ -115,6 +115,6 @@ void Shaders::set_texture(const char* identifier, Res::Texture* tex, GLuint inde
 	set_float(identifier, index);
 }
 
-void Shaders::dispose() {
+Shaders::~Shaders() {
 	glDeleteProgram(shaderProgram);
 }

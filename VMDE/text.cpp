@@ -145,7 +145,7 @@ void TextRenderer::instanceRenderText(
 	render();
 }
 
-void TextRenderer::dispose() {
+TextRenderer::~TextRenderer() {
 	VMDE_Dispose(delete, obj);
 	VMDE_Dispose(delete, tex);
 	VMDE_Dispose(delete, texshader);
