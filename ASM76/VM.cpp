@@ -13,6 +13,7 @@ namespace ASM76 {
 	void init_environment() {
 		// 4MB program useable
 		// 12MB IO interface
+		printf("Init ASM76 env\n");
 		global_memory = new uint8_t[0x1000000];
 		memset(global_memory, 0, 0x1000000);
 	}
@@ -21,6 +22,8 @@ namespace ASM76 {
 		// 16K local memory in default
 		local_memory = new uint8_t[0x4000];
 		memset(local_memory, 0, 0x4000);
+		instruct_memory = (Instruct*) local_memory;
+		printf("init memory with program sized %zu\n", prg_size);
 		memcpy(instruct_memory, program, prg_size);
 
 		// 99 registers
@@ -43,9 +46,9 @@ namespace ASM76 {
 	void VM::execute() {
 		Instruct* now = memfetch<Instruct>(*REG86);
 		while (now->opcode != _HLT) {
-			printf("%x : %x, %x, %x", *REG86, now->opcode, now->f, now->t);
+			printf("%x : %x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
 
-			*REG86 ++;
+			*REG86 += sizeof(Instruct);
 			now = memfetch<Instruct>(*REG86);
 		}
 	}
