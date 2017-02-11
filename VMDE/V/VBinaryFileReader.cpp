@@ -1,13 +1,16 @@
 //=============================================================================
 // ■ VBinaryFileReader.cpp
 //-----------------------------------------------------------------------------
-//   在各计算机之间兼容的二进制文件读取类。
+//   在各计算机之间兼容的二进制文件读取类（Little-endian）。
 //=============================================================================
 
 #include "../global.hpp"
 
 namespace V {
-	#define ERROR_MESSAGE "error: cannot find beer"
+	//-------------------------------------------------------------------------
+	// ● 常量
+	//-------------------------------------------------------------------------
+	const char* VBinaryFileReader::ERROR_MESSAGE = "error: cannot find beer";
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
@@ -22,79 +25,46 @@ namespace V {
 		fclose(f);
 	}
 	//-------------------------------------------------------------------------
-	// ● 读取1字节int
-	//-------------------------------------------------------------------------
-	int8_t VBinaryFileReader::read_i8() {
-		return (int8_t) read_u8();
-	}
-	//-------------------------------------------------------------------------
 	// ● 读取4字节int
 	//-------------------------------------------------------------------------
-	int32_t VBinaryFileReader::read_i32() {
-		uint32_t c = fgetc(f);
-		c = c | (fgetc(f) << 8);
-		c = c | (fgetc(f) << 16);
-		c = c | (fgetc(f) << 24);
-		return (int32_t) c;
+	#define READ_CHAR(i) if ((c[i] = fgetc(f)) < 0) error(ERROR_MESSAGE);
+	template <> int32_t VBinaryFileReader::read<int32_t>() {
+		int c[4];
+		READ_CHAR(0);
+		READ_CHAR(1);
+		READ_CHAR(2);
+		READ_CHAR(3);
+		return (int32_t) (c[0] | c[1] << 2 | c[2] << 4 | c[3] << 6);
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取8字节int
 	//-------------------------------------------------------------------------
-	int64_t VBinaryFileReader::read_i64() {
-		uint64_t c1 = fgetc(f);
-		c1 = c1 | (fgetc(f) << 8);
-		c1 = c1 | (fgetc(f) << 16);
-		c1 = c1 | (fgetc(f) << 24);
-		uint64_t c2 = fgetc(f);
-		c2 = c2 | (fgetc(f) << 8);
-		c2 = c2 | (fgetc(f) << 16);
-		c2 = c2 | (fgetc(f) << 24);
-		uint64_t c = (c2 << 32) | (c1 & 0x00000000FFFFFFFF);
-		return (int64_t) c;
+	template <> int64_t VBinaryFileReader::read<int64_t>() {
+		int c[8];
+		READ_CHAR(0);
+		READ_CHAR(1);
+		READ_CHAR(2);
+		READ_CHAR(3);
+		READ_CHAR(4);
+		READ_CHAR(5);
+		READ_CHAR(6);
+		READ_CHAR(7);
+		return (int64_t) (
+			c[0] | c[1] << 2 | c[2] << 4 | c[3] << 6
+				| c[4] << 8 | c[5] << 10 | c[6] << 12 | c[7] << 14
+		);
 	}
-	//-------------------------------------------------------------------------
-	// ● 读取1字节unsigned
-	//-------------------------------------------------------------------------
-	uint8_t VBinaryFileReader::read_u8() {
-		int c = fgetc(f);
-		if (c < 0) error(ERROR_MESSAGE);
-		return (uint8_t) c;
-	}
+	#undef READ_CHAR
 	//-------------------------------------------------------------------------
 	// ● 读取4字节unsigned
 	//-------------------------------------------------------------------------
-	uint32_t VBinaryFileReader::read_u32() {
-		uint32_t c = fgetc(f);
-		c = c | (fgetc(f) << 8);
-		c = c | (fgetc(f) << 16);
-		c = c | (fgetc(f) << 24);
-		return c;
+	template <> uint32_t VBinaryFileReader::read<uint32_t>() {
+		return (uint32_t) read<int32_t>();
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取8字节unsigned
 	//-------------------------------------------------------------------------
-	uint64_t VBinaryFileReader::read_u64() {
-		uint64_t c1 = fgetc(f);
-		c1 = c1 | (fgetc(f) << 8);
-		c1 = c1 | (fgetc(f) << 16);
-		c1 = c1 | (fgetc(f) << 24);
-		uint64_t c2 = fgetc(f);
-		c2 = c2 | (fgetc(f) << 8);
-		c2 = c2 | (fgetc(f) << 16);
-		c2 = c2 | (fgetc(f) << 24);
-		uint64_t c = (c2 << 32) | (c1 & 0x00000000FFFFFFFF);
-		return c;
-	}
-	//-------------------------------------------------------------------------
-	// ● 读取4字节float
-	//-------------------------------------------------------------------------
-	float VBinaryFileReader::read_float() {
-		return read_directly<float>();
-	}
-	//-------------------------------------------------------------------------
-	// ● 读取8字节double
-	//-------------------------------------------------------------------------
-	double VBinaryFileReader::read_double() {
-		return read_directly<double>();
+	template <> uint64_t VBinaryFileReader::read<uint64_t>() {
+		return (uint64_t) read<int64_t>();
 	}
 }

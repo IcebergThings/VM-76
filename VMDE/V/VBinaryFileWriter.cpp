@@ -1,13 +1,16 @@
 //=============================================================================
 // ■ VBinaryFileWriter.cpp
 //-----------------------------------------------------------------------------
-//   在各计算机之间兼容的二进制文件写出类。
+//   在各计算机之间兼容的二进制文件写出类（Little-endian）。
 //=============================================================================
 
 #include "../global.hpp"
 
 namespace V {
-	#define ERROR_MESSAGE "error: lorem ipsum"
+	//-------------------------------------------------------------------------
+	// ● 常量
+	//-------------------------------------------------------------------------
+	const char* VBinaryFileWriter::ERROR_MESSAGE = "error: lorem ipsum";
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
@@ -22,61 +25,44 @@ namespace V {
 		fclose(f);
 	}
 	//-------------------------------------------------------------------------
-	// ● 写入1字节int
-	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_i8(int8_t v) {
-		fputc(v, f);
-	}
-	//-------------------------------------------------------------------------
 	// ● 写入4字节int
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_i32(int32_t v) {
-		write_directly<int32_t>(v);
+	#define WRITE_CHAR \
+		if (fputc(value & 0xff, f) < 0) error(ERROR_MESSAGE)
+	#define WRITE_CHAR_ \
+		if (fputc((value >>= 8) & 0xff, f) < 0) error(ERROR_MESSAGE)
+	template <> void VBinaryFileWriter::write(int32_t value) {
+		WRITE_CHAR;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入8字节int
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_i64(int64_t v) {
-		write_directly<int64_t>(v);
+	template <> void VBinaryFileWriter::write(int64_t value) {
+		WRITE_CHAR;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
+		WRITE_CHAR_;
 	}
-	//-------------------------------------------------------------------------
-	// ● 写入1字节unsigned
-	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_u8(uint8_t v) {
-		fputc(v, f);
-	}
+	#undef WRITE_CHAR
+	#undef WRITE_CHAR_
 	//-------------------------------------------------------------------------
 	// ● 写入4字节unsigned
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_u32(uint32_t v) {
-		fputc((uint8_t) (v & 0xFF), f);
-		fputc((uint8_t) ((v >> 8) & 0xFF), f);
-		fputc((uint8_t) ((v >> 16) & 0xFF), f);
-		fputc((uint8_t) ((v >> 24) & 0xFF), f);
+	template <> void VBinaryFileWriter::write(uint32_t value) {
+		// Once I imagined I was writing HTML.
+		write<int32_t>(static_cast<int32_t>(value));
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入8字节unsigned
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_u64(uint64_t v) {
-		fputc((uint8_t) (v & 0xFF), f);
-		fputc((uint8_t) ((v >> 8) & 0xFF), f);
-		fputc((uint8_t) ((v >> 16) & 0xFF), f);
-		fputc((uint8_t) ((v >> 24) & 0xFF), f);
-		fputc((uint8_t) (((v >> 24) >> 8) & 0xFF), f);
-		fputc((uint8_t) (((v >> 24) >> 16) & 0xFF), f);
-		fputc((uint8_t) (((v >> 24) >> 24) & 0xFF), f);
-		fputc((uint8_t) ((((v >> 24) >> 24) >> 8) & 0xFF), f);
-	}
-	//-------------------------------------------------------------------------
-	// ● 写入4字节float
-	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_float(float v) {
-		write_directly<float>(v);
-	}
-	//-------------------------------------------------------------------------
-	// ● 写入8字节double
-	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_double(double v) {
-		write_directly<double>(v);
+	template <> void VBinaryFileWriter::write(uint64_t value) {
+		write<int64_t>(static_cast<int64_t>(value));
 	}
 }
