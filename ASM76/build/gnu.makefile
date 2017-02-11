@@ -8,7 +8,7 @@ TARGET = libASM76.so
 
 LDLIBS += $(shell pkg-config --libs --static glm)
 LDFLAGS += -shared
-CXXFLAGS += -I.. $(shell pkg-config --cflags glm)
+CXXFLAGS += -I.. $(shell pkg-config --cflags glm) -fPIC
 
 all: $(TARGET)
 
@@ -20,7 +20,12 @@ $(TARGET): $(OBJECTS)
 	@echo 链接最终二进制
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
-VMtest: VMtest.cxx
-	$(CXX) $^ -o $@ $(CXXFLAGS) ./libASM76.so
+VMtest: VMtest.cxx $(TARGET)
+	$(CXX) -c VMtest.cxx -o VMtest.o $(CXXFLAGS)
+	$(CCLD) VMtest.o ./libASM76.so -o VMtest
+	./VMtest
+
+clean:
+	rm -f $(OBJECTS) $(TARGET) VMtest
 
 .PHONY: all

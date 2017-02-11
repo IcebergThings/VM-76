@@ -4,12 +4,9 @@
 
 #include "ASM76.hpp"
 
-#include <stdlib>
-#include <cstdio>
-
 int main() {
 
-	printf("===== ASM 76 Test Program =====");
+	printf("===== ASM 76 Test Program =====\n");
 
 	return 0;
 }
