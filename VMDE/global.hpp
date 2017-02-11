@@ -108,7 +108,6 @@
 	// VMDE_Dispose - 一键销毁宏魔法
 	#define VMDE_Dispose(method, object) do { \
 		if (object) { \
-			(object)->dispose(); \
 			method(object); \
 			(object) = NULL; \
 		} \
@@ -116,12 +115,12 @@
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
 	// error - 抛出错误并终止程序
-	#define error(format, ...) do { \
-		log(format, __VA_ARGS__); \
+	#define error(...) do { \
+		log(__VA_ARGS__); \
 		perror("perror()"); \
 		fputs("The errno may not help.\n", stderr); \
 		exit(1); \
-	}
+	} while (false)
 	//-------------------------------------------------------------------------
 	// ● 子文件夹中的头文件
 	//-------------------------------------------------------------------------
@@ -168,7 +167,7 @@
 			Texture(const char* file);
 			Texture(const char* file, bool useLinear);
 
-			void dispose();
+			~Texture();
 		};
 	}
 	//-------------------------------------------------------------------------
@@ -196,7 +195,7 @@
 
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 
-		void dispose();
+		~Shaders();
 	};
 	extern Shaders* _shaders_in_use;
 	//-------------------------------------------------------------------------
@@ -276,7 +275,7 @@
 		void update_instance();
 		void update_instance_alien_size();
 
-		void dispose();
+		~GDrawable();
 
 		GDrawable();
 	};
@@ -308,7 +307,7 @@
 				glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
 				float width, float height, TextDecorationType decoration
 		);
-		void dispose();
+		~TextRenderer();
 	};
 
 #endif

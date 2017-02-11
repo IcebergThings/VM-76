@@ -5,11 +5,13 @@
 #include "../VMGS.hpp"
 
 namespace VM76 {
-	Scene* context = NULL;
+	namespace SceneManager {
+		Scene* context = NULL;
+	}
 
 	void Scene::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
 	void Scene::update() {}
-	void Scene::dispose() {}
+	Scene::~Scene() {}
 
 	bool SceneManager::render_debug_info = true;
 

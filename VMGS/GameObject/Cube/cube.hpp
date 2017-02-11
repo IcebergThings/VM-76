@@ -22,7 +22,7 @@ namespace VM76 {
 		void render();
 		void update_instance(int mat_c, glm::mat4* mat);
 		void update_instance(int mat_c);
-		void dispose();
+		~Cube();
 	};
 }
 

@@ -12,7 +12,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	TextRenderer* trex;
 	static Scene* loading;
-	static Scene* editor;
+	static EditorMainScene* editor;
 	float aspect_ratio;
 	glm::mat4 gui_2d_projection;
 	//-------------------------------------------------------------------------
@@ -53,7 +53,7 @@ namespace VM76 {
 		glClearDepth(1.0f);
 		glDepthMask(GL_TRUE);
 
-		loading = new LoadingScene(editor);
+		loading = new LoadingScene((Scene**) &editor);
 		SceneManager::load_scene(loading);
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
@@ -65,7 +65,9 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void terminate() {
 		log("starting to terminate");
+		EditorMainScene* editor =(EditorMainScene*) SceneManager::context;
 		VMDE_Dispose(delete, editor);
+		VMDE_Dispose(delete, loading);
 		VMDE_Dispose(delete, trex);
 		terminate_engine();
 		log("terminated successfully");

@@ -46,7 +46,7 @@ namespace Res {
 		log("Texture is loaded from %s to texture unit", file);
 	}
 
-	void Texture::dispose() {
+	Texture::~Texture() {
 		glDeleteTextures(1, &this->texture);
 	}
 }

@@ -12,7 +12,7 @@
 namespace VM76 {
 
 	struct TileData {
-		unsigned int tid;
+		unsigned char tid;
 		unsigned char data_flag;
 	};
 
@@ -36,10 +36,13 @@ namespace VM76 {
 			constStone : map[calcIndex(x,y,z)];
 		}
 
-		inline int tidQuery(int x, int y, int z) {
+		inline char tidQuery(int x, int y, int z) {
 			return (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) ?
 			1 : map[calcIndex(x,y,z)].tid;
 		}
+
+		void save_map();
+		bool read_map();
 
 		void generate_flat();
 		void generate_V1();
@@ -64,7 +67,7 @@ namespace VM76 {
 		TiledMap(int x, int y, int z, glm::vec3 wp, DataMap* m);
 		void render();
 		void bake_tiles();
-		void dispose();
+		~TiledMap();
 	};
 
 	class Map : public RenderObject {
@@ -79,11 +82,12 @@ namespace VM76 {
 		Map(int w, int h, int l, int csize);
 		void place_block(glm::vec3 dir, int tid);
 		void render();
-		void dispose();
 
 		inline int calcChunkIndex(int x, int y, int z) {
 			return (width * length) * y + (length) * z + x;
 		}
+
+		~Map();
 	};
 }
 
