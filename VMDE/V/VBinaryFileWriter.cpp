@@ -25,7 +25,7 @@ namespace V {
 	// ● 写入1字节int
 	//-------------------------------------------------------------------------
 	void VBinaryFileWriter::write_i8(int8_t v) {
-		write_directly<int8_t>(v);
+		fputc(v, f);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入4字节int
@@ -43,19 +43,29 @@ namespace V {
 	// ● 写入1字节unsigned
 	//-------------------------------------------------------------------------
 	void VBinaryFileWriter::write_u8(uint8_t v) {
-		write_directly<uint8_t>(v);
+		fputc(v, f);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入4字节unsigned
 	//-------------------------------------------------------------------------
 	void VBinaryFileWriter::write_u32(uint32_t v) {
-		write_directly<uint32_t>(v);
+		fputc((uint8_t) (v & 0xFF), f);
+		fputc((uint8_t) ((v >> 8) & 0xFF), f);
+		fputc((uint8_t) ((v >> 16) & 0xFF), f);
+		fputc((uint8_t) ((v >> 24) & 0xFF), f);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入8字节unsigned
 	//-------------------------------------------------------------------------
 	void VBinaryFileWriter::write_u64(uint64_t v) {
-		write_directly<uint64_t>(v);
+		fputc((uint8_t) (v & 0xFF), f);
+		fputc((uint8_t) ((v >> 8) & 0xFF), f);
+		fputc((uint8_t) ((v >> 16) & 0xFF), f);
+		fputc((uint8_t) ((v >> 24) & 0xFF), f);
+		fputc((uint8_t) (((v >> 24) >> 8) & 0xFF), f);
+		fputc((uint8_t) (((v >> 24) >> 16) & 0xFF), f);
+		fputc((uint8_t) (((v >> 24) >> 24) & 0xFF), f);
+		fputc((uint8_t) ((((v >> 24) >> 24) >> 8) & 0xFF), f);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入4字节float
