@@ -35,23 +35,31 @@ namespace V {
 	#define WRITE_CHAR_ \
 		if (fputc((value >>= 8) & 0xff, f) < 0) error(ERROR_MESSAGE)
 	void VBinaryFileWriter::write_i32(int32_t value) {
-		WRITE_CHAR;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
+		if (is_little_endian()) {
+			write_directly(value);
+		} else {
+			WRITE_CHAR;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入8字节int
 	//-------------------------------------------------------------------------
 	void VBinaryFileWriter::write_i64(int64_t value) {
-		WRITE_CHAR;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
-		WRITE_CHAR_;
+		if (is_little_endian()) {
+			write_directly(value);
+		} else {
+			WRITE_CHAR;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+			WRITE_CHAR_;
+		}
 	}
 	#undef WRITE_CHAR
 	#undef WRITE_CHAR_

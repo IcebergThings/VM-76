@@ -32,30 +32,38 @@ namespace V {
 	//-------------------------------------------------------------------------
 	#define READ_CHAR(i) if ((c[i] = fgetc(f)) < 0) error(ERROR_MESSAGE);
 	int32_t VBinaryFileReader::read_i32() {
-		int c[4];
-		READ_CHAR(0);
-		READ_CHAR(1);
-		READ_CHAR(2);
-		READ_CHAR(3);
-		return (int32_t) (c[0] | c[1] << 2 | c[2] << 4 | c[3] << 6);
+		if (is_little_endian()) {
+			return read_directly<int32_t>();
+		} else {
+			long c[4];
+			READ_CHAR(0);
+			READ_CHAR(1);
+			READ_CHAR(2);
+			READ_CHAR(3);
+			return (int32_t) (c[0] | c[1] << 2 | c[2] << 4 | c[3] << 6);
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取8字节int
 	//-------------------------------------------------------------------------
 	int64_t VBinaryFileReader::read_i64() {
-		int c[8];
-		READ_CHAR(0);
-		READ_CHAR(1);
-		READ_CHAR(2);
-		READ_CHAR(3);
-		READ_CHAR(4);
-		READ_CHAR(5);
-		READ_CHAR(6);
-		READ_CHAR(7);
-		return (int64_t) (
-			c[0] | c[1] << 2 | c[2] << 4 | c[3] << 6
-				| c[4] << 8 | c[5] << 10 | c[6] << 12 | c[7] << 14
-		);
+		if (is_little_endian()) {
+			return read_directly<int64_t>();
+		} else {
+			long long c[8];
+			READ_CHAR(0);
+			READ_CHAR(1);
+			READ_CHAR(2);
+			READ_CHAR(3);
+			READ_CHAR(4);
+			READ_CHAR(5);
+			READ_CHAR(6);
+			READ_CHAR(7);
+			return (int64_t) (
+				c[0] | c[1] << 2 | c[2] << 4 | c[3] << 6
+					| c[4] << 8 | c[5] << 10 | c[6] << 12 | c[7] << 14
+			);
+		}
 	}
 	#undef READ_CHAR
 	//-------------------------------------------------------------------------
