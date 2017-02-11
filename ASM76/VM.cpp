@@ -91,7 +91,14 @@ namespace ASM76 {
 		}
 	}
 
-	void VM::dump_registers() {}
+	void VM::dump_registers() {
+		printf("Registers: \n");
+		for (int i = 1; i < 100; i++) {
+			printf("%x", reg[i]);
+			if (i % 10 == 0) printf("\n");
+		}
+		printf("\n");
+	}
 	void VM::dump_memory() {}
 
 	char* VM::decompile(Instruct* prg) {
