@@ -31,31 +31,26 @@ namespace V {
 	// ● 读取4字节int
 	//-------------------------------------------------------------------------
 	int32_t VBinaryFileReader::read_i32() {
-		int c1 = fgetc(f);
-		int c2 = fgetc(f);
-		int c3 = fgetc(f);
-		int c4 = fgetc(f);
-		if (c1 < 0 || c2 < 0 || c3 < 0 || c4 < 0) error(ERROR_MESSAGE);
-		return (int32_t) (c1 & (c2 << 2) & (c3 << 4) & (c4 << 6));
+		uint32_t c = fgetc(f);
+		c = c | (fgetc(f) << 8);
+		c = c | (fgetc(f) << 16);
+		c = c | (fgetc(f) << 24);
+		return (int32_t) c;
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取8字节int
 	//-------------------------------------------------------------------------
 	int64_t VBinaryFileReader::read_i64() {
-		long c1 = fgetc(f);
-		long c2 = fgetc(f);
-		long c3 = fgetc(f);
-		long c4 = fgetc(f);
-		long c5 = fgetc(f);
-		long c6 = fgetc(f);
-		long c7 = fgetc(f);
-		long c8 = fgetc(f);
-		if (c1 < 0 || c2 < 0 || c3 < 0 || c4 < 0
-			|| c5 < 0 || c6 < 0 || c7 < 0 || c8 < 0) error(ERROR_MESSAGE);
-		return (int64_t) (
-			c1 & (c2 << 2) & (c3 << 4) & (c4 << 6)
-				& (c5 << 8) & (c6 << 10) & (c7 << 12) & (c8 << 14)
-		);
+		uint64_t c1 = fgetc(f);
+		c1 = c1 | (fgetc(f) << 8);
+		c1 = c1 | (fgetc(f) << 16);
+		c1 = c1 | (fgetc(f) << 24);
+		uint64_t c2 = fgetc(f);
+		c2 = c2 | (fgetc(f) << 8);
+		c2 = c2 | (fgetc(f) << 16);
+		c2 = c2 | (fgetc(f) << 24);
+		uint64_t c = (c2 << 32) | (c1 & 0x00000000FFFFFFFF);
+		return (int64_t) c;
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取1字节unsigned
@@ -69,13 +64,26 @@ namespace V {
 	// ● 读取4字节unsigned
 	//-------------------------------------------------------------------------
 	uint32_t VBinaryFileReader::read_u32() {
-		return (uint32_t) read_i32();
+		uint32_t c = fgetc(f);
+		c = c | (fgetc(f) << 8);
+		c = c | (fgetc(f) << 16);
+		c = c | (fgetc(f) << 24);
+		return c;
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取8字节unsigned
 	//-------------------------------------------------------------------------
 	uint64_t VBinaryFileReader::read_u64() {
-		return (uint64_t) read_i64();
+		uint64_t c1 = fgetc(f);
+		c1 = c1 | (fgetc(f) << 8);
+		c1 = c1 | (fgetc(f) << 16);
+		c1 = c1 | (fgetc(f) << 24);
+		uint64_t c2 = fgetc(f);
+		c2 = c2 | (fgetc(f) << 8);
+		c2 = c2 | (fgetc(f) << 16);
+		c2 = c2 | (fgetc(f) << 24);
+		uint64_t c = (c2 << 32) | (c1 & 0x00000000FFFFFFFF);
+		return c;
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取4字节float

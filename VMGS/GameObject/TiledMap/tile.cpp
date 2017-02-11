@@ -7,8 +7,6 @@
 #include "tile.hpp"
 
 namespace VM76 {
-	Tiles::~Tiles () {}
-
 	SimpleCubeTile::SimpleCubeTile(int tid) {
 		int x = tid % 16;
 		int y = tid / 16;
@@ -192,7 +190,7 @@ namespace VM76 {
 			if (obj[i]->data.mat_c) obj[i]->render();
 	}
 
-	void Tiles::dispose() {
+	Tiles::~Tiles() {
 		for (int i = 0; i < 6; i++) {
 			VMDE_Dispose(delete, obj[i]);
 			XE(delete[], vtx[i]);

@@ -45,18 +45,14 @@ namespace V {
 		template <class T> void write_directly(T value) {
 			fwrite(&value, sizeof(T), 1, f);
 		}
-		 write_i32();
-		 write_i64();
-		 write_u8();
-		 write_u32();
-		 write_u64();
-		 write_float();
-		 write_double();
-		template <class T> T write_directly() {
-			T r;
-			fread(&r, sizeof(T), 1, f);
-			return r;
-		}
+		void write_i8(int8_t v);
+		void write_i32(int32_t v);
+		void write_i64(int64_t v);
+		void write_u8(uint8_t v);
+		void write_u32(uint32_t v);
+		void write_u64(uint64_t v);
+		void write_float(float v);
+		void write_double(double v);
 	};
 }
 

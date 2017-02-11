@@ -20,7 +20,6 @@ namespace VM76 {
 		virtual ~Tiles();
 		virtual void render();
 		virtual void update_instance(int c1, int c2, int c3, int c4, int c5, int c6);
-		virtual void dispose();
 	};
 
 	enum TileID {

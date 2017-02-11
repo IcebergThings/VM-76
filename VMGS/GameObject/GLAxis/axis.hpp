@@ -20,7 +20,7 @@ namespace VM76 {
 	public:
 		Axis();
 		void render();
-		void dispose();
+		~Axis();
 	};
 }
 

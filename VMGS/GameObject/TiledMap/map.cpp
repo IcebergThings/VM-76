@@ -15,7 +15,7 @@ namespace VM76 {
 		map = (TileData*) malloc(sizeof(TileData) * w * h * l);
 		width = w; length = l; height = h;
 
-		generate_V1();
+		if (!read_map()) generate_V1();
 	}
 
 	void DataMap::generate_flat() {
@@ -25,6 +25,45 @@ namespace VM76 {
 					TileData t = map[calcIndex(x,y,z)];
 					t.tid = (y == 0) ? Grass : Air;
 				}
+	}
+
+	bool DataMap::read_map() {
+		FILE* f = fopen("map.dat", "rb");
+		if (!f) return false; else fclose(f);
+
+		log("Reading map");
+		V::VBinaryFileReader* fr = new V::VBinaryFileReader("map.dat");
+
+		int map_version = fr->read_i32();
+		if (fr->read_u8() == 'V' && fr->read_u8() == 'M'
+			&& fr->read_u8() == '7' && fr->read_u8() == '6') {
+				log("Map version : %d", map_version);
+				for (int x = 0; x < width * length * height; x++) {
+					map[x].tid = fr->read_u8();
+					map[x].data_flag = fr->read_u8();
+				}
+				return true;
+			} else {
+				log("Invalid map.dat");
+				return false;
+			}
+	}
+
+	void DataMap::save_map() {
+		V::VBinaryFileWriter* fw = new V::VBinaryFileWriter("map.dat");
+		// 版本号
+		fw->write_i32(100);
+		// 文件头标识
+		fw->write_u8('V');
+		fw->write_u8('M');
+		fw->write_u8('7');
+		fw->write_u8('6');
+
+		for (int x = 0; x < width * length * height; x++) {
+			fw->write_u8(map[x].tid);
+			fw->write_u8(map[x].data_flag);
+		}
+		delete fw;
 	}
 
 	void DataMap::generate_V1() {
@@ -109,10 +148,13 @@ namespace VM76 {
 			chunks[x]->render();
 	}
 
-	void Map::dispose() {
+	Map::~Map() {
 		for (int x = 0; x < width * length * height; x++) {
 			VMDE_Dispose(delete, chunks[x]);
 		}
 		XE(delete[], chunks);
+
+		log("Saving map");
+		map->save_map();
 	}
 }

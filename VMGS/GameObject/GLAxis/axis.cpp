@@ -49,7 +49,7 @@ namespace VM76 {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	void Axis::dispose() {
+	Axis::~Axis() {
 		VMDE_Dispose(delete, obj);
 		XE(delete[], vtx);
 		XE(delete[], itx);

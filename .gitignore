@@ -11,6 +11,7 @@
 *.dll
 *.exe
 VMGS/VMGS
+VMGS/map.dat
 output.log
 
 # personal configurations

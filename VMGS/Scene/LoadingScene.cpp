@@ -7,8 +7,8 @@
 
 namespace VM76 {
 
-	LoadingScene::LoadingScene(Scene* tobeload) {
-		todo = tobeload;
+	LoadingScene::LoadingScene(Scene** tobeload) {
+		todo = *tobeload;
 	}
 
 	// 这玩意不需要按键回调
@@ -40,7 +40,5 @@ namespace VM76 {
 
 	// 这玩意暂时不需要刷新什么数据
 	void LoadingScene::update() {}
-
-	void LoadingScene::dispose() {}
 
 }

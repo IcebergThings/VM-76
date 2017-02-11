@@ -114,7 +114,7 @@ void GDrawable::update_instance_alien_size() {
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-void GDrawable::dispose() {
+GDrawable::~GDrawable() {
 	glDeleteVertexArrays(1, &data.VAO);
 	glDeleteBuffers(1, &data.VBO);
 	glDeleteBuffers(1, &data.EBO);

@@ -186,7 +186,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 释放
 	//-------------------------------------------------------------------------
-	void EditorMainScene::dispose() {
+	EditorMainScene::~EditorMainScene() {
 		VMDE_Dispose(delete, tile_texture);
 		VMDE_Dispose(delete, block_pointer);
 		for (int i = 0; i < 16; i++) VMDE_Dispose(delete, clist[i]);
