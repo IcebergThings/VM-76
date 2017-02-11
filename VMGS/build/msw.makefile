@@ -16,6 +16,9 @@ all: $(TARGET)
 %.o %.debug.o: %.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
+%.o: %.rc
+	windres -i $^ -o $@
+
 $(TARGET): VMDE.dll $(OBJECTS)
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
