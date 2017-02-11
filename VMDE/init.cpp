@@ -114,6 +114,7 @@ void init_engine(int w, int h, const char* title) {
 	Util::init();
 	log("initializing the engine");
 	srand(time(NULL));
+	log("The system is %s-endian.", is_little_endian() ? "little" : "big");
 
 	init_vmde(w, h);
 	init_graphics(w, h, title);
