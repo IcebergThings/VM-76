@@ -6,7 +6,7 @@
 
 using namespace ASM76;
 
-Instruct test_prgm[] = {
+Instruct mem_test_prgm[] = {
 	{LCMM,0x4000000,0},
 	{DATI,0xABCD1234,1},
 	{DATB,'V',5},
@@ -27,10 +27,15 @@ int main() {
 	printf("===== ASM 76 Test Program =====\n");
 
 	init_environment();
-	VM* v = new VM(test_prgm, sizeof(test_prgm));
+
+	printf("===== Memory =====\n");
+	VM* v = new VM(mem_test_prgm, sizeof(mem_test_prgm));
 
 	v->execute();
 	v->dump_registers();
+	delete v;
+
+	printf("===== TEST END =====\n");
 
 	return 0;
 }
