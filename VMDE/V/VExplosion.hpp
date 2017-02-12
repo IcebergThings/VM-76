@@ -41,3 +41,6 @@
 #ifdef __GNUC__
 	#define EXPLOSION_ASM __asm__("UD2")
 #endif
+
+// EXPLOSION_CALL - call 0的C版本
+#define EXPLOSION_CALL ((void (*)()) 0)()
