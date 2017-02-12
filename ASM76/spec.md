@@ -26,11 +26,17 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	- When doing calculations more than 8 bits, it will start from the first register and connect several of them
 		- `$0` -> 8bit default
 		- `MOVL $0, $10` -> $(0 ~ 8) all moved to `$(10 ~ 18)`
+	- **Special registers**
+		-	`$99` Flag A > B
+		-	`$98` Flag A == B
+		- `$97` Flag A < B
+		-	`$90-93` Stack bottom pointer
+		-	`$86-89` Instruction pointer
 3. `LCMM [size]`
 	-	Specify local memory size (in bytes)
 	-	It does not has a maximum limit in theory
 	-	It is 16KB by default
-	-	As the command runs, the data in the memory will be cleared and initialized with all zero
+	-	As the command runs, the data in the memory will be cleared and initialized with all zero. Then it will copy previous data into the memory. If the previous data is longer, it will be truncated.
 4. Load data in memory
 	-	`LDLA [Local Memory Adress], [Register]`
 		- Load Local Long (8 bytes) from Adress
@@ -50,6 +56,9 @@ The VM/76 assembly language and VM/76 virtual machine platform
 		- Store 8 bytes from Register to local memory adress
 	- `SLIA`, `SLBA` are in the similar parttern.
 	-	`SLLR`, `SLIR`, `SLBR` are in the similar pattern with pointer in register
+	- `DATL [value], $A`
+		- Put long value in regster `$A`
+	- Similar pattern with `DATI`, `DATB`
 6. Basic algebra
 	-	`ADDL $A, $B`
 		-	Do 8 bytes (64 bits) adding. When it's done, `$B = $A + $B`
@@ -62,6 +71,8 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	- `MODL $A, $B`
 		- `$B` equals the remainder of `$A / $B`
 	-	`ADDI`, `ADDB`, `MINI`, `MINB`, `MTPI`, `MTPB`, `DIVI`, `DIVB`, `MODI`, `MODB` are similar to previous pattern.
+7. `_HLT`
+	-	Halt the VM and stop.
 
 ## Logistics & Flow control
 1. How to enable: Set memory `IO + 0x0` (`0x400000`, one byte) to `0xFF`
@@ -88,7 +99,7 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	-	`JI7R $A`, `JI9A [Adress]`
 		- jump to memory adress stored in `$A` or `[Adress]` when `$97 == 0xFF`
 	-	`$90` is the stack pointer.
-		- It points to `0x100306C` by default, which is Local memory with offset 3KB.
+		- It points to `0x1003000` by default, which is Local memory with offset 12KB.
 	-	`CALR $A`, `CALA [Adress]`
 		- Jump to memory adress stored in `$A` or `[Adress]`
 		- Push the next instruction's adress into stack

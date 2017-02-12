@@ -1,25 +1,33 @@
 //==============================================================================
-// ■ ASM76的头文件
+// ■ ASM76.h
 //==============================================================================
 
-#include "stdlib"
+#include "stdlib.h"
+#include "string.h"
 #include "cstdio"
-#include "stdint"
+#include "stdint.h"
+
+#ifndef _INCLUDE_ASM76_H
+#define _INCLUDE_ASM76_H
 
 namespace ASM76 {
 
 	enum InstructionSets {
+		NOOP, // No Operation is always NULL
+
 		// 76-Base
 		LCMM,
 		LDLA, LDIA, LDBA,
 		LDLR, LDIR, LDBR,
-		SLAA, SLIA, SLBA,
+		SLLA, SLIA, SLBA,
 		SLLR, SLIR, SLBR,
+		DATL, DATI, DATB,
 		ADDL, ADDI, ADDB,
 		MINL, MINI, MINB,
 		MTPL, MTPI, MTPB,
 		DIVL, DIVI, DIVB,
 		MODL, MODI, MODB,
+		_HLT,
 
 		// Logistics & Flow control
 		ANDL, ANDI, ANDB,
@@ -39,11 +47,9 @@ namespace ASM76 {
 		// 76 Vectors
 
 		// BIOS Instructions
-	}
+	};
 
-	extern char* global_memory;
-
-	void init_environment();
+	extern uint8_t* global_memory;
 
 	struct Instruct {
 		uint16_t opcode;
@@ -51,15 +57,32 @@ namespace ASM76 {
 		uint32_t t;
 	};
 
+	void init_environment();
+
+	#define REG(T, P) *((T*) reg + P)
 
 	class VM {
 	private:
-		// These two bufs are mirror to the same memory buffer
-		char* local_memory();
-		Instruct* instruct_memory();
+		uint8_t* local_memory;
+		size_t local_mem_size = 0x4000;
+		Instruct* instruct_memory;
+		uint8_t* reg;
+
+		// Common & Special register
+		uint32_t* REG86;
+		uint32_t* REG90;
+		uint8_t* REG97;
+		uint8_t* REG98;
+		uint8_t* REG99;
 
 	public:
-		VM(Instruct* program);
+		template <class T> T* memfetch(uint32_t address) {
+			return address < 0x1000000 ?
+				(T*) (global_memory + address) :
+				(T*) (local_memory + address - 0x1000000);
+		}
+
+		VM(Instruct* program, size_t prg_size);
 
 		void execute();
 		void dump_registers();
@@ -72,3 +95,5 @@ namespace ASM76 {
 	};
 
 }
+
+#endif

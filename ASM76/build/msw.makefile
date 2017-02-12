@@ -19,7 +19,7 @@ $(TARGET): $(OBJECTS)
 	@echo 链接最终二进制
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
-VMtest: VMtest.cpp
-	$(CXX) $^ -o $@ $(CXXFLAGS)
+VMtest: VMtest.cpp $(TARGET)
+	$(CXX) $^ -o $@ $(CXXFLAGS) $(TARGET)
 
 .PHONY: all
