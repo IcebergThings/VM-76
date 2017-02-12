@@ -12,6 +12,7 @@
 *.exe
 VMGS/VMGS
 VMGS/map.dat
+ASM76/VMtest
 output.log
 
 # personal configurations
