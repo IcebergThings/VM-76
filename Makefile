@@ -4,7 +4,7 @@
 
 include inc.makefile
 
-PROJECTS = VMDE VMGS
+PROJECTS = ASM76 VMDE VMGS
 
 all: $(PROJECTS)
 
