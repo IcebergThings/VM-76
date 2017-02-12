@@ -61,15 +61,15 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	- Similar pattern with `DATI`, `DATB`
 6. Basic algebra
 	-	`ADDL $A, $B`
-		-	Do 8 bytes (64 bits) adding. When it's done, `$B = $A + $B`
+		-	Do 8 bytes (64 bits) adding. When it's done, `$A = $A + $B`
 	-	`MINL $A, $B`
-		-	Do 8 bytes (64 bits) minus. When it's done, `$B = $A - $B`
+		-	Do 8 bytes (64 bits) minus. When it's done, `$A = $A - $B`
 	-	`MTPL $A, $B`
-		- Do 8 bytes (64 bits) multiplying. `$B = $A * $B`
+		- Do 8 bytes (64 bits) multiplying. `$A = $A * $B`
 	-	`DIVL $A, $B`
-		- Do 8 bytes (64 bits) integer dividing. `$B = $A / $B`
+		- Do 8 bytes (64 bits) integer dividing. `$A = $A / $B`
 	- `MODL $A, $B`
-		- `$B` equals the remainder of `$A / $B`
+		- `$A` equals the remainder of `$A / $B`
 	-	`ADDI`, `ADDB`, `MINI`, `MINB`, `MTPI`, `MTPB`, `DIVI`, `DIVB`, `MODI`, `MODB` are similar to previous pattern.
 7. `_HLT`
 	-	Halt the VM and stop.

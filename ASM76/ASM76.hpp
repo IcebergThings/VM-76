@@ -21,7 +21,7 @@ namespace ASM76 {
 		LDLR, LDIR, LDBR,
 		SLLA, SLIA, SLBA,
 		SLLR, SLIR, SLBR,
-		DATL, DATI, DATB,
+		DATI, DATB,
 		ADDL, ADDI, ADDB,
 		MINL, MINI, MINB,
 		MTPL, MTPI, MTPB,
@@ -59,7 +59,7 @@ namespace ASM76 {
 
 	void init_environment();
 
-	#define REG(T, P) *((T*) reg + P)
+	#define REG(T, P) *((T*) (reg + P))
 
 	class VM {
 	private:
