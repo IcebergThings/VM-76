@@ -24,6 +24,9 @@
 // EXPLOSION_ASSIGNMENT - 赋值实现
 #define EXPLOSION_ASSIGNMENT (*((float*) NULL) = INFINITY)
 
+// EXPLOSION_ASSIGNMENT_SIMPLE - 简易赋值实现
+#define EXPLOSION_ASSIGNMENT_SIMPLE (*((int*) 0) = 0)
+
 // EXPLOSION_MEMORY - 标准C库内存操作实现
 #define EXPLOSION_MEMORY (memset(NULL, 233, 1))
 
