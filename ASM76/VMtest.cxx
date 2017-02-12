@@ -8,10 +8,9 @@ using namespace ASM76;
 
 Instruct test_prgm[] = {
 	{LCMM,0x4000000,0},
-	{LDLA,0x400000,0},
-	{LDLA,0x1000000,1},
-	{LDIA,0x100000c,9},
-	{LDBA,0x1000018,13},
+	{DATI,0xABCD1234,51},
+	{SLLA,0x2000000,50},
+	{LDLA,0x2000000,71},
 	{_HLT, 0, 0},
 };
 

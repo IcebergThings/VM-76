@@ -36,11 +36,11 @@ namespace ASM76 {
 		// Stack bottom pointer
 		REG(uint32_t, 90) = 0x1003000;
 
-		REG86 = (uint32_t*) reg + 86;
-		REG90 = (uint32_t*) reg + 90;
-		REG97 = (uint8_t*) reg + 97;
-		REG98 = (uint8_t*) reg + 98;
-		REG99 = (uint8_t*) reg + 99;
+		REG86 = (uint32_t*) (reg + 86);
+		REG90 = (uint32_t*) (reg + 90);
+		REG97 = (uint8_t*) (reg + 97);
+		REG98 = (uint8_t*) (reg + 98);
+		REG99 = (uint8_t*) (reg + 99);
 	}
 
 	#define OPC(code) (now->opcode == code)
@@ -84,6 +84,11 @@ namespace ASM76 {
 				*memfetch<uint32_t>(REG(uint32_t, now->f)) = REG(uint32_t, now->t);
 			} else if OPC(SLBR) {
 				*memfetch<uint8_t>(REG(uint32_t, now->f)) = REG(uint8_t, now->t);
+			} else if OPC(DATI) {
+				printf("Store data %x to $%d\n", now->f, now->t);
+				REG(uint32_t, now->t) = (uint32_t) now->f;
+			} else if OPC(DATB) {
+				REG(uint8_t, now->t) = (uint8_t) now->f;
 			}
 
 			*REG86 += sizeof(Instruct);
@@ -94,7 +99,7 @@ namespace ASM76 {
 	void VM::dump_registers() {
 		printf("Registers: \n");
 		for (int i = 1; i < 100; i++) {
-			printf("%x", reg[i]);
+			printf("%02x ", reg[i]);
 			if (i % 10 == 0) printf("\n");
 		}
 		printf("\n");
