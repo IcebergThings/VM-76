@@ -1,5 +1,5 @@
 #==============================================================================
-# ■ VMGS - msw.makefile
+# ■ ASM76 - msw.makefile
 #==============================================================================
 
 include ../inc.makefile
@@ -19,7 +19,7 @@ $(TARGET): $(OBJECTS)
 	@echo 链接最终二进制
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
-VMtest: VMtest.cpp $(TARGET)
+VMtest: VMtest.cxx $(TARGET)
 	$(CXX) $^ -o $@ $(CXXFLAGS) $(TARGET)
 
 .PHONY: all

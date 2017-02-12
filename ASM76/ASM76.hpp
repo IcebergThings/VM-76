@@ -1,11 +1,11 @@
-//==============================================================================
-// ■ ASM76.h
-//==============================================================================
+//=============================================================================
+// ■ ASM76.hpp
+//=============================================================================
 
-#include "stdlib.h"
-#include "string.h"
-#include "cstdio"
-#include "stdint.h"
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cstdint>
 
 #ifndef _INCLUDE_ASM76_H
 #define _INCLUDE_ASM76_H
@@ -13,7 +13,7 @@
 namespace ASM76 {
 
 	enum InstructionSets {
-		NOOP, // No Operation is always NULL
+		NOOP = 0, // No Operation is always NULL
 
 		// 76-Base
 		LCMM,
