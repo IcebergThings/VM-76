@@ -76,22 +76,6 @@
 	//     TWICE a++;
 	//     TWICE { a++; b++; }
 	#define TWICE NTIMES(2)
-	// EXPLOSION!
-	// 可以安全地在用户级代码中调用并获得SIGSEGV。
-	// 在退出程序时装逼。
-	#define EXPLOSION EXP_ASSIGNMENT
-	// EXP_ASSIGNMENT - EXPLOSION的赋值实现
-	#define EXP_ASSIGNMENT ((void) (*((float*) NULL) = INFINITY))
-	// EXP_MEMORY - EXPLOSION的标准C库内存操作实现
-	#define EXP_MEMORY ((void) memset(NULL, 233, 1))
-	// EXP_SIGNAL - EXPLOSION的标准C库信号实现
-	// * 需要#include <csignal>，但本项目没有包含。
-	#define EXP_SIGNAL ((void) ((raise(SIGSEGV) == 0) || abort()))
-	// EXP_CONSTSTR - EXPLOSION的只读字符串实现
-	#define EXP_CONSTSTR ((void) *"" = 0;)
-	// EXP_ASM - EXPLOSION的Pentium Pro指令实现
-	// * 这个实现不会导致SIGSEGV。
-	#define EXP_ASM (__asm__("UD2"))
 	// XE - 释放内存黑魔法
 	// “X掉Exceptions”！
 	//     void* m;
