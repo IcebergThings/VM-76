@@ -112,6 +112,12 @@
 			(object) = NULL; \
 		} \
 	} while (false)
+	// DEBUG_ENVIRONMENT - 调试环境
+	// 这个字符串会显示在log函数输出的开头。
+	#define DEBUG_ENVIRONMENT "VMDE"
+	// log - Util::log_internal的方便缩写，可以直接得到当前函数名
+	//     log("%p", log);
+	#define log(...) Util::log_internal(DEBUG_ENVIRONMENT, __func__, __VA_ARGS__)
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
 	// error - 抛出错误并终止程序
@@ -121,6 +127,17 @@
 		fputs("The errno may not help.\n", stderr); \
 		exit(1); \
 	} while (false)
+	//-------------------------------------------------------------------------
+	// ● util.cpp
+	//   这个Util的意义已经远超utility。
+	//-------------------------------------------------------------------------
+	namespace Util {
+		extern FILE* log_file;
+		void init();
+		void terminate();
+		void log_internal(const char*, const char*, const char*, ...);
+		char* read_file(const char* filename);
+	}
 	//-------------------------------------------------------------------------
 	// ● 子文件夹中的头文件
 	//-------------------------------------------------------------------------
@@ -198,20 +215,6 @@
 		~Shaders();
 	};
 	extern Shaders* _shaders_in_use;
-	//-------------------------------------------------------------------------
-	// ● util.cpp
-	//-------------------------------------------------------------------------
-	#define DEBUG_ENVIRONMENT "VMDE"
-	// log - Util::log_internal的方便缩写，可以直接得到当前函数名
-	//     log("%p", log);
-	#define log(...) Util::log_internal(DEBUG_ENVIRONMENT, __func__, __VA_ARGS__)
-	namespace Util {
-		extern FILE* log_file;
-		void init();
-		void terminate();
-		void log_internal(const char*, const char*, const char*, ...);
-		char* read_file(const char* filename);
-	}
 	//-------------------------------------------------------------------------
 	// ● VMDE
 	//-------------------------------------------------------------------------

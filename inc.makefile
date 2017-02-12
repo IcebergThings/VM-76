@@ -49,16 +49,17 @@ else ifeq "$(PLATFORM)" "mac"
 endif
 
 # Useful variables.
-ifdef DEBUG
-	OBJECTS = $(patsubst %.cpp, %.debug.o, $(SOURCES))
-else
-	OBJECTS = $(patsubst %.cpp, %.o, $(SOURCES))
-endif
-
 ifeq "$(PLATFORM)" "msw"
-	SOURCES = $(shell dir /b /s *.cpp)
+	SOURCES = $(shell dir /b /s *.cpp *.rc)
 else ifeq "$(PLATFORM)" "gnu"
 	SOURCES = $(shell find . -name "*.cpp")
 else ifeq "$(PLATFORM)" "mac"
 	SOURCES = $(shell find . -name "*.cpp")
+endif
+
+ifdef DEBUG
+	OBJECTS = $(SOURCES:%.cpp=%.debug.o)
+else
+	OBJECTS := $(SOURCES:%.cpp=%.o)
+	OBJECTS := $(OBJECTS:%.rc=%.o)
 endif
