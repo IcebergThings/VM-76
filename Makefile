@@ -4,9 +4,9 @@
 
 include inc.makefile
 
-PROJECTS = VMDE VMGS
+PROJECTS = ASM76 VMDE VMGS
 
-all: $(PROJECTS)
+all:: $(PROJECTS)
 
 $(PROJECTS):
 	cd $@ && $(MAKE) -f build/$(PLATFORM).makefile
@@ -38,4 +38,4 @@ endif
 platform:
 	@echo $(PLATFORM)
 
-.PHONY: all clean run debug $(PROJECTS) platform
+.PHONY: clean run debug $(PROJECTS) platform

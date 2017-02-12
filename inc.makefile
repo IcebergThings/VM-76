@@ -63,3 +63,17 @@ else
 	OBJECTS := $(SOURCES:%.cpp=%.o)
 	OBJECTS := $(OBJECTS:%.rc=%.o)
 endif
+
+# General recipes.
+# They are copied over and over until they are here.
+all::
+.PHONY: all
+
+%.o %.debug.o: %.cpp
+	$(CXX) -c $^ -o $@ $(CXXFLAGS)
+
+%.o: %.rc
+	windres -i $^ -o $@
+
+$(TARGET): $(OBJECTS)
+	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
