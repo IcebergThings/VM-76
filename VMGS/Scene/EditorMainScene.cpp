@@ -170,14 +170,23 @@ namespace VM76 {
 
 		if (SceneManager::render_debug_info) {
 			char info[64];
-			sprintf(info, "Hand ID: %d Pointer ID: %d",
+			sprintf(info, "Hand ID: %d  Pointer ID: %d",
 				hand_id,
 				map->map->tidQuery(obj->pos.x, obj->pos.y, obj->pos.z)
 			);
 			trex->instanceRenderText(
 				info, gui_2d_projection,
 				glm::mat4(1.0),
-				glm::translate(glm::mat4(1.0), glm::vec3(0.01,0.87,0.0)),
+				glm::translate(glm::mat4(1.0), glm::vec3(0.01, 0.88, 0.0)),
+				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+			);
+			sprintf(info, "Pointer pos: (%.0f, %.0f, %.0f)",
+				obj->pos.x, obj->pos.y, obj->pos.z
+			);
+			trex->instanceRenderText(
+				info, gui_2d_projection,
+				glm::mat4(1.0),
+				glm::translate(glm::mat4(1.0), glm::vec3(0.01, 0.82, 0.0)),
 				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
 			);
 		}
