@@ -22,6 +22,24 @@ Instruct mem_test_prgm[] = {
 	{_HLT, 0, 0},
 };
 
+Instruct basic_algebra_test_prgm[] = {
+	{LCMM,0x4000000,0},
+	{DATI,0x1,1},
+	// $1 = $1 + $1
+	// 1, 2, 4, 8, 16, ...
+	{ADDL,1,1},
+	{ADDL,1,1},
+	{ADDL,1,1},
+	{ADDL,1,1},
+	// Put the result else where
+	{SLLA,0x1000000,1},
+	{LDLA,0x1000000,31},
+	// Then divide 4
+	{DATI,0x4,11},
+	{DIVL,1,11},
+	{_HLT, 0, 0},
+};
+
 int main() {
 
 	printf("===== ASM 76 Test Program =====\n");
@@ -30,6 +48,13 @@ int main() {
 
 	printf("===== Memory =====\n");
 	VM* v = new VM(mem_test_prgm, sizeof(mem_test_prgm));
+
+	v->execute();
+	v->dump_registers();
+	delete v;
+
+	printf("===== Basic Algebra =====\n");
+	v = new VM(basic_algebra_test_prgm, sizeof(basic_algebra_test_prgm));
 
 	v->execute();
 	v->dump_registers();
