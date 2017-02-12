@@ -90,35 +90,35 @@ namespace ASM76 {
 			} else if OPC(DATB) {
 				REG(uint8_t, now->t) = (uint8_t) now->f;
 			} else if OPC(ADDL) {
-				REG(uint64_t, now->t) += (uint64_t) now->f;
+				REG(uint64_t, now->f) += REG(uint64_t, now->t);
 			} else if OPC(ADDI) {
-				REG(uint32_t, now->t) += (uint32_t) now->f;
+				REG(uint32_t, now->f) += REG(uint32_t, now->t);
 			} else if OPC(ADDB) {
-				REG(uint8_t, now->t) += (uint8_t) now->f;
+				REG(uint8_t, now->f) += REG(uint8_t, now->t);
 			} else if OPC(MINL) {
-				REG(uint64_t, now->t) -= (uint64_t) now->f;
+				REG(uint64_t, now->f) -= REG(uint64_t, now->t);
 			} else if OPC(MINI) {
-				REG(uint32_t, now->t) -= (uint32_t) now->f;
+				REG(uint32_t, now->f) -= REG(uint32_t, now->t);
 			} else if OPC(MINB) {
-				REG(uint8_t, now->t) -= (uint8_t) now->f;
+				REG(uint8_t, now->f) -= REG(uint8_t, now->t);
 			} else if OPC(MTPL) {
-				REG(uint64_t, now->t) *= (uint64_t) now->f;
+				REG(uint64_t, now->f) *= REG(uint64_t, now->t);
 			} else if OPC(MTPI) {
-				REG(uint32_t, now->t) *= (uint32_t) now->f;
+				REG(uint32_t, now->f) *= REG(uint32_t, now->t);
 			} else if OPC(MTPB) {
-				REG(uint8_t, now->t) *= (uint8_t) now->f;
+				REG(uint8_t, now->f) *= REG(uint8_t, now->t);
 			} else if OPC(DIVL) {
-				REG(uint64_t, now->t) = REG(uint64_t, now->t) / (uint64_t) now->f;
+				REG(uint64_t, now->f) /= REG(uint64_t, now->t);
 			} else if OPC(DIVI) {
-				REG(uint32_t, now->t) = REG(uint32_t, now->t) / (uint32_t) now->f;
+				REG(uint32_t, now->f) /= REG(uint32_t, now->t);
 			} else if OPC(DIVB) {
-				REG(uint8_t, now->t) = REG(uint8_t, now->t) / (uint8_t) now->f;
+				REG(uint8_t, now->f) /= REG(uint8_t, now->t);
 			} else if OPC(MODL) {
-				REG(uint64_t, now->t) = REG(uint64_t, now->t) % (uint64_t) now->f;
+				REG(uint64_t, now->f) = REG(uint64_t, now->f) % REG(uint64_t, now->t);
 			} else if OPC(MODI) {
-				REG(uint32_t, now->t) = REG(uint32_t, now->t) % (uint32_t) now->f;
+				REG(uint32_t, now->f) = REG(uint32_t, now->t) % REG(uint32_t, now->t);
 			} else if OPC(MODB) {
-				REG(uint8_t, now->t) = REG(uint8_t, now->t) % (uint8_t) now->f;
+				REG(uint8_t, now->f) = REG(uint8_t, now->t) % REG(uint8_t, now->t);
 			}
 
 			*REG86 += sizeof(Instruct);
