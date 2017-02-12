@@ -59,7 +59,13 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	- `DATL [value], $A`
 		- Put long value in regster `$A`
 	- Similar pattern with `DATI`, `DATB`
-6. Basic algebra
+7. Mem operation
+	-	`MOVL [adress A], [adress B]`
+		- copy 8 bytes data from `adress A` to `adress B`
+	-	`MVRL [$A], [$B]`
+		- copy 8 bytes data from adress in `$A` to the address in `$B`
+	- `MOVI`, `MOVB`, `MVRI`, `MVRB` are in similar pattern
+8. Basic algebra
 	-	`ADDL $A, $B`
 		-	Do 8 bytes (64 bits) adding. When it's done, `$A = $A + $B`
 	-	`MINL $A, $B`
