@@ -85,10 +85,27 @@ namespace ASM76 {
 			} else if OPC(SLBR) {
 				*memfetch<uint8_t>(REG(uint32_t, now->f)) = REG(uint8_t, now->t);
 			} else if OPC(DATI) {
-				printf("Store data %x to $%d\n", now->f, now->t);
 				REG(uint32_t, now->t) = (uint32_t) now->f;
 			} else if OPC(DATB) {
 				REG(uint8_t, now->t) = (uint8_t) now->f;
+			} else if OPC(MOVL) {
+				*memfetch<uint64_t>(now->t) = *memfetch<uint64_t>(now->f);
+			} else if OPC(MOVI) {
+				*memfetch<uint32_t>(now->t) = *memfetch<uint32_t>(now->f);
+			} else if OPC(MOVB) {
+				*memfetch<uint8_t>(now->t) = *memfetch<uint8_t>(now->f);
+			} else if OPC(MVPL) {
+				*memfetch<uint64_t>(REG(uint32_t, now->t)) = *memfetch<uint64_t>(REG(uint32_t, now->f));
+			} else if OPC(MVPI) {
+				*memfetch<uint32_t>(REG(uint32_t, now->t)) = *memfetch<uint32_t>(REG(uint32_t, now->f));
+			} else if OPC(MVPB) {
+				*memfetch<uint8_t>(REG(uint32_t, now->t)) = *memfetch<uint8_t>(REG(uint32_t, now->f));
+			} else if OPC(MVRL) {
+				REG(uint64_t, now->t) = REG(uint64_t, now->f);
+			} else if OPC(MVRI) {
+				REG(uint32_t, now->t) = REG(uint32_t, now->f);
+			} else if OPC(MVRB) {
+				REG(uint8_t, now->t) = REG(uint8_t, now->f);
 			} else if OPC(ADDL) {
 				REG(uint64_t, now->f) += REG(uint64_t, now->t);
 			} else if OPC(ADDI) {
