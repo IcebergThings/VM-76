@@ -50,6 +50,10 @@ namespace ASM76 {
 		while (!OPC(_HLT)) {
 			printf("%x : %x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
 
+			// ===========================
+			//  76-Base
+			// ===========================
+			// LCMM
 			if OPC(LCMM) {
 				uint8_t* new_mem = new uint8_t[now->f];
 				memset(new_mem, 0, now->f);
@@ -60,7 +64,9 @@ namespace ASM76 {
 				instruct_memory = (Instruct*) new_mem;
 
 				printf("Changed local size to %zu bytes\n", local_mem_size);
-			} else if OPC(LDLA) {
+			}
+			// Load Data
+			else if OPC(LDLA) {
 				REG(uint64_t, now->t) = *memfetch<uint64_t>(now->f);
 			} else if OPC(LDIA) {
 				REG(uint32_t, now->t) = *memfetch<uint32_t>(now->f);
@@ -72,7 +78,9 @@ namespace ASM76 {
 				REG(uint32_t, now->t) = *memfetch<uint32_t>(REG(uint32_t, now->f));
 			} else if OPC(LDBR) {
 				REG(uint8_t, now->t) = *memfetch<uint8_t>(REG(uint32_t, now->f));
-			} else if OPC(SLLA) {
+			}
+			// Store data
+			else if OPC(SLLA) {
 				*memfetch<uint64_t>(now->f) = REG(uint64_t, now->t);
 			} else if OPC(SLIA) {
 				*memfetch<uint32_t>(now->f) = REG(uint32_t, now->t);
@@ -88,7 +96,9 @@ namespace ASM76 {
 				REG(uint32_t, now->t) = (uint32_t) now->f;
 			} else if OPC(DATB) {
 				REG(uint8_t, now->t) = (uint8_t) now->f;
-			} else if OPC(MOVL) {
+			}
+			// Mem operation
+			else if OPC(MOVL) {
 				*memfetch<uint64_t>(now->t) = *memfetch<uint64_t>(now->f);
 			} else if OPC(MOVI) {
 				*memfetch<uint32_t>(now->t) = *memfetch<uint32_t>(now->f);
@@ -106,7 +116,9 @@ namespace ASM76 {
 				REG(uint32_t, now->t) = REG(uint32_t, now->f);
 			} else if OPC(MVRB) {
 				REG(uint8_t, now->t) = REG(uint8_t, now->f);
-			} else if OPC(ADDL) {
+			}
+			// Basic Algebra
+			else if OPC(ADDL) {
 				REG(uint64_t, now->f) += REG(uint64_t, now->t);
 			} else if OPC(ADDI) {
 				REG(uint32_t, now->f) += REG(uint32_t, now->t);
@@ -136,6 +148,12 @@ namespace ASM76 {
 				REG(uint32_t, now->f) = REG(uint32_t, now->t) % REG(uint32_t, now->t);
 			} else if OPC(MODB) {
 				REG(uint8_t, now->f) = REG(uint8_t, now->t) % REG(uint8_t, now->t);
+			}
+			// ===========================
+			//  Logistics & Flow control
+			// ===========================
+			if (global_memory[0x400000] == 0xFF) {
+				
 			}
 
 			*REG86 += sizeof(Instruct);
