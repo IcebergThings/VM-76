@@ -202,6 +202,19 @@ namespace ASM76 {
 					} else {
 						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
 					}
+				} else if OPC(JMPR) {
+					*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+				} else if OPC(JMPA) {
+					*REG86 = now->f - sizeof(Instruct);
+				} else if OPC(JI9R) {
+					if (*REG99 == 0xFF)
+						*REG86 = now->f - sizeof(Instruct);
+				} else if OPC(JI8R) {
+					if (*REG98 == 0xFF)
+						*REG86 = now->f - sizeof(Instruct);
+				} else if OPC(JI7R) {
+					if (*REG97 == 0xFF)
+						*REG86 = now->f - sizeof(Instruct);
 				}
 			}
 

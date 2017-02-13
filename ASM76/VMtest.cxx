@@ -39,6 +39,17 @@ Instruct basic_algebra_test_prgm[] = {
 	{_HLT, 0, 0},
 };
 
+Instruct flow_control_test_prgm[] = {
+	{DATB,0x1,20},
+	{DATB,0xA,10},
+	{DATB,0x2,15},
+	{ADDL,15,15},
+	{ADDL,3,20},
+	{CMPI,3,10},
+	{JI7R, 0x1000000 + 3 * sizeof(Instruct),0},
+	{_HLT, 0, 0},
+};
+
 int main() {
 
 	printf("===== ASM 76 Test Program =====\n");
@@ -54,6 +65,13 @@ int main() {
 
 	printf("===== Basic Algebra =====\n");
 	v = new VM(basic_algebra_test_prgm, sizeof(basic_algebra_test_prgm));
+
+	v->execute();
+	v->dump_registers();
+	delete v;
+
+	printf("===== Flow Control & Logistics =====\n");
+	v = new VM(flow_control_test_prgm, sizeof(flow_control_test_prgm));
 
 	v->execute();
 	v->dump_registers();
