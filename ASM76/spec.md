@@ -159,6 +159,7 @@ Means `$A = !$A;` in C.
 
 Instruction | Description
 ----------- | -----------
+NOOP | waste some time
 HALT | halt the CPU and stop
 JMPR _$A_ | jump to memory address stored in *$A*
 JMPA _address_ | jump to memory address *address*
