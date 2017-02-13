@@ -21,7 +21,7 @@ I(MINL) I(MINI) I(MINB)
 I(MTPL) I(MTPI) I(MTPB)
 I(DIVL) I(DIVI) I(DIVB)
 I(MODL) I(MODI) I(MODB)
-I(_HLT)
+I(HALT)
 
 // Logistics & Flow control
 I(ANDL) I(ANDI) I(ANDB)
@@ -34,9 +34,9 @@ I(JMPA)
 I(JI9A) I(JI8A) I(JI7A)
 I(JI9R) I(JI8R) I(JI7R)
 I(CALR) I(CALA)
-I(RET)
+I(RETN)
 I(PUSH)
-I(POP)
+I(POP_)
 
 // 76 Float
 

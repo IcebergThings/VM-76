@@ -68,7 +68,7 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	void VM::execute() {
 		Instruct* now;
-		while ((now = memfetch<Instruct>(REG86))->opcode != _HLT) {
+		while ((now = memfetch<Instruct>(REG86))->opcode != HALT) {
 			printf("%08x: %04x, %x, %x\n", REG86, now->opcode, now->a, now->b);
 			VM::execute_instruction(now);
 			REG86 += sizeof(Instruct);
@@ -94,10 +94,10 @@ namespace ASM76 {
 	// ║ □ 76-Base ║
 	// ╚═══════════╝
 	//-------------------------------------------------------------------------
-	// ● NOOP _HLT
+	// ● NOOP HALT
 	//-------------------------------------------------------------------------
 	execute(NOOP) {}
-	execute(_HLT) {}
+	execute(HALT) {}
 	//-------------------------------------------------------------------------
 	// ● LCMM
 	//-------------------------------------------------------------------------
@@ -396,9 +396,9 @@ namespace ASM76 {
 		REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
-	// ● RET
+	// ● RETN
 	//-------------------------------------------------------------------------
-	execute(RET) {
+	execute(RETN) {
 		REG86 = *memfetch<uint32_t>(REG90);
 		REG90 -= sizeof(uint32_t);
 	}
@@ -412,9 +412,9 @@ namespace ASM76 {
 		}
 	}
 	//-------------------------------------------------------------------------
-	// ● POP
+	// ● POP_
 	//-------------------------------------------------------------------------
-	execute(POP) {
+	execute(POP_) {
 		for (uint8_t i = a + b - 1; i > a; i++) {
 			REG(uint8_t, i) = *memfetch<uint8_t>(REG90);
 			REG90 -= sizeof(uint8_t);

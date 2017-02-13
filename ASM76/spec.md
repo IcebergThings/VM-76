@@ -72,7 +72,7 @@ ADDL $1 $1
 MVRL $1 $31
 DATI 4 $11
 DIVL $1 $11
-_HLT
+HALT
 ```
 
 Instruction set reference
@@ -159,16 +159,16 @@ Means `$A = !$A;` in C.
 
 Instruction | Description
 ----------- | -----------
-_HLT | halt the CPU and stop
+HALT | halt the CPU and stop
 JMPR _$A_ | jump to memory address stored in *$A*
 JMPA _address_ | jump to memory address *address*
 JI7R/JI8R/JI9R _$A_ | jump to memory address stored in *$A* if $97/$98/$99 = 0xFF
 JI7A/JI8A/JI9A _address_ | jump to *address* if $97/$98/$99 = 0xFF
 CALR _$A_ | jump to memory address stored in *$A* and push the next instruction's address into stack
 CALA _address_ | jump to *address* and push the next instruction's address into stack
-RET | `POP $86`
+RETN | `POP_ $86`
 PUSH _$A_, _length_ | push registers from *$A*...*$(A + length)* onto the stack
-POP _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
+POP_ _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
 
 76-Float
 --------
