@@ -64,6 +64,9 @@ namespace ASM76 {
 
 		void execute();
 		void execute_instruction(Instruct*);
+		#define I(x) void execute_##x(uint32_t a, uint32_t b);
+			#include "instructions.hpp"
+		#undef I
 		void dump_registers();
 		void dump_memory();
 	};
