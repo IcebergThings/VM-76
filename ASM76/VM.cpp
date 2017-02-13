@@ -47,6 +47,8 @@ namespace ASM76 {
 			);
 		}
 		printf("\n");
+		printf("Instruction Pointer: %08x\n", REG86);
+		printf("Stack Pointer: %08x\n", REG90);
 	}
 	//-------------------------------------------------------------------------
 	// ● 输出内存值（调试用）
@@ -376,6 +378,56 @@ namespace ASM76 {
 	}
 	execute(JI7A) {
 		if (REG97 == 0xFF) REG86 = a - sizeof(Instruct);
+	}
+	//-------------------------------------------------------------------------
+	// ● JI9R JI8R JI7R
+	//-------------------------------------------------------------------------
+	execute(JI9R) {
+		if (REG99 == 0xFF) REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+	}
+	execute(JI8R) {
+		if (REG98 == 0xFF) REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+	}
+	execute(JI7R) {
+		if (REG97 == 0xFF) REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+	}
+	//-------------------------------------------------------------------------
+	// ● CALA CALR
+	//-------------------------------------------------------------------------
+	execute(CALA) {
+		*memfetch<uint32_t>(*REG90) = *REG86;
+		*REG90 += sizeof(uint32_t);
+		*REG86 = now->f - sizeof(Instruct);
+	}
+	execute(CALR) {
+		*memfetch<uint32_t>(*REG90) = *REG86;
+		*REG90 += sizeof(uint32_t);
+		*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+	}
+	//-------------------------------------------------------------------------
+	// ● RET
+	//-------------------------------------------------------------------------
+	execute(RET) {
+		*REG86 = *memfetch<uint32_t>(*REG90);
+		*REG90 -= sizeof(uint32_t);
+	}
+	//-------------------------------------------------------------------------
+	// ● PUSH
+	//-------------------------------------------------------------------------
+	execute(PUSH) {
+		for (uint8_t i = now->f; i < now->f + now->t; i++) {
+			*memfetch<uint8_t>(*REG90) = REG(uint8_t, i);
+			*REG90 += sizeof(uint8_t);
+		}
+	}
+	//-------------------------------------------------------------------------
+	// ● POP
+	//-------------------------------------------------------------------------
+	execute(POP) {
+		for (uint8_t i = now->f + now->t - 1; i > now->f; i++) {
+			REG(uint8_t, i) = *memfetch<uint8_t>(*REG90);
+			*REG90 -= sizeof(uint8_t);
+		}
 	}
 	// ╔════════════╗
 	// ║ □ 76-Float ║
