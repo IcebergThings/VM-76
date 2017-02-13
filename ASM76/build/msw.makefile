@@ -18,7 +18,10 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
-VMtest: VMtest.cxx $(TARGET)
+test: test.exe
+	test.exe
+
+test.exe: VMtest.cxx $(TARGET)
 	$(CXX) $^ -o $@ $(CXXFLAGS) $(TARGET)
 
-.PHONY: all
+.PHONY: all test
