@@ -90,15 +90,6 @@ namespace ASM76 {
 	// ● 解释……
 	//-------------------------------------------------------------------------
 	#define execute(x) void VM::execute_##x(uint32_t a, uint32_t b)
-	// Unimplemented placeholders
-	execute(JI9R) {}
-	execute(JI8R) {}
-	execute(JI7R) {}
-	execute(CALR) {}
-	execute(CALA) {}
-	execute(RET) {}
-	execute(POP) {}
-	execute(PUSH) {}
 	// ╔═══════════╗
 	// ║ □ 76-Base ║
 	// ╚═══════════╝
@@ -383,50 +374,50 @@ namespace ASM76 {
 	// ● JI9R JI8R JI7R
 	//-------------------------------------------------------------------------
 	execute(JI9R) {
-		if (REG99 == 0xFF) REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+		if (REG99 == 0xFF) REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JI8R) {
-		if (REG98 == 0xFF) REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+		if (REG98 == 0xFF) REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JI7R) {
-		if (REG97 == 0xFF) REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+		if (REG97 == 0xFF) REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● CALA CALR
 	//-------------------------------------------------------------------------
 	execute(CALA) {
-		*memfetch<uint32_t>(*REG90) = *REG86;
-		*REG90 += sizeof(uint32_t);
-		*REG86 = now->f - sizeof(Instruct);
+		*memfetch<uint32_t>(REG90) = REG86;
+		REG90 += sizeof(uint32_t);
+		REG86 = a - sizeof(Instruct);
 	}
 	execute(CALR) {
-		*memfetch<uint32_t>(*REG90) = *REG86;
-		*REG90 += sizeof(uint32_t);
-		*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+		*memfetch<uint32_t>(REG90) = REG86;
+		REG90 += sizeof(uint32_t);
+		REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● RET
 	//-------------------------------------------------------------------------
 	execute(RET) {
-		*REG86 = *memfetch<uint32_t>(*REG90);
-		*REG90 -= sizeof(uint32_t);
+		REG86 = *memfetch<uint32_t>(REG90);
+		REG90 -= sizeof(uint32_t);
 	}
 	//-------------------------------------------------------------------------
 	// ● PUSH
 	//-------------------------------------------------------------------------
 	execute(PUSH) {
-		for (uint8_t i = now->f; i < now->f + now->t; i++) {
-			*memfetch<uint8_t>(*REG90) = REG(uint8_t, i);
-			*REG90 += sizeof(uint8_t);
+		for (uint8_t i = a; i < a + b; i++) {
+			*memfetch<uint8_t>(REG90) = REG(uint8_t, i);
+			REG90 += sizeof(uint8_t);
 		}
 	}
 	//-------------------------------------------------------------------------
 	// ● POP
 	//-------------------------------------------------------------------------
 	execute(POP) {
-		for (uint8_t i = now->f + now->t - 1; i > now->f; i++) {
-			REG(uint8_t, i) = *memfetch<uint8_t>(*REG90);
-			*REG90 -= sizeof(uint8_t);
+		for (uint8_t i = a + b - 1; i > a; i++) {
+			REG(uint8_t, i) = *memfetch<uint8_t>(REG90);
+			REG90 -= sizeof(uint8_t);
 		}
 	}
 	// ╔════════════╗
