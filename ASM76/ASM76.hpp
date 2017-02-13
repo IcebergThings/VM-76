@@ -40,8 +40,10 @@ namespace ASM76 {
 		CMPL, CMPI, CMPB,
 		JMPR,
 		JMPA,
+		JI9A, JI8A, JI7A,
 		JI9R, JI8R, JI7R,
 		CALR, CALA,
+		RET,
 		PUSH,
 		POP,
 
