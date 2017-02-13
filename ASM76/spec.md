@@ -1,24 +1,111 @@
-# ASM 76
-The VM/76 assembly language and VM/76 virtual machine platform
+ASM76
+=====
 
----
+ASM76 is the assembly language used in VM/76. This document describes both the VM/76 virtual machine platform and the assembly language itself.
 
-# 76 Virtual Machine
-1. Little Endian Virtual CPU
-2. 64bit int/float/vector calculations
-3. 32bit memory adress
-4. Instruction set extension
-5. Fixed length instruction sets
-6. Memory Layout
-	-	`0x0` ~ `0x400000` 4MB, mapped with global memory. This part of memory is the same for all VM instances.
-	- `0x400000` ~ `0x1000000` 12MB, mapped with IO to transfer data between VM and Game Engine
-	- `0x1000000` ~ `Infinite` Sized depends on LCMM instruction, mapped with local memory. This part of memory is not shared between multiple VM instance (such as threads or VM in multiple spirits)
+Definitions and conventions in this specification
+-------------------------------------------------
 
----
+**Byte** is defined as usual.
 
-# Instruction sets
-## 76-Base
-1. How to enable it: Enabled default, you can not turn it off
+An **int** consists of 4 bytes.
+
+A **long** consists of 8 bytes.
+
+**0x** leads a hexadecimal number, e.g. 0x1F means 31.
+
+**_x_.._y_** means a range that is inclusive at both ends, i.e. [*x*, *y*].
+
+**_x_..._y_** means a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
+
+76 Virtual Machine and VM/76 CPU
+--------------------------------
+
+### One line for the virtual machine ###
+
+The virtual machine compiles and runs assembly code.
+
+### Introduction, the memory and registers ###
+
+The virtual CPU (VM/76 CPU) is a little-endian CPU. It is capable of doing 64-bit calculations for integers by default, which can be extended by using instruction set extensions that allows floating point value and vector mathematics. The length of instruction sets are fixed. However, the CPU uses a 32-bit memory address space. The memory layout is fixed, too, and is specified below.
+
+Address range | Size | Usage
+------------- | ---- | -----
+0x0...0x400000 | 4MB | This part of memory is global memory, which is shared between CPU instances.
+0x400000...0x1000000 | 12MB | This part of memory is mapped with IO to transfer data between the CPU (ASM76) and the outside world (VMDE).
+0x1000000...∞ | depends | The upper part of the memory is local, which can be sized using [LCMM] and belongs to the CPU instance.
+
+As you can see, there can be multiple CPUs. One CPU is usually assigned exclusively to one thread, one sprite or all other kinds of things like that.
+
+Another interesting concept about the CPU is registers. Normal computer CPUs have a very limited number of registers because they are required to perform as fast as possible. However, VM/76 CPU daren't be fast and thus have exactly one hundred registers available. All registers in VM/76 CPU 
+
+There are a number of special registers that have special meanings and they are listed in [Special registers].
+
+### Instruction sets ###
+
+
+
+The ASM76 language syntax
+-------------------------
+
+Here is an example program written in ASM76:
+
+```
+# ASM76 Example
+# Hash signs start comments.
+
+```
+
+A few notes:
+
+- The instruction mnemonic must be capital.
+- 
+
+Reference material
+------------------
+
+### Memory layout ###
+
+Address range | Size | Usage
+------------- | ---- | -----
+0x0...0x400000 | 4MB | This part of memory is global memory, which is shared between CPU instances.
+0x400000...0x1000000 | 12MB | This part of memory is mapped with IO to transfer data between the CPU (ASM76) and the outside world (VMDE).
+0x1000000...∞ | depends | The upper part of the memory is local, which can be sized using [LCMM] and belongs to the CPU instance.
+
+### Special registers ###
+
+Register | Meaning
+-------- | -------
+$99 | Flag A > B
+$98 | Flag A = B
+$97 | Flag A < B
+$90 ~ $93 | Stack bottom pointer
+$86 ~ $89 | Instruction pointer (program counter)
+
+
+Instruction set reference
+-------------------------
+
+### 76-Base
+
+76-Base is the most essential instruction set. It is enabled by default, You don't need to enable it and you can not turn it off in any way.
+
+#### DATx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 2. Registers
 	- 99 registers available
 	- Named as `$0 $1 $2`, etc.
