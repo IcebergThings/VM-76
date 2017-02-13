@@ -57,7 +57,7 @@ int main() {
 
 	printf("===== ASM 76 Test Program =====\n");
 
-	init_environment();
+	init();
 
 	printf("===== Memory =====\n");
 	VM* v = new VM(mem_test_prgm, sizeof(mem_test_prgm));

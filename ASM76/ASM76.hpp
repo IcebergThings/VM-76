@@ -11,27 +11,35 @@
 #define _INCLUDE_ASM76_H
 
 namespace ASM76 {
-
+	//-------------------------------------------------------------------------
+	// ● 指令结构的定义
+	//-------------------------------------------------------------------------
 	enum InstructionOpcode {
 		#define I(x) x,
 			#include "instructions.hpp"
 		#undef I
 	};
-
-	extern uint8_t* global_memory;
-
 	struct Instruct {
 		uint16_t opcode;
 		uint32_t f;
 		uint32_t t;
 	};
-
-	void init_environment();
-
-	#define REG(T, P) *((T*) (reg + P))
-
+	//-------------------------------------------------------------------------
+	// ● 全局变量
+	//-------------------------------------------------------------------------
+	extern uint8_t global_memory[];
+	//-------------------------------------------------------------------------
+	// ● 实用函数
+	//-------------------------------------------------------------------------
+	void init();
+	Instruct* compile(const char* prg);
+	char* decompile(Instruct* prg);
+	//-------------------------------------------------------------------------
+	// ● Virtual Machine类
+	//-------------------------------------------------------------------------
 	class VM {
 	private:
+	#define REG(T, P) *((T*) (reg + P))
 		uint8_t* local_memory;
 		size_t local_mem_size = 0x4000;
 		Instruct* instruct_memory;
@@ -52,17 +60,12 @@ namespace ASM76 {
 		}
 
 		VM(Instruct* program, size_t prg_size);
+		~VM();
 
 		void execute();
 		void dump_registers();
 		void dump_memory();
-
-		static char* decompile(Instruct* prg);
-		static Instruct* compile(const char* prg);
-
-		~VM();
 	};
-
 }
 
 #endif

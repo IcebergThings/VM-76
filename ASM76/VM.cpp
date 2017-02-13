@@ -7,17 +7,9 @@
 #include "ASM76.hpp"
 
 namespace ASM76 {
-
-	uint8_t* global_memory;
-
-	void init_environment() {
-		// 4MB program useable
-		// 12MB IO interface
-		printf("Init ASM76 env\n");
-		global_memory = new uint8_t[0x1000000];
-		memset(global_memory, 0, 0x1000000);
-	}
-
+	//-------------------------------------------------------------------------
+	// ● 构造
+	//-------------------------------------------------------------------------
 	VM::VM(Instruct* program, size_t prg_size) {
 		// 16K local memory in default
 		local_memory = new uint8_t[local_mem_size];
@@ -42,10 +34,18 @@ namespace ASM76 {
 		REG98 = (uint8_t*) (reg + 98);
 		REG99 = (uint8_t*) (reg + 99);
 	}
-
-	#define OPC(code) (now->opcode == code)
-
+	//-------------------------------------------------------------------------
+	// ● 析构
+	//-------------------------------------------------------------------------
+	VM::~VM() {
+		free(local_memory);
+		free(reg);
+	}
+	//-------------------------------------------------------------------------
+	// ● 解释
+	//-------------------------------------------------------------------------
 	void VM::execute() {
+		#define OPC(code) (now->opcode == code)
 		Instruct* now = memfetch<Instruct>(*REG86);
 		while (!OPC(_HLT)) {
 			printf("%08x : %04x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
@@ -224,7 +224,9 @@ namespace ASM76 {
 			now = memfetch<Instruct>(*REG86);
 		}
 	}
-
+	//-------------------------------------------------------------------------
+	// ● 输出寄存器值（调试用）
+	//-------------------------------------------------------------------------
 	void VM::dump_registers() {
 		printf("Registers: \n");
 		for (int i = 1; i < 100; i++) {
@@ -233,27 +235,15 @@ namespace ASM76 {
 		}
 		printf("\n");
 	}
-
+	//-------------------------------------------------------------------------
+	// ● 输出内存值（调试用）
+	//-------------------------------------------------------------------------
 	void VM::dump_memory() {
 		printf("Local Memory: \n");
 		for (uint32_t i = 1; i < local_mem_size / 8; i++) {
-			printf("%08x ", *((uint32_t*)local_memory + i));
+			printf("%08x ", *((uint32_t*) local_memory + i));
 			if (i % 8 == 0) printf("\n");
 		}
 		printf("\n");
 	}
-
-	char* VM::decompile(Instruct* prg) {
-		return NULL;
-	}
-
-	Instruct* VM::compile(const char* prg) {
-		return NULL;
-	}
-
-	VM::~VM() {
-		free(local_memory);
-		free(reg);
-	}
-
 }
