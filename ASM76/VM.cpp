@@ -48,7 +48,7 @@ namespace ASM76 {
 	void VM::execute() {
 		Instruct* now = memfetch<Instruct>(*REG86);
 		while (!OPC(_HLT)) {
-			printf("%x : %x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
+			printf("%08x : %04x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
 
 			// ===========================
 			//  76-Base
@@ -155,7 +155,53 @@ namespace ASM76 {
 			// ===========================
 			if (now->opcode >= ANDL) {
 				if OPC(ANDL) {
-					
+					REG(uint64_t, now->f) &= REG(uint64_t, now->t);
+				} else if OPC(ANDI) {
+					REG(uint32_t, now->f) &= REG(uint32_t, now->t);
+				} else if OPC(ANDB) {
+					REG(uint8_t, now->f) &= REG(uint8_t, now->t);
+				} else if OPC(OR_L) {
+					REG(uint64_t, now->f) |= REG(uint64_t, now->t);
+				} else if OPC(OR_I) {
+					REG(uint32_t, now->f) |= REG(uint32_t, now->t);
+				} else if OPC(OR_B) {
+					REG(uint8_t, now->f) |= REG(uint8_t, now->t);
+				} else if OPC(NOTL) {
+					REG(uint64_t, now->f) = !(REG(uint64_t, now->f));
+				} else if OPC(NOTI) {
+					REG(uint32_t, now->f) = !(REG(uint32_t, now->f));
+				} else if OPC(NOTB) {
+					REG(uint8_t, now->f) = !(REG(uint8_t, now->f));
+				} else if OPC(XORL) {
+					REG(uint64_t, now->f) ^= (REG(uint64_t, now->f));
+				} else if OPC(XORI) {
+					REG(uint32_t, now->f) ^= (REG(uint32_t, now->f));
+				} else if OPC(XORB) {
+					REG(uint8_t, now->f) ^= (REG(uint8_t, now->f));
+				} else if OPC(CMPL) {
+					if (REG(uint64_t, now->f) > REG(uint64_t, now->t)) {
+						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+					} else if (REG(uint64_t, now->f) == REG(uint64_t, now->t)) {
+						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+					} else {
+						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+					}
+				} else if OPC(CMPI) {
+					if (REG(uint32_t, now->f) > REG(uint32_t, now->t)) {
+						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+					} else if (REG(uint32_t, now->f) == REG(uint32_t, now->t)) {
+						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+					} else {
+						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+					}
+				} else if OPC(CMPB) {
+					if (REG(uint8_t, now->f) > REG(uint8_t, now->t)) {
+						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+					} else if (REG(uint8_t, now->f) == REG(uint8_t, now->t)) {
+						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+					} else {
+						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+					}
 				}
 			}
 
