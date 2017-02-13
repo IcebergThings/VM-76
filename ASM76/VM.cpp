@@ -45,13 +45,10 @@ namespace ASM76 {
 	// ● 解释
 	//-------------------------------------------------------------------------
 	void VM::execute() {
-		#define OPC(code) (now->opcode == code)
-		Instruct* now = memfetch<Instruct>(*REG86);
-		while (!OPC(_HLT)) {
+		while ((now = memfetch<Instruct>(*REG86))->opcode != _HLT) {
 			printf("%08x: %04x, %x, %x\n", *REG86, now->opcode, now->a, now->b);
 			VM::execute_instruction(now);
 			*REG86 += sizeof(Instruct);
-			now = memfetch<Instruct>(*REG86);
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -66,6 +63,9 @@ namespace ASM76 {
 			printf("Unknown opcode %d (0x%x)\n", i->opcode);
 		}
 	}
+	//-------------------------------------------------------------------------
+	// ● 解释……
+	//-------------------------------------------------------------------------
 	#define execute(x) void VM::execute_##x(uint32_t a, uint32_t b)
 	// Unimplemented placeholders
 	execute(NOOP) {}
@@ -78,10 +78,12 @@ namespace ASM76 {
 	execute(RET) {}
 	execute(POP) {}
 	execute(PUSH) {}
-	// ===========================
-	//  76-Base
-	// ===========================
-	// LCMM
+	// ┌──────────────────────────────────────────────────────────────────────┐
+	// │ □ 76-Base                                                            │
+	// └──────────────────────────────────────────────────────────────────────┘
+	//-------------------------------------------------------------------------
+	// ● LCMM
+	//-------------------------------------------------------------------------
 	execute(LCMM) {
 		uint8_t* new_mem = new uint8_t[a];
 		memset(new_mem, 0, a);
@@ -93,7 +95,9 @@ namespace ASM76 {
 		instruct_memory = (Instruct*) new_mem;
 		printf("Changed local size to %zu bytes\n", local_mem_size);
 	}
-	// Load Data
+	//-------------------------------------------------------------------------
+	// ● LDLA LDIA LDBA
+	//-------------------------------------------------------------------------
 	execute(LDLA) {
 		REG(uint64_t, b) = *memfetch<uint64_t>(a);
 	}
@@ -103,6 +107,9 @@ namespace ASM76 {
 	execute(LDBA) {
 		REG(uint8_t, b) = *memfetch<uint8_t>(a);
 	}
+	//-------------------------------------------------------------------------
+	// ● LDLR LDIR LDBR
+	//-------------------------------------------------------------------------
 	execute(LDLR) {
 		REG(uint64_t, b) = *memfetch<uint64_t>(REG(uint32_t, a));
 	}
@@ -112,7 +119,9 @@ namespace ASM76 {
 	execute(LDBR) {
 		REG(uint8_t, b) = *memfetch<uint8_t>(REG(uint32_t, a));
 	}
-	// Store data
+	//-------------------------------------------------------------------------
+	// ● SLLA SLIA SLBA
+	//-------------------------------------------------------------------------
 	execute(SLLA) {
 		*memfetch<uint64_t>(a) = REG(uint64_t, b);
 	}
@@ -122,6 +131,9 @@ namespace ASM76 {
 	execute(SLBA) {
 		*memfetch<uint8_t>(a) = REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● SLLR SLIR SLBR
+	//-------------------------------------------------------------------------
 	execute(SLLR) {
 		*memfetch<uint64_t>(REG(uint32_t, a)) = REG(uint64_t, b);
 	}
@@ -131,6 +143,9 @@ namespace ASM76 {
 	execute(SLBR) {
 		*memfetch<uint8_t>(REG(uint32_t, a)) = REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● DATL DATI DATB
+	//-------------------------------------------------------------------------
 	execute(DATL) {
 		REG(uint64_t, b) = (uint64_t) a;
 	}
@@ -140,7 +155,9 @@ namespace ASM76 {
 	execute(DATB) {
 		REG(uint8_t, b) = (uint8_t) a;
 	}
-	// Mem operation
+	//-------------------------------------------------------------------------
+	// ● MOVL MOVI MOVB
+	//-------------------------------------------------------------------------
 	execute(MOVL) {
 		*memfetch<uint64_t>(b) = *memfetch<uint64_t>(a);
 	}
@@ -150,6 +167,9 @@ namespace ASM76 {
 	execute(MOVB) {
 		*memfetch<uint8_t>(b) = *memfetch<uint8_t>(a);
 	}
+	//-------------------------------------------------------------------------
+	// ● MVPL MVPI MVPB
+	//-------------------------------------------------------------------------
 	execute(MVPL) {
 		*memfetch<uint64_t>(REG(uint32_t, b)) = *memfetch<uint64_t>(REG(uint32_t, a));
 	}
@@ -159,6 +179,9 @@ namespace ASM76 {
 	execute(MVPB) {
 		*memfetch<uint8_t>(REG(uint32_t, b)) = *memfetch<uint8_t>(REG(uint32_t, a));
 	}
+	//-------------------------------------------------------------------------
+	// ● MVRL MVRI MVRB
+	//-------------------------------------------------------------------------
 	execute(MVRL) {
 		REG(uint64_t, b) = REG(uint64_t, a);
 	}
@@ -168,7 +191,9 @@ namespace ASM76 {
 	execute(MVRB) {
 		REG(uint8_t, b) = REG(uint8_t, a);
 	}
-	// Basic Algebra
+	//-------------------------------------------------------------------------
+	// ● ADDL ADDI ADDB
+	//-------------------------------------------------------------------------
 	execute(ADDL) {
 		REG(uint64_t, a) += REG(uint64_t, b);
 	}
@@ -178,6 +203,9 @@ namespace ASM76 {
 	execute(ADDB) {
 		REG(uint8_t, a) += REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● MINL MINI MINB
+	//-------------------------------------------------------------------------
 	execute(MINL) {
 		REG(uint64_t, a) -= REG(uint64_t, b);
 	}
@@ -187,6 +215,9 @@ namespace ASM76 {
 	execute(MINB) {
 		REG(uint8_t, a) -= REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● MTPL MTPI MTPB
+	//-------------------------------------------------------------------------
 	execute(MTPL) {
 		REG(uint64_t, a) *= REG(uint64_t, b);
 	}
@@ -196,6 +227,9 @@ namespace ASM76 {
 	execute(MTPB) {
 		REG(uint8_t, a) *= REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● DIVL DIVI DIVB
+	//-------------------------------------------------------------------------
 	execute(DIVL) {
 		REG(uint64_t, a) /= REG(uint64_t, b);
 	}
@@ -205,6 +239,9 @@ namespace ASM76 {
 	execute(DIVB) {
 		REG(uint8_t, a) /= REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● MODL MODI MODB
+	//-------------------------------------------------------------------------
 	execute(MODL) {
 		REG(uint64_t, a) = REG(uint64_t, a) % REG(uint64_t, b);
 	}
@@ -217,6 +254,9 @@ namespace ASM76 {
 	// ===========================
 	//  Logistics & Flow control
 	// ===========================
+	//-------------------------------------------------------------------------
+	// ● ANDL ANDI ANDB
+	//-------------------------------------------------------------------------
 	execute(ANDL) {
 		REG(uint64_t, a) &= REG(uint64_t, b);
 	}
@@ -226,6 +266,9 @@ namespace ASM76 {
 	execute(ANDB) {
 		REG(uint8_t, a) &= REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● OR_L OR_I OR_B
+	//-------------------------------------------------------------------------
 	execute(OR_L) {
 		REG(uint64_t, a) |= REG(uint64_t, b);
 	}
@@ -235,6 +278,9 @@ namespace ASM76 {
 	execute(OR_B) {
 		REG(uint8_t, a) |= REG(uint8_t, b);
 	}
+	//-------------------------------------------------------------------------
+	// ● NOTL NOTI NOTB
+	//-------------------------------------------------------------------------
 	execute(NOTL) {
 		REG(uint64_t, a) = !(REG(uint64_t, a));
 	}
@@ -244,6 +290,9 @@ namespace ASM76 {
 	execute(NOTB) {
 		REG(uint8_t, a) = !(REG(uint8_t, a));
 	}
+	//-------------------------------------------------------------------------
+	// ● XORL XORI XORB
+	//-------------------------------------------------------------------------
 	execute(XORL) {
 		REG(uint64_t, a) ^= (REG(uint64_t, a));
 	}
@@ -253,6 +302,9 @@ namespace ASM76 {
 	execute(XORB) {
 		REG(uint8_t, a) ^= (REG(uint8_t, a));
 	}
+	//-------------------------------------------------------------------------
+	// ● CMPL CMPI CMPB
+	//-------------------------------------------------------------------------
 	execute(CMPL) {
 		if (REG(uint64_t, a) > REG(uint64_t, b)) {
 			*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
@@ -280,12 +332,18 @@ namespace ASM76 {
 			*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
 		}
 	}
+	//-------------------------------------------------------------------------
+	// ● JMPR JMPA
+	//-------------------------------------------------------------------------
 	execute(JMPR) {
 		*REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JMPA) {
 		*REG86 = a - sizeof(Instruct);
 	}
+	//-------------------------------------------------------------------------
+	// ● JI9A JI8A JI7A
+	//-------------------------------------------------------------------------
 	execute(JI9A) {
 		if (*REG99 == 0xFF) *REG86 = a - sizeof(Instruct);
 	}
