@@ -83,13 +83,13 @@ namespace ASM76 {
 			#include "instructions.hpp"
 		#undef I
 		default:
-			printf("Unknown opcode %d (0x%x)\n", i->opcode);
+			printf("Unknown opcode %d (0x%x)\n", i->opcode, i->opcode);
 		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 解释……
 	//-------------------------------------------------------------------------
-	#define execute(x) void VM::execute_##x(uint32_t a, uint32_t b)
+	#define execute(x) inline void VM::execute_##x(uint32_t a, uint32_t b)
 	// ╔═══════════╗
 	// ║ □ 76-Base ║
 	// ╚═══════════╝
