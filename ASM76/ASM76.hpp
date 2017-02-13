@@ -13,45 +13,9 @@
 namespace ASM76 {
 
 	enum InstructionSets {
-		NOOP = 0, // No Operation is always NULL
-
-		// 76-Base
-		LCMM,
-		LDLA, LDIA, LDBA,
-		LDLR, LDIR, LDBR,
-		SLLA, SLIA, SLBA,
-		SLLR, SLIR, SLBR,
-		DATL, DATI, DATB,
-		MOVL, MOVI, MOVB,
-		MVPL, MVPI, MVPB,
-		MVRL, MVRI, MVRB,
-		ADDL, ADDI, ADDB,
-		MINL, MINI, MINB,
-		MTPL, MTPI, MTPB,
-		DIVL, DIVI, DIVB,
-		MODL, MODI, MODB,
-		_HLT,
-
-		// Logistics & Flow control
-		ANDL, ANDI, ANDB,
-		OR_L, OR_I, OR_B,
-		NOTL, NOTI, NOTB,
-		XORL, XORI, XORB,
-		CMPL, CMPI, CMPB,
-		JMPR,
-		JMPA,
-		JI9A, JI8A, JI7A,
-		JI9R, JI8R, JI7R,
-		CALR, CALA,
-		RET,
-		PUSH,
-		POP,
-
-		// 76 Float
-
-		// 76 Vectors
-
-		// BIOS Instructions
+		#define I(x) x,
+			#include "instructions.hpp"
+		#undef I
 	};
 
 	extern uint8_t* global_memory;
