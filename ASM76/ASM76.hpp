@@ -39,18 +39,18 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	class VM {
 	private:
-	#define REG(T, P) *((T*) (reg + P))
 		uint8_t* local_memory;
-		size_t local_mem_size = 0x4000;
+		size_t local_memory_size = 0x4000;
 		Instruct* instruct_memory;
 		uint8_t* reg;
 
-		// Common & Special register
-		uint32_t* REG86;
-		uint32_t* REG90;
-		uint8_t* REG97;
-		uint8_t* REG98;
-		uint8_t* REG99;
+		// Common & special registers
+		#define REG(T, P) (*((T*) (reg + P)))
+		#define REG86 REG(uint32_t, 86)
+		#define REG90 REG(uint32_t, 90)
+		#define REG97 REG(uint8_t, 97)
+		#define REG98 REG(uint8_t, 98)
+		#define REG99 REG(uint8_t, 99)
 
 	public:
 		template <class T> T* memfetch(uint32_t address) {
@@ -61,14 +61,14 @@ namespace ASM76 {
 
 		VM(Instruct* program, size_t prg_size);
 		~VM();
+		void dump_registers();
+		void dump_memory();
 
 		void execute();
 		void execute_instruction(Instruct*);
 		#define I(x) void execute_##x(uint32_t a, uint32_t b);
 			#include "instructions.hpp"
 		#undef I
-		void dump_registers();
-		void dump_memory();
 	};
 }
 

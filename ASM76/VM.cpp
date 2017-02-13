@@ -12,8 +12,8 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	VM::VM(Instruct* program, size_t prg_size) {
 		// 16K local memory in default
-		local_memory = new uint8_t[local_mem_size];
-		memset(local_memory, 0, local_mem_size);
+		// use malloc series for realloc
+		local_memory = (uint8_t*) calloc(sizeof(uint8_t), local_memory_size);
 		instruct_memory = (Instruct*) local_memory;
 		printf("init memory with program sized %zu\n", prg_size);
 		memcpy(instruct_memory, program, prg_size);
@@ -24,22 +24,16 @@ namespace ASM76 {
 
 		// Setup registers
 		// Instruction pointer
-		REG(uint32_t, 86) = 0x1000000;
+		REG86 = 0x1000000;
 		// Stack bottom pointer
-		REG(uint32_t, 90) = 0x1003000;
-
-		REG86 = (uint32_t*) (reg + 86);
-		REG90 = (uint32_t*) (reg + 90);
-		REG97 = (uint8_t*) (reg + 97);
-		REG98 = (uint8_t*) (reg + 98);
-		REG99 = (uint8_t*) (reg + 99);
+		REG90 = 0x1003000;
 	}
 	//-------------------------------------------------------------------------
 	// ● 析构
 	//-------------------------------------------------------------------------
 	VM::~VM() {
 		free(local_memory);
-		free(reg);
+		delete[] reg;
 	}
 	//-------------------------------------------------------------------------
 	// ● 输出寄存器值（调试用）
@@ -59,7 +53,7 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	void VM::dump_memory() {
 		puts("Local Memory:");
-		for (uint32_t i = 1; i < local_mem_size / 8; i++) {
+		for (uint32_t i = 1; i < local_memory_size / 8; i++) {
 			printf("%08X%c",
 				*((uint32_t*) local_memory + i),
 				i % 8 == 0 ? '\n' : ' '
@@ -71,10 +65,11 @@ namespace ASM76 {
 	// ● 解释
 	//-------------------------------------------------------------------------
 	void VM::execute() {
-		while ((now = memfetch<Instruct>(*REG86))->opcode != _HLT) {
-			printf("%08x: %04x, %x, %x\n", *REG86, now->opcode, now->a, now->b);
+		Instruct* now;
+		while ((now = memfetch<Instruct>(REG86))->opcode != _HLT) {
+			printf("%08x: %04x, %x, %x\n", REG86, now->opcode, now->a, now->b);
 			VM::execute_instruction(now);
-			*REG86 += sizeof(Instruct);
+			REG86 += sizeof(Instruct);
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -94,8 +89,6 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	#define execute(x) void VM::execute_##x(uint32_t a, uint32_t b)
 	// Unimplemented placeholders
-	execute(NOOP) {}
-	execute(_HLT) {}
 	execute(JI9R) {}
 	execute(JI8R) {}
 	execute(JI7R) {}
@@ -108,18 +101,23 @@ namespace ASM76 {
 	// ║ □ 76-Base ║
 	// ╚═══════════╝
 	//-------------------------------------------------------------------------
+	// ● NOOP _HLT
+	//-------------------------------------------------------------------------
+	execute(NOOP) {}
+	execute(_HLT) {}
+	//-------------------------------------------------------------------------
 	// ● LCMM
 	//-------------------------------------------------------------------------
 	execute(LCMM) {
 		uint8_t* new_mem = new uint8_t[a];
 		memset(new_mem, 0, a);
-		size_t copied_size = a < local_mem_size ? a : local_mem_size;
+		size_t copied_size = a < local_memory_size ? a : local_memory_size;
 		memcpy(new_mem, local_memory, copied_size);
 		free(local_memory);
-		local_mem_size = a;
+		local_memory_size = a;
 		local_memory = new_mem;
 		instruct_memory = (Instruct*) new_mem;
-		printf("Changed local size to %zu bytes\n", local_mem_size);
+		printf("Changed local size to %zu bytes\n", local_memory_size);
 	}
 	//-------------------------------------------------------------------------
 	// ● LDLA LDIA LDBA
@@ -333,51 +331,51 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	execute(CMPL) {
 		if (REG(uint64_t, a) > REG(uint64_t, b)) {
-			*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+			REG99 = 0xFF; REG98 = 0x0; REG97 = 0x0;
 		} else if (REG(uint64_t, a) == REG(uint64_t, b)) {
-			*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+			REG99 = 0x0; REG98 = 0xFF; REG97 = 0x0;
 		} else {
-			*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+			REG99 = 0x0; REG98 = 0x0; REG97 = 0xFF;
 		}
 	}
 	execute(CMPI) {
 		if (REG(uint32_t, a) > REG(uint32_t, b)) {
-			*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+			REG99 = 0xFF; REG98 = 0x0; REG97 = 0x0;
 		} else if (REG(uint32_t, a) == REG(uint32_t, b)) {
-			*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+			REG99 = 0x0; REG98 = 0xFF; REG97 = 0x0;
 		} else {
-			*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+			REG99 = 0x0; REG98 = 0x0; REG97 = 0xFF;
 		}
 	}
 	execute(CMPB) {
 		if (REG(uint8_t, a) > REG(uint8_t, b)) {
-			*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+			REG99 = 0xFF; REG98 = 0x0; REG97 = 0x0;
 		} else if (REG(uint8_t, a) == REG(uint8_t, b)) {
-			*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+			REG99 = 0x0; REG98 = 0xFF; REG97 = 0x0;
 		} else {
-			*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+			REG99 = 0x0; REG98 = 0x0; REG97 = 0xFF;
 		}
 	}
 	//-------------------------------------------------------------------------
 	// ● JMPR JMPA
 	//-------------------------------------------------------------------------
 	execute(JMPR) {
-		*REG86 = REG(uint32_t, a) - sizeof(Instruct);
+		REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JMPA) {
-		*REG86 = a - sizeof(Instruct);
+		REG86 = a - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● JI9A JI8A JI7A
 	//-------------------------------------------------------------------------
 	execute(JI9A) {
-		if (*REG99 == 0xFF) *REG86 = a - sizeof(Instruct);
+		if (REG99 == 0xFF) REG86 = a - sizeof(Instruct);
 	}
 	execute(JI8A) {
-		if (*REG98 == 0xFF) *REG86 = a - sizeof(Instruct);
+		if (REG98 == 0xFF) REG86 = a - sizeof(Instruct);
 	}
 	execute(JI7A) {
-		if (*REG97 == 0xFF) *REG86 = a - sizeof(Instruct);
+		if (REG97 == 0xFF) REG86 = a - sizeof(Instruct);
 	}
 	// ╔════════════╗
 	// ║ □ 76-Float ║
