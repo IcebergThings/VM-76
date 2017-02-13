@@ -4,7 +4,7 @@
 
 include inc.makefile
 
-PROJECTS = VMDE VMGS
+PROJECTS = ASM76 VMDE VMGS
 
 all: $(PROJECTS)
 
@@ -13,7 +13,7 @@ $(PROJECTS):
 
 clean:
 ifeq "$(PLATFORM)" "msw"
-	del /s *.o
+	del /s *.o *.o-????????
 	del VMGS\output.log
 else
 	find . -name "*.o" -print -delete
