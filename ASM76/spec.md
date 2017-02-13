@@ -26,6 +26,7 @@ Definitions and conventions in this specification
 	- **[76-Base](#76-base)** is capable of manipulating registers, memory and 8-, 32- and 64-bit integers.
 	- **[76-Float](#76-float)** is able to deal with floating point values.
 	- **[76-Vector](#76-vector)** can do vector mathematics.
+	- **[BIOS Instructions](#bios-instructions)** provides a BIOS interface. Just joking.
 - Registers
 	- There are 99 registers, namely $0, $1, $2, etc.
 	- Every register holds a byte.
@@ -176,8 +177,8 @@ You need to set memory *IO + 0x1* (0x400001, one byte) to `0xFF` first in order 
 
 TODO
 
-76-Vectors
-----------
+76-Vector
+---------
 
 You need to set memory *IO + 0x2* (0x400002, one byte) to `0xFF` first in order to make it work.
 
