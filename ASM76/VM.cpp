@@ -48,190 +48,249 @@ namespace ASM76 {
 		#define OPC(code) (now->opcode == code)
 		Instruct* now = memfetch<Instruct>(*REG86);
 		while (!OPC(_HLT)) {
-			printf("%08x : %04x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
-
-			// ===========================
-			//  76-Base
-			// ===========================
-			// LCMM
-			if OPC(LCMM) {
-				uint8_t* new_mem = new uint8_t[now->f];
-				memset(new_mem, 0, now->f);
-				size_t copied_size = now->f < local_mem_size ? now->f : local_mem_size;
-				memcpy(new_mem, local_memory, copied_size);
-				free(local_memory);
-				local_mem_size = now->f;
-				local_memory = new_mem;
-				instruct_memory = (Instruct*) new_mem;
-
-				printf("Changed local size to %zu bytes\n", local_mem_size);
-			}
-			// Load Data
-			else if OPC(LDLA) {
-				REG(uint64_t, now->t) = *memfetch<uint64_t>(now->f);
-			} else if OPC(LDIA) {
-				REG(uint32_t, now->t) = *memfetch<uint32_t>(now->f);
-			} else if OPC(LDBA) {
-				REG(uint8_t, now->t) = *memfetch<uint8_t>(now->f);
-			} else if OPC(LDLR) {
-				REG(uint64_t, now->t) = *memfetch<uint64_t>(REG(uint32_t, now->f));
-			} else if OPC(LDIR) {
-				REG(uint32_t, now->t) = *memfetch<uint32_t>(REG(uint32_t, now->f));
-			} else if OPC(LDBR) {
-				REG(uint8_t, now->t) = *memfetch<uint8_t>(REG(uint32_t, now->f));
-			}
-			// Store data
-			else if OPC(SLLA) {
-				*memfetch<uint64_t>(now->f) = REG(uint64_t, now->t);
-			} else if OPC(SLIA) {
-				*memfetch<uint32_t>(now->f) = REG(uint32_t, now->t);
-			} else if OPC(SLBA) {
-				*memfetch<uint8_t>(now->f) = REG(uint8_t, now->t);
-			} else if OPC(SLLR) {
-				*memfetch<uint64_t>(REG(uint32_t, now->f)) = REG(uint64_t, now->t);
-			} else if OPC(SLIR) {
-				*memfetch<uint32_t>(REG(uint32_t, now->f)) = REG(uint32_t, now->t);
-			} else if OPC(SLBR) {
-				*memfetch<uint8_t>(REG(uint32_t, now->f)) = REG(uint8_t, now->t);
-			} else if OPC(DATL) {
-				REG(uint64_t, now->t) = (uint64_t) now->f;
-			} else if OPC(DATI) {
-				REG(uint32_t, now->t) = (uint32_t) now->f;
-			} else if OPC(DATB) {
-				REG(uint8_t, now->t) = (uint8_t) now->f;
-			}
-			// Mem operation
-			else if OPC(MOVL) {
-				*memfetch<uint64_t>(now->t) = *memfetch<uint64_t>(now->f);
-			} else if OPC(MOVI) {
-				*memfetch<uint32_t>(now->t) = *memfetch<uint32_t>(now->f);
-			} else if OPC(MOVB) {
-				*memfetch<uint8_t>(now->t) = *memfetch<uint8_t>(now->f);
-			} else if OPC(MVPL) {
-				*memfetch<uint64_t>(REG(uint32_t, now->t)) = *memfetch<uint64_t>(REG(uint32_t, now->f));
-			} else if OPC(MVPI) {
-				*memfetch<uint32_t>(REG(uint32_t, now->t)) = *memfetch<uint32_t>(REG(uint32_t, now->f));
-			} else if OPC(MVPB) {
-				*memfetch<uint8_t>(REG(uint32_t, now->t)) = *memfetch<uint8_t>(REG(uint32_t, now->f));
-			} else if OPC(MVRL) {
-				REG(uint64_t, now->t) = REG(uint64_t, now->f);
-			} else if OPC(MVRI) {
-				REG(uint32_t, now->t) = REG(uint32_t, now->f);
-			} else if OPC(MVRB) {
-				REG(uint8_t, now->t) = REG(uint8_t, now->f);
-			}
-			// Basic Algebra
-			else if OPC(ADDL) {
-				REG(uint64_t, now->f) += REG(uint64_t, now->t);
-			} else if OPC(ADDI) {
-				REG(uint32_t, now->f) += REG(uint32_t, now->t);
-			} else if OPC(ADDB) {
-				REG(uint8_t, now->f) += REG(uint8_t, now->t);
-			} else if OPC(MINL) {
-				REG(uint64_t, now->f) -= REG(uint64_t, now->t);
-			} else if OPC(MINI) {
-				REG(uint32_t, now->f) -= REG(uint32_t, now->t);
-			} else if OPC(MINB) {
-				REG(uint8_t, now->f) -= REG(uint8_t, now->t);
-			} else if OPC(MTPL) {
-				REG(uint64_t, now->f) *= REG(uint64_t, now->t);
-			} else if OPC(MTPI) {
-				REG(uint32_t, now->f) *= REG(uint32_t, now->t);
-			} else if OPC(MTPB) {
-				REG(uint8_t, now->f) *= REG(uint8_t, now->t);
-			} else if OPC(DIVL) {
-				REG(uint64_t, now->f) /= REG(uint64_t, now->t);
-			} else if OPC(DIVI) {
-				REG(uint32_t, now->f) /= REG(uint32_t, now->t);
-			} else if OPC(DIVB) {
-				REG(uint8_t, now->f) /= REG(uint8_t, now->t);
-			} else if OPC(MODL) {
-				REG(uint64_t, now->f) = REG(uint64_t, now->f) % REG(uint64_t, now->t);
-			} else if OPC(MODI) {
-				REG(uint32_t, now->f) = REG(uint32_t, now->t) % REG(uint32_t, now->t);
-			} else if OPC(MODB) {
-				REG(uint8_t, now->f) = REG(uint8_t, now->t) % REG(uint8_t, now->t);
-			}
-			// ===========================
-			//  Logistics & Flow control
-			// ===========================
-			if (now->opcode >= ANDL) {
-				if OPC(ANDL) {
-					REG(uint64_t, now->f) &= REG(uint64_t, now->t);
-				} else if OPC(ANDI) {
-					REG(uint32_t, now->f) &= REG(uint32_t, now->t);
-				} else if OPC(ANDB) {
-					REG(uint8_t, now->f) &= REG(uint8_t, now->t);
-				} else if OPC(OR_L) {
-					REG(uint64_t, now->f) |= REG(uint64_t, now->t);
-				} else if OPC(OR_I) {
-					REG(uint32_t, now->f) |= REG(uint32_t, now->t);
-				} else if OPC(OR_B) {
-					REG(uint8_t, now->f) |= REG(uint8_t, now->t);
-				} else if OPC(NOTL) {
-					REG(uint64_t, now->f) = !(REG(uint64_t, now->f));
-				} else if OPC(NOTI) {
-					REG(uint32_t, now->f) = !(REG(uint32_t, now->f));
-				} else if OPC(NOTB) {
-					REG(uint8_t, now->f) = !(REG(uint8_t, now->f));
-				} else if OPC(XORL) {
-					REG(uint64_t, now->f) ^= (REG(uint64_t, now->f));
-				} else if OPC(XORI) {
-					REG(uint32_t, now->f) ^= (REG(uint32_t, now->f));
-				} else if OPC(XORB) {
-					REG(uint8_t, now->f) ^= (REG(uint8_t, now->f));
-				} else if OPC(CMPL) {
-					if (REG(uint64_t, now->f) > REG(uint64_t, now->t)) {
-						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
-					} else if (REG(uint64_t, now->f) == REG(uint64_t, now->t)) {
-						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
-					} else {
-						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
-					}
-				} else if OPC(CMPI) {
-					if (REG(uint32_t, now->f) > REG(uint32_t, now->t)) {
-						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
-					} else if (REG(uint32_t, now->f) == REG(uint32_t, now->t)) {
-						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
-					} else {
-						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
-					}
-				} else if OPC(CMPB) {
-					if (REG(uint8_t, now->f) > REG(uint8_t, now->t)) {
-						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
-					} else if (REG(uint8_t, now->f) == REG(uint8_t, now->t)) {
-						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
-					} else {
-						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
-					}
-				} else if OPC(JMPR) {
-					*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
-				} else if OPC(JMPA) {
-					*REG86 = now->f - sizeof(Instruct);
-				} else if OPC(JI9A) {
-					if (*REG99 == 0xFF)
-						*REG86 = now->f - sizeof(Instruct);
-				} else if OPC(JI8A) {
-					if (*REG98 == 0xFF)
-						*REG86 = now->f - sizeof(Instruct);
-				} else if OPC(JI7A) {
-					if (*REG97 == 0xFF)
-						*REG86 = now->f - sizeof(Instruct);
-				}
-			}
-
+			printf("%08x: %04x, %x, %x\n", *REG86, now->opcode, now->a, now->b);
+			VM::execute_instruction(now);
 			*REG86 += sizeof(Instruct);
 			now = memfetch<Instruct>(*REG86);
+		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 解释一条指令
+	//-------------------------------------------------------------------------
+	void VM::execute_instruction(Instruct* i) {
+		uint32_t a = i->a;
+		uint32_t b = i->b;
+		switch (i->opcode) {
+		// ===========================
+		//  76-Base
+		// ===========================
+		// LCMM
+		case LCMM: {
+			uint8_t* new_mem = new uint8_t[a];
+			memset(new_mem, 0, a);
+			size_t copied_size = a < local_mem_size ? a : local_mem_size;
+			memcpy(new_mem, local_memory, copied_size);
+			free(local_memory);
+			local_mem_size = a;
+			local_memory = new_mem;
+			instruct_memory = (Instruct*) new_mem;
+			printf("Changed local size to %zu bytes\n", local_mem_size);
+			break;
+		}
+		// Load Data
+		case LDLA:
+			REG(uint64_t, b) = *memfetch<uint64_t>(a);
+			break;
+		case LDIA:
+			REG(uint32_t, b) = *memfetch<uint32_t>(a);
+			break;
+		case LDBA:
+			REG(uint8_t, b) = *memfetch<uint8_t>(a);
+			break;
+		case LDLR:
+			REG(uint64_t, b) = *memfetch<uint64_t>(REG(uint32_t, a));
+			break;
+		case LDIR:
+			REG(uint32_t, b) = *memfetch<uint32_t>(REG(uint32_t, a));
+			break;
+		case LDBR:
+			REG(uint8_t, b) = *memfetch<uint8_t>(REG(uint32_t, a));
+			break;
+		// Store data
+		case SLLA:
+			*memfetch<uint64_t>(a) = REG(uint64_t, b);
+			break;
+		case SLIA:
+			*memfetch<uint32_t>(a) = REG(uint32_t, b);
+			break;
+		case SLBA:
+			*memfetch<uint8_t>(a) = REG(uint8_t, b);
+			break;
+		case SLLR:
+			*memfetch<uint64_t>(REG(uint32_t, a)) = REG(uint64_t, b);
+			break;
+		case SLIR:
+			*memfetch<uint32_t>(REG(uint32_t, a)) = REG(uint32_t, b);
+			break;
+		case SLBR:
+			*memfetch<uint8_t>(REG(uint32_t, a)) = REG(uint8_t, b);
+			break;
+		case DATL:
+			REG(uint64_t, b) = (uint64_t) a;
+			break;
+		case DATI:
+			REG(uint32_t, b) = (uint32_t) a;
+			break;
+		case DATB:
+			REG(uint8_t, b) = (uint8_t) a;
+			break;
+		// Mem operation
+		case MOVL:
+			*memfetch<uint64_t>(b) = *memfetch<uint64_t>(a);
+			break;
+		case MOVI:
+			*memfetch<uint32_t>(b) = *memfetch<uint32_t>(a);
+			break;
+		case MOVB:
+			*memfetch<uint8_t>(b) = *memfetch<uint8_t>(a);
+			break;
+		case MVPL:
+			*memfetch<uint64_t>(REG(uint32_t, b)) = *memfetch<uint64_t>(REG(uint32_t, a));
+			break;
+		case MVPI:
+			*memfetch<uint32_t>(REG(uint32_t, b)) = *memfetch<uint32_t>(REG(uint32_t, a));
+			break;
+		case MVPB:
+			*memfetch<uint8_t>(REG(uint32_t, b)) = *memfetch<uint8_t>(REG(uint32_t, a));
+			break;
+		case MVRL:
+			REG(uint64_t, b) = REG(uint64_t, a);
+			break;
+		case MVRI:
+			REG(uint32_t, b) = REG(uint32_t, a);
+			break;
+		case MVRB:
+			REG(uint8_t, b) = REG(uint8_t, a);
+			break;
+		// Basic Algebra
+		case ADDL:
+			REG(uint64_t, a) += REG(uint64_t, b);
+			break;
+		case ADDI:
+			REG(uint32_t, a) += REG(uint32_t, b);
+			break;
+		case ADDB:
+			REG(uint8_t, a) += REG(uint8_t, b);
+			break;
+		case MINL:
+			REG(uint64_t, a) -= REG(uint64_t, b);
+			break;
+		case MINI:
+			REG(uint32_t, a) -= REG(uint32_t, b);
+			break;
+		case MINB:
+			REG(uint8_t, a) -= REG(uint8_t, b);
+			break;
+		case MTPL:
+			REG(uint64_t, a) *= REG(uint64_t, b);
+			break;
+		case MTPI:
+			REG(uint32_t, a) *= REG(uint32_t, b);
+			break;
+		case MTPB:
+			REG(uint8_t, a) *= REG(uint8_t, b);
+			break;
+		case DIVL:
+			REG(uint64_t, a) /= REG(uint64_t, b);
+			break;
+		case DIVI:
+			REG(uint32_t, a) /= REG(uint32_t, b);
+			break;
+		case DIVB:
+			REG(uint8_t, a) /= REG(uint8_t, b);
+			break;
+		case MODL:
+			REG(uint64_t, a) = REG(uint64_t, a) % REG(uint64_t, b);
+			break;
+		case MODI:
+			REG(uint32_t, a) = REG(uint32_t, b) % REG(uint32_t, b);
+			break;
+		case MODB:
+			REG(uint8_t, a) = REG(uint8_t, b) % REG(uint8_t, b);
+			break;
+		// ===========================
+		//  Logistics & Flow control
+		// ===========================
+		case ANDL:
+			REG(uint64_t, a) &= REG(uint64_t, b);
+			break;
+		case ANDI:
+			REG(uint32_t, a) &= REG(uint32_t, b);
+			break;
+		case ANDB:
+			REG(uint8_t, a) &= REG(uint8_t, b);
+			break;
+		case OR_L:
+			REG(uint64_t, a) |= REG(uint64_t, b);
+			break;
+		case OR_I:
+			REG(uint32_t, a) |= REG(uint32_t, b);
+			break;
+		case OR_B:
+			REG(uint8_t, a) |= REG(uint8_t, b);
+			break;
+		case NOTL:
+			REG(uint64_t, a) = !(REG(uint64_t, a));
+			break;
+		case NOTI:
+			REG(uint32_t, a) = !(REG(uint32_t, a));
+			break;
+		case NOTB:
+			REG(uint8_t, a) = !(REG(uint8_t, a));
+			break;
+		case XORL:
+			REG(uint64_t, a) ^= (REG(uint64_t, a));
+			break;
+		case XORI:
+			REG(uint32_t, a) ^= (REG(uint32_t, a));
+			break;
+		case XORB:
+			REG(uint8_t, a) ^= (REG(uint8_t, a));
+			break;
+		case CMPL:
+			if (REG(uint64_t, a) > REG(uint64_t, b)) {
+				*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+			} else if (REG(uint64_t, a) == REG(uint64_t, b)) {
+				*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+			} else {
+				*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+			}
+			break;
+		case CMPI:
+			if (REG(uint32_t, a) > REG(uint32_t, b)) {
+				*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+			} else if (REG(uint32_t, a) == REG(uint32_t, b)) {
+				*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+			} else {
+				*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+			}
+			break;
+		case CMPB:
+			if (REG(uint8_t, a) > REG(uint8_t, b)) {
+				*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+			} else if (REG(uint8_t, a) == REG(uint8_t, b)) {
+				*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+			} else {
+				*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+			}
+			break;
+		case JMPR:
+			*REG86 = REG(uint32_t, a) - sizeof(Instruct);
+			break;
+		case JMPA:
+			*REG86 = a - sizeof(Instruct);
+			break;
+		case JI9A:
+			if (*REG99 == 0xFF) *REG86 = a - sizeof(Instruct);
+			break;
+		case JI8A:
+			if (*REG98 == 0xFF) *REG86 = a - sizeof(Instruct);
+			break;
+		case JI7A:
+			if (*REG97 == 0xFF) *REG86 = a - sizeof(Instruct);
+			break;
 		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 输出寄存器值（调试用）
 	//-------------------------------------------------------------------------
 	void VM::dump_registers() {
-		printf("Registers: \n");
+		puts("Registers:");
 		for (int i = 1; i < 100; i++) {
-			printf("%02x ", reg[i]);
-			if (i % 10 == 0) printf("\n");
+			printf("%02X%c",
+				reg[i],
+				i % 10 == 0 ? '\n' : ' '
+			);
 		}
 		printf("\n");
 	}
@@ -239,10 +298,12 @@ namespace ASM76 {
 	// ● 输出内存值（调试用）
 	//-------------------------------------------------------------------------
 	void VM::dump_memory() {
-		printf("Local Memory: \n");
+		puts("Local Memory:");
 		for (uint32_t i = 1; i < local_mem_size / 8; i++) {
-			printf("%08x ", *((uint32_t*) local_memory + i));
-			if (i % 8 == 0) printf("\n");
+			printf("%08X%c",
+				*((uint32_t*) local_memory + i),
+				i % 8 == 0 ? '\n' : ' '
+			);
 		}
 		printf("\n");
 	}

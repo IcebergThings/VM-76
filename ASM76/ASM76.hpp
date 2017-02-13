@@ -21,8 +21,8 @@ namespace ASM76 {
 	};
 	struct Instruct {
 		uint16_t opcode;
-		uint32_t f;
-		uint32_t t;
+		uint32_t a;
+		uint32_t b;
 	};
 	//-------------------------------------------------------------------------
 	// ● 全局变量
@@ -63,6 +63,7 @@ namespace ASM76 {
 		~VM();
 
 		void execute();
+		void execute_instruction(Instruct*);
 		void dump_registers();
 		void dump_memory();
 	};
