@@ -84,8 +84,8 @@ The VM/76 assembly language and VM/76 virtual machine platform
 
 ## Logistics & Flow control
 1. Logical algebra
-	-	`ANDL $A, $B` : `$B = $A & $B`
-	-	`OR_L $A, $B` : `$B = $A | $B`
+	-	`ANDL $A, $B` : `$A = $A & $B`
+	-	`OR_L $A, $B` : `$A = $A | $B`
 	-	`NOTL $A`     : `$A = !$A`
 	-	`XORL $A, $B` : `$A = $A xor $B`
 	- `CMPL $A, $B`
