@@ -153,8 +153,10 @@ namespace ASM76 {
 			// ===========================
 			//  Logistics & Flow control
 			// ===========================
-			if (global_memory[0x400000] == 0xFF) {
-
+			if (now->opcode >= ANDL) {
+				if OPC(ANDL) {
+					
+				}
 			}
 
 			*REG86 += sizeof(Instruct);

@@ -83,8 +83,7 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	-	Halt the VM and stop.
 
 ## Logistics & Flow control
-1. How to enable: Set memory `IO + 0x0` (`0x400000`, one byte) to `0xFF`
-2. Logical algebra
+1. Logical algebra
 	-	`ANDL $A, $B` : `$B = $A & $B`
 	-	`OR_L $A, $B` : `$B = $A | $B`
 	-	`NOTL $A`     : `$A = !$A`
@@ -95,7 +94,7 @@ The VM/76 assembly language and VM/76 virtual machine platform
 		-	If `$A == $B`, `$98 = 0xFF`, `$97, $99 = 0x0`
 		-	If `$A < $B`, `$97 = 0xFF`, `$98, $99 = 0x0`
 	- Similar instructions with Int and Byte are present.
-3. Flow control
+2. Flow control
 	-	`JMPR $A`
 		- jump to memory adress stored in `$A`
 	-	`JMPA [Adress]`
