@@ -66,11 +66,23 @@ namespace ASM76 {
 			printf("Unknown opcode %d (0x%x)\n", i->opcode);
 		}
 	}
+	#define execute(x) void VM::execute_##x(uint32_t a, uint32_t b)
+	// Unimplemented placeholders
+	execute(NOOP) {}
+	execute(_HLT) {}
+	execute(JI9R) {}
+	execute(JI8R) {}
+	execute(JI7R) {}
+	execute(CALR) {}
+	execute(CALA) {}
+	execute(RET) {}
+	execute(POP) {}
+	execute(PUSH) {}
 	// ===========================
 	//  76-Base
 	// ===========================
 	// LCMM
-	void VM::execute_LCMM(uint32_t a, uint32_t b) {
+	execute(LCMM) {
 		uint8_t* new_mem = new uint8_t[a];
 		memset(new_mem, 0, a);
 		size_t copied_size = a < local_mem_size ? a : local_mem_size;
@@ -82,166 +94,166 @@ namespace ASM76 {
 		printf("Changed local size to %zu bytes\n", local_mem_size);
 	}
 	// Load Data
-	void VM::execute_LDLA(uint32_t a, uint32_t b) {
+	execute(LDLA) {
 		REG(uint64_t, b) = *memfetch<uint64_t>(a);
 	}
-	void VM::execute_LDIA(uint32_t a, uint32_t b) {
+	execute(LDIA) {
 		REG(uint32_t, b) = *memfetch<uint32_t>(a);
 	}
-	void VM::execute_LDBA(uint32_t a, uint32_t b) {
+	execute(LDBA) {
 		REG(uint8_t, b) = *memfetch<uint8_t>(a);
 	}
-	void VM::execute_LDLR(uint32_t a, uint32_t b) {
+	execute(LDLR) {
 		REG(uint64_t, b) = *memfetch<uint64_t>(REG(uint32_t, a));
 	}
-	void VM::execute_LDIR(uint32_t a, uint32_t b) {
+	execute(LDIR) {
 		REG(uint32_t, b) = *memfetch<uint32_t>(REG(uint32_t, a));
 	}
-	void VM::execute_LDBR(uint32_t a, uint32_t b) {
+	execute(LDBR) {
 		REG(uint8_t, b) = *memfetch<uint8_t>(REG(uint32_t, a));
 	}
 	// Store data
-	void VM::execute_SLLA(uint32_t a, uint32_t b) {
+	execute(SLLA) {
 		*memfetch<uint64_t>(a) = REG(uint64_t, b);
 	}
-	void VM::execute_SLIA(uint32_t a, uint32_t b) {
+	execute(SLIA) {
 		*memfetch<uint32_t>(a) = REG(uint32_t, b);
 	}
-	void VM::execute_SLBA(uint32_t a, uint32_t b) {
+	execute(SLBA) {
 		*memfetch<uint8_t>(a) = REG(uint8_t, b);
 	}
-	void VM::execute_SLLR(uint32_t a, uint32_t b) {
+	execute(SLLR) {
 		*memfetch<uint64_t>(REG(uint32_t, a)) = REG(uint64_t, b);
 	}
-	void VM::execute_SLIR(uint32_t a, uint32_t b) {
+	execute(SLIR) {
 		*memfetch<uint32_t>(REG(uint32_t, a)) = REG(uint32_t, b);
 	}
-	void VM::execute_SLBR(uint32_t a, uint32_t b) {
+	execute(SLBR) {
 		*memfetch<uint8_t>(REG(uint32_t, a)) = REG(uint8_t, b);
 	}
-	void VM::execute_DATL(uint32_t a, uint32_t b) {
+	execute(DATL) {
 		REG(uint64_t, b) = (uint64_t) a;
 	}
-	void VM::execute_DATI(uint32_t a, uint32_t b) {
+	execute(DATI) {
 		REG(uint32_t, b) = (uint32_t) a;
 	}
-	void VM::execute_DATB(uint32_t a, uint32_t b) {
+	execute(DATB) {
 		REG(uint8_t, b) = (uint8_t) a;
 	}
 	// Mem operation
-	void VM::execute_MOVL(uint32_t a, uint32_t b) {
+	execute(MOVL) {
 		*memfetch<uint64_t>(b) = *memfetch<uint64_t>(a);
 	}
-	void VM::execute_MOVI(uint32_t a, uint32_t b) {
+	execute(MOVI) {
 		*memfetch<uint32_t>(b) = *memfetch<uint32_t>(a);
 	}
-	void VM::execute_MOVB(uint32_t a, uint32_t b) {
+	execute(MOVB) {
 		*memfetch<uint8_t>(b) = *memfetch<uint8_t>(a);
 	}
-	void VM::execute_MVPL(uint32_t a, uint32_t b) {
+	execute(MVPL) {
 		*memfetch<uint64_t>(REG(uint32_t, b)) = *memfetch<uint64_t>(REG(uint32_t, a));
 	}
-	void VM::execute_MVPI(uint32_t a, uint32_t b) {
+	execute(MVPI) {
 		*memfetch<uint32_t>(REG(uint32_t, b)) = *memfetch<uint32_t>(REG(uint32_t, a));
 	}
-	void VM::execute_MVPB(uint32_t a, uint32_t b) {
+	execute(MVPB) {
 		*memfetch<uint8_t>(REG(uint32_t, b)) = *memfetch<uint8_t>(REG(uint32_t, a));
 	}
-	void VM::execute_MVRL(uint32_t a, uint32_t b) {
+	execute(MVRL) {
 		REG(uint64_t, b) = REG(uint64_t, a);
 	}
-	void VM::execute_MVRI(uint32_t a, uint32_t b) {
+	execute(MVRI) {
 		REG(uint32_t, b) = REG(uint32_t, a);
 	}
-	void VM::execute_MVRB(uint32_t a, uint32_t b) {
+	execute(MVRB) {
 		REG(uint8_t, b) = REG(uint8_t, a);
 	}
 	// Basic Algebra
-	void VM::execute_ADDL(uint32_t a, uint32_t b) {
+	execute(ADDL) {
 		REG(uint64_t, a) += REG(uint64_t, b);
 	}
-	void VM::execute_ADDI(uint32_t a, uint32_t b) {
+	execute(ADDI) {
 		REG(uint32_t, a) += REG(uint32_t, b);
 	}
-	void VM::execute_ADDB(uint32_t a, uint32_t b) {
+	execute(ADDB) {
 		REG(uint8_t, a) += REG(uint8_t, b);
 	}
-	void VM::execute_MINL(uint32_t a, uint32_t b) {
+	execute(MINL) {
 		REG(uint64_t, a) -= REG(uint64_t, b);
 	}
-	void VM::execute_MINI(uint32_t a, uint32_t b) {
+	execute(MINI) {
 		REG(uint32_t, a) -= REG(uint32_t, b);
 	}
-	void VM::execute_MINB(uint32_t a, uint32_t b) {
+	execute(MINB) {
 		REG(uint8_t, a) -= REG(uint8_t, b);
 	}
-	void VM::execute_MTPL(uint32_t a, uint32_t b) {
+	execute(MTPL) {
 		REG(uint64_t, a) *= REG(uint64_t, b);
 	}
-	void VM::execute_MTPI(uint32_t a, uint32_t b) {
+	execute(MTPI) {
 		REG(uint32_t, a) *= REG(uint32_t, b);
 	}
-	void VM::execute_MTPB(uint32_t a, uint32_t b) {
+	execute(MTPB) {
 		REG(uint8_t, a) *= REG(uint8_t, b);
 	}
-	void VM::execute_DIVL(uint32_t a, uint32_t b) {
+	execute(DIVL) {
 		REG(uint64_t, a) /= REG(uint64_t, b);
 	}
-	void VM::execute_DIVI(uint32_t a, uint32_t b) {
+	execute(DIVI) {
 		REG(uint32_t, a) /= REG(uint32_t, b);
 	}
-	void VM::execute_DIVB(uint32_t a, uint32_t b) {
+	execute(DIVB) {
 		REG(uint8_t, a) /= REG(uint8_t, b);
 	}
-	void VM::execute_MODL(uint32_t a, uint32_t b) {
+	execute(MODL) {
 		REG(uint64_t, a) = REG(uint64_t, a) % REG(uint64_t, b);
 	}
-	void VM::execute_MODI(uint32_t a, uint32_t b) {
+	execute(MODI) {
 		REG(uint32_t, a) = REG(uint32_t, b) % REG(uint32_t, b);
 	}
-	void VM::execute_MODB(uint32_t a, uint32_t b) {
+	execute(MODB) {
 		REG(uint8_t, a) = REG(uint8_t, b) % REG(uint8_t, b);
 	}
 	// ===========================
 	//  Logistics & Flow control
 	// ===========================
-	void VM::execute_ANDL(uint32_t a, uint32_t b) {
+	execute(ANDL) {
 		REG(uint64_t, a) &= REG(uint64_t, b);
 	}
-	void VM::execute_ANDI(uint32_t a, uint32_t b) {
+	execute(ANDI) {
 		REG(uint32_t, a) &= REG(uint32_t, b);
 	}
-	void VM::execute_ANDB(uint32_t a, uint32_t b) {
+	execute(ANDB) {
 		REG(uint8_t, a) &= REG(uint8_t, b);
 	}
-	void VM::execute_OR_L(uint32_t a, uint32_t b) {
+	execute(OR_L) {
 		REG(uint64_t, a) |= REG(uint64_t, b);
 	}
-	void VM::execute_OR_I(uint32_t a, uint32_t b) {
+	execute(OR_I) {
 		REG(uint32_t, a) |= REG(uint32_t, b);
 	}
-	void VM::execute_OR_B(uint32_t a, uint32_t b) {
+	execute(OR_B) {
 		REG(uint8_t, a) |= REG(uint8_t, b);
 	}
-	void VM::execute_NOTL(uint32_t a, uint32_t b) {
+	execute(NOTL) {
 		REG(uint64_t, a) = !(REG(uint64_t, a));
 	}
-	void VM::execute_NOTI(uint32_t a, uint32_t b) {
+	execute(NOTI) {
 		REG(uint32_t, a) = !(REG(uint32_t, a));
 	}
-	void VM::execute_NOTB(uint32_t a, uint32_t b) {
+	execute(NOTB) {
 		REG(uint8_t, a) = !(REG(uint8_t, a));
 	}
-	void VM::execute_XORL(uint32_t a, uint32_t b) {
+	execute(XORL) {
 		REG(uint64_t, a) ^= (REG(uint64_t, a));
 	}
-	void VM::execute_XORI(uint32_t a, uint32_t b) {
+	execute(XORI) {
 		REG(uint32_t, a) ^= (REG(uint32_t, a));
 	}
-	void VM::execute_XORB(uint32_t a, uint32_t b) {
+	execute(XORB) {
 		REG(uint8_t, a) ^= (REG(uint8_t, a));
 	}
-	void VM::execute_CMPL(uint32_t a, uint32_t b) {
+	execute(CMPL) {
 		if (REG(uint64_t, a) > REG(uint64_t, b)) {
 			*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
 		} else if (REG(uint64_t, a) == REG(uint64_t, b)) {
@@ -250,7 +262,7 @@ namespace ASM76 {
 			*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
 		}
 	}
-	void VM::execute_CMPI(uint32_t a, uint32_t b) {
+	execute(CMPI) {
 		if (REG(uint32_t, a) > REG(uint32_t, b)) {
 			*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
 		} else if (REG(uint32_t, a) == REG(uint32_t, b)) {
@@ -259,7 +271,7 @@ namespace ASM76 {
 			*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
 		}
 	}
-	void VM::execute_CMPB(uint32_t a, uint32_t b) {
+	execute(CMPB) {
 		if (REG(uint8_t, a) > REG(uint8_t, b)) {
 			*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
 		} else if (REG(uint8_t, a) == REG(uint8_t, b)) {
@@ -268,19 +280,19 @@ namespace ASM76 {
 			*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
 		}
 	}
-	void VM::execute_JMPR(uint32_t a, uint32_t b) {
+	execute(JMPR) {
 		*REG86 = REG(uint32_t, a) - sizeof(Instruct);
 	}
-	void VM::execute_JMPA(uint32_t a, uint32_t b) {
+	execute(JMPA) {
 		*REG86 = a - sizeof(Instruct);
 	}
-	void VM::execute_JI9A(uint32_t a, uint32_t b) {
+	execute(JI9A) {
 		if (*REG99 == 0xFF) *REG86 = a - sizeof(Instruct);
 	}
-	void VM::execute_JI8A(uint32_t a, uint32_t b) {
+	execute(JI8A) {
 		if (*REG98 == 0xFF) *REG86 = a - sizeof(Instruct);
 	}
-	void VM::execute_JI7A(uint32_t a, uint32_t b) {
+	execute(JI7A) {
 		if (*REG97 == 0xFF) *REG86 = a - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
