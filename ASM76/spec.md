@@ -26,20 +26,21 @@ Definitions and conventions in this specification
 	- **[76-Base](#76-base)** is capable of manipulating registers, memory and 8-, 32- and 64-bit integers.
 	- **[76-Float](#76-float)** is able to deal with floating point values.
 	- **[76-Vector](#76-vector)** can do vector mathematics.
+	- **[BIOS Instructions](#bios-instructions)** provides a BIOS interface. Just joking.
 - Registers
-	- There are 99 registers, namely $0, $1, $2, etc.
+	- There are 111 registers, namely $0, $1, $2, etc.
 	- Every register holds a byte.
 	- There are special registers which have special meanings.
 
 		Register | Meaning
 		-------- | -------
-		$99 | Flag A > B
-		$98 | Flag A = B
-		$97 | Flag A < B
-		$90 ~ $93 | Stack bottom pointer
-		$86 ~ $89 | Instruction pointer (program counter)
+		$100..$103 | Instruction pointer (program counter)
+		$104..$107 | Stack bottom pointer
+		$111 | Flag A > B
+		$110 | Flag A = B
+		$109 | Flag A < B
 
-	- $90 has a default value of 0x1003000 (Local memory + 12KB).
+	- $104 has a default value of 0x1003000 (Local memory + 12KB).
 - 32-bit memory address
 
 	Address range | Size | Usage
@@ -71,7 +72,7 @@ ADDL $1 $1
 MVRL $1 $31
 DATI 4 $11
 DIVL $1 $11
-_HLT
+HALT
 ```
 
 Instruction set reference
@@ -129,7 +130,7 @@ Then 8 bytes of data in 0x00FF0000 will be stored in $12.
 
 Instruction | Description
 ----------- | -----------
-[ADDx/MINx/MTPx/DIVx/MODx](#addx-minx-mtpx-divx-modx) _$A_, _$B_ | arithmetic operations
+[ADDx/MINx/MTPx/DIVx/MODx](#addx-minx-mtpx-divx-modx) _$A_, _$B_ | common arithmetic operations
 [CMPx](#cmpx) _$A_, _$B_ | compare two long/int/byte arithmetically
 
 #### ADDx/MINx/MTPx/DIVx/MODx
@@ -140,9 +141,9 @@ Division throws the remainder away and modulo throws the quotient away.
 #### CMPx
 Compare *$A* to *$B*.
 
-- If *$A* > *$B*, $99 = 0xFF, $98 = 0, $97 = 0
-- If *$A* = *$B*, $98 = 0xFF, $97 = 0, $99 = 0
-- If *$A* < *$B*, $97 = 0xFF, $98 = 0, $99 = 0
+- If *$A* > *$B*, $111 = 0xFF, $110 = 0, $109 = 0
+- If *$A* = *$B*, $110 = 0xFF, $109 = 0, $111 = 0
+- If *$A* < *$B*, $109 = 0xFF, $110 = 0, $111 = 0
 
 ### Logical operations
 
@@ -158,34 +159,35 @@ Means `$A = !$A;` in C.
 
 Instruction | Description
 ----------- | -----------
-_HLT | halt the CPU and stop
+NOOP | waste some time
+HALT | halt the CPU and stop
 JMPR _$A_ | jump to memory address stored in *$A*
 JMPA _address_ | jump to memory address *address*
-JI7R/JI8R/JI9R _$A_ | jump to memory address stored in *$A* if $97/$98/$99 = 0xFF
-JI7A/JI8A/JI9A _address_ | jump to *address* if $97/$98/$99 = 0xFF
+JI7R/JI8R/JI9R _$A_ | jump to memory address stored in *$A* if $109/$110/$111 = 0xFF
+JI7A/JI8A/JI9A _address_ | jump to *address* if $109/$110/$111 = 0xFF
 CALR _$A_ | jump to memory address stored in *$A* and push the next instruction's address into stack
 CALA _address_ | jump to *address* and push the next instruction's address into stack
-RET | `POP $86`
+RETN | `POP_ $100`
 PUSH _$A_, _length_ | push registers from *$A*...*$(A + length)* onto the stack
-POP _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
+POP_ _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
 
 76-Float
 --------
 
-You need to set memory *IO + 0x1* (0x400001, one byte) to `0xFF` first in order to make it work.
+You need to set memory *IO + 0x1* (0x400001, one byte) to 0xFF first in order to make it work.
 
 TODO
 
-76-Vectors
-----------
+76-Vector
+---------
 
-You need to set memory *IO + 0x2* (0x400002, one byte) to `0xFF` first in order to make it work.
+You need to set memory *IO + 0x2* (0x400002, one byte) to 0xFF first in order to make it work.
 
 TODO
 
 BIOS Instructions
 -----------------
 
-You need to set memory *IO + 0xA* (0x40000A, one byte) to `0xFF` first in order to make it work.
+You need to set memory *IO + 0xA* (0x40000A, one byte) to 0xFF first in order to make it work.
 
 TODO

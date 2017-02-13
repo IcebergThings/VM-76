@@ -22,7 +22,7 @@ Instruct mem_test_prgm[] = {
 	{LDLA,0x2500000,51},
 	{LDIA,0x2500000,51},
 	{LDBA,0x2500000,61},
-	{_HLT, 0, 0},
+	{HALT, 0, 0},
 };
 
 Instruct basic_algebra_test_prgm[] = {
@@ -39,7 +39,7 @@ Instruct basic_algebra_test_prgm[] = {
 	// Then divide 4
 	{DATI,0x4,11},
 	{DIVL,1,11},
-	{_HLT, 0, 0},
+	{HALT, 0, 0},
 };
 
 Instruct flow_control_test_prgm[] = {
@@ -51,14 +51,14 @@ Instruct flow_control_test_prgm[] = {
 	{CMPI,3,10},
 	{PUSH,15,1},
 	{JI7A, 0x1000000 + 3 * sizeof(Instruct),0},
-	{_HLT, 0, 0},
+	{HALT, 0, 0},
 };
 
 int main() {
 
 	printf("===== ASM 76 Test Program =====\n");
 
-	init_environment();
+	init();
 
 	printf("===== Memory =====\n");
 	VM* v = new VM(mem_test_prgm, sizeof(mem_test_prgm));

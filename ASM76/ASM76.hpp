@@ -11,74 +11,47 @@
 #define _INCLUDE_ASM76_H
 
 namespace ASM76 {
-
-	enum InstructionSets {
-		NOOP = 0, // No Operation is always NULL
-
-		// 76-Base
-		LCMM,
-		LDLA, LDIA, LDBA,
-		LDLR, LDIR, LDBR,
-		SLLA, SLIA, SLBA,
-		SLLR, SLIR, SLBR,
-		DATL, DATI, DATB,
-		MOVL, MOVI, MOVB,
-		MVPL, MVPI, MVPB,
-		MVRL, MVRI, MVRB,
-		ADDL, ADDI, ADDB,
-		MINL, MINI, MINB,
-		MTPL, MTPI, MTPB,
-		DIVL, DIVI, DIVB,
-		MODL, MODI, MODB,
-		_HLT,
-
-		// Logistics & Flow control
-		ANDL, ANDI, ANDB,
-		OR_L, OR_I, OR_B,
-		NOTL, NOTI, NOTB,
-		XORL, XORI, XORB,
-		CMPL, CMPI, CMPB,
-		JMPR,
-		JMPA,
-		JI9A, JI8A, JI7A,
-		JI9R, JI8R, JI7R,
-		CALR, CALA,
-		RET,
-		PUSH,
-		POP,
-
-		// 76 Float
-
-		// 76 Vectors
-
-		// BIOS Instructions
+	//-------------------------------------------------------------------------
+	// ● 指令结构的定义
+	//-------------------------------------------------------------------------
+	enum InstructionOpcode {
+		#define I(x) x,
+			#include "instructions.hpp"
+		#undef I
 	};
-
-	extern uint8_t* global_memory;
-
 	struct Instruct {
 		uint16_t opcode;
-		uint32_t f;
-		uint32_t t;
+		uint32_t a;
+		uint32_t b;
 	};
-
-	void init_environment();
-
-	#define REG(T, P) *((T*) (reg + P))
-
+	//-------------------------------------------------------------------------
+	// ● 全局变量
+	//-------------------------------------------------------------------------
+	extern uint8_t global_memory[];
+	//-------------------------------------------------------------------------
+	// ● 实用函数
+	//-------------------------------------------------------------------------
+	void init();
+	Instruct* compile(const char* prg);
+	char* decompile(Instruct* prg);
+	//-------------------------------------------------------------------------
+	// ● Virtual Machine类
+	//-------------------------------------------------------------------------
 	class VM {
 	private:
 		uint8_t* local_memory;
-		size_t local_mem_size = 0x4000;
+		size_t local_memory_size = 0x4000;
 		Instruct* instruct_memory;
+		static const size_t REGISTER_COUNT = 112;
 		uint8_t* reg;
 
-		// Common & Special register
-		uint32_t* REG86;
-		uint32_t* REG90;
-		uint8_t* REG97;
-		uint8_t* REG98;
-		uint8_t* REG99;
+		// Common & special registers
+		#define REG(T, P) (*((T*) (reg + P)))
+		#define REG100 REG(uint32_t, 100)
+		#define REG104 REG(uint32_t, 104)
+		#define REG109 REG(uint8_t, 109)
+		#define REG110 REG(uint8_t, 110)
+		#define REG111 REG(uint8_t, 111)
 
 	public:
 		template <class T> T* memfetch(uint32_t address) {
@@ -88,17 +61,16 @@ namespace ASM76 {
 		}
 
 		VM(Instruct* program, size_t prg_size);
-
-		void execute();
+		~VM();
 		void dump_registers();
 		void dump_memory();
 
-		static char* decompile(Instruct* prg);
-		static Instruct* compile(const char* prg);
-
-		~VM();
+		void execute();
+		void execute_instruction(Instruct*);
+		#define I(x) void execute_##x(uint32_t a, uint32_t b);
+			#include "instructions.hpp"
+		#undef I
 	};
-
 }
 
 #endif
