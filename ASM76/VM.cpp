@@ -48,19 +48,26 @@ namespace ASM76 {
 	void VM::execute() {
 		Instruct* now = memfetch<Instruct>(*REG86);
 		while (!OPC(_HLT)) {
-			printf("%x : %x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
+			printf("%08x : %04x, %x, %x\n", *REG86, now->opcode, now->f, now->t);
 
+			// ===========================
+			//  76-Base
+			// ===========================
+			// LCMM
 			if OPC(LCMM) {
 				uint8_t* new_mem = new uint8_t[now->f];
 				memset(new_mem, 0, now->f);
-				memcpy(new_mem, local_memory, local_mem_size);
+				size_t copied_size = now->f < local_mem_size ? now->f : local_mem_size;
+				memcpy(new_mem, local_memory, copied_size);
 				free(local_memory);
 				local_mem_size = now->f;
 				local_memory = new_mem;
 				instruct_memory = (Instruct*) new_mem;
 
 				printf("Changed local size to %zu bytes\n", local_mem_size);
-			} else if OPC(LDLA) {
+			}
+			// Load Data
+			else if OPC(LDLA) {
 				REG(uint64_t, now->t) = *memfetch<uint64_t>(now->f);
 			} else if OPC(LDIA) {
 				REG(uint32_t, now->t) = *memfetch<uint32_t>(now->f);
@@ -72,7 +79,9 @@ namespace ASM76 {
 				REG(uint32_t, now->t) = *memfetch<uint32_t>(REG(uint32_t, now->f));
 			} else if OPC(LDBR) {
 				REG(uint8_t, now->t) = *memfetch<uint8_t>(REG(uint32_t, now->f));
-			} else if OPC(SLLA) {
+			}
+			// Store data
+			else if OPC(SLLA) {
 				*memfetch<uint64_t>(now->f) = REG(uint64_t, now->t);
 			} else if OPC(SLIA) {
 				*memfetch<uint32_t>(now->f) = REG(uint32_t, now->t);
@@ -85,11 +94,32 @@ namespace ASM76 {
 			} else if OPC(SLBR) {
 				*memfetch<uint8_t>(REG(uint32_t, now->f)) = REG(uint8_t, now->t);
 			} else if OPC(DATI) {
-				printf("Store data %x to $%d\n", now->f, now->t);
 				REG(uint32_t, now->t) = (uint32_t) now->f;
 			} else if OPC(DATB) {
 				REG(uint8_t, now->t) = (uint8_t) now->f;
-			} else if OPC(ADDL) {
+			}
+			// Mem operation
+			else if OPC(MOVL) {
+				*memfetch<uint64_t>(now->t) = *memfetch<uint64_t>(now->f);
+			} else if OPC(MOVI) {
+				*memfetch<uint32_t>(now->t) = *memfetch<uint32_t>(now->f);
+			} else if OPC(MOVB) {
+				*memfetch<uint8_t>(now->t) = *memfetch<uint8_t>(now->f);
+			} else if OPC(MVPL) {
+				*memfetch<uint64_t>(REG(uint32_t, now->t)) = *memfetch<uint64_t>(REG(uint32_t, now->f));
+			} else if OPC(MVPI) {
+				*memfetch<uint32_t>(REG(uint32_t, now->t)) = *memfetch<uint32_t>(REG(uint32_t, now->f));
+			} else if OPC(MVPB) {
+				*memfetch<uint8_t>(REG(uint32_t, now->t)) = *memfetch<uint8_t>(REG(uint32_t, now->f));
+			} else if OPC(MVRL) {
+				REG(uint64_t, now->t) = REG(uint64_t, now->f);
+			} else if OPC(MVRI) {
+				REG(uint32_t, now->t) = REG(uint32_t, now->f);
+			} else if OPC(MVRB) {
+				REG(uint8_t, now->t) = REG(uint8_t, now->f);
+			}
+			// Basic Algebra
+			else if OPC(ADDL) {
 				REG(uint64_t, now->f) += REG(uint64_t, now->t);
 			} else if OPC(ADDI) {
 				REG(uint32_t, now->f) += REG(uint32_t, now->t);
@@ -120,6 +150,60 @@ namespace ASM76 {
 			} else if OPC(MODB) {
 				REG(uint8_t, now->f) = REG(uint8_t, now->t) % REG(uint8_t, now->t);
 			}
+			// ===========================
+			//  Logistics & Flow control
+			// ===========================
+			if (now->opcode >= ANDL) {
+				if OPC(ANDL) {
+					REG(uint64_t, now->f) &= REG(uint64_t, now->t);
+				} else if OPC(ANDI) {
+					REG(uint32_t, now->f) &= REG(uint32_t, now->t);
+				} else if OPC(ANDB) {
+					REG(uint8_t, now->f) &= REG(uint8_t, now->t);
+				} else if OPC(OR_L) {
+					REG(uint64_t, now->f) |= REG(uint64_t, now->t);
+				} else if OPC(OR_I) {
+					REG(uint32_t, now->f) |= REG(uint32_t, now->t);
+				} else if OPC(OR_B) {
+					REG(uint8_t, now->f) |= REG(uint8_t, now->t);
+				} else if OPC(NOTL) {
+					REG(uint64_t, now->f) = !(REG(uint64_t, now->f));
+				} else if OPC(NOTI) {
+					REG(uint32_t, now->f) = !(REG(uint32_t, now->f));
+				} else if OPC(NOTB) {
+					REG(uint8_t, now->f) = !(REG(uint8_t, now->f));
+				} else if OPC(XORL) {
+					REG(uint64_t, now->f) ^= (REG(uint64_t, now->f));
+				} else if OPC(XORI) {
+					REG(uint32_t, now->f) ^= (REG(uint32_t, now->f));
+				} else if OPC(XORB) {
+					REG(uint8_t, now->f) ^= (REG(uint8_t, now->f));
+				} else if OPC(CMPL) {
+					if (REG(uint64_t, now->f) > REG(uint64_t, now->t)) {
+						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+					} else if (REG(uint64_t, now->f) == REG(uint64_t, now->t)) {
+						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+					} else {
+						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+					}
+				} else if OPC(CMPI) {
+					if (REG(uint32_t, now->f) > REG(uint32_t, now->t)) {
+						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+					} else if (REG(uint32_t, now->f) == REG(uint32_t, now->t)) {
+						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+					} else {
+						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+					}
+				} else if OPC(CMPB) {
+					if (REG(uint8_t, now->f) > REG(uint8_t, now->t)) {
+						*REG99 = 0xFF; *REG98 = 0x0; *REG97 = 0x0;
+					} else if (REG(uint8_t, now->f) == REG(uint8_t, now->t)) {
+						*REG99 = 0x0; *REG98 = 0xFF; *REG97 = 0x0;
+					} else {
+						*REG99 = 0x0; *REG98 = 0x0; *REG97 = 0xFF;
+					}
+				}
+			}
 
 			*REG86 += sizeof(Instruct);
 			now = memfetch<Instruct>(*REG86);
@@ -134,7 +218,15 @@ namespace ASM76 {
 		}
 		printf("\n");
 	}
-	void VM::dump_memory() {}
+
+	void VM::dump_memory() {
+		printf("Local Memory: \n");
+		for (uint32_t i = 1; i < local_mem_size / 8; i++) {
+			printf("%08x ", *((uint32_t*)local_memory + i));
+			if (i % 8 == 0) printf("\n");
+		}
+		printf("\n");
+	}
 
 	char* VM::decompile(Instruct* prg) {
 		return NULL;

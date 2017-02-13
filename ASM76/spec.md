@@ -59,7 +59,15 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	- `DATL [value], $A`
 		- Put long value in regster `$A`
 	- Similar pattern with `DATI`, `DATB`
-6. Basic algebra
+7. Mem operation
+	-	`MOVL [adress A], [adress B]`
+		- copy 8 bytes data from `adress A` to `adress B`
+	-	`MVPL [$A], [$B]`
+		- copy 8 bytes data from adress in `$A` to the address in `$B`
+	-	`MVRL $A, $B`
+		- copy 8 bytes data from `$A` to `$B`
+	- `MOVI`, `MOVB`, `MVPI`, `MVPB` `MVRI`, `MVRB` are in similar pattern
+8. Basic algebra
 	-	`ADDL $A, $B`
 		-	Do 8 bytes (64 bits) adding. When it's done, `$A = $A + $B`
 	-	`MINL $A, $B`
@@ -75,10 +83,9 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	-	Halt the VM and stop.
 
 ## Logistics & Flow control
-1. How to enable: Set memory `IO + 0x0` (`0x400000`, one byte) to `0xFF`
-2. Logical algebra
-	-	`ANDL $A, $B` : `$B = $A & $B`
-	-	`OR_L $A, $B` : `$B = $A | $B`
+1. Logical algebra
+	-	`ANDL $A, $B` : `$A = $A & $B`
+	-	`OR_L $A, $B` : `$A = $A | $B`
 	-	`NOTL $A`     : `$A = !$A`
 	-	`XORL $A, $B` : `$A = $A xor $B`
 	- `CMPL $A, $B`
@@ -87,7 +94,7 @@ The VM/76 assembly language and VM/76 virtual machine platform
 		-	If `$A == $B`, `$98 = 0xFF`, `$97, $99 = 0x0`
 		-	If `$A < $B`, `$97 = 0xFF`, `$98, $99 = 0x0`
 	- Similar instructions with Int and Byte are present.
-3. Flow control
+2. Flow control
 	-	`JMPR $A`
 		- jump to memory adress stored in `$A`
 	-	`JMPA [Adress]`

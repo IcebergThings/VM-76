@@ -26,7 +26,7 @@ Instruct mem_test_prgm[] = {
 };
 
 Instruct basic_algebra_test_prgm[] = {
-	{LCMM,0x4000000,0},
+	{LCMM,0x100,0},
 	{DATI,0x1,1},
 	// $1 = $1 + $1
 	// 1, 2, 4, 8, 16, ...
@@ -35,8 +35,7 @@ Instruct basic_algebra_test_prgm[] = {
 	{ADDL,1,1},
 	{ADDL,1,1},
 	// Put the result else where
-	{SLLA,0x1000000,1},
-	{LDLA,0x1000000,31},
+	{MVRL,1,31},
 	// Then divide 4
 	{DATI,0x4,11},
 	{DIVL,1,11},
