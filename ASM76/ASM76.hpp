@@ -12,7 +12,7 @@
 
 namespace ASM76 {
 
-	enum InstructionSets {
+	enum InstructionOpcode {
 		#define I(x) x,
 			#include "instructions.hpp"
 		#undef I
