@@ -130,7 +130,7 @@ Then 8 bytes of data in 0x00FF0000 will be stored in $12.
 
 Instruction | Description
 ----------- | -----------
-[ADDx/MINx/MTPx/DIVx/MODx](#addx-minx-mtpx-divx-modx) _$A_, _$B_ | arithmetic operations
+[ADDx/MINx/MTPx/DIVx/MODx](#addx-minx-mtpx-divx-modx) _$A_, _$B_ | common arithmetic operations
 [CMPx](#cmpx) _$A_, _$B_ | compare two long/int/byte arithmetically
 
 #### ADDx/MINx/MTPx/DIVx/MODx
@@ -174,20 +174,20 @@ POP_ _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
 76-Float
 --------
 
-You need to set memory *IO + 0x1* (0x400001, one byte) to `0xFF` first in order to make it work.
+You need to set memory *IO + 0x1* (0x400001, one byte) to 0xFF first in order to make it work.
 
 TODO
 
 76-Vector
 ---------
 
-You need to set memory *IO + 0x2* (0x400002, one byte) to `0xFF` first in order to make it work.
+You need to set memory *IO + 0x2* (0x400002, one byte) to 0xFF first in order to make it work.
 
 TODO
 
 BIOS Instructions
 -----------------
 
-You need to set memory *IO + 0xA* (0x40000A, one byte) to `0xFF` first in order to make it work.
+You need to set memory *IO + 0xA* (0x40000A, one byte) to 0xFF first in order to make it work.
 
 TODO
