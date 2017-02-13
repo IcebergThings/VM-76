@@ -49,6 +49,7 @@ Instruct flow_control_test_prgm[] = {
 	{ADDL,15,15},
 	{ADDL,3,20},
 	{CMPI,3,10},
+	{PUSH,15,1},
 	{JI7A, 0x1000000 + 3 * sizeof(Instruct),0},
 	{HALT, 0, 0},
 };
