@@ -110,6 +110,8 @@ The VM/76 assembly language and VM/76 virtual machine platform
 	-	`CALR $A`, `CALA [Adress]`
 		- Jump to memory adress stored in `$A` or `[Adress]`
 		- Push the next instruction's adress into stack
+	-	`RET`
+		- equals to `POP $86`
 	-	`PUSH $A, [Length]`
 		- Push registers from `$A` to `$(A + Length)` into a stack
 	-	`POP $A, [Length]`

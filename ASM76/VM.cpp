@@ -206,13 +206,13 @@ namespace ASM76 {
 					*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
 				} else if OPC(JMPA) {
 					*REG86 = now->f - sizeof(Instruct);
-				} else if OPC(JI9R) {
+				} else if OPC(JI9A) {
 					if (*REG99 == 0xFF)
 						*REG86 = now->f - sizeof(Instruct);
-				} else if OPC(JI8R) {
+				} else if OPC(JI8A) {
 					if (*REG98 == 0xFF)
 						*REG86 = now->f - sizeof(Instruct);
-				} else if OPC(JI7R) {
+				} else if OPC(JI7A) {
 					if (*REG97 == 0xFF)
 						*REG86 = now->f - sizeof(Instruct);
 				}
