@@ -18,15 +18,15 @@ namespace ASM76 {
 		printf("init memory with program sized %zu\n", prg_size);
 		memcpy(instruct_memory, program, prg_size);
 
-		// 99 registers
-		reg = new uint8_t[100];
-		memset(reg, 0, 99);
+		// 100+ registers
+		reg = new uint8_t[REGISTER_COUNT];
+		memset(reg, 0, REGISTER_COUNT);
 
 		// Setup registers
 		// Instruction pointer
-		REG86 = 0x1000000;
+		REG100 = 0x1000000;
 		// Stack bottom pointer
-		REG90 = 0x1003000;
+		REG104 = 0x1003000;
 	}
 	//-------------------------------------------------------------------------
 	// ● 析构
@@ -47,8 +47,8 @@ namespace ASM76 {
 			);
 		}
 		printf("\n");
-		printf("Instruction Pointer: %08x\n", REG86);
-		printf("Stack Pointer: %08x\n", REG90);
+		printf("Instruction Pointer: %08x\n", REG100);
+		printf("Stack Pointer: %08x\n", REG104);
 	}
 	//-------------------------------------------------------------------------
 	// ● 输出内存值（调试用）
@@ -68,10 +68,10 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	void VM::execute() {
 		Instruct* now;
-		while ((now = memfetch<Instruct>(REG86))->opcode != HALT) {
-			printf("%08x: %04x, %x, %x\n", REG86, now->opcode, now->a, now->b);
+		while ((now = memfetch<Instruct>(REG100))->opcode != HALT) {
+			printf("%08x: %04x, %x, %x\n", REG100, now->opcode, now->a, now->b);
 			VM::execute_instruction(now);
-			REG86 += sizeof(Instruct);
+			REG100 += sizeof(Instruct);
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -324,91 +324,91 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	execute(CMPL) {
 		if (REG(uint64_t, a) > REG(uint64_t, b)) {
-			REG99 = 0xFF; REG98 = 0x0; REG97 = 0x0;
+			REG111 = 0xFF; REG110 = 0x0; REG109 = 0x0;
 		} else if (REG(uint64_t, a) == REG(uint64_t, b)) {
-			REG99 = 0x0; REG98 = 0xFF; REG97 = 0x0;
+			REG111 = 0x0; REG110 = 0xFF; REG109 = 0x0;
 		} else {
-			REG99 = 0x0; REG98 = 0x0; REG97 = 0xFF;
+			REG111 = 0x0; REG110 = 0x0; REG109 = 0xFF;
 		}
 	}
 	execute(CMPI) {
 		if (REG(uint32_t, a) > REG(uint32_t, b)) {
-			REG99 = 0xFF; REG98 = 0x0; REG97 = 0x0;
+			REG111 = 0xFF; REG110 = 0x0; REG109 = 0x0;
 		} else if (REG(uint32_t, a) == REG(uint32_t, b)) {
-			REG99 = 0x0; REG98 = 0xFF; REG97 = 0x0;
+			REG111 = 0x0; REG110 = 0xFF; REG109 = 0x0;
 		} else {
-			REG99 = 0x0; REG98 = 0x0; REG97 = 0xFF;
+			REG111 = 0x0; REG110 = 0x0; REG109 = 0xFF;
 		}
 	}
 	execute(CMPB) {
 		if (REG(uint8_t, a) > REG(uint8_t, b)) {
-			REG99 = 0xFF; REG98 = 0x0; REG97 = 0x0;
+			REG111 = 0xFF; REG110 = 0x0; REG109 = 0x0;
 		} else if (REG(uint8_t, a) == REG(uint8_t, b)) {
-			REG99 = 0x0; REG98 = 0xFF; REG97 = 0x0;
+			REG111 = 0x0; REG110 = 0xFF; REG109 = 0x0;
 		} else {
-			REG99 = 0x0; REG98 = 0x0; REG97 = 0xFF;
+			REG111 = 0x0; REG110 = 0x0; REG109 = 0xFF;
 		}
 	}
 	//-------------------------------------------------------------------------
 	// ● JMPR JMPA
 	//-------------------------------------------------------------------------
 	execute(JMPR) {
-		REG86 = REG(uint32_t, a) - sizeof(Instruct);
+		REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JMPA) {
-		REG86 = a - sizeof(Instruct);
+		REG100 = a - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● JI9A JI8A JI7A
 	//-------------------------------------------------------------------------
 	execute(JI9A) {
-		if (REG99 == 0xFF) REG86 = a - sizeof(Instruct);
+		if (REG111 == 0xFF) REG100 = a - sizeof(Instruct);
 	}
 	execute(JI8A) {
-		if (REG98 == 0xFF) REG86 = a - sizeof(Instruct);
+		if (REG110 == 0xFF) REG100 = a - sizeof(Instruct);
 	}
 	execute(JI7A) {
-		if (REG97 == 0xFF) REG86 = a - sizeof(Instruct);
+		if (REG109 == 0xFF) REG100 = a - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● JI9R JI8R JI7R
 	//-------------------------------------------------------------------------
 	execute(JI9R) {
-		if (REG99 == 0xFF) REG86 = REG(uint32_t, a) - sizeof(Instruct);
+		if (REG111 == 0xFF) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JI8R) {
-		if (REG98 == 0xFF) REG86 = REG(uint32_t, a) - sizeof(Instruct);
+		if (REG110 == 0xFF) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JI7R) {
-		if (REG97 == 0xFF) REG86 = REG(uint32_t, a) - sizeof(Instruct);
+		if (REG109 == 0xFF) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● CALA CALR
 	//-------------------------------------------------------------------------
 	execute(CALA) {
-		*memfetch<uint32_t>(REG90) = REG86;
-		REG90 += sizeof(uint32_t);
-		REG86 = a - sizeof(Instruct);
+		*memfetch<uint32_t>(REG104) = REG100;
+		REG104 += sizeof(uint32_t);
+		REG100 = a - sizeof(Instruct);
 	}
 	execute(CALR) {
-		*memfetch<uint32_t>(REG90) = REG86;
-		REG90 += sizeof(uint32_t);
-		REG86 = REG(uint32_t, a) - sizeof(Instruct);
+		*memfetch<uint32_t>(REG104) = REG100;
+		REG104 += sizeof(uint32_t);
+		REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● RETN
 	//-------------------------------------------------------------------------
 	execute(RETN) {
-		REG86 = *memfetch<uint32_t>(REG90);
-		REG90 -= sizeof(uint32_t);
+		REG100 = *memfetch<uint32_t>(REG104);
+		REG104 -= sizeof(uint32_t);
 	}
 	//-------------------------------------------------------------------------
 	// ● PUSH
 	//-------------------------------------------------------------------------
 	execute(PUSH) {
 		for (uint8_t i = a; i < a + b; i++) {
-			*memfetch<uint8_t>(REG90) = REG(uint8_t, i);
-			REG90 += sizeof(uint8_t);
+			*memfetch<uint8_t>(REG104) = REG(uint8_t, i);
+			REG104 += sizeof(uint8_t);
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -416,8 +416,8 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	execute(POP_) {
 		for (uint8_t i = a + b - 1; i > a; i++) {
-			REG(uint8_t, i) = *memfetch<uint8_t>(REG90);
-			REG90 -= sizeof(uint8_t);
+			REG(uint8_t, i) = *memfetch<uint8_t>(REG104);
+			REG104 -= sizeof(uint8_t);
 		}
 	}
 	// ╔════════════╗

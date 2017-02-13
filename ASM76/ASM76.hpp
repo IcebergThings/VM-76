@@ -42,15 +42,16 @@ namespace ASM76 {
 		uint8_t* local_memory;
 		size_t local_memory_size = 0x4000;
 		Instruct* instruct_memory;
+		static const size_t REGISTER_COUNT = 112;
 		uint8_t* reg;
 
 		// Common & special registers
 		#define REG(T, P) (*((T*) (reg + P)))
-		#define REG86 REG(uint32_t, 86)
-		#define REG90 REG(uint32_t, 90)
-		#define REG97 REG(uint8_t, 97)
-		#define REG98 REG(uint8_t, 98)
-		#define REG99 REG(uint8_t, 99)
+		#define REG100 REG(uint32_t, 100)
+		#define REG104 REG(uint32_t, 104)
+		#define REG109 REG(uint8_t, 109)
+		#define REG110 REG(uint8_t, 110)
+		#define REG111 REG(uint8_t, 111)
 
 	public:
 		template <class T> T* memfetch(uint32_t address) {
