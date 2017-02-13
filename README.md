@@ -17,13 +17,21 @@
 * 在每个msw.makefile旁放置windows_flags.txt和windows_libs.txt两个文件，内容分别为编译和链接的附加参数。
 * 在项目根目录下放置windows_path.bat指定%PATH%环境变量。
 
-这些是我电脑上的编译参数，更新于 2a63e7e。仅供参考，但保证能在我的电脑上编译通过。使用时需要根据自己的情况修改其中的路径，因为你肯定不会有个Y:盘的。
+这些是我电脑上的编译参数，更新于 426029b。仅供参考，但保证能在我的电脑上编译通过。使用时需要根据自己的情况修改其中的路径，因为你肯定不会有个Y:盘的。
 
 要进行自动编译，还需要MinGW中的mingw32-make工具。在项目根目录执行`mingw32-make run`就可以运行了。
 
 本项目设定的默认编译器是clang。如果你没有，可以去[下载](http://releases.llvm.org/download.html)；如果你想使用MinGW GCC，可以在用如下方式运行make：`mingw32-make run GCC=1`。但是，无论编译使用的是clang还是GCC，链接时总是会使用GCC。
 
 不支持使用Visual Studio中的NMAKE工具自动编译，因为它的语法与MinGW/GNU make不兼容。
+
+#### ASM76/build/windows_flags.txt
+```
+-isystem Y:\glm-0.9.7.5
+```
+
+#### ASM76/build/windows_libs.txt
+*(空)*
 
 #### VMDE/build/windows_flags.txt
 ```
