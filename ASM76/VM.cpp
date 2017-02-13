@@ -57,7 +57,8 @@ namespace ASM76 {
 			if OPC(LCMM) {
 				uint8_t* new_mem = new uint8_t[now->f];
 				memset(new_mem, 0, now->f);
-				memcpy(new_mem, local_memory, local_mem_size);
+				size_t copied_size = now->f < local_mem_size ? now->f : local_mem_size;
+				memcpy(new_mem, local_memory, copied_size);
 				free(local_memory);
 				local_mem_size = now->f;
 				local_memory = new_mem;
@@ -153,7 +154,7 @@ namespace ASM76 {
 			//  Logistics & Flow control
 			// ===========================
 			if (global_memory[0x400000] == 0xFF) {
-				
+
 			}
 
 			*REG86 += sizeof(Instruct);
@@ -169,7 +170,15 @@ namespace ASM76 {
 		}
 		printf("\n");
 	}
-	void VM::dump_memory() {}
+
+	void VM::dump_memory() {
+		printf("Local Memory: \n");
+		for (uint32_t i = 1; i < local_mem_size / 8; i++) {
+			printf("%08x ", *((uint32_t*)local_memory + i));
+			if (i % 8 == 0) printf("\n");
+		}
+		printf("\n");
+	}
 
 	char* VM::decompile(Instruct* prg) {
 		return NULL;

@@ -23,7 +23,7 @@ Instruct mem_test_prgm[] = {
 };
 
 Instruct basic_algebra_test_prgm[] = {
-	{LCMM,0x4000000,0},
+	{LCMM,0x100,0},
 	{DATI,0x1,1},
 	// $1 = $1 + $1
 	// 1, 2, 4, 8, 16, ...
