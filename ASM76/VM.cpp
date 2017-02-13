@@ -217,6 +217,36 @@ namespace ASM76 {
 				} else if OPC(JI7A) {
 					if (*REG97 == 0xFF)
 						*REG86 = now->f - sizeof(Instruct);
+				} else if OPC(JI9R) {
+					if (*REG99 == 0xFF)
+						*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+				} else if OPC(JI8R) {
+					if (*REG98 == 0xFF)
+						*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+				} else if OPC(JI7R) {
+					if (*REG97 == 0xFF)
+						*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+				} else if OPC(CALA) {
+					*memfetch<uint32_t>(*REG90) = *REG86;
+					*REG90 += sizeof(uint32_t);
+					*REG86 = now->f - sizeof(Instruct);
+				} else if OPC(CALR) {
+					*memfetch<uint32_t>(*REG90) = *REG86;
+					*REG90 += sizeof(uint32_t);
+					*REG86 = REG(uint32_t, now->f) - sizeof(Instruct);
+				} else if OPC(RET) {
+					*REG86 = *memfetch<uint32_t>(*REG90);
+					*REG90 -= sizeof(uint32_t);
+				} else if OPC(PUSH) {
+					for (uint8_t i = now->f; i < now->f + now->t; i++) {
+						*memfetch<uint8_t>(*REG90) = REG(uint8_t, i);
+						*REG90 += sizeof(uint8_t);
+					}
+				} else if OPC(POP) {
+					for (uint8_t i = now->f + now->t - 1; i > now->f; i++) {
+						REG(uint8_t, i) = *memfetch<uint8_t>(*REG90);
+						*REG90 -= sizeof(uint8_t);
+					}
 				}
 			}
 
@@ -232,6 +262,8 @@ namespace ASM76 {
 			if (i % 10 == 0) printf("\n");
 		}
 		printf("\n");
+		printf("Instruction Pointer: %08x\n", *REG86);
+		printf("Stack Pointer: %08x\n", *REG90);
 	}
 
 	void VM::dump_memory() {
