@@ -101,15 +101,15 @@ Conventions
 
 To simplify the description, we'll use some word macros.
 
-	- $A ⩴ the value in register $A
-	- [A] ⩴ the value in the memory address A
-	- [$A] ⩴ the value in the memory address specified by the value in register $A
-	- A ← B ⩴ put B into A
+- **$A** ⩴ the value in register $A
+- **[A]** ⩴ the value in the memory address A
+- **[$A]** ⩴ the value in the memory address specified by the value in register $A
+- **A ← B** ⩴ put B into A
 
 Instruction | Description
 ----------- | -----------
-DATx _data_, _$A_ | *$A* ← *data*
 [LCMM](#lcmm) _size in bytes_ | set local memory size
+DATx _data_, _$A_ | *$A* ← *data*
 [LDxA](#ldxa) _A_, _$B_ | *$B* ← [*A*]
 [LDxR](#ldxr) _$A_, _$B_ | *$B* ← [*$A*]
 SLxA _A_, _$B_ | [*A*] ← *$B*
@@ -190,18 +190,18 @@ POP_ _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
 
 You need to set memory *IO + 0x1* (0x400001, one byte) to 0xFF first in order to make it work.
 
-TODO
+*TODO*
 
 76-Vector
 ---------
 
 You need to set memory *IO + 0x2* (0x400002, one byte) to 0xFF first in order to make it work.
 
-TODO
+*TODO*
 
 BIOS Instructions
 -----------------
 
 You need to set memory *IO + 0xA* (0x40000A, one byte) to 0xFF first in order to make it work.
 
-TODO
+*TODO*
