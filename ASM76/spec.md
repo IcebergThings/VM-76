@@ -130,13 +130,16 @@ Then 8 bytes of data in 0x00FF0000 will be stored in $12.
 
 Instruction | Description
 ----------- | -----------
-[ADDx/MINx/MTPx/DIVx/MODx](#addx-minx-mtpx-divx-modx) _$A_, _$B_ | common arithmetic operations
+ADDx _$A_, _$B_ | *$A* ← *$A* + *$B*
+MINx _$A_, _$B_ | *$A* ← *$A* − *$B*
+MTPx _$A_, _$B_ | *$A* ← *$A* × *$B*
+[DIVx](#divxmodx) _$A_, _$B_ | *$A* ← ⌊*$A* ÷ *$B*⌋
+[MODx](#divxmodx) _$A_, _$B_ | *$A* ← *$A* mod *$B*
 [CMPx](#cmpx) _$A_, _$B_ | compare two long/int/byte arithmetically
 
-#### ADDx/MINx/MTPx/DIVx/MODx
-Do addition/subtraction/multiplication/division on *$A* and *$B* and always store the result in *$A*.
-
-Division throws the remainder away and modulo throws the quotient away.
+#### DIVx/MODx
+- The division throws the remainder away.
+- The modulo throws the quotient away.
 
 #### CMPx
 Compare *$A* to *$B*.
