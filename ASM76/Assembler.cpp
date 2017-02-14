@@ -34,8 +34,8 @@ namespace ASM76 {
 				get_opcode(opcode);
 				r[count].opcode = parse_opcode(opcode);
 			}
-			skip_whitespace(true);
 			read_parameters(&r[count]);
+			count++;
 		}
 		return r;
 	}
@@ -43,7 +43,7 @@ namespace ASM76 {
 	// ● 报错！
 	//-------------------------------------------------------------------------
 	void Assembler::error(const char* message) {
-		printf("error: %s\n", message);
+		printf("Error: %s\nAssembly:\n%s\n", message, prg);
 		abort();
 	}
 	//-------------------------------------------------------------------------
@@ -140,11 +140,15 @@ namespace ASM76 {
 			break;
 		// 1 parameter: direct number
 		case LCMM:
+			skip_whitespace(true);
+			break;
 		// 1 parameter: register
 		case NOTL: case NOTI: case NOTB:
+			skip_whitespace(true);
 			break;
 		// 2 parameters
 		case DATL: case DATI: case DATB:
+			skip_whitespace(true);
 			break;
 		}
 	}
