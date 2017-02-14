@@ -54,6 +54,14 @@ Instruct flow_control_test_prgm[] = {
 	{HALT, 0, 0},
 };
 
+const char* const asm_test =
+	"\t \t \t \t # Comments.\n \n\t\n"
+	"\tNOOP\n"
+	" DATB $1 2\n"
+	"DATI $2 0xAbCdEf00\n"
+	"DATI $6 1000\n"
+	"HALT\n";
+
 int main() {
 
 	printf("===== ASM 76 Test Program =====\n");
@@ -80,6 +88,11 @@ int main() {
 	v->execute();
 	v->dump_registers();
 	delete v;
+
+	printf("===== Assembler =====\n");
+	Assembler a(asm_test);
+	Instruct* i = a.assemble();
+	printf("%d\n", i[0].opcode);
 
 	printf("===== TEST END =====\n");
 

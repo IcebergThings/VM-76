@@ -41,14 +41,23 @@ namespace ASM76 {
 	private:
 		const char* prg;
 	public:
+		// 这是我写过的最复杂的类型声明。C++真是令人捉摸不透。
 		constexpr static const char* const SPACE = " \t\v";
 		Assembler(const char*);
 		Instruct* assemble();
+		void error(const char* message);
 		bool is_space(char c);
-		void skip_whitespace();
+		bool is_digit(char c);
+		int read_digit();
+		bool is_xdigit(char c);
+		int read_xdigit();
+		void skip_whitespace(bool required);
+		void skip_whole_line();
 		void skip_line();
-		bool get_opcode(char* buf);
+		void get_opcode(char* buf);
 		enum InstructionOpcode parse_opcode(const char* str);
+		void read_parameters(Instruct* i);
+		int read_register();
 	};
 	class Disassembler {
 	private:
