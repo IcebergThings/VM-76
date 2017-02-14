@@ -49,9 +49,7 @@ namespace ASM76 {
 		#define REG(T, P) (*((T*) (reg + P)))
 		#define REG100 REG(uint32_t, 100)
 		#define REG104 REG(uint32_t, 104)
-		#define REG109 REG(uint8_t, 109)
-		#define REG110 REG(uint8_t, 110)
-		#define REG111 REG(uint8_t, 111)
+		#define REGCMP REG(uint8_t, 109)
 
 	public:
 		template <class T> T* memfetch(uint32_t address) {

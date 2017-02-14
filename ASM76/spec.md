@@ -41,9 +41,9 @@ Definitions and conventions in this specification
 		-------- | ------- | -------------
 		$100..$103 | Instruction Pointer | 0x01000000
 		$104..$107 | Stack Pointer | 0x01003000
-		$109 | Flag A < B | 0
-		$110 | Flag A = B | 0
-		$111 | Flag A > B | 0
+		$109 == 0x0 | Flag A < B | 0
+		$109 == 0x1 | Flag A = B | 0
+		$109 == 0x2 | Flag A > B | 0
 
 - 32-bit memory address
 

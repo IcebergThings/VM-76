@@ -332,31 +332,28 @@ namespace ASM76 {
 	// ● CMPL CMPI CMPB
 	//-------------------------------------------------------------------------
 	execute(CMPL) {
-		if (REG(uint64_t, a) > REG(uint64_t, b)) {
-			REG111 = 0xFF; REG110 = 0x0; REG109 = 0x0;
-		} else if (REG(uint64_t, a) == REG(uint64_t, b)) {
-			REG111 = 0x0; REG110 = 0xFF; REG109 = 0x0;
-		} else {
-			REG111 = 0x0; REG110 = 0x0; REG109 = 0xFF;
-		}
+		if (REG(uint64_t, a) > REG(uint64_t, b))
+			REGCMP = 0x2;
+		else if (REG(uint64_t, a) == REG(uint64_t, b))
+			REGCMP = 0x1;
+		else
+			REGCMP = 0x0;
 	}
 	execute(CMPI) {
-		if (REG(uint32_t, a) > REG(uint32_t, b)) {
-			REG111 = 0xFF; REG110 = 0x0; REG109 = 0x0;
-		} else if (REG(uint32_t, a) == REG(uint32_t, b)) {
-			REG111 = 0x0; REG110 = 0xFF; REG109 = 0x0;
-		} else {
-			REG111 = 0x0; REG110 = 0x0; REG109 = 0xFF;
-		}
+		if (REG(uint32_t, a) > REG(uint32_t, b))
+			REGCMP = 0x2;
+		else if (REG(uint32_t, a) == REG(uint32_t, b))
+			REGCMP = 0x1;
+		else
+			REGCMP = 0x0;
 	}
 	execute(CMPB) {
-		if (REG(uint8_t, a) > REG(uint8_t, b)) {
-			REG111 = 0xFF; REG110 = 0x0; REG109 = 0x0;
-		} else if (REG(uint8_t, a) == REG(uint8_t, b)) {
-			REG111 = 0x0; REG110 = 0xFF; REG109 = 0x0;
-		} else {
-			REG111 = 0x0; REG110 = 0x0; REG109 = 0xFF;
-		}
+		if (REG(uint8_t, a) > REG(uint8_t, b))
+			REGCMP = 0x2;
+		else if (REG(uint8_t, a) == REG(uint8_t, b))
+			REGCMP = 0x1;
+		else
+			REGCMP = 0x0;
 	}
 	//-------------------------------------------------------------------------
 	// ● JMPR JMPA
@@ -371,25 +368,25 @@ namespace ASM76 {
 	// ● JI9A JI8A JI7A
 	//-------------------------------------------------------------------------
 	execute(JI9A) {
-		if (REG111 == 0xFF) REG100 = a - sizeof(Instruct);
+		if (REGCMP == 0x2) REG100 = a - sizeof(Instruct);
 	}
 	execute(JI8A) {
-		if (REG110 == 0xFF) REG100 = a - sizeof(Instruct);
+		if (REGCMP == 0x1) REG100 = a - sizeof(Instruct);
 	}
 	execute(JI7A) {
-		if (REG109 == 0xFF) REG100 = a - sizeof(Instruct);
+		if (REGCMP == 0x0) REG100 = a - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● JI9R JI8R JI7R
 	//-------------------------------------------------------------------------
 	execute(JI9R) {
-		if (REG111 == 0xFF) REG100 = REG(uint32_t, a) - sizeof(Instruct);
+		if (REGCMP == 0x2) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JI8R) {
-		if (REG110 == 0xFF) REG100 = REG(uint32_t, a) - sizeof(Instruct);
+		if (REGCMP == 0x1) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	execute(JI7R) {
-		if (REG109 == 0xFF) REG100 = REG(uint32_t, a) - sizeof(Instruct);
+		if (REGCMP == 0x0) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
 	// ● CALA CALR
