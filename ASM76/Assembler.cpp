@@ -35,7 +35,6 @@ namespace ASM76 {
 			}
 			char opcode[13];
 			copy_opcode(opcode);
-			printf("'%s'\n", opcode);
 			Instruct* current_instruct = &r.instruct[r.size / sizeof(Instruct)];
 			current_instruct->opcode = parse_opcode(opcode);
 			read_parameters(current_instruct);
@@ -143,7 +142,14 @@ namespace ASM76 {
 	uint32_t Assembler::read_immediate_u32() {
 		skip(' ');
 		if (!is_digit(*prg)) error("expected digit");
-		long long n = atoll(prg);
+		long long n;
+		if (*prg == '0' && prg[1] == 'x') {
+			char* end;
+			n = strtoll(prg + 2, &end, 16);
+			prg = (const char*) end;
+		} else {
+			n = atoll(prg);
+		}
 		if (n > UINT32_MAX) error("immediate number too large");
 		if (n < 0) error("immediate number can't be negative");
 		while (is_digit(*prg)) prg++;
