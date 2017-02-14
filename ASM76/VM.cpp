@@ -164,7 +164,7 @@ namespace ASM76 {
 	// ● DATL DATI DATB
 	//-------------------------------------------------------------------------
 	execute(DATL) {
-		REG(uint64_t, b) = (uint64_t) a;
+		REG(uint64_t, b) = (uint64_t) a << 32 | b;
 	}
 	execute(DATI) {
 		REG(uint32_t, b) = (uint32_t) a;
