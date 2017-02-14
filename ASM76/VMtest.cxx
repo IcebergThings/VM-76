@@ -77,7 +77,7 @@ Instruct speed_test_prgm[] = {
 	{HALT, 0, 0},
 };
 
-#include "time.h"
+#include <ctime>
 
 int main() {
 
@@ -130,10 +130,10 @@ int main() {
 		VM v({speed_test_prgm, sizeof(flow_control_test_prgm)});
 
 		timespec t1, t2;
-		clock_gettime(CLOCK_MONOTONIC, &t1);
+		timespec_get(&t1, TIME_UTC);
 		v.execute(false);
-		clock_gettime(CLOCK_MONOTONIC, &t2);
-		uint64_t delayTus = ((t2.tv_sec - t1.tv_sec) * 10^9 + t2.tv_nsec - t1.tv_nsec) / 1000.0;
+		timespec_get(&t2, TIME_UTC);
+		uint64_t delayTus = ((t2.tv_sec - t1.tv_sec) * 1000000000 + t2.tv_nsec - t1.tv_nsec) / 1000.0;
 		v.dump_registers();
 		printf("Elapsed time: %ldms\nMIPS: %f\n",
 			delayTus / 1000,
