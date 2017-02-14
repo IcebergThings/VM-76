@@ -66,10 +66,10 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 解释
 	//-------------------------------------------------------------------------
-	void VM::execute() {
+	void VM::execute(bool debug_process) {
 		Instruct* now;
 		while ((now = memfetch<Instruct>(REG100))->opcode != HALT) {
-			printf("%08x: %04x, %x, %x\n", REG100, now->opcode, now->a, now->b);
+			if (debug_process) printf("%08x: %04x, %x, %x\n", REG100, now->opcode, now->a, now->b);
 			VM::execute_instruction(now);
 			REG100 += sizeof(Instruct);
 		}
