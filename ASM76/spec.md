@@ -42,7 +42,6 @@ Definitions and conventions in this specification
 		$110 | Flag A = B | 0
 		$109 | Flag A < B | 0
 
-	- $104 has a default value of 0x1003000 (Local memory + 12KB).
 - 32-bit memory address
 
 	Address range | Size | Usage
@@ -100,17 +99,24 @@ Conventions
 
 ### Memory and registers
 
+To simplify the description, we'll use some word macros.
+
+	- $A ⩴ the value in register $A
+	- [A] ⩴ the value in the memory address A
+	- [$A] ⩴ the value in the memory address specified by the value in register $A
+	- A ← B ⩴ put B into A
+
 Instruction | Description
 ----------- | -----------
-DATx _$A_ | put long/int/byte value in *$A*
+DATx _data_, _$A_ | *$A* ← *data*
 [LCMM](#lcmm) _size in bytes_ | set local memory size
-[LDxA](#ldxa) _local memory address_, _register_ | load local long/int/byte from an address
-[LDxR](#ldxr) _address register_, _register_ | load local long/int/byte from an address stored in a register to a register
-SLxA _local memory address_, _register_ | store local long/int/byte from a register to an address
-SLxR _address register_, _register_ | store local long/int/byte from an address stored in a register to an address
-MOVx _address A_, _address B_ | copy a long/int/byte from _address A_ to _address B_
-MVRx _$A_, _$B_ | copy a long/int/byte from _register A_ to _register B_
-MVPx _$A_, _$B_ | copy a long/int/byte from the address stored in _register A_ to the address stored in _register B_
+[LDxA](#ldxa) _A_, _$B_ | *$B* ← [*A*]
+[LDxR](#ldxr) _$A_, _$B_ | *$B* ← [*$A*]
+SLxA _A_, _$B_ | [*A*] ← *$B*
+SLxR _$A_, _$B_ | [*$A*] ← *$B*
+MOVx _A_, _B_ | [*B*] ← [*A*]
+MVRx _$A_, _$B_ | *$B* ← *$A*
+MVPx _$A_, _$B_ | [*$B*] ← [*$A*]
 
 #### LCMM
 Specifiy the local memory size. It does not has a maximum limit in theory and is 16KB by default. As the command runs, the data in the memory will be cleared and initialized with all zero. Then it will copy previous data into the memory. If the previous data is longer, it will be truncated.
@@ -159,6 +165,9 @@ ANDx/OR_x/XORx _$A_, _$B_ | logical AND/OR/XOR for long/int/byte
 
 #### NOTx
 Means `$A = !$A;` in C.
+
+- If [*$A*] = 0, then *$A* becomes 1.
+- If [*$A*] ≠ 0, then *$A* becomes 0.
 
 ### Flow control
 
