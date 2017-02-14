@@ -55,12 +55,11 @@ Instruct flow_control_test_prgm[] = {
 };
 
 const char* const asm_test =
-	//"\t \t \t \t # Comments.\n \n\t\n"
-	//"\tNOOP\n"
-	//" "
+	"# Comments.\n"
+	//"NOOP\n"
 	//"DATI $2 0xAbCdEf00\n"
 	//"DATI $6 1000\n"
-	"NOOP\nHALT\nDATB $1 2\n";
+	"NOOP\nHALT\nJMPA 3\nDATB 1 $2\n";
 
 int main() {
 

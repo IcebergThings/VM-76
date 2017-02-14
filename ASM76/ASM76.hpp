@@ -63,7 +63,9 @@ namespace ASM76 {
 		void copy_opcode(char* buf);
 		enum InstructionOpcode parse_opcode(const char* str);
 		void read_parameters(Instruct* i);
-		int read_register();
+		uint32_t read_immediate_u32();
+		uint32_t read_address();
+		uint32_t read_register();
 	};
 	class Disassembler {
 	private:

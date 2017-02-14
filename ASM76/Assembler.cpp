@@ -19,8 +19,8 @@ namespace ASM76 {
 	Program Assembler::assemble() {
 		Program r;
 		r.size = 0;
-		size_t current_size = 10 * sizeof(Instruct);
-		r.instruct = (Instruct*) malloc(current_size);
+		size_t buf_size = 10 * sizeof(Instruct);
+		r.instruct = (Instruct*) malloc(buf_size);
 		while (prg && *prg) switch (*prg) {
 		case '#':
 			prg = strchr(prg, '\n') + 1;
@@ -29,16 +29,18 @@ namespace ASM76 {
 			prg++;
 			break;
 		default: {
-			current_size += sizeof(Instruct);
-			if (current_size > r.size) {
-				r.size += 30 * sizeof(Instruct);
+			r.size += sizeof(Instruct);
+			if (r.size > buf_size) {
+				buf_size += 30 * sizeof(Instruct);
 				r.instruct = (Instruct*) realloc(r.instruct, r.size);
 			}
 			char opcode[13];
 			copy_opcode(opcode);
-			r.instruct[current_size / sizeof(Instruct)].opcode = parse_opcode(opcode);
-			read_parameters(&r.instruct[current_size / sizeof(Instruct)]);
-			current_size += sizeof(Instruct);
+			printf("'%s'\n", opcode);
+			Instruct* current_instruct = &r.instruct[r.size / sizeof(Instruct)];
+			current_instruct->opcode = parse_opcode(opcode);
+			read_parameters(current_instruct);
+			r.size += sizeof(Instruct);
 		}
 		}
 		return r;
@@ -107,7 +109,7 @@ namespace ASM76 {
 			if (prg[i] == ' ' || prg[i] == '\n') {
 				memcpy(buf, prg, i);
 				buf[i] = 0;
-				prg += i + 1;
+				prg += i;
 				return;
 			}
 		}
@@ -126,35 +128,46 @@ namespace ASM76 {
 	// ● 读取参数
 	//-------------------------------------------------------------------------
 	void Assembler::read_parameters(Instruct* i) {
-		i->a = 0;
-		i->b = 0;
 		switch (i->opcode) {
-		// No parameters
-		case NOOP:
-		case HALT:
-		case RETN:
-			break;
-		// 1 parameter: direct number
-		case LCMM:
-			break;
-		// 1 parameter: register
-		case NOTL: case NOTI: case NOTB:
-			break;
-		// 2 parameters
-		case DATL: case DATI: case DATB:
-			break;
+		#define TNUL 0
+		#define TIMM read_immediate_u32()
+		#define TADD read_address()
+		#define TREG read_register()
+		#define I(x, ta, tb) case x: i->a = ta; i->b = tb; break;
+		#include "instructions.hpp"
 		}
+		skip('\n');
+	}
+	//-------------------------------------------------------------------------
+	// ● 读取立即数参数
+	//-------------------------------------------------------------------------
+	uint32_t Assembler::read_immediate_u32() {
+		skip(' ');
+		if (!is_digit(*prg)) error("expected digit");
+		long long n = atoll(prg);
+		if (n > UINT32_MAX) error("immediate number too large");
+		if (n < 0) error("immediate number can't be negative");
+		while (is_digit(*prg)) prg++;
+		return n;
+	}
+	//-------------------------------------------------------------------------
+	// ● 读取地址参数
+	//-------------------------------------------------------------------------
+	uint32_t Assembler::read_address() {
+		return read_immediate_u32();
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取寄存器参数
 	//   返回寄存器编号。
 	//-------------------------------------------------------------------------
-	int Assembler::read_register() {
+	uint32_t Assembler::read_register() {
+		skip(' ');
 		skip('$');
 		if (!is_digit(*prg)) error("expected digit");
 		int reg = atoi(prg);
-		if (reg < 0) error("negative register no.");
+		if (reg < 0) error("register no. can't be negative");
 		if ((size_t) reg > VM::REGISTER_COUNT) error("register no. too large");
+		while (is_digit(*prg)) prg++;
 		return reg;
 	}
 }
