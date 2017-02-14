@@ -25,6 +25,10 @@ namespace ASM76 {
 		uint32_t a;
 		uint32_t b;
 	};
+	struct Program {
+		Instruct* instruct;
+		size_t size; // in byte
+	};
 	//-------------------------------------------------------------------------
 	// ● 全局变量
 	//-------------------------------------------------------------------------
@@ -44,7 +48,7 @@ namespace ASM76 {
 		// 这是我写过的最复杂的类型声明。C++真是令人捉摸不透。
 		constexpr static const char* const SPACE = " \t\v";
 		Assembler(const char*);
-		Instruct* assemble();
+		Program assemble();
 		void error(const char* message);
 		bool is_space(char c);
 		bool is_digit(char c);
@@ -61,10 +65,11 @@ namespace ASM76 {
 	};
 	class Disassembler {
 	private:
-		const Instruct* prg;
+		Program prg;
 	public:
-		Disassembler(const Instruct* prg);
+		Disassembler(const Program);
 		char* disassemble();
+		const char* get_opcode_name(enum InstructionOpcode opcode);
 	};
 	//-------------------------------------------------------------------------
 	// ● Virtual Machine类
@@ -92,7 +97,7 @@ namespace ASM76 {
 				(T*) (local_memory + address - 0x1000000);
 		}
 
-		VM(Instruct* program, size_t prg_size);
+		VM(Program program);
 		~VM();
 		void dump_registers();
 		void dump_memory();

@@ -10,13 +10,13 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
-	VM::VM(Instruct* program, size_t prg_size) {
+	VM::VM(Program program) {
 		// 16K local memory in default
 		// use malloc series for realloc
 		local_memory = (uint8_t*) calloc(sizeof(uint8_t), local_memory_size);
 		instruct_memory = (Instruct*) local_memory;
-		printf("init memory with program sized %zu\n", prg_size);
-		memcpy(instruct_memory, program, prg_size);
+		printf("init memory with program sized %zu\n", program.size);
+		memcpy(instruct_memory, program.instruct, program.size);
 
 		// 100+ registers
 		reg = new uint8_t[REGISTER_COUNT];

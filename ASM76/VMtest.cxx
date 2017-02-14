@@ -55,12 +55,12 @@ Instruct flow_control_test_prgm[] = {
 };
 
 const char* const asm_test =
-	"\t \t \t \t # Comments.\n \n\t\n"
-	"\tNOOP\n"
+	//"\t \t \t \t # Comments.\n \n\t\n"
+	//"\tNOOP\n"
 	//" DATB $1 2\n"
 	//"DATI $2 0xAbCdEf00\n"
 	//"DATI $6 1000\n"
-	"HALT\n";
+	"NOOP\nHALT\n";
 
 int main() {
 
@@ -68,31 +68,45 @@ int main() {
 
 	init();
 
-	printf("===== Memory =====\n");
-	VM* v = new VM(mem_test_prgm, sizeof(mem_test_prgm));
+	{
+		printf("===== Memory =====\n");
+		VM v({mem_test_prgm, sizeof(mem_test_prgm)});
+		v.execute();
+		v.dump_registers();
+	}
 
-	v->execute();
-	v->dump_registers();
-	delete v;
+	{
+		printf("===== Basic Algebra =====\n");
+		VM v({basic_algebra_test_prgm, sizeof(basic_algebra_test_prgm)});
+		v.execute();
+		v.dump_registers();
+	}
 
-	printf("===== Basic Algebra =====\n");
-	v = new VM(basic_algebra_test_prgm, sizeof(basic_algebra_test_prgm));
+	{
+		printf("===== Flow Control & Logistics =====\n");
+		VM v({flow_control_test_prgm, sizeof(flow_control_test_prgm)});
+		v.execute();
+		v.dump_registers();
+	}
 
-	v->execute();
-	v->dump_registers();
-	delete v;
+	{
+		printf("===== Disassembler =====\n");
+		Disassembler d({flow_control_test_prgm, sizeof(flow_control_test_prgm)});
+		char* s = d.disassemble();
+		puts(s);
+		free(s);
+	}
 
-	printf("===== Flow Control & Logistics =====\n");
-	v = new VM(flow_control_test_prgm, sizeof(flow_control_test_prgm));
-
-	v->execute();
-	v->dump_registers();
-	delete v;
-
-	printf("===== Assembler =====\n");
-	Assembler a(asm_test);
-	Instruct* i = a.assemble();
-	printf("%d\n", i[0].opcode);
+	{
+		printf("===== Assembler =====\n");
+		Assembler a(asm_test);
+		Program p = a.assemble();
+		Disassembler d(p);
+		char* s = d.disassemble();
+		puts(s);
+		free(p.instruct);
+		free(s);
+	}
 
 	printf("===== TEST END =====\n");
 

@@ -16,9 +16,11 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 汇编
 	//-------------------------------------------------------------------------
-	Instruct* Assembler::assemble() {
-		Instruct* r = (Instruct*) malloc(sizeof(Instruct) * 10);
-		size_t count = 0;
+	Program Assembler::assemble() {
+		Program r;
+		r.size = 0;
+		size_t current_size = 10 * sizeof(Instruct);
+		r.instruct = (Instruct*) malloc(current_size);
 		while (prg && *prg) {
 			skip_whitespace(false);
 			if (*prg == '#') {
@@ -29,13 +31,16 @@ namespace ASM76 {
 				prg++;
 				continue;
 			}
-			{
-				char opcode[13];
-				get_opcode(opcode);
-				r[count].opcode = parse_opcode(opcode);
+			current_size += sizeof(Instruct);
+			if (current_size > r.size) {
+				r.size += 30 * sizeof(Instruct);
+				r.instruct = (Instruct*) realloc(r.instruct, r.size);
 			}
-			read_parameters(&r[count]);
-			count++;
+			char opcode[13];
+			get_opcode(opcode);
+			r.instruct[current_size / sizeof(Instruct)].opcode = parse_opcode(opcode);
+			read_parameters(&r.instruct[current_size / sizeof(Instruct)]);
+			current_size += sizeof(Instruct);
 		}
 		return r;
 	}
