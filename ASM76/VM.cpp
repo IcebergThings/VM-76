@@ -40,10 +40,11 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	void VM::dump_registers() {
 		puts("Registers:");
-		for (int i = 1; i < 100; i++) {
-			printf("%02X%c",
+		for (size_t i = 0; i < REGISTER_COUNT; i++) {
+			printf("[%03zu] = %02X,%c",
+				i,
 				reg[i],
-				i % 10 == 0 ? '\n' : ' '
+				i % 10 == 9 ? '\n' : ' '
 			);
 		}
 		printf("\n");
