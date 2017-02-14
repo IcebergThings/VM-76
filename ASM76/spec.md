@@ -26,26 +26,33 @@ Definitions and conventions in this specification
 		- Running the virtual machine on big-endian machines will result unspecifiedly.
 	- There are usually multiple instances. One CPU is usually assigned exclusively to one thread, one sprite, etc.
 	- Since it isn't used in real world, it is *quite different* from the CPUs from common ones, such as Intel x86 series CPUs.
-- Instruction sets
-	- **[76-Base](#76-base)** is capable of manipulating registers, memory and 8-, 32- and 64-bit integers.
-	- **[76-Float](#76-float)** is able to deal with floating point values.
-	- **[76-Vector](#76-vector)** can do vector mathematics.
-	- **[BIOS Instructions](#bios-instructions)** provides a BIOS interface. Just joking.
-- Registers
-	- There are 112 registers in all, namely $0, $1, $2, …, $111.
-	- Every register holds a byte.
-	- The method of manipulation is the same among all registers.
-	- Register $100 and above have special meanings.
 
-		Register | Meaning | Default value
-		-------- | ------- | -------------
-		$100..$103 | Instruction Pointer | 0x01000000
-		$104..$107 | Stack Pointer | 0x01003000
-		$109 == 0x0 | Flag A < B | 0
-		$109 == 0x1 | Flag A = B | 0
-		$109 == 0x2 | Flag A > B | 0
+### Instruction sets
+- **[76-Base](#76-base)** is capable of manipulating registers, memory and 8-, 32- and 64-bit integers.
+- **[76-Float](#76-float)** is able to deal with floating point values.
+- **[76-Vector](#76-vector)** can do vector mathematics.
+- **[BIOS Instructions](#bios-instructions)** provides a BIOS interface. Just joking.
 
-- 32-bit memory address
+### Registers
+- There are 112 registers in all, namely $0, $1, $2, …, $111.
+- Every register holds a byte.
+- The method of manipulation is the same among all registers.
+- Register $100 and above have special purposes, though you can modify them as if they are ordinary registers.
+
+	Register | Purpose | Default value
+	-------- | ------- | -------------
+	$100..$103 | Instruction Pointer | 0x01000000
+	$104..$107 | Stack Pointer | 0x01003000
+	[$109](#109) | A ⋚ B Flag | 0
+
+#### $109
+Value | Meaning
+----- | -------
+0 | A < B
+1 | A = B
+2 | A > B
+
+### 32-bit memory address
 
 	Address range | Size | Usage
 	------------- | ---- | -----
