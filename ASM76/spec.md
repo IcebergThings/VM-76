@@ -23,24 +23,27 @@ Definitions and conventions in this specification
 - **VM/76 CPU** is the virtual CPU.
 	- It is little-endian.
 		- It can only be emulated on native little-endian machines at present.
+		- Running the virtual machine on big-endian machines will result unspecifiedly.
 	- There are usually multiple instances. One CPU is usually assigned exclusively to one thread, one sprite, etc.
+	- Since it isn't used in real world, it is *quite different* from the CPUs from common ones, such as Intel x86 series CPUs.
 - Instruction sets
 	- **[76-Base](#76-base)** is capable of manipulating registers, memory and 8-, 32- and 64-bit integers.
 	- **[76-Float](#76-float)** is able to deal with floating point values.
 	- **[76-Vector](#76-vector)** can do vector mathematics.
 	- **[BIOS Instructions](#bios-instructions)** provides a BIOS interface. Just joking.
 - Registers
-	- There are 112 registers, namely $0, $1, $2, …, $111.
+	- There are 112 registers in all, namely $0, $1, $2, …, $111.
 	- Every register holds a byte.
-	- There are special registers which have special meanings.
+	- The method of manipulation is the same among all registers.
+	- Register $100 and above have special meanings.
 
 		Register | Meaning | Default value
 		-------- | ------- | -------------
-		$100..$103 | Instruction pointer (program counter) | 0x01000000
-		$104..$107 | Stack bottom pointer | 0x01003000
-		$111 | Flag A > B | 0
-		$110 | Flag A = B | 0
+		$100..$103 | Instruction Pointer | 0x01000000
+		$104..$107 | Stack Pointer | 0x01003000
 		$109 | Flag A < B | 0
+		$110 | Flag A = B | 0
+		$111 | Flag A > B | 0
 
 - 32-bit memory address
 
@@ -83,14 +86,18 @@ Conventions
 -----------
 
 - The instruction mnemonic must be capital.
-- Postfixes in mnemonics
-	- ‘B’, ‘I’ and ‘L’ stands for byte, int and long respectively.
+- Here's a list of common postfixes in mnemonics.
+	- ‘B’, ‘I’ and ‘L’ stands for byte, int and long, respectively.
 		- For simplicity, they may be replaced by ‘x’ in this reference.
+		- E.g. MOV**B** MOV**I** MOV**L**
 	- ‘R’ means register and ‘A’ means address.
+		- E.g. JMP**R** JMP**A**
 	- ‘_’ (underline) is used as a blank filler in mnemonics.
+		- E.g. OR**_**L POP**_**
 - Since a register can only hold a byte, when doing calculations more than a byte, it will start from the specified register and use the following consecutive registers.
 	- For example, `MOVL $0, $10` makes $0 ~ $8 all moved to $10 ~ $18.
-- Italic font denotes a parameter.
+- Italic font (*A*) denotes a parameter.
+- Italic font prepended with a dollar sign (*$A*) denotes a register parameter.
 
 76-Base
 -------
@@ -188,20 +195,34 @@ POP_ _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
 76-Float
 --------
 
+76-Float provides instructions for processing floating point values.
+
 You need to set memory *IO + 0x1* (0x400001, one byte) to 0xFF first in order to make it work.
 
-*TODO*
+### Basic floating point arithmetic
+
+Instruction | Description
+----------- | -----------
 
 76-Vector
 ---------
 
+76-Vector provides instructions for calculating vectors, just as in the OpenGL shader language.
+
 You need to set memory *IO + 0x2* (0x400002, one byte) to 0xFF first in order to make it work.
 
-*TODO*
+
+### Basic vector arithmetic
+
+Instruction | Description
+----------- | -----------
 
 BIOS Instructions
 -----------------
 
+**BIOS** is an acronym for Basic Input/Output System, of course.
+
 You need to set memory *IO + 0xA* (0x40000A, one byte) to 0xFF first in order to make it work.
 
-*TODO*
+Instruction | Description
+----------- | -----------
