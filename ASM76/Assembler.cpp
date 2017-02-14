@@ -125,9 +125,8 @@ namespace ASM76 {
 	// ● opcode: char[] → enum InstructionOpcode
 	//-------------------------------------------------------------------------
 	enum InstructionOpcode Assembler::parse_opcode(const char* str) {
-		#define I(x) if (strcmp(str, #x) == 0) return x;
-			#include "instructions.hpp"
-		#undef I
+		#define I(x, ta, tb) if (strcmp(str, #x) == 0) return x;
+		#include "instructions.hpp"
 		error("unidentified instruction");
 		return NOOP;
 	}

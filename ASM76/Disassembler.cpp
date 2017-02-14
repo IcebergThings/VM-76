@@ -28,18 +28,12 @@ namespace ASM76 {
 			uint32_t a = prg.instruct[i].a;
 			uint32_t b = prg.instruct[i].b;
 			switch (opcode) {
-			case NOOP: case HALT: case RETN:
-				break;
-			case JMPA: case JI7A: case JI8A: case JI9A: case CALA:
-				append_address(line, a);
-				break;
-			case JMPR: case JI7R: case JI8R: case JI9R: case CALR:
-				append_register(line, a);
-				break;
-			case PUSH: case POP_:
-				append_register(line, a);
-				append_number(line, b);
-				break;
+			#define TNUL (void) (
+			#define TIMM append_number(line,
+			#define TADD append_address(line,
+			#define TREG append_register(line,
+			#define I(x, ta, tb) case x: ta a); tb b); break;
+			#include "instructions.hpp"
 			}
 			strcat(line, "\n");
 			size_t len = strlen(line);
@@ -57,9 +51,8 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	const char* Disassembler::get_opcode_name(enum InstructionOpcode opcode) {
 		switch (opcode) {
-		#define I(x) case x: return #x;
-			#include "instructions.hpp"
-		#undef I
+		#define I(x, a, b) case x: return #x;
+		#include "instructions.hpp"
 		default:
 			return "????";
 		}

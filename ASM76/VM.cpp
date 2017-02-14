@@ -80,9 +80,8 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	void VM::execute_instruction(Instruct* i) {
 		switch (i->opcode) {
-		#define I(x) case x: execute_##x(i->a, i->b); break;
-			#include "instructions.hpp"
-		#undef I
+		#define I(x, _a, _b) case x: execute_##x(i->a, i->b); break;
+		#include "instructions.hpp"
 		default:
 			printf("Unknown opcode %d (0x%x)\n", i->opcode, i->opcode);
 		}

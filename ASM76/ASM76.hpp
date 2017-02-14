@@ -16,9 +16,14 @@ namespace ASM76 {
 	// ● 指令结构的定义
 	//-------------------------------------------------------------------------
 	enum InstructionOpcode {
-		#define I(x) x,
-			#include "instructions.hpp"
-		#undef I
+		#define I(x, a, b) x,
+		#include "instructions.hpp"
+	};
+	enum InstructionOperandType {
+		NONE,
+		IMMEDIATE,
+		ADDRESS,
+		REGISTER,
 	};
 	struct Instruct {
 		uint16_t opcode;
@@ -107,9 +112,8 @@ namespace ASM76 {
 
 		void execute();
 		void execute_instruction(Instruct*);
-		#define I(x) void execute_##x(uint32_t a, uint32_t b);
-			#include "instructions.hpp"
-		#undef I
+		#define I(x, ta, tb) void execute_##x(uint32_t a, uint32_t b);
+		#include "instructions.hpp"
 	};
 }
 

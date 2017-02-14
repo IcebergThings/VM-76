@@ -1,45 +1,53 @@
 //=============================================================================
 // ■ instructions.hpp
 //-----------------------------------------------------------------------------
-//   独立的指令列表。通常在包含时会对宏I(x)进行处理。
+//   指令注册表。通常在包含时会对宏I(x, ta, tb)进行处理。
 //=============================================================================
 
-I(NOOP) // No Operation is always NULL
+// I(opcode, operand 1 type, operand 2 type) - Instruction
+
+I(NOOP, TNUL, TNUL) // No Operation is always NULL
 
 // 76-Base
-I(LCMM)
-I(LDLA) I(LDIA) I(LDBA)
-I(LDLR) I(LDIR) I(LDBR)
-I(SLLA) I(SLIA) I(SLBA)
-I(SLLR) I(SLIR) I(SLBR)
-I(DATL) I(DATI) I(DATB)
-I(MOVL) I(MOVI) I(MOVB)
-I(MVPL) I(MVPI) I(MVPB)
-I(MVRL) I(MVRI) I(MVRB)
-I(ADDL) I(ADDI) I(ADDB)
-I(MINL) I(MINI) I(MINB)
-I(MTPL) I(MTPI) I(MTPB)
-I(DIVL) I(DIVI) I(DIVB)
-I(MODL) I(MODI) I(MODB)
-I(HALT)
+I(LCMM, TIMM, TNUL)
+I(LDLA, TADD, TREG) I(LDIA, TADD, TREG) I(LDBA, TADD, TREG)
+I(LDLR, TREG, TREG) I(LDIR, TREG, TREG) I(LDBR, TREG, TREG)
+I(SLLA, TADD, TREG) I(SLIA, TADD, TREG) I(SLBA, TADD, TREG)
+I(SLLR, TREG, TREG) I(SLIR, TREG, TREG) I(SLBR, TREG, TREG)
+I(DATL, TIMM, TREG) I(DATI, TIMM, TREG) I(DATB, TIMM, TREG)
+I(MOVL, TADD, TADD) I(MOVI, TADD, TADD) I(MOVB, TADD, TADD)
+I(MVRL, TREG, TREG) I(MVRI, TREG, TREG) I(MVRB, TREG, TREG)
+I(MVPL, TREG, TREG) I(MVPI, TREG, TREG) I(MVPB, TREG, TREG)
+I(ADDL, TREG, TREG) I(ADDI, TREG, TREG) I(ADDB, TREG, TREG)
+I(MINL, TREG, TREG) I(MINI, TREG, TREG) I(MINB, TREG, TREG)
+I(MTPL, TREG, TREG) I(MTPI, TREG, TREG) I(MTPB, TREG, TREG)
+I(DIVL, TREG, TREG) I(DIVI, TREG, TREG) I(DIVB, TREG, TREG)
+I(MODL, TREG, TREG) I(MODI, TREG, TREG) I(MODB, TREG, TREG)
+I(HALT, TNUL, TNUL)
 
 // Logistics & Flow control
-I(ANDL) I(ANDI) I(ANDB)
-I(OR_L) I(OR_I) I(OR_B)
-I(NOTL) I(NOTI) I(NOTB)
-I(XORL) I(XORI) I(XORB)
-I(CMPL) I(CMPI) I(CMPB)
-I(JMPR)
-I(JMPA)
-I(JI9A) I(JI8A) I(JI7A)
-I(JI9R) I(JI8R) I(JI7R)
-I(CALR) I(CALA)
-I(RETN)
-I(PUSH)
-I(POP_)
+I(ANDL, TREG, TREG) I(ANDI, TREG, TREG) I(ANDB, TREG, TREG)
+I(OR_L, TREG, TREG) I(OR_I, TREG, TREG) I(OR_B, TREG, TREG)
+I(NOTL, TREG, TREG) I(NOTI, TREG, TREG) I(NOTB, TREG, TREG)
+I(XORL, TREG, TREG) I(XORI, TREG, TREG) I(XORB, TREG, TREG)
+I(CMPL, TREG, TREG) I(CMPI, TREG, TREG) I(CMPB, TREG, TREG)
+I(JMPR, TREG, TNUL) I(JMPA, TADD, TNUL)
+I(JI9A, TADD, TNUL) I(JI8A, TADD, TNUL) I(JI7A, TADD, TNUL)
+I(JI9R, TREG, TNUL) I(JI8R, TREG, TNUL) I(JI7R, TREG, TNUL)
+I(CALR, TREG, TNUL) I(CALA, TADD, TNUL)
+I(RETN, TNUL, TNUL)
+I(PUSH, TREG, TIMM) I(POP_, TREG, TIMM)
 
 // 76 Float
 
 // 76 Vectors
 
 // BIOS Instructions
+
+// 自带清理宏
+#undef I
+#undef TNUL
+#undef TIMM
+#undef TADD
+#undef TREG
+// 这个REG宏名字重复了，又被坑了一回。
