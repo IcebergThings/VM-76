@@ -55,15 +55,12 @@ namespace ASM76 {
 		Assembler(const char*);
 		Program assemble();
 		void error(const char* message);
-		bool is_space(char c);
-		bool is_digit(char c);
+		bool is_digit(char);
 		int read_digit();
-		bool is_xdigit(char c);
+		bool is_xdigit(char);
 		int read_xdigit();
-		void skip_whitespace(bool required);
-		void skip_whole_line();
-		void skip_line();
-		void get_opcode(char* buf);
+		void skip(char);
+		void copy_opcode(char* buf);
 		enum InstructionOpcode parse_opcode(const char* str);
 		void read_parameters(Instruct* i);
 		int read_register();
@@ -87,7 +84,6 @@ namespace ASM76 {
 		uint8_t* local_memory;
 		size_t local_memory_size = 0x4000;
 		Instruct* instruct_memory;
-		static const size_t REGISTER_COUNT = 112;
 		uint8_t* reg;
 
 		// Common & special registers
@@ -99,6 +95,7 @@ namespace ASM76 {
 		#define REG111 REG(uint8_t, 111)
 
 	public:
+		static const size_t REGISTER_COUNT = 112;
 		template <class T> T* memfetch(uint32_t address) {
 			return address < 0x1000000 ?
 				(T*) (global_memory + address) :
