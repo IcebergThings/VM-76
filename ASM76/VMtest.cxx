@@ -76,6 +76,7 @@ Instruct speed_test_prgm[] = {
 	{JI7A, 0x1000000 + 3 * sizeof(Instruct),0},
 	{HALT, 0, 0},
 };
+
 #include "time.h"
 
 int main() {
@@ -87,21 +88,21 @@ int main() {
 	{
 		printf("===== Memory =====\n");
 		VM v({mem_test_prgm, sizeof(mem_test_prgm)});
-		v.execute();
+		v.execute(true);
 		v.dump_registers();
 	}
 
 	{
 		printf("===== Basic Algebra =====\n");
 		VM v({basic_algebra_test_prgm, sizeof(basic_algebra_test_prgm)});
-		v.execute();
+		v.execute(true);
 		v.dump_registers();
 	}
 
 	{
 		printf("===== Flow Control & Logistics =====\n");
 		VM v({flow_control_test_prgm, sizeof(flow_control_test_prgm)});
-		v.execute();
+		v.execute(false);
 		v.dump_registers();
 	}
 
