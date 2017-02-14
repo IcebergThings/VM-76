@@ -16,8 +16,8 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 汇编
 	//-------------------------------------------------------------------------
-	Instruct* assemble() {
-		Instruct* r = malloc(sizeof(Instruct) * 10);
+	Instruct* Assembler::assemble() {
+		Instruct* r = (Instruct*) malloc(sizeof(Instruct) * 10);
 		size_t count = 0;
 		while (prg && *prg) {
 			skip_whitespace();
@@ -37,30 +37,29 @@ namespace ASM76 {
 	// ● 是否为ASM76中的空白字符？
 	//   不使用isspace函数，是因为这里的空白和它的空白定义不太相同。
 	//-------------------------------------------------------------------------
-	bool is_space(char c) {
+	bool Assembler::is_space(char c) {
 		return strchr(SPACE, (unsigned char) c) != NULL;
 	}
 	//-------------------------------------------------------------------------
 	// ● 跳过空白
 	//-------------------------------------------------------------------------
-	void skip_whitespace() {
+	void Assembler::skip_whitespace() {
 		prg += strspn(prg, SPACE);
 	}
 	//-------------------------------------------------------------------------
 	// ● 跳过行
 	//-------------------------------------------------------------------------
-	void skip_line() {
+	void Assembler::skip_line() {
 		prg = strchr(prg, '\n') + 1;
 	}
 	//-------------------------------------------------------------------------
 	// ● 复制opcode
 	//-------------------------------------------------------------------------
-	bool get_opcode(char* buf) {
-		const char* first_space = prg;
+	bool Assembler::get_opcode(char* buf) {
 		for (size_t i = 0; i < 12; i++) {
 			if (is_space(prg[i]) || prg[i] == '\n') {
-				memcpy(opcode, prg, i);
-				opcode[i] = 0;
+				memcpy(buf, prg, i);
+				buf[i] = 0;
 				return true;
 			}
 		}
@@ -70,9 +69,10 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● opcode: char[] → enum InstructionOpcode
 	//-------------------------------------------------------------------------
-	enum InstructionOpcode parse_opcode(const char* str) {
-		#define I(x) if (strcmp(str, #x) == 0) return X;
+	enum InstructionOpcode Assembler::parse_opcode(const char* str) {
+		#define I(x) if (strcmp(str, #x) == 0) return x;
 			#include "instructions.hpp"
 		#undef I
+		return NOOP;
 	}
 }

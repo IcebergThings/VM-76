@@ -41,9 +41,14 @@ namespace ASM76 {
 	private:
 		const char* prg;
 	public:
-		static const char* SPACE = " \t\v";
+		constexpr static const char* const SPACE = " \t\v";
 		Assembler(const char*);
 		Instruct* assemble();
+		bool is_space(char c);
+		void skip_whitespace();
+		void skip_line();
+		bool get_opcode(char* buf);
+		enum InstructionOpcode parse_opcode(const char* str);
 	};
 	class Disassembler {
 	private:
@@ -51,7 +56,7 @@ namespace ASM76 {
 	public:
 		Disassembler(const Instruct* prg);
 		char* disassemble();
-	}
+	};
 	//-------------------------------------------------------------------------
 	// ● Virtual Machine类
 	//-------------------------------------------------------------------------
