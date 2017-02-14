@@ -70,6 +70,9 @@ namespace ASM76 {
 		Disassembler(const Program);
 		char* disassemble();
 		const char* get_opcode_name(enum InstructionOpcode opcode);
+		void append_number(char* line, uint32_t x);
+		void append_register(char* line, uint32_t r);
+		void append_address(char* line, uint32_t a);
 	};
 	//-------------------------------------------------------------------------
 	// ● Virtual Machine类

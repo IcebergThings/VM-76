@@ -25,12 +25,22 @@ namespace ASM76 {
 			char line[100];
 			auto opcode = (InstructionOpcode) prg.instruct[i].opcode;
 			strcpy(line, get_opcode_name(opcode));
+			uint32_t a = prg.instruct[i].a;
+			uint32_t b = prg.instruct[i].b;
 			switch (opcode) {
-			case NOOP:
-			case HALT:
+			case NOOP: case HALT: case RETN:
+				break;
+			case JMPA: case JI7A: case JI8A: case JI9A: case CALA:
+				append_address(line, a);
+				break;
+			case JMPR: case JI7R: case JI8R: case JI9R: case CALR:
+				append_register(line, a);
+				break;
+			case PUSH: case POP_:
+				append_register(line, a);
+				append_number(line, b);
 				break;
 			}
-			printf("%s %d %d\n", get_opcode_name(opcode), prg.instruct[i].a, prg.instruct[i].b);
 			strcat(line, "\n");
 			size_t len = strlen(line);
 			current_size += len;
@@ -53,5 +63,23 @@ namespace ASM76 {
 		default:
 			return "????";
 		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 附加立即数
+	//-------------------------------------------------------------------------
+	void Disassembler::append_number(char* line, uint32_t x) {
+		sprintf(strchr(line, 0), " %d", x);
+	}
+	//-------------------------------------------------------------------------
+	// ● 附加寄存器
+	//-------------------------------------------------------------------------
+	void Disassembler::append_register(char* line, uint32_t r) {
+		sprintf(strchr(line, 0), " $%d", r);
+	}
+	//-------------------------------------------------------------------------
+	// ● 附加地址
+	//-------------------------------------------------------------------------
+	void Disassembler::append_address(char* line, uint32_t a) {
+		sprintf(strchr(line, 0), " 0x%08x", a);
 	}
 }
