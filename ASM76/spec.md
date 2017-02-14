@@ -6,10 +6,11 @@ This document describes both the VM/76 virtual machine platform and the assembly
 Definitions and conventions in this specification
 -------------------------------------------------
 
-- **Byte** is defined as usual.
+- **Bit** is defined as usual.
+- **Byte** consists of 8 bits.
 - An **int** consists of 4 bytes.
 - A **long** consists of 8 bytes.
-- **0x** leads a hexadecimal number, e.g. 0x1F means 31.
+- **0x** leads a hexadecimal number, e.g. 0x1F means 1F<sub>16</sub> (31<sub>10</sub>).
 - **_x_.._y_** means a range that is inclusive at both ends, i.e. [*x*, *y*].
 - **_x_..._y_** means a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
 
@@ -21,6 +22,7 @@ Definitions and conventions in this specification
 	- It has fixed length instruction mnemonics.
 - **VM/76 CPU** is the virtual CPU.
 	- It is little-endian.
+		- It can only be emulated on native little-endian machines at present.
 	- There are usually multiple instances. One CPU is usually assigned exclusively to one thread, one sprite, etc.
 - Instruction sets
 	- **[76-Base](#76-base)** is capable of manipulating registers, memory and 8-, 32- and 64-bit integers.
@@ -28,17 +30,17 @@ Definitions and conventions in this specification
 	- **[76-Vector](#76-vector)** can do vector mathematics.
 	- **[BIOS Instructions](#bios-instructions)** provides a BIOS interface. Just joking.
 - Registers
-	- There are 111 registers, namely $0, $1, $2, etc.
+	- There are 112 registers, namely $0, $1, $2, …, $111.
 	- Every register holds a byte.
 	- There are special registers which have special meanings.
 
-		Register | Meaning
-		-------- | -------
-		$100..$103 | Instruction pointer (program counter)
-		$104..$107 | Stack bottom pointer
-		$111 | Flag A > B
-		$110 | Flag A = B
-		$109 | Flag A < B
+		Register | Meaning | Default value
+		-------- | ------- | -------------
+		$100..$103 | Instruction pointer (program counter) | 0x01000000
+		$104..$107 | Stack bottom pointer | 0x01003000
+		$111 | Flag A > B | 0
+		$110 | Flag A = B | 0
+		$109 | Flag A < B | 0
 
 	- $104 has a default value of 0x1003000 (Local memory + 12KB).
 - 32-bit memory address
@@ -83,10 +85,10 @@ Conventions
 
 - The instruction mnemonic must be capital.
 - Postfixes in mnemonics
-	- ‘B’, ‘I’ and ‘L’ stands for byte, int and long, respectively.
+	- ‘B’, ‘I’ and ‘L’ stands for byte, int and long respectively.
 		- For simplicity, they may be replaced by ‘x’ in this reference.
 	- ‘R’ means register and ‘A’ means address.
-- ‘_’ (underline) is used as a blank filler in mnemonics.
+	- ‘_’ (underline) is used as a blank filler in mnemonics.
 - Since a register can only hold a byte, when doing calculations more than a byte, it will start from the specified register and use the following consecutive registers.
 	- For example, `MOVL $0, $10` makes $0 ~ $8 all moved to $10 ~ $18.
 - Italic font denotes a parameter.
