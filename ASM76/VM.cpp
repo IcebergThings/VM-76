@@ -70,14 +70,14 @@ namespace ASM76 {
 		Instruct* now;
 		while ((now = memfetch<Instruct>(REG100))->opcode != HALT) {
 			if (debug_process) printf("%08x: %04x, %x, %x\n", REG100, now->opcode, now->a, now->b);
-			VM::execute_instruction(now);
+			VM::execute_instruction_inline(now);
 			REG100 += sizeof(Instruct);
 		}
 	}
 	//-------------------------------------------------------------------------
-	// ● 解释一条指令
+	// ● 解释一条指令 - 模板
 	//-------------------------------------------------------------------------
-	void VM::execute_instruction(Instruct* i) {
+	inline void VM::execute_instruction_inline(Instruct* i) {
 		switch (i->opcode) {
 		#define I(x) case x: execute_##x(i->a, i->b); break;
 			#include "instructions.hpp"
@@ -85,6 +85,12 @@ namespace ASM76 {
 		default:
 			printf("Unknown opcode %d (0x%x)\n", i->opcode, i->opcode);
 		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 解释一条指令
+	//-------------------------------------------------------------------------
+	void VM::execute_instruction(Instruct* i) {
+		execute_instruction_inline(i);
 	}
 	//-------------------------------------------------------------------------
 	// ● 解释……
