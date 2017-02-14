@@ -3,9 +3,10 @@
 //=============================================================================
 
 #include <cstdlib>
+#include <cstdint>
+#include <cctype>
 #include <cstring>
 #include <cstdio>
-#include <cstdint>
 
 #ifndef _INCLUDE_ASM76_H
 #define _INCLUDE_ASM76_H
@@ -36,9 +37,20 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 汇编器
 	//-------------------------------------------------------------------------
-	namespace Assembler {
-		Instruct* assemble(const char* prg);
-		char* disassemble(Instruct* prg);
+	class Assembler {
+	private:
+		const char* prg;
+	public:
+		static const char* SPACE = " \t\v";
+		Assembler(const char*);
+		Instruct* assemble();
+	};
+	class Disassembler {
+	private:
+		const Instruct* prg;
+	public:
+		Disassembler(const Instruct* prg);
+		char* disassemble();
 	}
 	//-------------------------------------------------------------------------
 	// ● Virtual Machine类
