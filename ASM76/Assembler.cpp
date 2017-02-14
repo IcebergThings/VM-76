@@ -29,7 +29,6 @@ namespace ASM76 {
 			prg++;
 			break;
 		default: {
-			r.size += sizeof(Instruct);
 			if (r.size > buf_size) {
 				buf_size += 30 * sizeof(Instruct);
 				r.instruct = (Instruct*) realloc(r.instruct, r.size);
