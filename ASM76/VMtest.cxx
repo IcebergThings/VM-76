@@ -54,6 +54,16 @@ Instruct flow_control_test_prgm[] = {
 	{HALT, 0, 0},
 };
 
+Instruct speed_test_prgm[] = {
+	{DATI,0x1,20},
+	{DATI,0x1000000,60},
+	{DATI,0x2,15},
+	{ADDL,3,20},
+	{CMPI,3,60},
+	{JI7A, 0x1000000 + 3 * sizeof(Instruct),0},
+	{HALT, 0, 0},
+};
+#include "time.h"
 int main() {
 
 	printf("===== ASM 76 Test Program =====\n");
@@ -63,22 +73,37 @@ int main() {
 	printf("===== Memory =====\n");
 	VM* v = new VM(mem_test_prgm, sizeof(mem_test_prgm));
 
-	v->execute();
+	v->execute(true);
 	v->dump_registers();
 	delete v;
 
 	printf("===== Basic Algebra =====\n");
 	v = new VM(basic_algebra_test_prgm, sizeof(basic_algebra_test_prgm));
 
-	v->execute();
+	v->execute(true);
 	v->dump_registers();
 	delete v;
 
 	printf("===== Flow Control & Logistics =====\n");
 	v = new VM(flow_control_test_prgm, sizeof(flow_control_test_prgm));
 
-	v->execute();
+	v->execute(false);
 	v->dump_registers();
+	delete v;
+
+	printf("===== Speed Test: 0x1000000 cycles =====\n");
+	v = new VM(speed_test_prgm, sizeof(flow_control_test_prgm));
+
+	timespec t1, t2;
+	clock_gettime(CLOCK_MONOTONIC, &t1);
+	v->execute(false);
+	clock_gettime(CLOCK_MONOTONIC, &t2);
+	uint64_t delayTus = ((t2.tv_sec - t1.tv_sec) * 10^9 + t2.tv_nsec - t1.tv_nsec) / 1000.0;
+	v->dump_registers();
+	printf("Elapsed time: %ldms\nMIPS: %f\n",
+		delayTus / 1000,
+		(float)0x1000000 * 3.0 / (double) (delayTus / 1000) / 10000.0
+	);
 	delete v;
 
 	printf("===== TEST END =====\n");

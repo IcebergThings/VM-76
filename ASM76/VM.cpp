@@ -66,25 +66,34 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 解释
 	//-------------------------------------------------------------------------
-	void VM::execute() {
-		Instruct* now;
-		while ((now = memfetch<Instruct>(REG100))->opcode != HALT) {
-			printf("%08x: %04x, %x, %x\n", REG100, now->opcode, now->a, now->b);
-			VM::execute_instruction(now);
+	void VM::execute(bool debug_process) {
+		Instruct* now = memfetch<Instruct>(REG100);
+		uint16_t opcode = now->opcode;
+		while (opcode != HALT) {
+			if (debug_process) printf("%08x: %04x, %x, %x\n", REG100, now->opcode, now->a, now->b);
+			VM::execute_instruction_inline(opcode, now->a, now->b);
 			REG100 += sizeof(Instruct);
+			now = memfetch<Instruct>(REG100);
+			opcode = now->opcode;
+		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 解释一条指令 - 模板
+	//-------------------------------------------------------------------------
+	inline void VM::execute_instruction_inline(uint16_t opcode, uint32_t a, uint32_t b) {
+		switch (opcode) {
+		#define I(x) case x: execute_##x(a, b); break;
+			#include "instructions.hpp"
+		#undef I
+		default:
+			printf("Unknown opcode %d (0x%x)\n", opcode, opcode);
 		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 解释一条指令
 	//-------------------------------------------------------------------------
 	void VM::execute_instruction(Instruct* i) {
-		switch (i->opcode) {
-		#define I(x) case x: execute_##x(i->a, i->b); break;
-			#include "instructions.hpp"
-		#undef I
-		default:
-			printf("Unknown opcode %d (0x%x)\n", i->opcode, i->opcode);
-		}
+		execute_instruction_inline(i->opcode, i->a, i->b);
 	}
 	//-------------------------------------------------------------------------
 	// ● 解释……
