@@ -12,7 +12,7 @@ namespace ASM76 {
 	// ● 构造
 	//-------------------------------------------------------------------------
 	Assembler::Assembler(const char* program) {
-		prg = program;
+		prg = original_prg = program;
 	}
 	//-------------------------------------------------------------------------
 	// ● 汇编
@@ -59,7 +59,11 @@ namespace ASM76 {
 	// ● 报错！
 	//-------------------------------------------------------------------------
 	void Assembler::error(const char* message) {
-		printf("Error: %s\nAssembly:\n%s\n", message, prg);
+		printf("Error: %s\nAssembly:\n", message);
+		const char* p = prg;
+		while (p > original_prg || p[-1] != '\n') p--;
+		while (!check(*p, "\n")) putchar(*p++);
+		putchar('\n');
 		abort();
 	}
 	//-------------------------------------------------------------------------
@@ -102,7 +106,7 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	void Assembler::copy_opcode(char* buf) {
 		for (size_t i = 0; i < 12; i++) {
-			if (check(prg[i], " \t\v\n") {
+			if (check(prg[i], " \t\v\n")) {
 				memcpy(buf, prg, i);
 				buf[i] = 0;
 				prg += i;
@@ -137,19 +141,18 @@ namespace ASM76 {
 	// ● 读取立即数参数
 	//-------------------------------------------------------------------------
 	uint32_t Assembler::read_immediate_u32() {
-		skip(" \t\v");
-		if (!is_digit(*prg)) error("expected digit");
+		skip(" \t\v", "expected whitespace");
+		if (!isdigit((unsigned char) *prg)) error("expected digit");
 		long long n;
+		char* end;
 		if (prg[0] == '0' && prg[1] == 'x') {
-			char* end;
 			n = strtoll(prg + 2, &end, 16);
-			prg = (const char*) end;
 		} else {
-			n = atoll(prg);
+			n = strtoll(prg, &end, 10);
 		}
 		if (n > UINT32_MAX) error("immediate number too large");
 		if (n < 0) error("immediate number can't be negative");
-		while (is_digit(*prg)) prg++;
+		prg = (const char*) end;
 		return n;
 	}
 	//-------------------------------------------------------------------------
@@ -163,13 +166,13 @@ namespace ASM76 {
 	//   返回寄存器编号。
 	//-------------------------------------------------------------------------
 	uint32_t Assembler::read_register() {
-		skip(" \t\v");
+		skip(" \t\v", "expected whitespace");
 		skip('$');
-		if (!is_digit(*prg)) error("expected digit");
+		if (!isdigit((unsigned char) *prg)) error("expected digit");
 		int reg = atoi(prg);
 		if (reg < 0) error("register no. can't be negative");
 		if ((size_t) reg > VM::REGISTER_COUNT) error("register no. too large");
-		while (is_digit(*prg)) prg++;
+		while (isdigit((unsigned char) *prg)) prg++;
 		return reg;
 	}
 }
