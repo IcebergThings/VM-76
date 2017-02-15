@@ -196,8 +196,8 @@ NOOP | waste some time
 HALT | halt the CPU and stop
 JMPR _$A_ | jump to memory address stored in *$A*
 JMPA _address_ | jump to memory address *address*
-JI7R/JI8R/JI9R _$A_ | jump to memory address stored in *$A* if $109/$110/$111 = 0xFF
-JI7A/JI8A/JI9A _address_ | jump to *address* if $109/$110/$111 = 0xFF
+JILR/JIER/JIGR _$A_ | jump to memory address stored in *$A* if $109/$110/$111 = 0xFF
+JILA/JIEA/JIGA _address_ | jump to *address* if $109/$110/$111 = 0xFF
 CALR _$A_ | jump to memory address stored in *$A* and push the next instruction's address into stack
 CALA _address_ | jump to *address* and push the next instruction's address into stack
 RETN | `POP_ $100`

@@ -365,27 +365,27 @@ namespace ASM76 {
 		REG100 = a - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
-	// ● JI9A JI8A JI7A
+	// ● JIGA JIEA JILA
 	//-------------------------------------------------------------------------
-	execute(JI9A) {
+	execute(JIGA) {
 		if (REGCMP == 0x2) REG100 = a - sizeof(Instruct);
 	}
-	execute(JI8A) {
+	execute(JIEA) {
 		if (REGCMP == 0x1) REG100 = a - sizeof(Instruct);
 	}
-	execute(JI7A) {
+	execute(JILA) {
 		if (REGCMP == 0x0) REG100 = a - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------
-	// ● JI9R JI8R JI7R
+	// ● JIGR JIER JILR
 	//-------------------------------------------------------------------------
-	execute(JI9R) {
+	execute(JIGR) {
 		if (REGCMP == 0x2) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
-	execute(JI8R) {
+	execute(JIER) {
 		if (REGCMP == 0x1) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
-	execute(JI7R) {
+	execute(JILR) {
 		if (REGCMP == 0x0) REG100 = REG(uint32_t, a) - sizeof(Instruct);
 	}
 	//-------------------------------------------------------------------------

@@ -50,20 +50,20 @@ Instruct flow_control_test_prgm[] = {
 	{ADDL,3,20},
 	{CMPI,3,10},
 	{PUSH,15,1},
-	{JI7A, 0x1000000 + 3 * sizeof(Instruct),0},
+	{JILA, 0x1000000 + 3 * sizeof(Instruct),0},
 	{HALT, 0, 0},
 };
 
 const char* const asm_test =
 	"# Comments.\n"
-	"DATB 0x1 $20\n"
-	"DATB 0xA $10\n"
-	"DATB 0x2 $15\n"
-	"ADDL $15 $15\n"
-	"ADDL $3 $20\n"
-	"CMPI $3 $10\n"
-	"PUSH $15 1\n"
-	"JI7A 0x01000024\n"
+	"DATB	0x1 $20\n"
+	"DATB	0xA $10\n"
+	"DATB	0x2 $15\n"
+	"ADDL	$15 $15\n"
+	"ADDL	$3 $20\n"
+	"CMPI	$3 $10\n"
+	"PUSH	$15 1\n"
+	"JILA	0x01000024\n"
 	"HALT\n"
 	"# EOF\n";
 
@@ -73,7 +73,7 @@ Instruct speed_test_prgm[] = {
 	{DATI,0x2,15},
 	{ADDL,3,20},
 	{CMPI,3,60},
-	{JI7A, 0x1000000 + 3 * sizeof(Instruct),0},
+	{JILA, 0x1000000 + 3 * sizeof(Instruct),0},
 	{HALT, 0, 0},
 };
 
