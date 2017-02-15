@@ -56,9 +56,11 @@ This flag register is used in [CMPx](#cmpx).
 #### $110
 This flag register is used to enable or disable certain instruction sets. Each bit links with an instruction set.
 
+Bit 0 is originally intended for 76-Base, but since that set can't be disabled, it has been of no use.
+
 Bit # | Instruction set
 ----- | ---------------
-0 | N/A (originally intended for 76-Base, but that can't be disabled)
+0 | N/A
 1 | [76-Float](#76-float)
 2 | [76-Vector](#76-vector)
 3..6 | (reserved)
