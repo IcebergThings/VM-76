@@ -61,13 +61,22 @@ namespace ASM76 {
 	void Assembler::error(const char* message) {
 		printf("Error: %s\nAssembly:\n", message);
 		const char* p = prg;
-		while (p > original_prg || p[-1] != '\n') p--;
+		// find spp
+		// spp = start of printed program
+		while (p > original_prg && p[-1] != '\n') p--;
+		const char* spp = p;
 		while (!check(*p, "\n")) putchar(*p++);
 		putchar('\n');
+		// print the caret
+		int loc = prg - spp;
+		while (loc--) putchar(' ');
+		puts("^");
+		// exit gracefully
 		abort();
 	}
 	//-------------------------------------------------------------------------
 	// ● 是否为某些字符中的一个？
+	//   若c为零，则必然返回true，因为s是由零结尾的。
 	//-------------------------------------------------------------------------
 	bool Assembler::check(char c, const char* s) {
 		return strchr(s, (unsigned char) c) != NULL;
