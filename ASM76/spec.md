@@ -209,7 +209,15 @@ POP_ _$A_ _length_ | pop data from stack to registers *$A*...$(*A* + *length*)
 
 76-Float provides instructions for processing floating point values.
 
-You need to set memory *IO + 0x1* (0x400001, one byte) to 0xFF first in order to make it work.
+You need to set bit 1 of memory *IO + 0x0* (0x400000) to 1 first in order to make it work.
+
+```asm
+# Example code to enable 76-Float
+LDBA 0x400000 $98
+DATB 0x2 $99
+OR_B $98 $99
+SLBA 0x400000 $98
+```
 
 ### Basic floating point arithmetic
 
