@@ -209,14 +209,14 @@ POP_ _$A_ _length_ | pop data from stack to registers *$A*...$(*A* + *length*)
 
 76-Float provides instructions for processing floating point values.
 
-You need to set bit 1 of memory *IO + 0x0* (0x400000) to 1 first in order to make it work.
+You need to set bit 1 of $110 to 1 first in order to make it work.
 
 ```asm
 # Example code to enable 76-Float
-LDBA 0x400000 $98
+PUSH $99 1
 DATB 0x2 $99
-OR_B $98 $99
-SLBA 0x400000 $98
+OR_B $110 $99
+POP $99 1
 ```
 
 ### Basic floating point arithmetic
@@ -229,8 +229,7 @@ Instruction | Description
 
 76-Vector provides instructions for calculating vectors, just as in the OpenGL shader language.
 
-You need to set memory *IO + 0x2* (0x400002, one byte) to 0xFF first in order to make it work.
-
+You need to set bit 2 of $110 to 1 first in order to make it work.
 
 ### Basic vector arithmetic
 
@@ -242,7 +241,7 @@ BIOS Instructions
 
 **BIOS** is an acronym for Basic Input/Output System, of course.
 
-You need to set memory *IO + 0xA* (0x40000A, one byte) to 0xFF first in order to make it work.
+You need to set bit 7 of $110 to 1 first in order to make it work.
 
 Instruction | Description
 ----------- | -----------
