@@ -48,9 +48,23 @@ Special register | Purpose | Default value
 $100..$103 | Instruction Pointer | 0x01000000
 $104..$107 | Stack Pointer | 0x01003000
 [$109](#109) | A ⋚ B Flag | 0
+[$110](#110) | Instruction Set Flags | 0
 
 #### $109
 This flag register is used in [CMPx](#cmpx).
+
+#### $110
+This flag register is used to enable or disable certain instruction sets. Each bit links with an instruction set.
+
+Bit 0 is originally intended for 76-Base, but since that set can't be disabled, it has been of no use.
+
+Bit # | Instruction set
+----- | ---------------
+0 | N/A
+1 | [76-Float](#76-float)
+2 | [76-Vector](#76-vector)
+3..6 | (reserved)
+7 | [BIOS Instructions](#bios-instructions)
 
 ### 32-bit memory address
 
@@ -209,7 +223,15 @@ POP_ _$A_ _length_ | pop data from stack to registers *$A*...$(*A* + *length*)
 
 76-Float provides instructions for processing floating point values.
 
-You need to set memory *IO + 0x1* (0x400001, one byte) to 0xFF first in order to make it work.
+You need to set bit 1 of $110 to 1 first in order to make it work.
+
+```asm
+# Example code to enable 76-Float
+PUSH $99 1
+DATB 0x2 $99
+OR_B $110 $99
+POP $99 1
+```
 
 ### Basic floating point arithmetic
 
@@ -221,8 +243,7 @@ Instruction | Description
 
 76-Vector provides instructions for calculating vectors, just as in the OpenGL shader language.
 
-You need to set memory *IO + 0x2* (0x400002, one byte) to 0xFF first in order to make it work.
-
+You need to set bit 2 of $110 to 1 first in order to make it work.
 
 ### Basic vector arithmetic
 
@@ -234,7 +255,7 @@ BIOS Instructions
 
 **BIOS** is an acronym for Basic Input/Output System, of course.
 
-You need to set memory *IO + 0xA* (0x40000A, one byte) to 0xFF first in order to make it work.
+You need to set bit 7 of $110 to 1 first in order to make it work.
 
 Instruction | Description
 ----------- | -----------
