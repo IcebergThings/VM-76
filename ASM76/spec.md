@@ -48,9 +48,21 @@ Special register | Purpose | Default value
 $100..$103 | Instruction Pointer | 0x01000000
 $104..$107 | Stack Pointer | 0x01003000
 [$109](#109) | A ⋚ B Flag | 0
+[$110](#110) | Instruction Set Flags | 0
 
 #### $109
 This flag register is used in [CMPx](#cmpx).
+
+#### $110
+This flag register is used to enable or disable certain instruction sets. Each bit links with an instruction set.
+
+Bit # | Instruction set
+----- | ---------------
+0 | N/A (originally intended for 76-Base, but that can't be disabled)
+1 | [76-Float](#76-float)
+2 | [76-Vector](#76-vector)
+3..6 | (reserved)
+7 | [BIOS Instructions](#bios-instructions)
 
 ### 32-bit memory address
 

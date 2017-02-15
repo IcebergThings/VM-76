@@ -93,6 +93,7 @@ namespace ASM76 {
 		#define REG100 REG(uint32_t, 100)
 		#define REG104 REG(uint32_t, 104)
 		#define REGCMP REG(uint8_t, 109)
+		#define REGISF REG(uint8_t, 110)
 
 	public:
 		static const size_t REGISTER_COUNT = 112;
