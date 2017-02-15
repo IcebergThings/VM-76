@@ -7,6 +7,7 @@
 #include "ASM76.hpp"
 
 namespace ASM76 {
+	#define SPACE " \t\v"
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
@@ -18,9 +19,13 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	Program Assembler::assemble() {
 		Program r;
+		// 实际已用0字节
 		r.size = 0;
+		// 预留10个指令空位
 		size_t buf_size = 10 * sizeof(Instruct);
 		r.instruct = (Instruct*) malloc(buf_size);
+		// 这个指针指向当前正要填充的指令
+		Instruct* current_instruct = r.instruct;
 		while (prg && *prg) switch (*prg) {
 		case '#':
 			prg = strchr(prg, '\n') + 1;
@@ -29,16 +34,23 @@ namespace ASM76 {
 			prg++;
 			break;
 		default: {
+			// 需要添加指令但预留空间不足时，
 			if (r.size > buf_size) {
+				// 补充30个指令空位。
 				buf_size += 30 * sizeof(Instruct);
 				r.instruct = (Instruct*) realloc(r.instruct, r.size);
 			}
+			// 读取opcode
 			char opcode[13];
 			copy_opcode(opcode);
-			Instruct* current_instruct = &r.instruct[r.size / sizeof(Instruct)];
 			current_instruct->opcode = parse_opcode(opcode);
+			// 读取参数
 			read_parameters(current_instruct);
+			// 换行
+			skip('\n');
+			// 填充完毕，指针移位
 			r.size += sizeof(Instruct);
+			current_instruct++;
 		}
 		}
 		return r;
@@ -51,35 +63,13 @@ namespace ASM76 {
 		abort();
 	}
 	//-------------------------------------------------------------------------
-	// ● 是否为十进制数字字符？
+	// ● 是否为某些字符中的一个？
 	//-------------------------------------------------------------------------
-	bool Assembler::is_digit(char c) {
-		return c >= '0' && c <= '9';
+	bool Assembler::check(char c, const char* s) {
+		return strchr(s, (unsigned char) c) != NULL;
 	}
 	//-------------------------------------------------------------------------
-	// ● 读取单个十进制数字字符
-	//-------------------------------------------------------------------------
-	int Assembler::read_digit() {
-		if (!is_digit(*prg)) error("expected digit");
-		return *prg++ - '0';
-	}
-	//-------------------------------------------------------------------------
-	// ● 是否为十六进制数字字符？
-	//-------------------------------------------------------------------------
-	bool Assembler::is_xdigit(char c) {
-		return isxdigit((unsigned char) c);
-	}
-	//-------------------------------------------------------------------------
-	// ● 读取单个十六进制数字字符
-	//-------------------------------------------------------------------------
-	int Assembler::read_xdigit() {
-		if (!is_xdigit(*prg)) error("expected hexadecimal digit");
-		if (is_digit(*prg)) return read_digit();
-		if (*prg >= 'a') return *prg++ - 'a' + 10;
-		return *prg++ - 'A' + 10;
-	}
-	//-------------------------------------------------------------------------
-	// ● 跳过某字符
+	// ● 跳过某一字符
 	//-------------------------------------------------------------------------
 	void Assembler::skip(char c) {
 		if (*prg != c) {
@@ -100,11 +90,19 @@ namespace ASM76 {
 		prg++;
 	}
 	//-------------------------------------------------------------------------
+	// ● 跳过某些字符组成的串
+	//-------------------------------------------------------------------------
+	void Assembler::skip(const char* s, const char* error_msg) {
+		size_t len = strspn(prg, s);
+		if (!len) error(error_msg);
+		prg += len;
+	}
+	//-------------------------------------------------------------------------
 	// ● 复制opcode
 	//-------------------------------------------------------------------------
 	void Assembler::copy_opcode(char* buf) {
 		for (size_t i = 0; i < 12; i++) {
-			if (prg[i] == ' ' || prg[i] == '\n') {
+			if (check(prg[i], " \t\v\n") {
 				memcpy(buf, prg, i);
 				buf[i] = 0;
 				prg += i;
@@ -134,16 +132,15 @@ namespace ASM76 {
 		#define I(x, ta, tb) case x: i->a = ta; i->b = tb; break;
 		#include "instructions.hpp"
 		}
-		skip('\n');
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取立即数参数
 	//-------------------------------------------------------------------------
 	uint32_t Assembler::read_immediate_u32() {
-		skip(' ');
+		skip(" \t\v");
 		if (!is_digit(*prg)) error("expected digit");
 		long long n;
-		if (*prg == '0' && prg[1] == 'x') {
+		if (prg[0] == '0' && prg[1] == 'x') {
 			char* end;
 			n = strtoll(prg + 2, &end, 16);
 			prg = (const char*) end;
@@ -166,7 +163,7 @@ namespace ASM76 {
 	//   返回寄存器编号。
 	//-------------------------------------------------------------------------
 	uint32_t Assembler::read_register() {
-		skip(' ');
+		skip(" \t\v");
 		skip('$');
 		if (!is_digit(*prg)) error("expected digit");
 		int reg = atoi(prg);
