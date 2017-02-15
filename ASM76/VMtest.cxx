@@ -103,13 +103,6 @@ int main() {
 	}
 
 	{
-		printf("===== Flow Control & Logistics =====\n");
-		VM v({flow_control_test_prgm, sizeof(flow_control_test_prgm)});
-		v.execute(false);
-		v.dump_registers();
-	}
-
-	{
 		printf("===== Disassembler =====\n");
 		Disassembler d({flow_control_test_prgm, sizeof(flow_control_test_prgm)});
 		char* s = d.disassemble();
@@ -124,8 +117,13 @@ int main() {
 		Disassembler d(p);
 		char* s = d.disassemble();
 		puts(s);
-		free(p.instruct);
 		free(s);
+
+		printf("===== Flow Control & Logistics =====\n");
+		VM v(p);
+		v.execute(false);
+		v.dump_registers();
+		free(p.instruct);
 	}
 
 	{
