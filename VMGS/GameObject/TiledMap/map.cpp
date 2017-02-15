@@ -29,6 +29,7 @@ namespace VM76 {
 
 	bool DataMap::read_map() {
 		log("Reading map");
+		if (access("map.dat", 0) != 0) return false;
 		VBinaryFileReader* fr = new VBinaryFileReader("map.dat");
 
 		int map_version = fr->read_i32();
