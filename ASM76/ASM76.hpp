@@ -48,6 +48,7 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	class Assembler {
 	private:
+		const char* original_prg;
 		const char* prg;
 	public:
 		Assembler(const char*);
@@ -63,6 +64,9 @@ namespace ASM76 {
 		uint32_t read_address();
 		uint32_t read_register();
 	};
+	//-------------------------------------------------------------------------
+	// ● 反汇编器
+	//-------------------------------------------------------------------------
 	class Disassembler {
 	private:
 		Program prg;

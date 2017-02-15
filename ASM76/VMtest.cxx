@@ -77,7 +77,9 @@ Instruct speed_test_prgm[] = {
 	{HALT, 0, 0},
 };
 
-#include <ctime>
+#include <ratio>
+#include <chrono>
+using namespace std;
 
 int main() {
 
@@ -129,15 +131,16 @@ int main() {
 		printf("===== Speed Test: 0x1000000 cycles =====\n");
 		VM v({speed_test_prgm, sizeof(flow_control_test_prgm)});
 
-		timespec t1, t2;
-		timespec_get(&t1, TIME_UTC);
+		// The type is chrono::time_point<chrono::high_resolution_clock>
+		// and that is why people used auto.
+		auto t1 = chrono::high_resolution_clock::now();
 		v.execute(false);
-		timespec_get(&t2, TIME_UTC);
-		uint64_t delayTus = ((t2.tv_sec - t1.tv_sec) * 1000000000 + t2.tv_nsec - t1.tv_nsec) / 1000.0;
+		auto t2 = chrono::high_resolution_clock::now();
+		chrono::duration<double, milli> delay = t2 - t1;
 		v.dump_registers();
-		printf("Elapsed time: %ldms\nMIPS: %f\n",
-			delayTus / 1000,
-			(float)0x1000000 * 3.0 / (double) (delayTus / 1000) / 10000.0
+		printf("Elapsed time: %fms\nMIPS: %f\n",
+			delay.count(),
+			0x1000000 * 3.0 / delay.count() / 10000.0
 		);
 	}
 
