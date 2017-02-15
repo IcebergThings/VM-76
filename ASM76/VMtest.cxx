@@ -138,7 +138,6 @@ int main() {
 		v.execute(false);
 		auto t2 = chrono::high_resolution_clock::now();
 		chrono::duration<double, milli> delay = t2 - t1;
-		v.dump_registers();
 		printf("Elapsed time: %fms\nMIPS: %f\n",
 			delay.count(),
 			0x1000000 * 3.0 / delay.count() / 10000.0
