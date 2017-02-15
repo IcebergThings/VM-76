@@ -7,27 +7,31 @@ Definitions and conventions in this specification
 -------------------------------------------------
 
 - **Bit** is defined as usual.
-- **Byte** consists of 8 bits.
+- A **byte** consists of 8 bits.
 - An **int** consists of 4 bytes.
 - A **long** consists of 8 bytes.
 - **0x** leads a hexadecimal number, e.g. 0x1F means 1F<sub>16</sub> (31<sub>10</sub>).
-- **_x_.._y_** means a range that is inclusive at both ends, i.e. [*x*, *y*].
-- **_x_..._y_** means a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
+- **_x_.._y_** indicates a range that is inclusive at both ends, i.e. [*x*, *y*].
+- **_x_..._y_** indicates a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
 
 76 Virtual Machine and VM/76 CPU
 --------------------------------
 
-- The virtual machine compiles and runs assembly code.
-- **ASM76** is the assembly language used in VM/76.
-	- It has fixed length instruction mnemonics.
+### Introduction
+- The virtual machine compiles (assembles) ASM76 assembly code and runs the compiled binary code.
+- **ASM76** is the assembly language for VM/76 CPU.
+	- In order to simplify the assembler, the syntax is very fixed.
+	- It has fixed length instruction mnemonics: they are exactly 4 characters long. The assembler implementation is able to process any mnemonic length from 1 to 12 though.
 - **VM/76 CPU** is the virtual CPU.
 	- It is little-endian.
 		- It can only be emulated on native little-endian machines at present.
 		- Running the virtual machine on big-endian machines will result unspecifiedly.
-	- There are usually multiple instances. One CPU is usually assigned exclusively to one thread, one sprite, etc.
+	- We use multiple CPU instances in practice. One CPU is usually assigned exclusively to one thread, one sprite, etc.
 	- Since it isn't used in real world, it is *quite different* from the CPUs from common ones, such as Intel x86 series CPUs.
 
 ### Instruction sets
+A variety of instruction sets are provided.
+
 - **[76-Base](#76-base)** is capable of manipulating registers, memory and 8-, 32- and 64-bit integers.
 - **[76-Float](#76-float)** is able to deal with floating point values.
 - **[76-Vector](#76-vector)** can do vector mathematics.
@@ -37,28 +41,24 @@ Definitions and conventions in this specification
 - There are 112 registers in all, namely $0, $1, $2, …, $111.
 - Every register holds a byte.
 - The method of manipulation is the same among all registers.
-- Register $100 and above have special purposes, though you can modify them as if they are ordinary registers.
+- Register $100 and above have special uses, though you can modify them as if they are ordinary ones.
 
-	Register | Purpose | Default value
-	-------- | ------- | -------------
-	$100..$103 | Instruction Pointer | 0x01000000
-	$104..$107 | Stack Pointer | 0x01003000
-	[$109](#109) | A ⋚ B Flag | 0
+Special register | Purpose | Default value
+---------------- | ------- | -------------
+$100..$103 | Instruction Pointer | 0x01000000
+$104..$107 | Stack Pointer | 0x01003000
+[$109](#109) | A ⋚ B Flag | 0
 
 #### $109
-Value | Meaning
------ | -------
-0 | A < B
-1 | A = B
-2 | A > B
+This flag register is used in [CMPx](#cmpx).
 
 ### 32-bit memory address
 
-	Address range | Size | Usage
-	------------- | ---- | -----
-	0x0...0x400000 | 4MB | This part of memory is global memory, which is shared between CPU instances.
-	0x400000...0x1000000 | 12MB | This part of memory is mapped with IO to transfer data between the CPU (ASM76) and the outside world (VMDE).
-	0x1000000...∞ | depends | The upper part of the memory is local, which can be sized using [LCMM](#lcmm) and belongs to the CPU instance.
+Address range | Size | Usage
+------------- | ---- | -----
+0x0...0x400000 | 4MB | This part of memory is global memory, which is shared between CPU instances.
+0x400000...0x1000000 | 12MB | This part of memory is mapped to IO to transfer data between the CPU (ASM76) and the outside world (VMDE).
+0x1000000...∞ | depends | The upper part of the memory is local, which can be (re)sized using [LCMM](#lcmm) and belongs to the CPU instance.
 
 The ASM76 language syntax
 -------------------------
@@ -96,13 +96,13 @@ Conventions
 - Here's a list of common postfixes in mnemonics.
 	- ‘B’, ‘I’ and ‘L’ stands for byte, int and long, respectively.
 		- For simplicity, they may be replaced by ‘x’ in this reference.
-		- E.g. MOV**B** MOV**I** MOV**L**
+		- E.g. MOV**B** MOV**I** MOV**L** → MOVx
 	- ‘R’ means register and ‘A’ means address.
 		- E.g. JMP**R** JMP**A**
 	- ‘_’ (underline) is used as a blank filler in mnemonics.
 		- E.g. OR**_**L POP**_**
-- Since a register can only hold a byte, when doing calculations more than a byte, it will start from the specified register and use the following consecutive registers.
-	- For example, `MOVL $0, $10` makes $0 ~ $8 all moved to $10 ~ $18.
+- Since a register can only hold one byte, when doing calculations more than one byte, it will start from the specified register and use the following consecutive registers.
+	- For example, `MOVL $0 $10` makes $0...$8 all moved to $10...$18.
 - Italic font (*A*) denotes a parameter.
 - Italic font prepended with a dollar sign (*$A*) denotes a register parameter.
 
@@ -118,25 +118,25 @@ To simplify the description, we'll use some word macros.
 - **$A** ⩴ the value in register $A
 - **[A]** ⩴ the value in the memory address A
 - **[$A]** ⩴ the value in the memory address specified by the value in register $A
-- **A ← B** ⩴ put B into A
+- **A ← B** ⩴ put B into A (assignment)
 
 Instruction | Description
 ----------- | -----------
-[LCMM](#lcmm) _size in bytes_ | set local memory size
-DATx _data_, _$A_ | *$A* ← *data*
-[LDxA](#ldxa) _A_, _$B_ | *$B* ← [*A*]
-[LDxR](#ldxr) _$A_, _$B_ | *$B* ← [*$A*]
-SLxA _A_, _$B_ | [*A*] ← *$B*
-SLxR _$A_, _$B_ | [*$A*] ← *$B*
-MOVx _A_, _B_ | [*B*] ← [*A*]
-MVRx _$A_, _$B_ | *$B* ← *$A*
-MVPx _$A_, _$B_ | [*$B*] ← [*$A*]
+[LCMM](#lcmm) _size\_in\_bytes_ | set local memory size
+DATx _data_ _$A_ | *$A* ← *data*
+[LDxA](#ldxa) _A_ _$B_ | *$B* ← [*A*]
+[LDxR](#ldxr) _$A_ _$B_ | *$B* ← [*$A*]
+SLxA _A_ _$B_ | [*A*] ← *$B*
+SLxR _$A_ _$B_ | [*$A*] ← *$B*
+MOVx _A_ _B_ | [*B*] ← [*A*]
+MVRx _$A_ _$B_ | *$B* ← *$A*
+MVPx _$A_ _$B_ | [*$B*] ← [*$A*]
 
 #### LCMM
 Specifiy the local memory size. It does not has a maximum limit in theory and is 16KB by default. As the command runs, the data in the memory will be cleared and initialized with all zero. Then it will copy previous data into the memory. If the previous data is longer, it will be truncated.
 
 #### LDxA
-Load a long/int/byte from local memory address to a sequence of 8/4/1 register(s). *register* specifies the first one of the 8/4/1 register(s) sequence.
+Load a long/int/byte from local memory address *A* to a sequence of 8/4/1 register(s). *$B* specifies the first one of the 8/4/1 register(s) sequence.
 
 #### LDxR
 For example:
@@ -146,42 +146,47 @@ DATI 0x00FF0000 $0
 LDLR $0 $12
 ```
 
-Then 8 bytes of data in 0x00FF0000 will be stored in $12.
+Then 8 bytes of data in 0x00FF0000 will be stored in $12..$19.
 
 ### Basic algebra
+All mathematical operations takes the registers as unsigned numbers.
 
 Instruction | Description
 ----------- | -----------
-ADDx _$A_, _$B_ | *$A* ← *$A* + *$B*
-MINx _$A_, _$B_ | *$A* ← *$A* − *$B*
-MTPx _$A_, _$B_ | *$A* ← *$A* × *$B*
-[DIVx](#divxmodx) _$A_, _$B_ | *$A* ← ⌊*$A* ÷ *$B*⌋
-[MODx](#divxmodx) _$A_, _$B_ | *$A* ← *$A* mod *$B*
-[CMPx](#cmpx) _$A_, _$B_ | compare two long/int/byte arithmetically
+ADDx _$A_ _$B_ | *$A* ← *$A* + *$B*
+MINx _$A_ _$B_ | *$A* ← *$A* − *$B*
+MTPx _$A_ _$B_ | *$A* ← *$A* × *$B*
+[DIVx](#divxmodx) _$A_ _$B_ | *$A* ← ⌊*$A* ÷ *$B*⌋
+[MODx](#divxmodx) _$A_ _$B_ | *$A* ← *$A* mod *$B*
+[CMPx](#cmpx) _$A_ _$B_ | compare two long/int/byte arithmetically
 
 #### DIVx/MODx
 - The division throws the remainder away.
 - The modulo throws the quotient away.
 
 #### CMPx
-Compare *$A* to *$B*.
+Compare *$A* to *$B*. It updates $109 according to the result of comparision.
 
-- If *$A* > *$B*, $111 = 0xFF, $110 = 0, $109 = 0
-- If *$A* = *$B*, $110 = 0xFF, $109 = 0, $111 = 0
-- If *$A* < *$B*, $109 = 0xFF, $110 = 0, $111 = 0
+$109 | Meaning
+---- | -------
+0 | *$A* < *$B*
+1 | *$A* = *$B*
+2 | *$A* > *$B*
 
 ### Logical operations
 
 Instruction | Description
 ----------- | -----------
-ANDx/OR_x/XORx _$A_, _$B_ | logical AND/OR/XOR for long/int/byte
-[NOTx](#notx) _$A_ | boolean not for long/int/byte
+ANDx _$A_ _$B_ | bitwise logical AND
+OR_x _$A_ _$B_ | bitwise logical inclusive OR
+XORx _$A_ _$B_ | bitwise logical exclusive OR
+[NOTx](#notx) _$A_ | boolean NOT for long/int/byte
 
 #### NOTx
 Means `$A = !$A;` in C.
 
-- If [*$A*] = 0, then *$A* becomes 1.
-- If [*$A*] ≠ 0, then *$A* becomes 0.
+- If *$A* = 0, *$A* will become 1.
+- If *$A* ≠ 0, *$A* will become 0.
 
 ### Flow control
 
@@ -196,8 +201,8 @@ JI7A/JI8A/JI9A _address_ | jump to *address* if $109/$110/$111 = 0xFF
 CALR _$A_ | jump to memory address stored in *$A* and push the next instruction's address into stack
 CALA _address_ | jump to *address* and push the next instruction's address into stack
 RETN | `POP_ $100`
-PUSH _$A_, _length_ | push registers from *$A*...*$(A + length)* onto the stack
-POP_ _$A_, _length_ | pop data from stack to registers *$A*...*$(A + length)*
+PUSH _$A_ _length_ | push registers from *$A*...$(*A* + *length*) onto the stack
+POP_ _$A_ _length_ | pop data from stack to registers *$A*...$(*A* + *length*)
 
 76-Float
 --------
