@@ -59,11 +59,12 @@ const char* const asm_test =
 	"DATB	0x1 $20\n"
 	"DATB	0xA $10\n"
 	"DATB	0x2 $15\n"
+	"[loop_start]\n"
 	"ADDL	$15 $15\n"
 	"ADDL	$3 $20\n"
 	"CMPI	$3 $10\n"
 	"PUSH	$15 1\n"
-	"JILA	0x01000024\n"
+	"JILA	[loop_start]\n"
 	"HALT\n"
 	"# EOF\n";
 

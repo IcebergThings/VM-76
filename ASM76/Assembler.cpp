@@ -14,6 +14,17 @@ namespace ASM76 {
 	Assembler::Assembler(const char* program) {
 		prg = original_prg = program;
 	}
+
+	//-------------------------------------------------------------------------
+	// ● 汇编用的字符串比较
+	//-------------------------------------------------------------------------
+	struct Tag {
+		char* name;
+		uint32_t pointer;
+	};
+	Tag** tag_list;
+	int tag_count = 0, list_size = 10;
+
 	//-------------------------------------------------------------------------
 	// ● 汇编
 	//-------------------------------------------------------------------------
@@ -24,6 +35,8 @@ namespace ASM76 {
 		// 预留10个指令空位
 		size_t buf_size = 10 * sizeof(Instruct);
 		r.instruct = (Instruct*) malloc(buf_size);
+		// 预留10个tag空位
+		tag_list = new Tag*[10];
 		// 这个指针指向当前正要填充的指令
 		Instruct* current_instruct = r.instruct;
 		while (prg && *prg) switch (*prg) {
@@ -33,6 +46,24 @@ namespace ASM76 {
 		case '\n':
 			prg++;
 			break;
+		case '[': {
+			prg ++;
+
+			char* tagname = new char[20];
+			copy_tagname(tagname);
+			if (tag_count + 1 > list_size) {
+				list_size++;
+				tag_list = (Tag**) realloc(tag_list, list_size * sizeof(Tag**));
+			}
+			Tag* t = new Tag;
+			t->name = tagname;
+			t->pointer = 0x1000000 + (uint32_t) r.size;
+			tag_list[tag_count] = t;
+			tag_count++;
+
+			prg = strchr(prg, '\n') + 1;
+			break;
+		}
 		default: {
 			// 需要添加指令但预留空间不足时，
 			if (r.size > buf_size) {
@@ -111,6 +142,20 @@ namespace ASM76 {
 		prg += len;
 	}
 	//-------------------------------------------------------------------------
+	// ● 复制TAG name
+	//-------------------------------------------------------------------------
+	void Assembler::copy_tagname(char* buf) {
+		for (size_t i = 0; i < 20; i++) {
+			if (check(prg[i], "]")) {
+				memcpy(buf, prg, i);
+				buf[i] = 0;
+				prg += i;
+				return;
+			}
+		}
+		error("tag name too long");
+	}
+	//-------------------------------------------------------------------------
 	// ● 复制opcode
 	//-------------------------------------------------------------------------
 	void Assembler::copy_opcode(char* buf) {
@@ -168,7 +213,39 @@ namespace ASM76 {
 	// ● 读取地址参数
 	//-------------------------------------------------------------------------
 	uint32_t Assembler::read_address() {
+		char* check = (char*) prg;
+		while (*check != '\n') {
+			if (*check == '[') {
+				prg = check;
+				return read_address_tag();
+				break;
+			}
+			check++;
+		}
 		return read_immediate_u32();
+	}
+	//-------------------------------------------------------------------------
+	// ● 读取地址参数 - Tag
+	//-------------------------------------------------------------------------
+	uint32_t Assembler::read_address_tag() {
+		char buf[20];
+		for (size_t i = 0; i < 20; i++) {
+			if (check(prg[i], "]")) {
+				memcpy(buf, prg - 1, i);
+				buf[i] = 0;
+				prg += i + 1;
+
+				for (int i = 0; i < tag_count; i++) {
+					if (strcmp(buf, tag_list[i]->name)) {
+						return tag_list[i]->pointer;
+					}
+				}
+				error("Tag name not found");
+				return 0;
+			}
+		}
+		error("tag name too long");
+		return 0;
 	}
 	//-------------------------------------------------------------------------
 	// ● 读取寄存器参数

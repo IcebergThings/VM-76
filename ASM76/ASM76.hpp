@@ -58,10 +58,12 @@ namespace ASM76 {
 		void skip(char);
 		void skip(const char* s, const char* error_msg);
 		void copy_opcode(char* buf);
+		void copy_tagname(char* buf);
 		enum InstructionOpcode parse_opcode(const char* str);
 		void read_parameters(Instruct* i);
 		uint32_t read_immediate_u32();
 		uint32_t read_address();
+		uint32_t read_address_tag();
 		uint32_t read_register();
 	};
 	//-------------------------------------------------------------------------
