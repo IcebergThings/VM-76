@@ -277,3 +277,14 @@ LDBL | Load up the BIOS function list, you need to do this operation at the very
 BIOS _function_id_ | Do a operation provided by BIOS function list
 
 Any BIOS operation are in C style functions. i.e. You need to PUSH the necessary values for the functions in C style function call.
+
+Function id | BIOS Function     | Description
+----------- | ----------------- | -----------
+0001        | putc(char c)      | Print a char in the console
+0002        | puts(char* c)     | Print a string in the console
+0003        | puthex(uint64_t l)| Print hexadecimal
+0004        | puthex(uint32_t i)| Print hexadecimal
+0005        | puthex(uint8_t b) | Print hexadecimal
+0006        | puti(int64_t l)   | Print decimal
+0007        | puti(int32_t i)   | Print decimal
+0008        | putb( int8_t i)   | Print decimal
