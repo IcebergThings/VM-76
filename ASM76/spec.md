@@ -93,11 +93,25 @@ ADDL $1 $1
 ADDL $1 $1
 ADDL $1 $1
 
+# You can call adress tags by using []
+JMPA [PlaceToStart]
+PUSH $1, 4
+
 # Register No. is decimal.
+# Use [] to tag current adress
+[PlaceToStart]
 MVRL $1 $31
 DATI 4 $11
 DIVL $1 $11
 HALT
+
+# You can place data after HALT, these data will not be executed
+DB 'A'
+DB 0xFF
+DI 0xFFFFFFFF
+DL 0xFFFFFFFFFFFFFFFF
+FILL 0xABCAA312341
+FILL "A brown dog"
 ```
 
 Instruction set reference
@@ -259,3 +273,18 @@ You need to set bit 7 of $110 to 1 first in order to make it work.
 
 Instruction | Description
 ----------- | -----------
+BIOS _function_id_ | Do a operation provided by BIOS function list
+BIOR _$A_ | Do a operation provided by BIOS function list, function id should be put in _$A_ as a int
+
+Any BIOS operation are in C style functions. i.e. You need to PUSH the necessary values for the functions in C style function call.
+
+Function id | BIOS Function     | Description
+----------- | ----------------- | -----------
+0001        | putc(char c)      | Print a char in the console
+0002        | puts(char* c)     | Print a string in the console
+0003        | puthex(uint64_t l)| Print hexadecimal
+0004        | puthex(uint32_t i)| Print hexadecimal
+0005        | puthex(uint8_t b) | Print hexadecimal
+0006        | puti(int64_t l)   | Print decimal
+0007        | puti(int32_t i)   | Print decimal
+0008        | putb( int8_t i)   | Print decimal

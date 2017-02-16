@@ -4,11 +4,11 @@
 
 include ../inc.makefile
 
-TARGET = libASM76.so
+TARGET = libASM76.dylib
 
 LDLIBS += $(shell pkg-config --libs --static glm)
 LDFLAGS += -shared
-CXXFLAGS += -I.. $(shell pkg-config --cflags glm)
+CXXFLAGS += -I.. $(shell pkg-config --cflags glm) -fPIC
 
 all: $(TARGET)
 
@@ -21,6 +21,11 @@ $(TARGET): $(OBJECTS)
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
 VMtest: VMtest.cxx $(TARGET)
-	$(CXX) $^ -o $@ $(CXXFLAGS) $(TARGET)
+	$(CXX) -c VMtest.cxx -o VMtest.o $(CXXFLAGS)
+	$(CCLD) VMtest.o ./libASM76.dylib -lstdc++ -o VMtest
+	./VMtest
+
+clean:
+	rm -f $(OBJECTS) $(TARGET) VMtest
 
 .PHONY: all
