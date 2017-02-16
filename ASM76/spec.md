@@ -104,6 +104,14 @@ MVRL $1 $31
 DATI 4 $11
 DIVL $1 $11
 HALT
+
+# You can place data after HALT, these data will not be executed
+DB 'A'
+DB 0xFF
+DI 0xFFFFFFFF
+DL 0xFFFFFFFFFFFFFFFF
+FILL 0xABCAA312341
+FILL "A brown dog"
 ```
 
 Instruction set reference
@@ -265,3 +273,7 @@ You need to set bit 7 of $110 to 1 first in order to make it work.
 
 Instruction | Description
 ----------- | -----------
+LDBL | Load up the BIOS function list, you need to do this operation at the very beginning
+BIOS _function_id_ | Do a operation provided by BIOS function list
+
+Any BIOS operation are in C style functions. i.e. You need to PUSH the necessary values for the functions in C style function call.
