@@ -14,17 +14,6 @@ namespace ASM76 {
 	Assembler::Assembler(const char* program) {
 		prg = original_prg = program;
 	}
-
-	//-------------------------------------------------------------------------
-	// ● 汇编用的字符串比较
-	//-------------------------------------------------------------------------
-	struct Tag {
-		char* name;
-		uint32_t pointer;
-	};
-	Tag** tag_list;
-	int tag_count = 0, list_size = 10;
-
 	//-------------------------------------------------------------------------
 	// ● 汇编
 	//-------------------------------------------------------------------------
@@ -47,8 +36,7 @@ namespace ASM76 {
 			prg++;
 			break;
 		case '[': {
-			prg ++;
-
+			prg++;
 			char* tagname = new char[20];
 			copy_tagname(tagname);
 			if (tag_count + 1 > list_size) {

@@ -48,9 +48,16 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	class Assembler {
 	private:
+		Tag** tag_list;
 		const char* original_prg;
 		const char* prg;
+		int tag_count = 0;
+		int list_size = 10;
 	public:
+		struct Tag {
+			char* name;
+			uint32_t pointer;
+		};
 		Assembler(const char*);
 		Program assemble();
 		void error(const char* message);

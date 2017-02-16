@@ -93,25 +93,34 @@ ADDL $1 $1
 ADDL $1 $1
 ADDL $1 $1
 
-# You can call adress tags by using []
+# A tag (label) can be used as an address.
 JMPA [PlaceToStart]
 PUSH $1, 4
 
-# Register No. is decimal.
-# Use [] to tag current adress
+# You can make adress tags by using [].
+# Use [some_name] to tag the current adress.
 [PlaceToStart]
+
+# Register No. is decimal.
 MVRL $1 $31
 DATI 4 $11
 DIVL $1 $11
 HALT
 
-# You can place data after HALT, these data will not be executed
-DB 'A'
-DB 0xFF
-DI 0xFFFFFFFF
-DL 0xFFFFFFFFFFFFFFFF
-FILL 0xABCAA312341
-FILL "A brown dog"
+# You can place data after HALT.
+# Since the machine is HALTed, they will not get executed.
+RAWB 'A'
+RAWB 0xFF
+RAWI 0xFFFFFFFF
+
+# You can use lower or upper case letters in hexadecimal numbers.
+# Of course, we don't recommend you to mix them.
+RAWL 0xfFfFfFfFfFfFfFfF
+FILL 0xABCaa312341
+
+# String literals are also supported.
+# Although it's WIP.
+FILL "A slow lazy fox swirled across the brown dog."
 ```
 
 Instruction set reference
@@ -274,17 +283,17 @@ You need to set bit 7 of $110 to 1 first in order to make it work.
 Instruction | Description
 ----------- | -----------
 BIOS _function_id_ | Do a operation provided by BIOS function list
-BIOR _$A_ | Do a operation provided by BIOS function list, function id should be put in _$A_ as a int
+BIOR _$A_ | Do a operation provided by BIOS function list, function id should be put in _$A_ as an int
 
-Any BIOS operation are in C style functions. i.e. You need to PUSH the necessary values for the functions in C style function call.
+Any BIOS operation are in C style functions, i.e. You need to PUSH the necessary values for the functions in C style function call.
 
-Function id | BIOS Function     | Description
------------ | ----------------- | -----------
-0001        | putc(char c)      | Print a char in the console
-0002        | puts(char* c)     | Print a string in the console
-0003        | puthex(uint64_t l)| Print hexadecimal
-0004        | puthex(uint32_t i)| Print hexadecimal
-0005        | puthex(uint8_t b) | Print hexadecimal
-0006        | puti(int64_t l)   | Print decimal
-0007        | puti(int32_t i)   | Print decimal
-0008        | putb( int8_t i)   | Print decimal
+Function ID | BIOS Function | Description
+----------- | ------------- | -----------
+0001 | putc(uint8_t c)      | Print *c* as a byte character
+0002 | puts(uint32_t addr)  | Print a null-terminated string starting from memory address *addr*
+0003 | puthex(uint64_t x)   | Print *x* as a hexadecimal number
+0004 | puthex(uint32_t x)   | Print *x* as a hexadecimal number
+0005 | puthex(uint8_t x)    | Print *x* as a hexadecimal number
+0006 | putl(uint64_t x)     | Print *x* as a decimal number
+0007 | puti(uint32_t x)     | Print *x* as a decimal number
+0008 | putb(uint8_t x)      | Print *x* as a decimal number
