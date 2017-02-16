@@ -93,7 +93,13 @@ ADDL $1 $1
 ADDL $1 $1
 ADDL $1 $1
 
+# You can call adress tags by using []
+JMPA [PlaceToStart]
+PUSH $1, 4
+
 # Register No. is decimal.
+# Use [] to tag current adress
+[PlaceToStart]
 MVRL $1 $31
 DATI 4 $11
 DIVL $1 $11
