@@ -273,7 +273,6 @@ You need to set bit 7 of $110 to 1 first in order to make it work.
 
 Instruction | Description
 ----------- | -----------
-LDBL | Load up the BIOS function list, you need to do this operation at the very beginning
 BIOS _function_id_ | Do a operation provided by BIOS function list
 BIOR _$A_ | Do a operation provided by BIOS function list, function id should be put in _$A_ as a int
 
