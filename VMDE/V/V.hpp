@@ -20,9 +20,8 @@ namespace V {
 	// ● VBinaryFileReader
 	//-------------------------------------------------------------------------
 	class VBinaryFileReader {
-	private:
-		FILE* f;
 	public:
+		FILE* f;
 		VBinaryFileReader(const char* filename);
 		~VBinaryFileReader();
 		int8_t read_i8();
@@ -43,9 +42,8 @@ namespace V {
 	// ● VBinaryFileWriter
 	//-------------------------------------------------------------------------
 	class VBinaryFileWriter {
-	private:
-		FILE* f;
 	public:
+		FILE* f;
 		VBinaryFileWriter(const char* filename);
 		~VBinaryFileWriter();
 		template <class T> void write_directly(T value) {
