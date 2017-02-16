@@ -275,6 +275,7 @@ Instruction | Description
 ----------- | -----------
 LDBL | Load up the BIOS function list, you need to do this operation at the very beginning
 BIOS _function_id_ | Do a operation provided by BIOS function list
+BIOR _$A_ | Do a operation provided by BIOS function list, function id should be put in _$A_ as a int
 
 Any BIOS operation are in C style functions. i.e. You need to PUSH the necessary values for the functions in C style function call.
 
