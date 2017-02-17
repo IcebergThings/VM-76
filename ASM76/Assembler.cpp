@@ -56,7 +56,7 @@ namespace ASM76 {
 		case '\n':
 			prg++;
 			break;
-		default: {
+		default:
 			Instruct i;
 			// 读取opcode
 			char opcode[13];
@@ -71,7 +71,6 @@ namespace ASM76 {
 			for (size_t i = 0; i < sizeof(Instruct); i++) {
 				instructs.push(b[i]);
 			}
-		}
 		}
 		Program r;
 		r.instruct = (Instruct*) instructs.start;
