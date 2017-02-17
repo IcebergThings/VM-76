@@ -4,13 +4,26 @@
 //   注意：这个目录里的很多文件都是模板类，它们有单独的头文件。
 //=============================================================================
 
-#include "VExplosion.hpp"
+#include <cstddef>
+#include <cstdlib>
+#include <cstdint>
+#include <cstring>
+#include <cassert>
+#ifndef _INCLUDE_V_HPP
+#define _INCLUDE_V_HPP
 
+#ifndef error
+	#include <cstdio>
+	#define error(x) fprintf(stderr, "%s\n", x)
+#endif
+
+#include "VExplosion.hpp"
 namespace V {
 	//-------------------------------------------------------------------------
 	// ● 模板类和子头
 	//-------------------------------------------------------------------------
 	#include "VMath.hpp"
+	#include "VVector.hpp"
 	#include "VRingBuffer.hpp"
 	//-------------------------------------------------------------------------
 	// ● Endian detecting
@@ -62,3 +75,4 @@ namespace V {
 
 // 自杀式命名空间
 using namespace V;
+#endif

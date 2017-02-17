@@ -78,6 +78,14 @@ Instruct speed_test_prgm[] = {
 	{HALT, 0, 0},
 };
 
+const char* const tag_test =
+	"JMPA [end]\n"
+	"ADDI $50 $100\n"
+	"MINI $25 $50\n"
+	"[end]\n"
+	"HALT\n"
+	"# EOF\n";
+
 #include <ratio>
 #include <chrono>
 using namespace std;
@@ -113,6 +121,7 @@ int main() {
 	{
 		printf("===== Assembler =====\n");
 		Assembler a(asm_test);
+		a.scan();
 		Program p = a.assemble();
 		Disassembler d(p);
 		char* s = d.disassemble();
@@ -124,6 +133,17 @@ int main() {
 		v.execute(false);
 		v.dump_registers();
 		free(p.instruct);
+	}
+
+	{
+		printf("===== Assembler: Tag Test =====\n");
+		Assembler a(tag_test);
+		a.scan();
+		Program p = a.assemble();
+		Disassembler d(p);
+		char* s = d.disassemble();
+		puts(s);
+		free(s);
 	}
 
 	{

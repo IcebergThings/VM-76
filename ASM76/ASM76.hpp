@@ -8,6 +8,9 @@
 #include <cstring>
 #include <cstdio>
 
+#include "V/V.hpp"
+#undef error
+
 #ifndef _INCLUDE_ASM76_H
 #define _INCLUDE_ASM76_H
 
@@ -47,19 +50,21 @@ namespace ASM76 {
 	// ● 汇编器
 	//-------------------------------------------------------------------------
 	class Assembler {
-	private:
-		Tag** tag_list;
-		const char* original_prg;
-		const char* prg;
-		int tag_count = 0;
-		int list_size = 10;
 	public:
 		struct Tag {
 			char* name;
 			uint32_t pointer;
 		};
+		static const size_t MAX_TAG_NAME_SIZE = 256;
+	private:
+		const char* original_prg;
+		const char* prg;
+		VVector<Tag> tags;
+	public:
 		Assembler(const char*);
+		void scan();
 		Program assemble();
+	private:
 		void error(const char* message);
 		bool check(char c, const char* s);
 		void skip(char);
