@@ -31,7 +31,7 @@ namespace ASM76 {
 		}
 		default:
 			size += sizeof(Instruct);
-			// intended fallthrough
+			[[fallthrough]];
 		case '#':
 			prg = strchr(prg, '\n');
 			if (!prg) {
