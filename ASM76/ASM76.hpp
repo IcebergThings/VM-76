@@ -28,7 +28,7 @@ namespace ASM76 {
 		ADDRESS,
 		REGISTER,
 	};
-	struct Instruct {
+	struct [[gnu::packed]] Instruct {
 		uint16_t opcode;
 		uint32_t a;
 		uint32_t b;
