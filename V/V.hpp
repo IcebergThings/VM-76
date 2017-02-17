@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <cstring>
 #include <cassert>
+#ifndef _INCLUDE_V_HPP
+#define _INCLUDE_V_HPP
 
 #ifndef error
 	#include <cstdio>
@@ -73,3 +75,4 @@ namespace V {
 
 // 自杀式命名空间
 using namespace V;
+#endif

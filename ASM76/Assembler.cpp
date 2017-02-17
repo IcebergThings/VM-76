@@ -19,15 +19,7 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	Program Assembler::assemble() {
 		Program r;
-		// 实际已用0字节
-		r.size = 0;
-		// 预留10个指令空位
-		size_t buf_size = 10 * sizeof(Instruct);
-		r.instruct = (Instruct*) malloc(buf_size);
-		// 预留10个tag空位
-		tag_list = new Tag*[10];
-		// 这个指针指向当前正要填充的指令
-		Instruct* current_instruct = r.instruct;
+		VVector<uint8_t, 120, false> instructs;
 		while (prg && *prg) switch (*prg) {
 		case '#':
 			prg = strchr(prg, '\n') + 1;
@@ -37,39 +29,29 @@ namespace ASM76 {
 			break;
 		case '[': {
 			prg++;
-			char* tagname = new char[20];
+			char* tagname = new char[MAX_TAG_NAME_SIZE];
 			copy_tagname(tagname);
-			if (tag_count + 1 > list_size) {
-				list_size++;
-				tag_list = (Tag**) realloc(tag_list, list_size * sizeof(Tag**));
-			}
-			Tag* t = new Tag;
-			t->name = tagname;
-			t->pointer = 0x1000000 + (uint32_t) r.size;
-			tag_list[tag_count] = t;
-			tag_count++;
-
-			prg = strchr(prg, '\n') + 1;
+			Tag tag;
+			tag.name = tagname;
+			tag.pointer = 0x1000000 + (uint32_t) r.size;
+			tags.push(tag);
 			break;
 		}
 		default: {
-			// 需要添加指令但预留空间不足时，
-			if (r.size > buf_size) {
-				// 补充30个指令空位。
-				buf_size += 30 * sizeof(Instruct);
-				r.instruct = (Instruct*) realloc(r.instruct, r.size);
-			}
+			Instruct i;
 			// 读取opcode
 			char opcode[13];
 			copy_opcode(opcode);
-			current_instruct->opcode = parse_opcode(opcode);
+			i.opcode = parse_opcode(opcode);
 			// 读取参数
-			read_parameters(current_instruct);
-			// 换行
+			read_parameters(&i);
+			// 读取换行
 			skip('\n');
-			// 填充完毕，指针移位
-			r.size += sizeof(Instruct);
-			current_instruct++;
+			// 将Instruct转换为字节数组保存
+			auto b = (uint8_t*) &i;
+			for (size_t i = 0; i < sizeof(Instruct); i++) {
+				instructs.push(b[i]);
+			}
 		}
 		}
 		return r;
@@ -130,14 +112,19 @@ namespace ASM76 {
 		prg += len;
 	}
 	//-------------------------------------------------------------------------
-	// ● 复制TAG name
+	// ● 复制标签名称
 	//-------------------------------------------------------------------------
 	void Assembler::copy_tagname(char* buf) {
-		for (size_t i = 0; i < 20; i++) {
-			if (check(prg[i], "]")) {
+		for (size_t i = 0; i < MAX_TAG_NAME_SIZE; i++) {
+			if (prg[i] == '\n') {
+				error("tag name contains newline");
+				return;
+			}
+			if (prg[i] == ']') {
 				memcpy(buf, prg, i);
 				buf[i] = 0;
 				prg += i;
+				skip('\n');
 				return;
 			}
 		}
@@ -201,36 +188,26 @@ namespace ASM76 {
 	// ● 读取地址参数
 	//-------------------------------------------------------------------------
 	uint32_t Assembler::read_address() {
-		char* check = (char*) prg;
-		while (*check != '\n') {
-			if (*check == '[') {
-				prg = check;
-				return read_address_tag();
-				break;
-			}
-			check++;
-		}
-		return read_immediate_u32();
+		return prg[1] == '[' ? read_address_tag() : read_immediate_u32();
 	}
 	//-------------------------------------------------------------------------
-	// ● 读取地址参数 - Tag
+	// ● 读取标签参数
 	//-------------------------------------------------------------------------
 	uint32_t Assembler::read_address_tag() {
-		char buf[20];
-		for (size_t i = 0; i < 20; i++) {
-			if (check(prg[i], "]")) {
-				memcpy(buf, prg - 1, i);
-				buf[i] = 0;
-				prg += i + 1;
-
-				for (int i = 0; i < tag_count; i++) {
-					if (strcmp(buf, tag_list[i]->name)) {
-						return tag_list[i]->pointer;
-					}
+		skip(" \t\v", "expected whitespace");
+		skip('[');
+		char name[MAX_TAG_NAME_SIZE];
+		for (size_t i = 0; i < MAX_TAG_NAME_SIZE + 1; i++) if (prg[i] == ']') {
+			memcpy(name, prg, i);
+			name[i] = 0;
+			prg += i + 1;
+			for (size_t i = 0; i < tags.size(); i++) {
+				if (strcmp(name, tags[i].name) == 0) {
+					return tags[i].pointer;
 				}
-				error("Tag name not found");
-				return 0;
 			}
+			error("tag name not found");
+			return 0;
 		}
 		error("tag name too long");
 		return 0;
