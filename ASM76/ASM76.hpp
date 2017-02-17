@@ -62,7 +62,9 @@ namespace ASM76 {
 		VVector<Tag> tags;
 	public:
 		Assembler(const char*);
+		void scan();
 		Program assemble();
+	private:
 		void error(const char* message);
 		bool check(char c, const char* s);
 		void skip(char);

@@ -121,6 +121,7 @@ int main() {
 	{
 		printf("===== Assembler =====\n");
 		Assembler a(asm_test);
+		a.scan();
 		Program p = a.assemble();
 		Disassembler d(p);
 		char* s = d.disassemble();
@@ -137,6 +138,7 @@ int main() {
 	{
 		printf("===== Assembler: Tag Test =====\n");
 		Assembler a(tag_test);
+		a.scan();
 		Program p = a.assemble();
 		Disassembler d(p);
 		char* s = d.disassemble();

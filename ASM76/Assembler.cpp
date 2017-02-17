@@ -14,27 +14,48 @@ namespace ASM76 {
 		prg = original_prg = program;
 	}
 	//-------------------------------------------------------------------------
-	// ● 汇编
+	// ● 第一遍扫描（扫描标签）
 	//-------------------------------------------------------------------------
-	Program Assembler::assemble() {
-		VVector<uint8_t, 120, false> instructs;
+	void Assembler::scan() {
+		uint32_t size = 0x1000000;
 		while (prg && *prg) switch (*prg) {
-		case '#':
-			prg = strchr(prg, '\n') + 1;
-			break;
-		case '\n':
-			prg++;
-			break;
 		case '[': {
 			prg++;
 			char* tagname = new char[MAX_TAG_NAME_SIZE];
 			copy_tagname(tagname);
 			Tag tag;
 			tag.name = tagname;
-			tag.pointer = 0x1000000 + (uint32_t) instructs.size();
+			tag.pointer = size;
 			tags.push(tag);
 			break;
 		}
+		default:
+			size += sizeof(Instruct);
+			// intended fallthrough
+		case '#':
+			prg = strchr(prg, '\n');
+			if (!prg) {
+				prg = "(no source)\n";
+				error("unexpected EOF: please add a newline at the end");
+			}
+			prg++;
+			break;
+		}
+		prg = original_prg;
+	}
+	//-------------------------------------------------------------------------
+	// ● 第二遍扫描（汇编）
+	//-------------------------------------------------------------------------
+	Program Assembler::assemble() {
+		VVector<uint8_t, 120, false> instructs;
+		while (prg && *prg) switch (*prg) {
+		case '#':
+		case '[':
+			prg = strchr(prg, '\n') + 1;
+			break;
+		case '\n':
+			prg++;
+			break;
 		default: {
 			Instruct i;
 			// 读取opcode
@@ -67,7 +88,11 @@ namespace ASM76 {
 		// spp = start of printed program
 		while (p > original_prg && p[-1] != '\n') p--;
 		const char* spp = p;
-		while (!check(*p, "\n")) putchar(*p++);
+		while (!check(*p, "\n")) {
+			char c = *p++;
+			if (c == '\t') c = ' ';
+			putchar(c);
+		}
 		putchar('\n');
 		// print the caret
 		int loc = prg - spp;
@@ -207,6 +232,7 @@ namespace ASM76 {
 					return tags[i].pointer;
 				}
 			}
+			printf("* Note: tag name = %s\n", name);
 			error("tag name not found");
 			return 0;
 		}
