@@ -4,8 +4,17 @@
 //   注意：这个目录里的很多文件都是模板类，它们有单独的头文件。
 //=============================================================================
 
-#include "VExplosion.hpp"
+#include <cstddef>
+#include <cstdlib>
+#include <cstdint>
+#include <cstring>
+#include <cassert>
 
+#ifndef error
+	#define error(x) fprintf(stderr, "%s\n", x)
+#endif
+
+#include "VExplosion.hpp"
 namespace V {
 	//-------------------------------------------------------------------------
 	// ● 模板类和子头

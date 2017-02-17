@@ -11,25 +11,32 @@ template <
 	// In these case should cleanup be false.
 	bool cleanup = true
 > class VVector {
-public:
 	//-------------------------------------------------------------------------
 	// ● 实例变量
 	//-------------------------------------------------------------------------
+private:
+	size_t capacity; // in numbers of objects
+public:
 	T* start;
 	T* end;
-	size_t capacity; // in numbers of objects
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
 	VVector() {
 		capacity = initial_capacity;
-		start = end = malloc(capacity * sizeof(T));
+		start = end = (T*) malloc(capacity * sizeof(T));
 	}
 	//-------------------------------------------------------------------------
 	// ● 析构
 	//-------------------------------------------------------------------------
 	~VVector() {
 		if (cleanup) free(start);
+	}
+	//-------------------------------------------------------------------------
+	// ● 获取元素
+	//-------------------------------------------------------------------------
+	T& operator[](size_t i) {
+		return start[i];
 	}
 	//-------------------------------------------------------------------------
 	// ● 获取元素个数
@@ -41,14 +48,14 @@ public:
 	// ● 在末尾追加元素
 	//-------------------------------------------------------------------------
 	void push(T x) {
-		if (size() >= capacity) {
-			size_t size = size();
+		size_t s = size();
+		if (s >= capacity) {
 			capacity += capacity >> 1;
 			// 检查什么空指针？！
 			// 如果连内存都搞不到，这个程序运行着还有什么意义？
-			start = realloc(start, capacity);
+			start = (T*) realloc(start, capacity);
 			// end may be invalidated
-			end = start + size;
+			end = start + s;
 		}
 		*end++ = x;
 	}
