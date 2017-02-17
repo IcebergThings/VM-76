@@ -7,7 +7,6 @@
 #include "ASM76.hpp"
 
 namespace ASM76 {
-	#define SPACE " \t\v"
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
@@ -18,7 +17,6 @@ namespace ASM76 {
 	// ● 汇编
 	//-------------------------------------------------------------------------
 	Program Assembler::assemble() {
-		Program r;
 		VVector<uint8_t, 120, false> instructs;
 		while (prg && *prg) switch (*prg) {
 		case '#':
@@ -33,7 +31,7 @@ namespace ASM76 {
 			copy_tagname(tagname);
 			Tag tag;
 			tag.name = tagname;
-			tag.pointer = 0x1000000 + (uint32_t) r.size;
+			tag.pointer = 0x1000000 + (uint32_t) instructs.size();
 			tags.push(tag);
 			break;
 		}
@@ -54,6 +52,9 @@ namespace ASM76 {
 			}
 		}
 		}
+		Program r;
+		r.instruct = (Instruct*) instructs.start;
+		r.size = instructs.size();
 		return r;
 	}
 	//-------------------------------------------------------------------------
@@ -123,7 +124,7 @@ namespace ASM76 {
 			if (prg[i] == ']') {
 				memcpy(buf, prg, i);
 				buf[i] = 0;
-				prg += i;
+				prg += i + 1;
 				skip('\n');
 				return;
 			}
