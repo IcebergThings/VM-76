@@ -11,6 +11,7 @@
 #include <cassert>
 
 #ifndef error
+	#include <cstdio>
 	#define error(x) fprintf(stderr, "%s\n", x)
 #endif
 

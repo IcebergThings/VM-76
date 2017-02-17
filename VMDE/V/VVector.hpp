@@ -6,7 +6,7 @@
 
 template <
 	class T,
-	size_t initial_capacity = 10,
+	size_t initial_capacity = 10, // number of objects
 	// Sometimes we'd like to reserve the memory but destruct this class.
 	// In these case should cleanup be false.
 	bool cleanup = true
@@ -15,7 +15,7 @@ template <
 	// ● 实例变量
 	//-------------------------------------------------------------------------
 private:
-	size_t capacity; // in numbers of objects
+	size_t capacity; // number of objects
 public:
 	T* start;
 	T* end;
@@ -48,14 +48,14 @@ public:
 	// ● 在末尾追加元素
 	//-------------------------------------------------------------------------
 	void push(T x) {
-		size_t s = size();
-		if (s >= capacity) {
+		size_t count = size();
+		if (count >= capacity) {
 			capacity += capacity >> 1;
 			// 检查什么空指针？！
 			// 如果连内存都搞不到，这个程序运行着还有什么意义？
-			start = (T*) realloc(start, capacity);
+			start = (T*) realloc(start, capacity * sizeof(T));
 			// end may be invalidated
-			end = start + s;
+			end = start + count;
 		}
 		*end++ = x;
 	}
@@ -64,6 +64,7 @@ public:
 	//-------------------------------------------------------------------------
 	T pop() {
 		assert(end > start);
-		return *end--;
+		end--;
+		return *end;
 	}
 };
