@@ -1,30 +1,39 @@
 //=============================================================================
-// ■ VBinaryFileWriter.cpp
+// ■ VBinaryFileWriter.hpp
 //-----------------------------------------------------------------------------
 //   在各计算机之间兼容的二进制文件写出类。（Little-endian）
 //=============================================================================
 
-#include "../global.hpp"
+#define ERROR_MESSAGE "error: lorem ipsum"
 
-namespace V {
-	#define ERROR_MESSAGE "error: lorem ipsum"
+class VBinaryFileWriter {
+public:
+	//-------------------------------------------------------------------------
+	// ● 成员
+	//-------------------------------------------------------------------------
+	FILE* f;
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
-	VBinaryFileWriter::VBinaryFileWriter(const char* filename) {
+	VBinaryFileWriter(const char* filename) {
 		f = fopen(filename, "wb");
-		if (!f) error(ERROR_MESSAGE);
 	}
 	//-------------------------------------------------------------------------
 	// ● 析构
 	//-------------------------------------------------------------------------
-	VBinaryFileWriter::~VBinaryFileWriter() {
+	~VBinaryFileWriter() {
 		fclose(f);
 	}
 	//-------------------------------------------------------------------------
+	// ● 直接写入
+	//-------------------------------------------------------------------------
+		template <class T> void write_directly(T value) {
+			if (fwrite(&value, sizeof(T), 1, f) < 1) error("write_directly");
+		}
+	//-------------------------------------------------------------------------
 	// ● 写入1字节int
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_i8(int8_t value) {
+	void write_i8(int8_t value) {
 		write_u8((uint8_t) value);
 	}
 	//-------------------------------------------------------------------------
@@ -34,7 +43,7 @@ namespace V {
 		if (fputc(value & 0xff, f) < 0) error(ERROR_MESSAGE)
 	#define WRITE_CHAR_ \
 		if (fputc((value >>= 8) & 0xff, f) < 0) error(ERROR_MESSAGE)
-	void VBinaryFileWriter::write_i32(int32_t value) {
+	void write_i32(int32_t value) {
 		if (is_little_endian()) {
 			write_directly(value);
 		} else {
@@ -47,7 +56,7 @@ namespace V {
 	//-------------------------------------------------------------------------
 	// ● 写入8字节int
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_i64(int64_t value) {
+	void write_i64(int64_t value) {
 		if (is_little_endian()) {
 			write_directly(value);
 		} else {
@@ -66,31 +75,33 @@ namespace V {
 	//-------------------------------------------------------------------------
 	// ● 写入1字节unsigned
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_u8(uint8_t value) {
+	void write_u8(uint8_t value) {
 		if (fputc(value, f) < 0) error(ERROR_MESSAGE);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入4字节unsigned
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_u32(uint32_t value) {
+	void write_u32(uint32_t value) {
 		write_i32((int32_t) value);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入8字节unsigned
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_u64(uint64_t value) {
+	void write_u64(uint64_t value) {
 		write_i64((int64_t) value);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入4字节float
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_float(float value) {
+	void write_float(float value) {
 		write_directly<float>(value);
 	}
 	//-------------------------------------------------------------------------
 	// ● 写入8字节double
 	//-------------------------------------------------------------------------
-	void VBinaryFileWriter::write_double(double value) {
+	void write_double(double value) {
 		write_directly<double>(value);
 	}
-}
+};
+
+#undef ERROR_MESSAGE
