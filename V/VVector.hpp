@@ -6,7 +6,6 @@
 
 template <
 	class T,
-	size_t initial_capacity = 10, // number of objects
 	// Sometimes we'd like to reserve the memory but destruct this class.
 	// In these case should cleanup be false.
 	bool cleanup = true
@@ -21,8 +20,9 @@ public:
 	T* end;
 	//-------------------------------------------------------------------------
 	// ● 构造
+	//   initial_capacity : number of objects of which to be reserved space
 	//-------------------------------------------------------------------------
-	VVector() {
+	VVector(size_t initial_capacity = 10) {
 		capacity = initial_capacity;
 		start = end = (T*) malloc(capacity * sizeof(T));
 	}
