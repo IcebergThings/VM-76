@@ -22,7 +22,7 @@ $(TARGET): $(OBJECTS)
 
 VMtest: VMtest.cxx $(TARGET)
 	$(CXX) -c VMtest.cxx -o VMtest.o $(CXXFLAGS)
-	$(CCLD) VMtest.o ./libASM76.dylib -lstdc++ -o VMtest
+	$(CCLD) VMtest.o ./libASM76.dylib -lstdc++ -m -o VMtest
 	./VMtest
 
 clean:
