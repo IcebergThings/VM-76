@@ -110,7 +110,6 @@ void init_graphics(int w, int h, const char* title) {
 // ● 初始化引擎
 //-----------------------------------------------------------------------------
 void init_engine(int w, int h, const char* title) {
-	VMath::init();
 	Util::init();
 	log("initializing the engine");
 	srand(time(NULL));

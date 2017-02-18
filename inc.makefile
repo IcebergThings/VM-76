@@ -28,7 +28,13 @@ ifndef _INCLUDE_INC_MAKEFILE
 	# Global project settings.
 	CXX = clang++
 	CCLD = clang
-	CFLAGS = -Wall -Wextra -Wno-unused-parameter -msse4.1 -mtune=core2
+	CFLAGS = -Wall -Wextra \
+		-Wno-unused-parameter \
+		-msse4.1 -mtune=core2
+	ifndef GCC
+		# GCC doesn't support this.
+		CFLAGS += -Wimplicit-fallthrough
+	endif
 	CXXFLAGS = $(CFLAGS) -std=c++14 -DGLM_FORCE_SSE41
 	LDFLAGS =
 	LDLIBS = -lstdc++
@@ -49,7 +55,6 @@ ifndef _INCLUDE_INC_MAKEFILE
 		CCLD = gcc
 	else ifeq "$(PLATFORM)" "gnu"
 	else ifeq "$(PLATFORM)" "mac"
-		CXX = clang
 	endif
 
 	# Useful variables.

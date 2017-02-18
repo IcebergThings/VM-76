@@ -8,6 +8,9 @@
 #include <cstring>
 #include <cstdio>
 
+#include "V/V.hpp"
+#undef error
+
 #ifndef _INCLUDE_ASM76_H
 #define _INCLUDE_ASM76_H
 
@@ -25,7 +28,7 @@ namespace ASM76 {
 		ADDRESS,
 		REGISTER,
 	};
-	struct Instruct {
+	struct [[gnu::packed]] Instruct {
 		uint16_t opcode;
 		uint32_t a;
 		uint32_t b;
@@ -47,12 +50,21 @@ namespace ASM76 {
 	// ● 汇编器
 	//-------------------------------------------------------------------------
 	class Assembler {
+	public:
+		struct Tag {
+			char* name;
+			uint32_t pointer;
+		};
+		static const size_t MAX_TAG_NAME_SIZE = 256;
 	private:
 		const char* original_prg;
 		const char* prg;
+		VVector<Tag> tags;
 	public:
 		Assembler(const char*);
+		void scan();
 		Program assemble();
+	private:
 		void error(const char* message);
 		bool check(char c, const char* s);
 		void skip(char);
