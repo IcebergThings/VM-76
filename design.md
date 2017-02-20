@@ -7,18 +7,18 @@ design.md
 	- [x] engine state related
 		- [x] get_frame_count
 		- [x] get_fps
-	- [ ] Shaders
+	- [x] Shaders
 		- [x] Load & Compile shaders
 		- [x] Use & Call shaders
-		- [ ] variables binding functions
+		- [x] variables binding functions
 	- [x] GDrawable
 		- [x] Create drawable object
 		- [x] Instanced rendering
 		- [x] Draw Call
 		- [x] Buffer Objects management
-	- [ ] Res::Texture texture resources
+	- [x] Res::Texture texture resources
 		- [x] load texture
-		- [ ] Texture to shader binding
+		- [x] Texture to shader binding
 	- [x] Audio: audio support
 		- [x] Channel: a logical representation of one audio source
 			- [ ] Channel_Mute: outputs no sound
@@ -31,6 +31,17 @@ design.md
 		- [x] play_sound
 			- [x] play_sound
 			- [x] play_loop
+- [ ] ASM76: Scripting and virtual machine
+	- [ ] ASM76 VM
+		- [x] ASM76 bytecode translator architecture
+		- [x] 76-Basic Instruction sets
+		- [ ] 76-Float
+		- [ ] 76-Vectors
+		- [ ] API calls to Game Engine
+	- [x] ASM76 Assembler
+		- [x] Basic Assembler
+		- [x] Basic Deassembler
+	- [ ] (UNDEFINED NAME) high-level programming language
 - [ ] VMGS: game system
 	- [x] main
 	- [ ] Control
@@ -41,7 +52,9 @@ design.md
 	- [ ] Game Objects
 		- [x] Cube (Tiled cube)
 		- [ ] Model
-		- [ ] Terrian
+		- [x] Terrian
+			- [x] Map loader & save
+			- [x] Map vertices & data baker
 		- [ ] Light source
 		- [ ] Entity
 		- [x] object helper class
