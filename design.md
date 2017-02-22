@@ -1,47 +1,44 @@
 design.md
 =========
 
+- [ ] ASM76: the assembly
+	- [ ] spec.md 1.0
+	- [ ] VM implementation
+	- [ ] assembler
+	- [ ] disassembler
+- [ ] ???: a high level programming language that compiles to ASM76
+	- [ ] spec.md 1.0
 - [ ] VMDE: draw engine
 	- [x] init_engine
 	- [x] update
 	- [x] engine state related
 		- [x] get_frame_count
 		- [x] get_fps
-	- [x] Shaders
+	- [ ] Shaders
 		- [x] Load & Compile shaders
 		- [x] Use & Call shaders
-		- [x] variables binding functions
+		- [ ] variables binding functions
 	- [x] GDrawable
 		- [x] Create drawable object
 		- [x] Instanced rendering
 		- [x] Draw Call
 		- [x] Buffer Objects management
-	- [x] Res::Texture texture resources
+	- [ ] Res::Texture: texture resources
 		- [x] load texture
-		- [x] Texture to shader binding
+		- [ ] Texture to shader binding
+	- [ ] Res::AudioCache: (pre)loads an audio file
+		- [ ] load function
 	- [x] Audio: audio support
 		- [x] Channel: a logical representation of one audio source
-			- [ ] Channel_Mute: outputs no sound
-			- [ ] Channel_Noise: outputs white noise
-			- [ ] Channel_Triangle
-			- [ ] Channel_Sine
+			- [x] Channel_Mute: outputs no sound
+			- [x] Channel_Noise: outputs white noise
+			- [x] Channel_Triangle
+			- [x] Channel_Sine
 			- [x] Channel_Vorbis
-		- [ ] stop
+		- [x] stop
 		- [x] play_channel
-		- [x] play_sound
-			- [x] play_sound
-			- [x] play_loop
-- [ ] ASM76: Scripting and virtual machine
-	- [ ] ASM76 VM
-		- [x] ASM76 bytecode translator architecture
-		- [x] 76-Basic Instruction sets
-		- [ ] 76-Float
-		- [ ] 76-Vectors
-		- [ ] API calls to Game Engine
-	- [x] ASM76 Assembler
-		- [x] Basic Assembler
-		- [x] Basic Deassembler
-	- [ ] (UNDEFINED NAME) high-level programming language
+		- [ ] play_music
+		- [ ] play_sound
 - [ ] VMGS: game system
 	- [x] main
 	- [ ] Control
@@ -52,9 +49,7 @@ design.md
 	- [ ] Game Objects
 		- [x] Cube (Tiled cube)
 		- [ ] Model
-		- [x] Terrian
-			- [x] Map loader & save
-			- [x] Map vertices & data baker
+		- [ ] Terrian
 		- [ ] Light source
 		- [ ] Entity
 		- [x] object helper class
