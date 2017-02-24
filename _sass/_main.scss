@@ -1,3 +1,5 @@
+@charset "utf-8";
+
 $font-family: "Source Code Pro", monospace;
 $font-size: 18pt;
 $sd: .1em;
@@ -10,7 +12,7 @@ $shadow-color: rgba(0, 0, 0, .3);
 	font-size: $font-size;
 }
 
-body, p, pre, tt, code, kbd, samp {
+body, p, samp {
 	@include reset;
 }
 
@@ -19,9 +21,26 @@ h1, h2, h3, h4, h5, h6 {
 	margin-top: 1em;
 }
 
+pre, tt, code {
+	@include reset;
+	background-color: rgba(42, 42, 42, .42);
+	pre & {
+		background-color: initial;
+	}
+}
+
 kbd {
+	@include reset;
 	outline: .1em solid currentcolor;
 	box-shadow: 0 0 0 (2 * $sd) $shadow-color, inset 0 0 0 $sd $shadow-color;
+}
+
+table {
+	border-collapse: collapse;
+	th, td {
+		border: .1em solid currentcolor;
+		padding: 0 1em;
+	}
 }
 
 body {
@@ -60,7 +79,7 @@ ul {
 		text-indent: -1em;
 		margin-left: 1em;
 		&::before {
-			content: "* ";
+			content: "• ";
 		}
 	}
 }

@@ -13,8 +13,3 @@ sass:
 
 # ‘serve’ command options
 port: 8076
-
-# GitHub defaults
-kramdown:
-  input: GFM
-  hard_wrap: false
