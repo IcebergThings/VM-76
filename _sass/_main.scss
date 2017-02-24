@@ -1,0 +1,48 @@
+// shadow options
+// the shadow distance
+$sd: .1em;
+$shadow-color: rgba(0, 0, 0, .3);
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: "Source Code Pro", sans-serif;
+	font-size: 16pt;
+	color: white;
+	background-color: gray;
+	background-image: linear-gradient(to right, dimgray, darkgray 10%, lightgray, darkgray 90%, dimgray);
+	text-shadow:
+		(-$sd) (-$sd) 0 $shadow-color,
+		(-$sd) (+$sd) 0 $shadow-color,
+		(+$sd) (-$sd) 0 $shadow-color,
+		(+$sd) (+$sd) 0 $shadow-color;
+}
+
+a {
+	color: white;
+	text-decoration: underline;
+	&:visited {
+		color: white;
+	}
+	&:active {
+		color: yellow;
+	}
+}
+
+header > nav {
+	a {
+		margin-left: 1em;
+	}
+	a:first-child {
+		font-size: 120%;
+		margin-left: 0;
+	}
+}
+
+article {
+	font-kerning: normal;
+	font-variant-ligatures: normal;
+}
