@@ -1,17 +1,17 @@
 design.md
 =========
 
-- [ ] libV: a header-only library for the VM/76 project
+- [ ] VLib: a header-only library for the VM/76 project
 	- [x] VEndian
 	- [x] VExplosion: end your program gracefully
 	- [x] VMath
 	- [x] VVector
 	- [x] VRingBuffer
+	- [ ] VByteStream: file/string abstraction layer
+		- [ ] VByteStream_File
+		- [ ] VByteStream_String
 	- [x] VBinaryFileReader
 	- [x] VBinaryFileWriter
-	- [ ] VStream: file/string abstraction layer
-		- [ ] VStream_File
-		- [ ] VStream_String
 - [ ] ASM76: the assembly — scripting and virtual machine
 	- [ ] spec.md
 		- [x] first usable draft
