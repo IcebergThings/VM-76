@@ -1,16 +1,15 @@
-// shadow options
-// the shadow distance
+$font-size: 18pt;
 $sd: .1em;
 $shadow-color: rgba(0, 0, 0, .3);
 
-body {
+body, h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 	padding: 0;
+	font-size: $font-size;
 }
 
 body {
 	font-family: "Source Code Pro", sans-serif;
-	font-size: 16pt;
 	color: white;
 	background-color: gray;
 	background-image: linear-gradient(to right, dimgray, darkgray 10%, lightgray, darkgray 90%, dimgray);
@@ -19,6 +18,12 @@ body {
 		(-$sd) (+$sd) 0 $shadow-color,
 		(+$sd) (-$sd) 0 $shadow-color,
 		(+$sd) (+$sd) 0 $shadow-color;
+}
+
+::selection {
+	color: white;
+	background-color: black;
+	text-shadow: none;
 }
 
 a {
@@ -37,8 +42,8 @@ header > nav {
 		margin-left: 1em;
 	}
 	a:first-child {
-		font-size: 120%;
 		margin-left: 0;
+		font-weight: bold;
 	}
 }
 
