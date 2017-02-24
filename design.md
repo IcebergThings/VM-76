@@ -1,31 +1,57 @@
 design.md
 =========
 
-- [ ] ASM76: the assembly
-	- [ ] spec.md 1.0
+- [ ] libV: a header-only library for the VM/76 project
+	- [x] VEndian
+	- [x] VExplosion: end your program gracefully
+	- [x] VMath
+	- [x] VVector
+	- [x] VRingBuffer
+	- [x] VBinaryFileReader
+	- [x] VBinaryFileWriter
+	- [ ] VStream: file/string abstraction layer
+		- [ ] VStream_File
+		- [ ] VStream_String
+- [ ] ASM76: the assembly — scripting and virtual machine
+	- [ ] spec.md
+		- [x] first usable draft
+		- [ ] stable release 1.0
 	- [ ] VM implementation
-	- [ ] assembler
-	- [ ] disassembler
-- [ ] ???: a high level programming language that compiles to ASM76
-	- [ ] spec.md 1.0
+ 		- [x] ASM76 bytecode translator architecture
+		- [ ] Instruction sets
+			- [x] 76-Basic
+			- [ ] 76-Float
+			- [ ] 76-Vectors
+			- [ ] API calls to Game Engine
+	- [x] assembler
+		- [x] basic translation
+		- [x] address tag
+	- [x] disassembler
+		- [x] basic implementation
+- [ ] *(UNDEFINED NAME)*: a high-level programming language that compiles to ASM76
+	- [ ] spec.md
+		- [ ] design philosophy
+		- [ ] first usable draft
+		- [ ] stable release 1.0
+	- [ ] the compiler
 - [ ] VMDE: draw engine
 	- [x] init_engine
 	- [x] update
 	- [x] engine state related
 		- [x] get_frame_count
 		- [x] get_fps
-	- [ ] Shaders
+	- [x] Shaders
 		- [x] Load & Compile shaders
 		- [x] Use & Call shaders
-		- [ ] variables binding functions
+		- [x] variables binding functions
 	- [x] GDrawable
 		- [x] Create drawable object
 		- [x] Instanced rendering
 		- [x] Draw Call
 		- [x] Buffer Objects management
-	- [ ] Res::Texture: texture resources
+	- [x] Res::Texture: texture resources
 		- [x] load texture
-		- [ ] Texture to shader binding
+		- [x] Texture to shader binding
 	- [ ] Res::AudioCache: (pre)loads an audio file
 		- [ ] load function
 	- [x] Audio: audio support
@@ -41,7 +67,7 @@ design.md
 		- [ ] play_sound
 - [ ] VMGS: game system
 	- [x] main
-	- [ ] Control
+	- [ ] Control & View
 		- [x] Demo View
 		- [x] FPS View (Free explore)
 		- [x] God View
@@ -49,7 +75,9 @@ design.md
 	- [ ] Game Objects
 		- [x] Cube (Tiled cube)
 		- [ ] Model
-		- [ ] Terrian
+		- [x] Terrian
+ 			- [x] Map loader & save
+ 			- [x] Map vertices & data baker
 		- [ ] Light source
 		- [ ] Entity
 		- [x] object helper class
@@ -58,9 +86,3 @@ design.md
 	- [ ] Game
 		- [x] config.hpp
 		- [ ] Game Logic
-
----
-
-- global.hpp: project-wide header
-	- There's a VMGS.hpp because we need to avoid conflicts.
-- global.cpp: project-wide global variable table
