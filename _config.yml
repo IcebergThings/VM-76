@@ -8,6 +8,15 @@ permalink: /blog/:categories/:title.html
 timezone: Asia/Shanghai
 
 # something extra
+liquid:
+  error_mode: warn
+markdown: redcarpet
+redcarpet:
+  extensions:
+    - tables
+    - autolink
+    - strikethrough
+    - footnotes
 sass:
   style: compressed
 
