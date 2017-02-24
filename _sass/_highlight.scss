@@ -1,13 +1,9 @@
-/**
- * Syntax highlighting styles
- */
+// syntax highlighting styles
+
 .highlight {
-  background: #fff;
-
   .highlighter-rouge & {
-    background: #eef;
+    background: #424242;
   }
-
   .c     { color: #998; font-style: italic } // Comment
   .err   { color: #a61717; background-color: #e3d2d2 } // Error
   .k     { font-weight: bold } // Keyword

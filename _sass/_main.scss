@@ -1,15 +1,31 @@
+$font-family: "Source Code Pro", monospace;
 $font-size: 18pt;
 $sd: .1em;
 $shadow-color: rgba(0, 0, 0, .3);
 
-body, h1, h2, h3, h4, h5, h6 {
+@mixin reset {
 	margin: 0;
 	padding: 0;
+	font-family: $font-family;
 	font-size: $font-size;
 }
 
+body, p, pre, tt, code, kbd, samp {
+	@include reset;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	@include reset;
+	margin-top: 1em;
+}
+
+kbd {
+	outline: .1em solid currentcolor;
+	box-shadow: 0 0 0 (2 * $sd) $shadow-color, inset 0 0 0 $sd $shadow-color;
+}
+
 body {
-	font-family: "Source Code Pro", sans-serif;
+	font-family: $font-family;
 	color: white;
 	background-color: gray;
 	background-image: linear-gradient(to right, dimgray, darkgray 10%, lightgray, darkgray 90%, dimgray);
@@ -37,13 +53,25 @@ a {
 	}
 }
 
+ul {
+	list-style-type: none;
+	padding-left: 0;
+	& > li {
+		text-indent: -1em;
+		margin-left: 1em;
+		&::before {
+			content: "* ";
+		}
+	}
+}
+
 header > nav {
 	a {
 		margin-left: 1em;
-	}
-	a:first-child {
-		margin-left: 0;
-		font-weight: bold;
+		&:first-child {
+			margin-left: 0;
+			font-weight: bold;
+		}
 	}
 }
 
