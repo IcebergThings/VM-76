@@ -119,7 +119,8 @@
 		extern FILE* log_file;
 		void init();
 		void terminate();
-		void log_internal(const char*, const char*, const char*, ...);
+		void log_internal(const char*, const char*, const char*, ...)
+			__attribute__((format(printf, 3, 4)));
 		char* read_file(const char* filename);
 	}
 	//-------------------------------------------------------------------------
