@@ -10,13 +10,19 @@ timezone: Asia/Shanghai
 # something extra
 liquid:
   error_mode: warn
-markdown: redcarpet
-redcarpet:
-  extensions:
-    - tables
-    - autolink
-    - strikethrough
-    - footnotes
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: true
+  auto_ids: true
+  entity_output: as_input
+  smart_quotes:
+    # ‘’“”
+    # 我们不需要“智能”引号，自己就可以输入。
+    - apos
+    - apos
+    - quot
+    - quot
 sass:
   style: compressed
 

@@ -17,7 +17,7 @@ Definitions and conventions in this specification
 - A **long** consists of 8 bytes.
 - **0x** leads a hexadecimal number, e.g. 0x1F means 1F<sub>16</sub> (31<sub>10</sub>).
 - **_x_.._y_** indicates a range that is inclusive at both ends, i.e. [*x*, *y*].
-- **_x_..._y_** indicates a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
+- **_x_\..._y_** (**_x_..._y_**) indicates a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
 
 76 Virtual Machine and VM/76 CPU
 --------------------------------
@@ -142,7 +142,7 @@ Conventions
 	- ‘R’ means register and ‘A’ means address.
 		- E.g. JMP**R** JMP**A**
 	- ‘_’ (underline) is used as a blank filler in mnemonics.
-		- E.g. OR**_**L POP**_**
+		- E.g. OR**\_**L POP**\_**
 - Since a register can only hold one byte, when doing calculations more than one byte, it will start from the specified register and use the following consecutive registers.
 	- For example, `MOVL $0 $10` makes $0...$8 all moved to $10...$18.
 - Italic font (*A*) denotes a parameter.
