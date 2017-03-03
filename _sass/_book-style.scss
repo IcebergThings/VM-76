@@ -71,6 +71,18 @@
 		}
 	}
 
+	pre {
+		margin-left: 2em;
+		margin-right: 2em;
+		border: .1em solid lightgray;
+		padding: .8em;
+		background-color: #f8f8f8;
+	}
+
+	pre, code, tt, samp {
+		font-family: monospace;
+	}
+
 	table {
 		th, td {
 			padding: .25em .5em;
