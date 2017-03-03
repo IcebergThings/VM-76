@@ -180,13 +180,33 @@ Conventions
 - Italic font (*A*) denotes a parameter.
 - Italic font prepended with a dollar sign (*$A*) denotes a register parameter.
 
+Pseudo instructions
+-------------------
+
+These are not actually executable instructions, but rather like assembler macros.
+
+### Embedding raw data
+
+Instruction | Description
+----------- | -----------
+[RAWx](#rawx) | directly embed a piece of data into the program
+[FILL](#fill) | same as above, without having to specify the size
+
+#### RAWx/FILL
+These are the most powerful instruction in the computer world. With them, you can create anything directly.
+
+For these instructions, the assembler will go back to work with bytes and insert the data directly into the program so that they can be used by the program by accessing the local memory — you usually want to prepend an address tag to get the address.
+
+These embedded data aren't automatically aligned to 10 bytes (the size of an instruction).
+
+The FILL instruction is rather special: it accepts both integer constants and string literals as its ‘operand’. This makes printing functions easier to use. Note that it does not append a zero byte to the string literals automatically and you must do it yourself — though zero bytes are quite often encountered in the machine code and it'll stop printing very soon after getting through the end of the string.
+
 76-Base
 -------
 
 76-Base is the most essential instruction set. It is enabled by default, You don't need to enable it and you can not turn it off in any way.
 
 ### Memory and registers
-
 To simplify the description, we'll use some word macros.
 
 - **$A** ⩴ the value in register $A
