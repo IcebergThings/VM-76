@@ -1,0 +1,30 @@
+@charset "utf-8";
+
+.book-style {
+	font-kerning: normal;
+	font-variant-ligatures: normal;
+	background-color: white;
+	margin: 1em;
+	padding: 2em 4em;
+	color: #424242;
+
+	* {
+		font-family: "FreeSans", sans-serif;
+		font-size: 14pt;
+	}
+
+	a {
+		$anchor-color: deepskyblue;
+		color: $anchor-color;
+		text-decoration: none;
+		&:hover {
+			background-color: lighten($anchor-color, 40%);
+			outline: .1em solid currentcolor;
+			outline-offset: .1em;
+		}
+		&:active {
+			color: darken($anchor-color, 15%);
+			background-color: lighten($anchor-color, 30%);
+		}
+	}
+}

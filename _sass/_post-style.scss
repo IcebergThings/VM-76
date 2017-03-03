@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+.post-style {
+	@extend .book-style;
+
+	* {
+		font-family: "Open Sans", sans-serif;
+	}
+}

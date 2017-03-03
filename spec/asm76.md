@@ -1,6 +1,7 @@
 ---
 layout: page
 title: ASM76
+style: book
 ---
 
 ASM76 specification
@@ -17,7 +18,7 @@ Definitions and conventions in this specification
 - A **long** consists of 8 bytes.
 - **0x** leads a hexadecimal number, e.g. 0x1F means 1F<sub>16</sub> (31<sub>10</sub>).
 - **_x_.._y_** indicates a range that is inclusive at both ends, i.e. [*x*, *y*].
-- **_x_\..._y_** (**_x_..._y_**) indicates a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
+- **_x_\..._y_** indicates a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
 
 76 Virtual Machine and VM/76 CPU
 --------------------------------
@@ -75,9 +76,9 @@ Bit # | Instruction set
 
 Address range | Size | Usage
 ------------- | ---- | -----
-0x0...0x400000 | 4MB | This part of memory is global memory, which is shared between CPU instances.
-0x400000...0x1000000 | 12MB | This part of memory is mapped to IO to transfer data between the CPU (ASM76) and the outside world (VMDE).
-0x1000000...∞ | depends | The upper part of the memory is local, which can be (re)sized using [LCMM](#lcmm) and belongs to the CPU instance.
+0x0\...0x400000 | 4MB | This part of memory is global memory, which is shared between CPU instances.
+0x400000\...0x1000000 | 12MB | This part of memory is mapped to IO to transfer data between the CPU (ASM76) and the outside world (VMDE).
+0x1000000\...∞ | depends | The upper part of the memory is local, which can be (re)sized using [LCMM](#lcmm) and belongs to the CPU instance.
 
 The ASM76 language syntax
 -------------------------
@@ -144,7 +145,7 @@ Conventions
 	- ‘_’ (underline) is used as a blank filler in mnemonics.
 		- E.g. OR**\_**L POP**\_**
 - Since a register can only hold one byte, when doing calculations more than one byte, it will start from the specified register and use the following consecutive registers.
-	- For example, `MOVL $0 $10` makes $0...$8 all moved to $10...$18.
+	- For example, `MOVL $0 $10` makes $0\...$8 all moved to $10\...$18.
 - Italic font (*A*) denotes a parameter.
 - Italic font prepended with a dollar sign (*$A*) denotes a register parameter.
 
@@ -243,8 +244,8 @@ JILA/JIEA/JIGA _address_ | jump to *address* if $109/$110/$111 = 0xFF
 CALR _$A_ | jump to memory address stored in *$A* and push the next instruction's address into stack
 CALA _address_ | jump to *address* and push the next instruction's address into stack
 RETN | `POP_ $100`
-PUSH _$A_ _length_ | push registers from *$A*...$(*A* + *length*) onto the stack
-POP_ _$A_ _length_ | pop data from stack to registers *$A*...$(*A* + *length*)
+PUSH _$A_ _length_ | push registers from *$A*\...$(*A* + *length*) onto the stack
+POP_ _$A_ _length_ | pop data from stack to registers *$A*\...$(*A* + *length*)
 
 76-Float
 --------

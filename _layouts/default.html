@@ -19,7 +19,13 @@
 			</nav>
 		</header>
 		<main>
-			{{ content }}
+			{% if page.style %}
+				<article class="{{ page.style }}-style">
+					{{ content }}
+				</article>
+			{% else %}
+				{{ content }}
+			{% endif %}
 		</main>
 		<footer>
 			<hr>

@@ -2,17 +2,15 @@
 layout: default
 ---
 
-<article class="{{ page.style }}-style">
-	<header>
-		<h1>{{ page.title | escape }}</h1>
-		<div>
-			<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
-			{% if page.author %}
-				• <span>{{ page.author }}</span>
-			{% endif %}
-		</div>
-	</header>
+<header>
+	<h1>{{ page.title | escape }}</h1>
 	<div>
-		{{ content }}
+		<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+		{% if page.author %}
+			• <span>{{ page.author }}</span>
+		{% endif %}
 	</div>
-</article>
+</header>
+<div>
+	{{ content }}
+</div>
