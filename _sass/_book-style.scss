@@ -1,6 +1,8 @@
 @charset "utf-8";
 
 .book-style {
+	font-family: "FreeSans", sans-serif;
+	font-size: 14pt;
 	font-kerning: normal;
 	font-variant-ligatures: normal;
 	background-color: white;
@@ -9,8 +11,7 @@
 	color: #424242;
 
 	* {
-		font-family: "FreeSans", sans-serif;
-		font-size: 14pt;
+		font-size: inherit;
 	}
 
 	h1 {
@@ -42,7 +43,7 @@
 		padding-top: .3em;
 	}
 
-	sub, sup {
+	big, small, sub, sup {
 		font-size: initial;
 	}
 
@@ -50,7 +51,7 @@
 		$anchor-color: deepskyblue;
 		color: $anchor-color;
 		text-decoration: none;
-		&:hover {
+		&:hover, &:active {
 			background-color: lighten($anchor-color, 40%);
 			outline: .1em solid currentcolor;
 			outline-offset: .1em;

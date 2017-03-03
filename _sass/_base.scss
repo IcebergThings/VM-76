@@ -35,3 +35,9 @@ body {
 	background-color: orange;
 	text-shadow: none;
 }
+
+.center {
+	&, & * {
+		text-align: center;
+	}
+}

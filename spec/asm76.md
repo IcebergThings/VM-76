@@ -17,6 +17,11 @@ Definitions and conventions in this specification
 - **_x_.._y_** indicates a range that is inclusive at both ends, i.e. [*x*, *y*].
 - **_x_\..._y_** indicates a range that includes *x* but excludes *y*, i.e. [*x*, *y*).
 
+Note that:
+
+- The term **word** doesn't exist here.
+- **0** doesn't mean octal numbers in this document. For example, 0017 stands for 17<sub>10</sub>, not 15<sub>10</sub>.
+
 76 Virtual Machine and VM/76 CPU
 --------------------------------
 
@@ -31,6 +36,31 @@ Definitions and conventions in this specification
 		- Running the virtual machine on big-endian machines will result unspecifiedly.
 	- We use multiple CPU instances in practice. One CPU is usually assigned exclusively to one thread, one sprite, etc.
 	- Since it isn't used in real world, it is *quite different* from the CPUs from common ones, such as Intel x86 series CPUs.
+
+### Instruction structure
+An instruction is internally represented by a sequence of 10 bytes. Each instruction consists of three parts: an opcode and exactly two operands. For opcodes that need less than two operands, zero bytes are usually used to fill the unused part.
+
+<table class="center">
+	<tr>
+		<th>Byte #</th>
+		<td>0</td>
+		<td>1</td>
+		<td>2</td>
+		<td>3</td>
+		<td>4</td>
+		<td>5</td>
+		<td>6</td>
+		<td>7</td>
+		<td>8</td>
+		<td>9</td>
+	</tr>
+	<tr>
+		<th></th>
+		<td colspan="2">Opcode</td>
+		<td colspan="4">Operand 1</td>
+		<td colspan="4">Operand 2</td>
+	</tr>
+</table>
 
 ### Instruction sets
 A variety of instruction sets are provided.
@@ -66,16 +96,20 @@ Bit # | Instruction set
 0 | N/A
 1 | [76-Float](#76-float)
 2 | [76-Vector](#76-vector)
-3..6 | (reserved)
+3..6 | *(reserved)*
 7 | [BIOS Instructions](#bios-instructions)
 
 ### 32-bit memory address
 
-Address range | Size | Usage
-------------- | ---- | -----
-0x0\...0x400000 | 4MB | This part of memory is global memory, which is shared between CPU instances.
-0x400000\...0x1000000 | 12MB | This part of memory is mapped to IO to transfer data between the CPU (ASM76) and the outside world (VMDE).
-0x1000000\...∞ | depends | The upper part of the memory is local, which can be (re)sized using [LCMM](#lcmm) and belongs to the CPU instance.
+Address range | Size | Name | Usage
+------------- | ---- | ---- | -----
+0x0\...0x400000 | 4MB | Global memory | For sharing data between CPU instances
+0x400000\...0x1000000 | 12MB | IO | For transferring data between the CPU (ASM76) and the outside world (VMDE)
+0x1000000\...∞ | depends\* | Local memory | For private use inside a CPU instance
+
+<small>\* The size of the local memory is 16KB by default, which can be resized through [LCMM](#lcmm).</small>
+
+The starting of the local memory is used to store the program. Thanks the machine architecture which does not have a protection system, the program can modify itself freely at runtime.
 
 The ASM76 language syntax
 -------------------------
@@ -163,7 +197,7 @@ To simplify the description, we'll use some word macros.
 Instruction | Description
 ----------- | -----------
 [LCMM](#lcmm) _size\_in\_bytes_ | set local memory size
-DATx _data_ _$A_ | *$A* ← *data*
+[DATx](#datx) _data_ _$A_ | *$A* ← *data*
 [LDxA](#ldxa) _A_ _$B_ | *$B* ← [*A*]
 [LDxR](#ldxr) _$A_ _$B_ | *$B* ← [*$A*]
 SLxA _A_ _$B_ | [*A*] ← *$B*
@@ -173,10 +207,10 @@ MVRx _$A_ _$B_ | *$B* ← *$A*
 MVPx _$A_ _$B_ | [*$B*] ← [*$A*]
 
 #### LCMM
-Specifiy the local memory size. It does not has a maximum limit in theory and is 16KB by default. As the command runs, the data in the memory will be cleared and initialized with all zero. Then it will copy previous data into the memory. If the previous data is longer, it will be truncated.
+Specifiy the local memory size. It does not has a maximum limit in theory and is 16KB by default. As the command runs, the data in the memory will be cleared and initialized with zeros. Then it will copy the original data into the memory. If the original data is longer, it will be truncated.
 
-#### LDxA
-Load a long/int/byte from local memory address *A* to a sequence of 8/4/1 register(s). *$B* specifies the first one of the 8/4/1 register(s) sequence.
+#### DATx
+Note that due to the limitation of [the instruction size](#instruction-structure), the DATL instruction *doesn't exist*.
 
 #### LDxR
 For example:
@@ -186,7 +220,7 @@ DATI 0x00FF0000 $0
 LDLR $0 $12
 ```
 
-Then 8 bytes of data in 0x00FF0000 will be stored in $12..$19.
+After executing the piece of code above, 8 bytes of data from addresses 0x00FF0000..0x00FF0007 will be stored in $12..$19.
 
 ### Basic algebra
 All mathematical operations takes the registers as unsigned numbers.
@@ -263,6 +297,7 @@ POP $99 1
 
 Instruction | Description
 ----------- | -----------
+|
 
 76-Vector
 ---------
@@ -275,6 +310,7 @@ You need to set bit 2 of $110 to 1 first in order to make it work.
 
 Instruction | Description
 ----------- | -----------
+|
 
 BIOS Instructions
 -----------------
@@ -283,20 +319,24 @@ BIOS Instructions
 
 You need to set bit 7 of $110 to 1 first in order to make it work.
 
+### BIOS Access
+
 Instruction | Description
 ----------- | -----------
-BIOS _function_id_ | Do a operation provided by BIOS function list
-BIOR _$A_ | Do a operation provided by BIOS function list, function id should be put in _$A_ as an int
+[BIOS](#biosbior) _function\_id_ | Do an operation provided by the BIOS
+[BIOR](#biosbior) _$A_ | Same as above, but the function ID is put in *$A* as an int
 
-Any BIOS operation are in C style functions, i.e. You need to PUSH the necessary values for the functions in C style function call.
+#### BIOS/BIOR
+
+All BIOS operations are C style functions. That means you must PUSH the necessary values before calling the BIOS.
 
 Function ID | BIOS Function | Description
 ----------- | ------------- | -----------
 0001 | putc(uint8_t c)      | Print *c* as a byte character
 0002 | puts(uint32_t addr)  | Print a null-terminated string starting from memory address *addr*
-0003 | puthex(uint64_t x)   | Print *x* as a hexadecimal number
-0004 | puthex(uint32_t x)   | Print *x* as a hexadecimal number
-0005 | puthex(uint8_t x)    | Print *x* as a hexadecimal number
+0003 | putlx(uint64_t x)    | Print *x* as a hexadecimal number
+0004 | putix(uint32_t x)    | Print *x* as a hexadecimal number
+0005 | putbx(uint8_t x)     | Print *x* as a hexadecimal number
 0006 | putl(uint64_t x)     | Print *x* as a decimal number
 0007 | puti(uint32_t x)     | Print *x* as a decimal number
 0008 | putb(uint8_t x)      | Print *x* as a decimal number
