@@ -1,0 +1,33 @@
+@charset "utf-8";
+
+@mixin reset {
+	margin: 0;
+	padding: 0;
+}
+
+body, p, samp, pre, tt, code, kbd {
+	@include reset;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	@include reset;
+	margin-top: 1em;
+}
+
+table {
+	border-collapse: collapse;
+	th, td {
+		border: .1em solid currentcolor;
+	}
+}
+
+body {
+	background-color: gray;
+	background-image: linear-gradient(to right, dimgray, darkgray 10%, lightgray, darkgray 90%, dimgray);
+}
+
+::selection {
+	color: white;
+	background-color: orange;
+	text-shadow: none;
+}

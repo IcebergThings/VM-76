@@ -1,0 +1,90 @@
+@charset "utf-8";
+
+$sd: .1em;
+$shadow-color: rgba(0, 0, 0, .3);
+
+.game-style-text {
+	font-family: "Source Code Pro", monospace;
+	font-size: 18pt;
+	color: white;
+	text-shadow:
+		(-$sd) (-$sd) 0 $shadow-color,
+		(-$sd) (+$sd) 0 $shadow-color,
+		(+$sd) (-$sd) 0 $shadow-color,
+		(+$sd) (+$sd) 0 $shadow-color;
+
+	kbd {
+		outline: .1em solid currentcolor;
+		box-shadow: 0 0 0 (2 * $sd) $shadow-color, inset 0 0 0 $sd $shadow-color;
+	}
+
+	a {
+		color: white;
+		text-decoration: underline;
+		&:visited {
+			color: white;
+		}
+		&:active {
+			color: yellow;
+		}
+	}
+}
+
+.game-style {
+	@extend .game-style-text;
+
+	pre, tt, code {
+		background-color: rgba(42, 42, 42, .42);
+		pre & {
+			background-color: initial;
+		}
+	}
+
+	ul {
+		list-style-type: none;
+		padding-left: 0;
+		& > li {
+			text-indent: -1em;
+			margin-left: 1em;
+			&::before {
+				content: "• ";
+			}
+		}
+	}
+	
+	table {
+		th, td {
+			padding: 0 1em;
+		}
+	}
+}
+
+.book-style {
+	font-kerning: normal;
+	font-variant-ligatures: normal;
+	text-shadow: none;
+	background-color: white;
+	margin: 1em;
+	padding: 2em 4em;
+	color: #424242;
+
+	* {
+		font-family: "Arial", sans-serif;
+		font-size: 14pt;
+	}
+
+	a {
+		$anchor-color: deepskyblue;
+		color: $anchor-color;
+		text-decoration: none;
+		&:hover {
+			background-color: lighten($anchor-color, 40%);
+			outline: .1em solid currentcolor;
+			outline-offset: .1em;
+		}
+		&:active {
+			color: darken($anchor-color, 15%);
+			background-color: lighten($anchor-color, 30%);
+		}
+	}
+}

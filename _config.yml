@@ -6,6 +6,14 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 permalink: /blog/:categories/:title.html
 timezone: Asia/Shanghai
+defaults:
+  -
+    scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      style: post
 
 # something extra
 liquid:

@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+header > nav {
+	@extend .game-style-text;
+	a {
+		margin-left: 1em;
+		&:first-child {
+			margin-left: 0;
+			font-weight: bold;
+		}
+	}
+}
