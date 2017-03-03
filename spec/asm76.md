@@ -1,11 +1,8 @@
 ---
 layout: page
-title: ASM76
+title: ASM76 specification
 style: book
 ---
-
-ASM76 specification
-===================
 
 This document describes both the VM/76 virtual machine platform and the assembly language itself.
 

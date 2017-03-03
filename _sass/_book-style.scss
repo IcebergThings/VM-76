@@ -13,6 +13,39 @@
 		font-size: 14pt;
 	}
 
+	h1 {
+		font-size: 32pt;
+		text-align: center;
+		margin: 0 1em .5em;
+		&:not(:first-child) {
+			margin-top: 1em;
+		}
+	}
+
+	h2 {
+		font-size: 24pt;
+		border-top: .2em double lightgray;
+		padding-top: .3em;
+	}
+
+	h3 {
+		font-size: 18pt;
+		font-weight: normal;
+		margin-top: .3em;
+		border-top: .1em solid lightgray;
+		padding-top: .3em;
+	}
+
+	h4 {
+		font-size: 15pt;
+		margin-top: .3em;
+		padding-top: .3em;
+	}
+
+	sub, sup {
+		font-size: initial;
+	}
+
 	a {
 		$anchor-color: deepskyblue;
 		color: $anchor-color;
@@ -25,6 +58,22 @@
 		&:active {
 			color: darken($anchor-color, 15%);
 			background-color: lighten($anchor-color, 30%);
+		}
+	}
+
+	p, ol, ul, pre, table {
+		margin: .8em 0;
+	}
+
+	ol, ul {
+		ol, ul {
+			margin: 0;
+		}
+	}
+
+	table {
+		th, td {
+			padding: .25em .5em;
 		}
 	}
 }
