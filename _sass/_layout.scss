@@ -6,12 +6,44 @@ body {
 
 header > nav {
 	@extend .game-style-text;
-	a {
-		margin-left: 1em;
-		&:first-child {
-			margin-left: 0;
-			font-weight: bold;
+	$nav-item-background-color: rgba(0, 0, 0, .3);
+	@mixin nav-item {
+		text-decoration: none;
+		padding: 0 .5em;
+		outline: .1em solid currentcolor;
+		@include game-style-border-decoration;
+		background-color: $nav-item-background-color;
+	}
+	& > a, & > span {
+		@include nav-item;
+	}
+	& > span {
+		position: relative;
+		& > ul {
+			visibility: hidden;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			width: 100%;
+			padding-left: 0;
+			list-style: none;
+			li {
+				margin-top: .4em;
+			}
+			a {
+				display: inline-block;
+				@include nav-item;
+				width: 100%;
+				@include game-style-text-shadow($sd, fade-in($shadow-color, .5));
+				background-color: fade-in($nav-item-background-color, .3);
+			}
 		}
+		&:hover > ul {
+			visibility: visible;
+		}
+	}
+	& > :first-child {
+		font-weight: bold;
 	}
 }
 

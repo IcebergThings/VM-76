@@ -3,14 +3,14 @@
 @mixin reset {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 }
 
-body, p, samp, pre, tt, code, kbd {
+* {
 	@include reset;
 }
 
 h1, h2, h3, h4, h5, h6 {
-	@include reset;
 	margin-top: 1em;
 }
 

@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>{% if page.title %}{{ page.title | escape }}{% else %}{{ site.title | escape }}{% endif %}</title>
+		<title>{% if page.title %}{{ page.title | escape }} - {% endif %}{{ site.title | escape }}</title>
 		<meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 | escape }}">
 		<link rel="stylesheet" href="{{ "/everything.css" | relative_url }}">
 		<link rel="canonical" href="{{ page.url | replace: "index.html", "" | absolute_url }}">
@@ -13,9 +13,17 @@
 		<header>
 			<nav>
 				<a href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
-				{% for my_page in site.pages %}{% if my_page.title %}
-					<a href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
-				{% endif %}{% endfor %}
+				{% for item in site.data.navigation %}
+					{% if item.children %}
+						<span>{{ item.title | escape }}<ul>
+							{% for child in item.children %}
+								<li><a href="{{ child.url | relative_url }}">{{ child.title | escape }}</a></li>
+							{% endfor %}
+						</ul></span>
+					{% else %}
+						<a href="{{ item.url | relative_url }}">{{ item.title | escape }}</a>
+					{% endif %}
+				{% endfor %}
 			</nav>
 		</header>
 		<main>

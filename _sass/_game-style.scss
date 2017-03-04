@@ -3,19 +3,26 @@
 $sd: .1em;
 $shadow-color: rgba(0, 0, 0, .3);
 
-.game-style-text {
-	font-family: "Source Code Pro", monospace;
-	font-size: 18pt;
-	color: white;
+@mixin game-style-text-shadow($sd, $shadow-color) {
 	text-shadow:
 		(-$sd) (-$sd) 0 $shadow-color,
 		(-$sd) (+$sd) 0 $shadow-color,
 		(+$sd) (-$sd) 0 $shadow-color,
 		(+$sd) (+$sd) 0 $shadow-color;
+}
+
+@mixin game-style-border-decoration {
+	box-shadow: 0 0 0 (2 * $sd) $shadow-color, inset 0 0 0 $sd $shadow-color;
+}
+
+.game-style-text {
+	font-family: "Source Code Pro", monospace;
+	font-size: 18pt;
+	color: white;
+	@include game-style-text-shadow($sd, $shadow-color);
 
 	kbd {
 		outline: .1em solid currentcolor;
-		box-shadow: 0 0 0 (2 * $sd) $shadow-color, inset 0 0 0 $sd $shadow-color;
 	}
 
 	a {

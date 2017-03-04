@@ -1,0 +1,15 @@
+-
+  title: Blog
+  url: blog/
+-
+  title: Specifications
+  children:
+    -
+      title: ASM76
+      url: spec/asm76
+    -
+      title: ???
+      url: "#"
+-
+  title: About
+  url: about.html
