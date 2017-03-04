@@ -20,9 +20,9 @@
 		</header>
 		<main>
 			{% if page.style %}
-				<article class="{{ page.style }}-style">
+				<div class="{{ page.style }}-style">
 					{{ content }}
-				</article>
+				</div>
 			{% else %}
 				{{ content }}
 			{% endif %}

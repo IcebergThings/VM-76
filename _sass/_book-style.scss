@@ -6,9 +6,10 @@
 	font-kerning: normal;
 	font-variant-ligatures: normal;
 	background-color: white;
-	margin: 1em;
+	margin: 1.5em;
 	padding: 2em 4em;
 	color: #424242;
+	box-shadow: 0 0 0 .5em rgba(0, 0, 0, .25), 0 0 .1em black;
 
 	* {
 		font-size: inherit;

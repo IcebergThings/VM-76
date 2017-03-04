@@ -4,13 +4,10 @@ layout: default
 
 <header>
 	<h1>{{ page.title | escape }}</h1>
-	<div>
+	<div class="metadata">
 		<time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
-		{% if page.author %}
-			• <span>{{ page.author }}</span>
-		{% endif %}
+		{% if page.author %} by {{ page.author }} {% endif %}
 	</div>
 </header>
-<div>
-	{{ content }}
-</div>
+{{ content }}
+<p class="metadata"># EOF #</p>
