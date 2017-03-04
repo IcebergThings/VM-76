@@ -20,13 +20,14 @@ header > nav {
 	& > span {
 		position: relative;
 		& > ul {
-			visibility: hidden;
 			position: absolute;
 			top: 100%;
 			left: 0;
 			width: 100%;
 			padding-left: 0;
 			list-style: none;
+			transform: translateY(-100%);
+			clip-path: inset(calc(100% + .2em) -1em -1em -1em);
 			li {
 				margin-top: .4em;
 			}
@@ -39,7 +40,10 @@ header > nav {
 			}
 		}
 		&:hover > ul {
-			visibility: visible;
+			transition: .05s linear;
+			transition-property: transform, clip-path;
+			transform: translateY(0);
+			clip-path: inset(0 -1em -1em -1em);
 		}
 	}
 	& > :first-child {
