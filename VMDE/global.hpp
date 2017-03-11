@@ -272,9 +272,9 @@
 	//-------------------------------------------------------------------------
 	class TextRenderer : public RenderObject {
 	private:
-		GDrawable* obj;
-		Res::Texture* tex;
-		Shaders* texshader;
+		GDrawable obj;
+		Res::Texture tex = Res::Texture("../Media/Font.bmp", true);
+		Shaders* texshader = NULL;
 
 	public:
 		enum TextDecorationType {
@@ -294,7 +294,6 @@
 				glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
 				float width, float height, TextDecorationType decoration
 		);
-		~TextRenderer();
 	};
 
 #endif

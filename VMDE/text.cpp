@@ -7,17 +7,14 @@
 #include "global.hpp"
 
 TextRenderer::TextRenderer() {
-	obj = new GDrawable();
-	/*obj->data.vtx_c = 2000;
-	obj->data.ind_c = 2000;
-	obj->data.vertices = NULL;
-	obj->data.indices = NULL;
-	obj->data.mat_c = 10;
-	obj->data.mat = NULL;
-	obj->fbind();
-	obj->data.mat_c = 0;*/
-
-	tex = new Res::Texture("../Media/Font.bmp", true);
+	/*obj.data.vtx_c = 2000;
+	obj.data.ind_c = 2000;
+	obj.data.vertices = NULL;
+	obj.data.indices = NULL;
+	obj.data.mat_c = 10;
+	obj.data.mat = NULL;
+	obj.fbind();
+	obj.data.mat_c = 0;*/
 	texshader = Shaders::CreateFromFile("../Media/shaders/text.vsh", "../Media/shaders/text.fsh");
 }
 
@@ -112,12 +109,12 @@ void TextRenderer::BakeText(
 		}
 	}
 
-	obj->data.vtx_c = length * vtx_stride;
-	obj->data.ind_c = length * itx_stride;
-	obj->data.vertices = vtx;
-	obj->data.indices = itx;
+	obj.data.vtx_c = length * vtx_stride;
+	obj.data.ind_c = length * itx_stride;
+	obj.data.vertices = vtx;
+	obj.data.indices = itx;
 
-	obj->fbind();
+	obj.fbind();
 	free(vtx);
 	free(itx);
 }
@@ -125,8 +122,8 @@ void TextRenderer::BakeText(
 void TextRenderer::render() {
 	glDisable(GL_CULL_FACE);
 	texshader->use();
-	texshader->set_texture("fontmap", tex, 0);
-	obj->render();
+	texshader->set_texture("fontmap", &tex, 0);
+	obj.render();
 	glEnable(GL_CULL_FACE);
 }
 
@@ -138,15 +135,9 @@ void TextRenderer::instanceRenderText(
 	texshader->ProjectionView(projection, view);
 
 	glm::mat4 foo[1] = {transform};
-	obj->data.mat_c = 1;
-	obj->data.mat = (GLuint*) &foo[0];
+	obj.data.mat_c = 1;
+	obj.data.mat = (GLuint*) &foo[0];
 	BakeText(text, width, height, decoration);
 
 	render();
-}
-
-TextRenderer::~TextRenderer() {
-	VMDE_Dispose(delete, obj);
-	VMDE_Dispose(delete, tex);
-	VMDE_Dispose(delete, texshader);
 }
