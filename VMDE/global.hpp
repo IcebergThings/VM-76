@@ -290,9 +290,9 @@
 		);
 		void render();
 		void instanceRenderText(
-				const char* text,
-				glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-				float width, float height, TextDecorationType decoration
+			const char* text,
+			glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
+			float width, float height, TextDecorationType decoration
 		);
 	};
 
