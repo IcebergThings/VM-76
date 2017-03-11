@@ -8,9 +8,8 @@ VMGS
 ## 兼容性
 - C++采用的标准暂定为C++14
 - 不考虑OpenGL < 3.3的硬件和不支持SSE4.1的硬件的兼容（从Core 2往后都兼容）
-- Windows最低到哪个版本我不知道，但是XP和Vista上出毛病我们也就不理它了
-- ~~谁送开发团队人手一台Macbook就做macOS支持（无效的FLAG~~
-	- 似乎真的可以开发macOS支持了（参见https://github.com/IcebergOS/VM-76/commit/a1bcb5387b144cef66b5ed33f767270de8bf895f#commitcomment-19894228
+- 支持三大桌面操作系统：Dogix、Windoge、dogeOS
+	- Windows最低到哪个版本我不知道，但是XP和Vista上出毛病我们也就不理它了
 
 ## 结构设计
 参见/design.md。
