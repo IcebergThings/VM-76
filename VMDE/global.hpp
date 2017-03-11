@@ -181,7 +181,7 @@
 		GLuint shaderProgram;
 
 		GLuint UBO_matrix;
-		glm::mat4* mat = new glm::mat4[3];
+		glm::mat4 mat[3];
 
 	public:
 		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
