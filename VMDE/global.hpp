@@ -125,7 +125,7 @@
 	//-------------------------------------------------------------------------
 	// ● 子文件夹中的头文件
 	//-------------------------------------------------------------------------
-	#include "V/V.hpp"
+	#include "VLib/V.hpp"
 	#include "Audio/audio.hpp"
 	//-------------------------------------------------------------------------
 	// ● init.cpp
@@ -181,7 +181,7 @@
 		GLuint shaderProgram;
 
 		GLuint UBO_matrix;
-		glm::mat4* mat = new glm::mat4[3];
+		glm::mat4 mat[3];
 
 	public:
 		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
@@ -272,9 +272,9 @@
 	//-------------------------------------------------------------------------
 	class TextRenderer : public RenderObject {
 	private:
-		GDrawable* obj;
-		Res::Texture* tex;
-		Shaders* texshader;
+		GDrawable obj;
+		Res::Texture tex = Res::Texture("../Media/Font.bmp", true);
+		Shaders* texshader = NULL;
 
 	public:
 		enum TextDecorationType {
@@ -290,11 +290,10 @@
 		);
 		void render();
 		void instanceRenderText(
-				const char* text,
-				glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-				float width, float height, TextDecorationType decoration
+			const char* text,
+			glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
+			float width, float height, TextDecorationType decoration
 		);
-		~TextRenderer();
 	};
 
 #endif
