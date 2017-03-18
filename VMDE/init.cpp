@@ -40,6 +40,26 @@ void GL_info() {
 }
 
 //-----------------------------------------------------------------------------
+// ● 检查GL是否有错误
+//-----------------------------------------------------------------------------
+void check_gl_error() {
+	GLenum error;
+	while ((error = glGetError())) switch (error) {
+	#define case(x) case x: log(#x); break
+	case(GL_INVALID_ENUM);
+	case(GL_INVALID_VALUE);
+	case(GL_INVALID_OPERATION);
+	case(GL_INVALID_FRAMEBUFFER_OPERATION);
+	case(GL_OUT_OF_MEMORY);
+	default:
+		log("unknown GL error: %d", error);
+		break;
+	#undef case
+	}
+	error("These are all the errors from glGetError().");
+}
+
+//-----------------------------------------------------------------------------
 // ● 初始化图形
 //-----------------------------------------------------------------------------
 void init_graphics(int w, int h, const char* title) {
