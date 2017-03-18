@@ -104,13 +104,16 @@
 	#define log(...) Util::log_internal(DEBUG_ENVIRONMENT, __func__, __VA_ARGS__)
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
-	// error - 抛出错误并终止程序
-	#define error(...) do { \
+	// error_internal
+	#define error_internal(extra, ...) do { \
 		log(__VA_ARGS__); \
-		perror("perror()"); \
-		fputs("The errno may not help.\n", stderr); \
+		extra \
 		exit(1); \
 	} while (false)
+	// error - 抛出错误并终止程序
+	#define error(...) error_internal(, __VA_ARGS__)
+	// errorp - error + perror
+	#define errorp(...) error_internal(perror("perror()"), __VA_ARGS__)
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//   这个Util的意义已经远超utility。
