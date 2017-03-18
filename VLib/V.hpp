@@ -17,7 +17,7 @@
 	#define error(x) do { \
 		fprintf(stderr, "%s\n", x); \
 		perror("perror()"); \
-	}
+	} while (false)
 #endif
 
 #include "VExplosion.hpp"
