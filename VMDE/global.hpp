@@ -188,8 +188,9 @@
 		glm::mat4* mat = new glm::mat4[3];
 
 	public:
-		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
+		Shaders(const GLchar* vsh_src, const GLchar* fsh_src);
 		static Shaders* CreateFromFile(const char* vsh_src, const char* fsh_src);
+		static void check_compilation(GLuint shader, const char* msg = "shader error");
 
 		void link_program();
 		void use();
