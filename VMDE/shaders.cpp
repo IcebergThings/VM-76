@@ -41,6 +41,7 @@ void Shaders::check_shader_compilation(GLuint shader, const char* msg) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	glGetShaderInfoLog(shader, 512, NULL, info_log);
 	if (!success) error("%s:\n%s", msg, info_log);
+	log("%s", info_log);
 }
 
 void Shaders::check_linkage(GLuint program, const char* msg) {
@@ -49,6 +50,7 @@ void Shaders::check_linkage(GLuint program, const char* msg) {
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	glGetProgramInfoLog(program, 512, NULL, info_log);
 	if (!success) error("%s:\n%s", msg, info_log);
+	log("%s", info_log);
 }
 
 void Shaders::link_program() {
