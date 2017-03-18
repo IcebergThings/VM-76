@@ -137,6 +137,7 @@
 	EXPORTED void init_engine(int w, int h, const char* title);
 	void setup_viewport();
 	void init_vmde(int w, int h);
+	void check_gl_error();
 	//-------------------------------------------------------------------------
 	// ● terminate.cpp
 	//-------------------------------------------------------------------------
