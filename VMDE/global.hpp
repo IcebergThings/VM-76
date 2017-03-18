@@ -190,9 +190,6 @@
 	public:
 		Shaders(const GLchar* vsh_src, const GLchar* fsh_src);
 		static Shaders* CreateFromFile(const char* vsh_src, const char* fsh_src);
-		static void check_compilation(GLuint shader, const char* msg = "shader error");
-
-		void link_program();
 		void use();
 
 		void set_float(const char* identifier, GLfloat value);
@@ -202,6 +199,18 @@
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 
 		~Shaders();
+
+	private:
+		static void check_shader_compilation(
+			GLuint shader,
+			const char* msg = "shader compile error"
+		);
+		static void check_linkage(
+			GLuint program,
+			const char* msg = "link error"
+		);
+
+		void link_program();
 	};
 	extern Shaders* _shaders_in_use;
 	//-------------------------------------------------------------------------
