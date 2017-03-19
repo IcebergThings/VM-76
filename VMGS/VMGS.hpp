@@ -43,19 +43,19 @@ namespace VM76 {
 		Shaders shader_textured;
 		Shaders gui;
 		Shaders shader_basic;
-		Res::Texture* tile_texture = NULL;
+		Res::Texture tile_texture = Res::Texture("../Media/terrain.png");
 
-		Cube* block_pointer;
+		Cube block_pointer = Cube(1);
 		Tiles* clist[16];
 
 		int hand_id = 1;
 
-		Axis* axe;
+		Axis axe;
 
 		GObject* obj;
 
 	public:
-		Map* map;
+		Map map = Map(4, 4, 4, 64);
 
 	public:
 		EditorMainScene();
