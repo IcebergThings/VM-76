@@ -181,16 +181,18 @@
 	//-------------------------------------------------------------------------
 	class Shaders : public Object {
 	public:
-		GLuint basic_2D_vsh;
-		GLuint basic_2D_fsh;
-		GLuint shaderProgram;
+		#define SHADERS_SLOT_COUNT 16
+		GLuint shaders[SHADERS_SLOT_COUNT];
+		size_t shader_count = 0;
+		GLuint program;
 
 		GLuint UBO_matrix;
 		glm::mat4 mat[3];
 
 	public:
-		Shaders(const GLchar* vsh_src, const GLchar* fsh_src);
-		static Shaders* CreateFromFile(const char* vsh_src, const char* fsh_src);
+		Shaders();
+		void add_string(GLenum type, const GLchar* source);
+		void add_file(GLenum type, const char* filename);
 		void use();
 
 		void set_float(const char* identifier, GLfloat value);
