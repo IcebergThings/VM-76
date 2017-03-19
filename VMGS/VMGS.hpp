@@ -40,9 +40,9 @@ namespace VM76 {
 
 	class EditorMainScene : public Scene {
 	private:
-		Shaders* shader_textured = NULL;
-		Shaders* gui = NULL;
-		Shaders* shader_basic = NULL;
+		Shaders shader_textured;
+		Shaders gui;
+		Shaders shader_basic;
 		Res::Texture* tile_texture = NULL;
 
 		Cube* block_pointer;

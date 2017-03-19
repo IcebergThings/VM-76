@@ -17,18 +17,15 @@ namespace VM76 {
 
 		tile_texture = new Res::Texture("../Media/terrain.png");
 
-		shader_textured = Shaders::CreateFromFile(
-			"../Media/shaders/gbuffers_textured.vsh",
-			"../Media/shaders/gbuffers_textured.fsh"
-		);
-		shader_basic = Shaders::CreateFromFile(
-			"../Media/shaders/gbuffers_basic.vsh",
-			"../Media/shaders/gbuffers_basic.fsh"
-		);
-		gui = Shaders::CreateFromFile(
-			"../Media/shaders/gui.vsh",
-			"../Media/shaders/gui.fsh"
-		);
+		shader_textured.add_file(GL_VERTEX_SHADER, "../Media/shaders/gbuffers_textured.vsh");
+		shader_textured.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/gbuffers_textured.fsh");
+		shader_textured.link_program();
+		shader_basic.add_file(GL_VERTEX_SHADER, "../Media/shaders/gbuffers_basic.vsh");
+		shader_basic.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/gbuffers_basic.fsh");
+		shader_basic.link_program();
+		gui.add_file(GL_VERTEX_SHADER, "../Media/shaders/gui.vsh");
+		gui.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/gui.fsh");
+		gui.link_program();
 
 		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		view = glm::lookAt(
@@ -140,21 +137,21 @@ namespace VM76 {
 	// ● 渲染
 	//-------------------------------------------------------------------------
 	void EditorMainScene::render() {
-		shader_textured->use();
+		shader_textured.use();
 
 		// Setup uniforms
-		shader_textured->set_float("brightness", VMDE->state.brightness);
-		shader_textured->set_texture("colortex0", tile_texture, 0);
+		shader_textured.set_float("brightness", VMDE->state.brightness);
+		shader_textured.set_texture("colortex0", tile_texture, 0);
 
 		// Textured blocks rendering
-		shader_textured->ProjectionView(projection, view);
+		shader_textured.ProjectionView(projection, view);
 		map->render();
 
 		// Setup uniforms
 		// Non textured rendering
-		shader_basic->use();
-		shader_basic->set_float("opaque", 0.5);
-		shader_textured->ProjectionView(projection, view);
+		shader_basic.use();
+		shader_basic.set_float("opaque", 0.5);
+		shader_textured.ProjectionView(projection, view);
 		block_pointer->mat[0] = obj->transform();
 		block_pointer->update_instance(1);
 		block_pointer->render();
@@ -162,9 +159,9 @@ namespace VM76 {
 		axe->render();
 
 		// GUI rendering
-		gui->use();
-		gui->set_texture("atlastex", tile_texture, 0);
-		gui->ProjectionView(gui_2d_projection, glm::mat4(1.0));
+		gui.use();
+		gui.set_texture("atlastex", tile_texture, 0);
+		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
 		glDisable(GL_DEPTH_TEST);
 		if (hand_id > 0) clist[hand_id - 1]->render();
 
@@ -201,8 +198,5 @@ namespace VM76 {
 		for (int i = 0; i < 16; i++) VMDE_Dispose(delete, clist[i]);
 		VMDE_Dispose(delete, map);
 		VMDE_Dispose(delete, trex);
-		VMDE_Dispose(delete, gui);
-		VMDE_Dispose(delete, shader_textured);
-		VMDE_Dispose(delete, shader_basic);
 	}
 }

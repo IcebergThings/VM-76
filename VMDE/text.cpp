@@ -15,7 +15,9 @@ TextRenderer::TextRenderer() {
 	obj.data.mat = NULL;
 	obj.fbind();
 	obj.data.mat_c = 0;*/
-	texshader = Shaders::CreateFromFile("../Media/shaders/text.vsh", "../Media/shaders/text.fsh");
+	texshader.add_file(GL_VERTEX_SHADER, "../Media/shaders/text.vsh");
+	texshader.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/text.fsh");
+	texshader.link_program();
 }
 
 void TextRenderer::BakeText(
@@ -121,8 +123,8 @@ void TextRenderer::BakeText(
 
 void TextRenderer::render() {
 	glDisable(GL_CULL_FACE);
-	texshader->use();
-	texshader->set_texture("fontmap", &tex, 0);
+	texshader.use();
+	texshader.set_texture("fontmap", &tex, 0);
 	obj.render();
 	glEnable(GL_CULL_FACE);
 }
@@ -132,7 +134,7 @@ void TextRenderer::instanceRenderText(
 	glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
 	float width, float height, TextDecorationType decoration
 ) {
-	texshader->ProjectionView(projection, view);
+	texshader.ProjectionView(projection, view);
 
 	glm::mat4 foo[1] = {transform};
 	obj.data.mat_c = 1;

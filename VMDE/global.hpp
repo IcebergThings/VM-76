@@ -193,6 +193,7 @@
 		Shaders();
 		void add_string(GLenum type, const GLchar* source);
 		void add_file(GLenum type, const char* filename);
+		void link_program();
 		void use();
 
 		void set_float(const char* identifier, GLfloat value);
@@ -212,8 +213,6 @@
 			GLuint program,
 			const char* msg = "link error"
 		);
-
-		void link_program();
 	};
 	extern Shaders* _shaders_in_use;
 	//-------------------------------------------------------------------------
@@ -291,7 +290,7 @@
 	private:
 		GDrawable obj;
 		Res::Texture tex = Res::Texture("../Media/Font.bmp", true);
-		Shaders* texshader = NULL;
+		Shaders texshader;
 
 	public:
 		enum TextDecorationType {
