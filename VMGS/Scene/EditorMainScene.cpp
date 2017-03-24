@@ -25,7 +25,9 @@ namespace VM76 {
 		post_processing.add_file(GL_VERTEX_SHADER, "../Media/shaders/PostProcessing.vsh");
 		post_processing.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/PostProcessing.fsh");
 		post_processing.link_program();
-		postBuffer = new RenderBuffer(VMDE->width, VMDE->height);
+
+		GLuint* gbuffers_type = new GLuint[3]{GL_RGB8, GL_RGB16F, GL_RGB8};
+		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 3, gbuffers_type);
 
 		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		view = glm::lookAt(
@@ -143,6 +145,7 @@ namespace VM76 {
 
 		postBuffer->bind();
 		RenderBuffer::clearColorDepth(0.5, 0.7, 1.0, 0.0);
+		postBuffer->set_draw_buffers();
 
 		// Textured blocks rendering
 		shader_textured.ProjectionView(projection, view);
@@ -161,7 +164,8 @@ namespace VM76 {
 
 		postBuffer->unbind();
 		post_processing.use();
-		post_processing.set_texture("colortex", postBuffer->texture_buffer, 0);
+		post_processing.set_texture("colortex", postBuffer->texture_buffer[0], 0);
+		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 0);
 		PostProcessingManager::Blit2D();
 
 		// GUI rendering

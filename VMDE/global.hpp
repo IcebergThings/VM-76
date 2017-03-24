@@ -322,7 +322,8 @@
 	public:
 		GLuint framebuffer;
 		GLuint rbo;
-		Res::Texture* texture_buffer;
+		Res::Texture** texture_buffer;
+		int mrtcount;
 
 		//void resize(int w, int h);
 
@@ -345,7 +346,8 @@
 			glEnable(GL_DEPTH_TEST);
 		}
 
-		RenderBuffer(int w, int h);
+		RenderBuffer(int w, int h, int mrt, GLuint* type);
+		void set_draw_buffers();
 		~RenderBuffer();
 	};
 
