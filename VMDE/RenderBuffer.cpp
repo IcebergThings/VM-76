@@ -7,6 +7,8 @@
 #include "global.hpp"
 
 RenderBuffer::RenderBuffer (int w, int h) {
+	log("Creating Render Buffer of %d x %d", w, h);
+
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
@@ -42,12 +44,12 @@ GDrawable* PostProcessingManager::QuadScreen;
 
 void PostProcessingManager::init() {
 	Vertex* vtx = new Vertex[4] {
-		{{0.0, 0.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,0.0},{0.0, 0.0, 0.0}},
-		{{0.0, 1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,1.0},{0.0, 0.0, 0.0}},
-		{{1.0, 1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,1.0},{0.0, 0.0, 0.0}},
-		{{1.0, 0.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,0.0},{0.0, 0.0, 0.0}},
+		{{-1.0, -1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,0.0},{0.0, 0.0, 0.0}},
+		{{-1.0,  1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,1.0},{0.0, 0.0, 0.0}},
+		{{ 1.0,  1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,1.0},{0.0, 0.0, 0.0}},
+		{{ 1.0, -1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,0.0},{0.0, 0.0, 0.0}},
 	};
-	GLuint* itx = new GLuint[3 * 3] { 0,1,3, 1,2,3 };
+	GLuint* itx = new GLuint[6] { 0,1,3, 1,2,3 };
 
 	QuadScreen = new GDrawable();
 	QuadScreen->data.vtx_c = 4;
@@ -59,12 +61,10 @@ void PostProcessingManager::init() {
 	QuadScreen->fbind();
 }
 
-void PostProcessingManager::Blit2D(Shaders* x) {
-	x->use();
-	QuadScreen->render(0, 1);
-}
-
-void PostProcessingManager::BlitMesh(Shaders* x, GDrawable* obj) {
-	x->use();
-	obj->render();
+void PostProcessingManager::Blit2D() {
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	QuadScreen->renderOnce();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }
