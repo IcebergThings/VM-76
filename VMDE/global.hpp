@@ -272,7 +272,7 @@
 			glm::mat4 model;
 		} data;
 
-		void render(GLuint start, GLuint end);
+		void renderOnce();
 		void render();
 		void fbind();
 		void update();
@@ -355,8 +355,7 @@
 
 	public:
 		static void init();
-		static void Blit2D(Shaders* x);
-		static void BlitMesh(Shaders* x, GDrawable* obj);
+		static void Blit2D();
 	};
 
 
