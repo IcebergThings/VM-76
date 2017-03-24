@@ -262,6 +262,8 @@
 		void update_instance();
 		void update_instance_alien_size();
 
+		static void close_draw_node();
+
 		~GDrawable();
 
 		GDrawable();

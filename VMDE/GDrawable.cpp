@@ -9,13 +9,15 @@
 void GDrawable::render(GLuint start, GLuint end) {
 	glBindVertexArray(data.VAO);
 	glDrawRangeElements(GL_TRIANGLES, start, end, end + 1, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
 }
 
 void GDrawable::render() {
 	glBindVertexArray(data.VAO);
 	glDrawElementsInstanced(
 		GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0, data.mat_c);
+}
+
+void GDrawable::close_draw_node() {
 	glBindVertexArray(0);
 }
 
