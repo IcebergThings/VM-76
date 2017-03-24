@@ -142,7 +142,7 @@ namespace VM76 {
 		shader_textured.set_texture("colortex0", &tile_texture, 0);
 
 		postBuffer->bind();
-		RenderBuffer::clearColorDepth(0.0, 0.0, 0.0, 0.0);
+		RenderBuffer::clearColorDepth(0.5, 0.7, 1.0, 0.0);
 
 		// Textured blocks rendering
 		shader_textured.ProjectionView(projection, view);
