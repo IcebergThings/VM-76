@@ -314,4 +314,26 @@
 		);
 	};
 
+	//-------------------------------------------------------------------------
+	// ● RenderBuffer
+	//-------------------------------------------------------------------------
+	class RenderBuffer : public Object {
+	public:
+		GLuint framebuffer;
+		GLuint rbo;
+		GLuint texture_buffer;
+
+		//void resize(int w, int h);
+
+		void bind();
+		static void unbind();
+
+		static void clearColor(float r, float g, float b, float a);
+		static void clearColorDepth(float r, float g, float b, float a);
+		static void clearDepth();
+
+		RenderBuffer(int w, int h);
+	};
+
+
 #endif
