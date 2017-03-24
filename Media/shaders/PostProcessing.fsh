@@ -4,6 +4,9 @@
 out vec4 color;
 
 uniform sampler2D colortex;
+uniform sampler2D gnormal;
+
+uniform vec3 sunVec;
 
 in vec2 texcoord;
 
@@ -27,6 +30,10 @@ void colorAdjust(inout vec3 c) {
 
 void main() {
 	vec3 c = texture(colortex, texcoord).rgb;
+
+	vec3 normal = texture(gnormal, texcoord).rgb * 2.0 - 1.0;
+	c *= 0.5 + 0.5 * max(0.0, dot(normal, sunVec));
+
 	colorAdjust(c);
 	color = vec4(c, 1.0);
 }
