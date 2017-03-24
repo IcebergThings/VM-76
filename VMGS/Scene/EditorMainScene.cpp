@@ -165,7 +165,9 @@ namespace VM76 {
 		postBuffer->unbind();
 		post_processing.use();
 		post_processing.set_texture("colortex", postBuffer->texture_buffer[0], 0);
-		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 0);
+		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 1);
+		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMDE->frame_count * 0.01), sin(VMDE->frame_count * 0.01), 0.0);
+		glUniform3f(glGetUniformLocation(post_processing.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
 		PostProcessingManager::Blit2D();
 
 		// GUI rendering
