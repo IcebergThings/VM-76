@@ -90,7 +90,7 @@ void Shaders::set_int(const char* identifier, GLint value) {
 void Shaders::set_texture(const char* identifier, Res::Texture* tex, GLuint index) {
 	glActiveTexture(GL_TEXTURE0 + index);
 	glBindTexture(GL_TEXTURE_2D, tex->texture);
-	set_float(identifier, index);
+	set_int(identifier, index);
 }
 
 Shaders::~Shaders() {
