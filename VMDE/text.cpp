@@ -126,6 +126,7 @@ void TextRenderer::render() {
 	texshader.use();
 	texshader.set_texture("fontmap", &tex, 0);
 	obj.render();
+	GDrawable::close_draw_node();
 	glEnable(GL_CULL_FACE);
 }
 

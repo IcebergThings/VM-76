@@ -170,6 +170,7 @@
 		public:
 			GLuint texture, index;
 			int width, height;
+			Texture();
 			Texture(const char* file);
 			Texture(const char* file, bool useLinear);
 
@@ -271,12 +272,14 @@
 			glm::mat4 model;
 		} data;
 
-		void render(GLuint start, GLuint end);
+		void renderOnce();
 		void render();
 		void fbind();
 		void update();
 		void update_instance();
 		void update_instance_alien_size();
+
+		static void close_draw_node();
 
 		~GDrawable();
 
@@ -311,5 +314,49 @@
 			float width, float height, TextDecorationType decoration
 		);
 	};
+
+	//-------------------------------------------------------------------------
+	// ● RenderBuffer
+	//-------------------------------------------------------------------------
+	class RenderBuffer : public Object {
+	public:
+		GLuint framebuffer;
+		GLuint rbo;
+		Res::Texture* texture_buffer;
+
+		//void resize(int w, int h);
+
+		inline void bind() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
+		static inline void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+		static void clearColor(float r, float g, float b, float a) {
+			glClearColor(r, g, b, a);
+			glClear(GL_COLOR_BUFFER_BIT);
+		}
+
+		static void clearColorDepth(float r, float g, float b, float a) {
+			glClearColor(r, g, b, a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		static void clearDepth() {
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		RenderBuffer(int w, int h);
+		~RenderBuffer();
+	};
+
+	class PostProcessingManager : public Object {
+	private:
+		static GDrawable* QuadScreen;
+
+	public:
+		static void init();
+		static void Blit2D();
+	};
+
 
 #endif

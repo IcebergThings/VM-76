@@ -70,7 +70,7 @@ namespace VM76 {
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);
 
-		const glm::mat2 rotate2D = glm::mat2(1.3623, 1.7531, -1.7131, 1.4623);		
+		const glm::mat2 rotate2D = glm::mat2(1.3623, 1.7531, -1.7131, 1.4623);
 
 		for (int i = 0; i < width; i ++) {
 			if (i % (width / 12) == 0)
@@ -167,6 +167,7 @@ namespace VM76 {
 	void Map::render() {
 		for (int x = 0; x < width * length * height; x++)
 			chunks[x]->render();
+		GDrawable::close_draw_node();
 	}
 
 	Map::~Map() {
