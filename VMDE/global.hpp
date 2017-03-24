@@ -170,6 +170,7 @@
 		public:
 			GLuint texture, index;
 			int width, height;
+			Texture();
 			Texture(const char* file);
 			Texture(const char* file, bool useLinear);
 
@@ -321,18 +322,41 @@
 	public:
 		GLuint framebuffer;
 		GLuint rbo;
-		GLuint texture_buffer;
+		Res::Texture* texture_buffer;
 
 		//void resize(int w, int h);
 
-		void bind();
-		static void unbind();
+		inline void bind() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
+		static inline void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
-		static void clearColor(float r, float g, float b, float a);
-		static void clearColorDepth(float r, float g, float b, float a);
-		static void clearDepth();
+		static void clearColor(float r, float g, float b, float a) {
+			glClearColor(r, g, b, a);
+			glClear(GL_COLOR_BUFFER_BIT);
+		}
+
+		static void clearColorDepth(float r, float g, float b, float a) {
+			glClearColor(r, g, b, a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		static void clearDepth() {
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+		}
 
 		RenderBuffer(int w, int h);
+		~RenderBuffer();
+	};
+
+	class PostProcessingManager : public Object {
+	private:
+		static GDrawable* QuadScreen;
+
+	public:
+		static void init();
+		static void Blit2D(Shaders* x);
+		static void BlitMesh(Shaders* x, GDrawable* obj);
 	};
 
 

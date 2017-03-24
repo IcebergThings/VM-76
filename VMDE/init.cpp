@@ -124,6 +124,8 @@ void init_graphics(int w, int h, const char* title) {
 
 	// Query GL info
 	GL_info();
+
+	PostProcessingManager::init();
 }
 
 //-----------------------------------------------------------------------------

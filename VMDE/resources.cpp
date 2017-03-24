@@ -8,6 +8,8 @@
 
 namespace Res {
 
+	Texture::Texture() {}
+
 	Texture::Texture(const char* file) {
 		glGenTextures(1, &this->texture);
 		glBindTexture(GL_TEXTURE_2D, this->texture);
@@ -23,6 +25,8 @@ namespace Res {
 
 		SOIL_free_image_data(image);
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		this->width = width; this->height = height;
 
 		log("Texture is loaded from %s to texture unit", file);
 	}
@@ -42,6 +46,8 @@ namespace Res {
 
 		SOIL_free_image_data(image);
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		this->width = width; this->height = height;
 
 		log("Texture is loaded from %s to texture unit", file);
 	}
