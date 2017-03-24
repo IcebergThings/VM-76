@@ -6,79 +6,57 @@
 
 #include "global.hpp"
 
-Shaders::Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr) {
-	GLint success;
-	bool error_in_shader = false;
-	GLchar info_log[512];
-
-	if (vsh_src_ptr == NULL) {
-		error_in_shader = true;
-		log("null pointer of vertex shader src");
-	}
-	if (fsh_src_ptr == NULL) {
-		error_in_shader = true;
-		log("null pointer of fragment shader src");
-	}
-
-	this->basic_2D_vsh = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(this->basic_2D_vsh, 1, &vsh_src_ptr, NULL);
-	glCompileShader(this->basic_2D_vsh);
-	glGetShaderiv(this->basic_2D_vsh, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(this->basic_2D_vsh, 512, NULL, info_log);
-		log("VSH compilation failed:\n%s", info_log);
-		log("Shaders error");
-
-		error_in_shader = true;
-	}
-
-	// Fragment shader
-	this->basic_2D_fsh = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(this->basic_2D_fsh, 1, &fsh_src_ptr, NULL);
-	glCompileShader(this->basic_2D_fsh);
-	glGetShaderiv(this->basic_2D_fsh, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(this->basic_2D_fsh, 512, NULL, info_log);
-		log("FSH compilation failed:\n%s", info_log);
-		log("Shaders error");
-
-		error_in_shader = true;
-	}
-
-	if (!error_in_shader) this->link_program();
+Shaders::Shaders() {
 }
 
-Shaders* Shaders::CreateFromFile(const char* vsh_src, const char* fsh_src) {
-	char* temp_vertexShaderSource = Util::read_file(vsh_src);
-	char* temp_fragmentShaderSource = Util::read_file(fsh_src);
-	Shaders* temp_shader = new Shaders(temp_vertexShaderSource, temp_fragmentShaderSource);
-	XE(free, temp_vertexShaderSource);
-	XE(free, temp_fragmentShaderSource);
+void Shaders::add_string(GLenum type, const GLchar* source) {
+	if (!source) error("source is null");
+	GLuint shader = glCreateShader(type);
+	glShaderSource(shader, 1, &source, NULL);
+	glCompileShader(shader);
+	check_shader_compilation(shader, "shader compilation failed");
+	shaders[shader_count] = shader;
+	shader_count++;
+}
 
-	return temp_shader;
+void Shaders::add_file(GLenum type, const char* filename) {
+	char* source = Util::read_file(filename);
+	add_string(type, source);
+	free(source);
+}
+
+void Shaders::check_shader_compilation(GLuint shader, const char* msg) {
+	GLint success;
+	GLchar info_log[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	glGetShaderInfoLog(shader, 512, NULL, info_log);
+	if (!success) error("%s:\n%s", msg, info_log);
+	log("%s", info_log);
+}
+
+void Shaders::check_linkage(GLuint program, const char* msg) {
+	GLint success;
+	GLchar info_log[512];
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	glGetProgramInfoLog(program, 512, NULL, info_log);
+	if (!success) error("%s:\n%s", msg, info_log);
+	log("%s", info_log);
 }
 
 void Shaders::link_program() {
 	// Link shaders
-	GLint success;
-	GLchar info_log[512];
-
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, this->basic_2D_vsh);
-	glAttachShader(shaderProgram, this->basic_2D_fsh);
-	glLinkProgram(shaderProgram);
-	// Check for linking errors
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, info_log);
-		log("shaders linking failed:\n%s", info_log);
-		log("Shaders error");
+	program = glCreateProgram();
+	for (size_t i = 0; i < shader_count; i++) {
+		glAttachShader(program, shaders[i]);
 	}
-	glDeleteShader(this->basic_2D_vsh);
-	glDeleteShader(this->basic_2D_fsh);
+	glLinkProgram(program);
+	check_linkage(program, "shaders linking failed");
+	for (size_t i = 0; i < shader_count; i++) {
+		glDeleteShader(shaders[i]);
+	}
 
-	GLint loc = glGetUniformBlockIndex(shaderProgram, "Matrices");
-	glUniformBlockBinding(shaderProgram, loc, 0);
+	GLint loc = glGetUniformBlockIndex(program, "Matrices");
+	glUniformBlockBinding(program, loc, 0);
 
 	glGenBuffers(1, &UBO_matrix);
 	glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
@@ -87,7 +65,7 @@ void Shaders::link_program() {
 }
 
 void Shaders::use() {
-	glUseProgram(this->shaderProgram);
+	glUseProgram(program);
 }
 
 void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
@@ -100,12 +78,12 @@ void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
 }
 
 void Shaders::set_float(const char* identifier, GLfloat value) {
-	GLuint loc = glGetUniformLocation(this->shaderProgram, identifier);
+	GLuint loc = glGetUniformLocation(program, identifier);
 	glUniform1f(loc, value);
 }
 
 void Shaders::set_int(const char* identifier, GLint value) {
-	GLuint loc = glGetUniformLocation(this->shaderProgram, identifier);
+	GLuint loc = glGetUniformLocation(program, identifier);
 	glUniform1i(loc, value);
 }
 
@@ -116,5 +94,5 @@ void Shaders::set_texture(const char* identifier, Res::Texture* tex, GLuint inde
 }
 
 Shaders::~Shaders() {
-	glDeleteProgram(shaderProgram);
+	glDeleteProgram(program);
 }

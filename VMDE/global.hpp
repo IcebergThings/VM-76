@@ -104,13 +104,16 @@
 	#define log(...) Util::log_internal(DEBUG_ENVIRONMENT, __func__, __VA_ARGS__)
 	// mark - 逐行打log的偷懒大法
 	#define mark log("Mark on line %d of %s", __LINE__, __FILE__)
-	// error - 抛出错误并终止程序
-	#define error(...) do { \
+	// error_internal
+	#define error_internal(extra, ...) do { \
 		log(__VA_ARGS__); \
-		perror("perror()"); \
-		fputs("The errno may not help.\n", stderr); \
+		extra \
 		exit(1); \
 	} while (false)
+	// error - 抛出错误并终止程序
+	#define error(...) error_internal(, __VA_ARGS__)
+	// errorp - error + perror
+	#define errorp(...) error_internal(perror("perror()"), __VA_ARGS__)
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//   这个Util的意义已经远超utility。
@@ -119,7 +122,8 @@
 		extern FILE* log_file;
 		void init();
 		void terminate();
-		void log_internal(const char*, const char*, const char*, ...);
+		void log_internal(const char*, const char*, const char*, ...)
+			__attribute__((format(printf, 3, 4)));
 		char* read_file(const char* filename);
 	}
 	//-------------------------------------------------------------------------
@@ -133,6 +137,7 @@
 	EXPORTED void init_engine(int w, int h, const char* title);
 	void setup_viewport();
 	void init_vmde(int w, int h);
+	void check_gl_error();
 	//-------------------------------------------------------------------------
 	// ● terminate.cpp
 	//-------------------------------------------------------------------------
@@ -176,17 +181,18 @@
 	//-------------------------------------------------------------------------
 	class Shaders : public Object {
 	public:
-		GLuint basic_2D_vsh;
-		GLuint basic_2D_fsh;
-		GLuint shaderProgram;
+		#define SHADERS_SLOT_COUNT 16
+		GLuint shaders[SHADERS_SLOT_COUNT];
+		size_t shader_count = 0;
+		GLuint program;
 
 		GLuint UBO_matrix;
 		glm::mat4 mat[3];
 
 	public:
-		Shaders(const GLchar* vsh_src_ptr, const GLchar* fsh_src_ptr);
-		static Shaders* CreateFromFile(const char* vsh_src, const char* fsh_src);
-
+		Shaders();
+		void add_string(GLenum type, const GLchar* source);
+		void add_file(GLenum type, const char* filename);
 		void link_program();
 		void use();
 
@@ -197,6 +203,16 @@
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 
 		~Shaders();
+
+	private:
+		static void check_shader_compilation(
+			GLuint shader,
+			const char* msg = "shader compile error"
+		);
+		static void check_linkage(
+			GLuint program,
+			const char* msg = "link error"
+		);
 	};
 	extern Shaders* _shaders_in_use;
 	//-------------------------------------------------------------------------
@@ -276,7 +292,7 @@
 	private:
 		GDrawable obj;
 		Res::Texture tex = Res::Texture("../Media/Font.bmp", true);
-		Shaders* texshader = NULL;
+		Shaders texshader;
 
 	public:
 		enum TextDecorationType {

@@ -14,7 +14,10 @@
 
 #ifndef error
 	#include <cstdio>
-	#define error(x) fprintf(stderr, "%s\n", x)
+	#define error(x) do { \
+		fprintf(stderr, "%s\n", x); \
+		perror("perror()"); \
+	} while (false)
 #endif
 
 #include "VExplosion.hpp"
