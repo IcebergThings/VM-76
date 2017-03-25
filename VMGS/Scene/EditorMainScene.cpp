@@ -174,7 +174,7 @@ namespace VM76 {
 		gui.use();
 		gui.set_texture("atlastex", &tile_texture, 0);
 		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
-		glDisable(GL_DEPTH_TEST);
+		GDrawable::disable_depth_test();
 		if (hand_id > 0) clist[hand_id - 1]->render();
 
 		if (SceneManager::render_debug_info) {
@@ -199,7 +199,7 @@ namespace VM76 {
 				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
 			);
 		}
-		glEnable(GL_DEPTH_TEST);
+		GDrawable::enable_depth_test();
 	}
 	//-------------------------------------------------------------------------
 	// ● 释放

@@ -125,7 +125,17 @@ void init_graphics(int w, int h, const char* title) {
 	// Query GL info
 	GL_info();
 
+	// Setup API constants
 	PostProcessingManager::init();
+	glDepthRange(0.0f, 1.0f);
+	glDepthMask(GL_TRUE);
+	glClearDepth(1.0f);
+
+	glDepthFunc(GL_LEQUAL);
+
+	glFrontFace(GL_CCW);
+	GDrawable::enable_depth_test();
+	GDrawable::enable_cullface();
 }
 
 //-----------------------------------------------------------------------------

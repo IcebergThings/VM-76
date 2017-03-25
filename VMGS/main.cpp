@@ -25,9 +25,8 @@ namespace VM76 {
 			::main_draw_start();
 			SceneManager::update_scene();
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			RenderBuffer::clearColorDepth(.0f, .0f, .0f, .0f);
+			GDrawable::enable_blend();
 			SceneManager::render_scene();
 			::main_draw_end();
 		} while (!VMDE->done);
@@ -43,18 +42,6 @@ namespace VM76 {
 		trex = new TextRenderer();
 		aspect_ratio = (float) VMDE->width / VMDE->height;
 		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);
-
-		// GL settings initialize
-		glFrontFace(GL_CCW);
-		glEnable(GL_CULL_FACE);
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glDepthRange(0.0f, 1.0f);
-		glClearDepth(1.0f);
-		glDepthMask(GL_TRUE);
 
 		loading = new LoadingScene((Scene**) &editor);
 		SceneManager::load_scene(loading);
