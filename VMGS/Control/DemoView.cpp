@@ -4,20 +4,16 @@
 //   Game view of a simple camera turnning, for demo
 //=============================================================================
 
-#include "control.hpp"
-
-#ifdef Control_DemoView
-#include <config.hpp>
-#include <global.hpp>
+#include "DemoView.hpp"
 
 namespace VM76 {
 
-	void init_control() {
+	void DemoView::init_control() {
 		glfwSetInputMode(window, GLFW_STICKY_KEYS, 0);
 	}
 
 	// That simple and does not need a header
-	void update_control() {
+	void DemoView::update_control() {
 		float stime = float(VMDE->frame_count);
 
 		float x = 5.0f * cos(stime * 0.015f);
@@ -30,5 +26,3 @@ namespace VM76 {
 	}
 
 }
-
-#endif

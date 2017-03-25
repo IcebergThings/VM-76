@@ -36,7 +36,7 @@ namespace VM76 {
 				glm::translate(glm::mat4(1.0), glm::vec3(0.01, 0.94, 0.0)),
 				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
 			);
-			glEnable(GL_DEPTH_TEST);
+			GDrawable::enable_depth_test();
 		}
 	}
 

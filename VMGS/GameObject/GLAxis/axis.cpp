@@ -42,11 +42,11 @@ namespace VM76 {
 	}
 
 	void Axis::render() {
-		glDisable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		GDrawable::disable_cullface();
+		GDrawable::render_mode_wireframe();
 		obj->render();
-		glEnable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		GDrawable::enable_cullface();
+		GDrawable::render_mode_fill();
 	}
 
 	Axis::~Axis() {

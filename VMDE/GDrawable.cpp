@@ -17,10 +17,6 @@ void GDrawable::render() {
 		GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0, data.mat_c);
 }
 
-void GDrawable::close_draw_node() {
-	glBindVertexArray(0);
-}
-
 void GDrawable::fbind() {
 	glBindVertexArray(data.VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.EBO);

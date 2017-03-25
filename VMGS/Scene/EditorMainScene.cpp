@@ -6,7 +6,18 @@
 
 #include "../VMGS.hpp"
 
+#include "../Control/GodView.hpp"
+#include "../Control/FirstPersonView.hpp"
+#include "../GameObject/SkyBox/SkyBox.hpp"
+
 namespace VM76 {
+
+	GodView* ctl;
+	FirstPersonView* ctl_fp;
+	SkyBox* sky;
+
+	bool fp_control = false;
+
 	//-------------------------------------------------------------------------
 	// ● 场景开始
 	//-------------------------------------------------------------------------
@@ -62,10 +73,22 @@ namespace VM76 {
 			clist[i]->update_instance(1,1,1,1,1,1);
 		}
 		block_pointer.obj->data.mat_c = 1;
+
+		ctl = new GodView();
+		ctl_fp = new FirstPersonView();
+		ctl->init_control();
+		ctl_fp->init_control();
+		ctl->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctl_fp->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
+
+		sky = new SkyBox("../Media/skybox.png");
 	}
 	//-------------------------------------------------------------------------
 	// ● 按键回调
 	//-------------------------------------------------------------------------
+	bool magnify = false;
+	bool magnifyPrev = false;
+
 	void EditorMainScene::key_callback(
 		GLFWwindow* window, int key, int scancode, int action, int mods
 	) {
@@ -76,6 +99,8 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 1.0));
 		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 1.0, 0.0));
 		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -1.0, 0.0));
+
+		if (PRESS(GLFW_KEY_F5)) fp_control = !fp_control;
 
 		if (PRESS(GLFW_KEY_0)) hand_id = 0;
 		if (PRESS(GLFW_KEY_0)) hand_id = 0;
@@ -91,6 +116,12 @@ namespace VM76 {
 
 		if (PRESS(GLFW_KEY_SPACE)) {
 			map.place_block(obj->pos, hand_id);
+		}
+
+		if (PRESS(GLFW_KEY_O)) {
+			magnify = !magnify;
+			if (magnify) projection = glm::perspective(0.3f, aspect_ratio, 0.1f, 1000.0f);
+			else projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;
@@ -131,7 +162,10 @@ namespace VM76 {
 	// ● 刷新
 	//-------------------------------------------------------------------------
 	void EditorMainScene::update() {
-		update_control();
+		if (fp_control)
+			ctl->update_control();
+		else
+			ctl_fp->update_control();
 	}
 	//-------------------------------------------------------------------------
 	// ● 渲染
@@ -151,6 +185,8 @@ namespace VM76 {
 		shader_textured.ProjectionView(projection, view);
 		map.render();
 
+		sky->render();
+
 		// Setup uniforms
 		// Non textured rendering
 		shader_basic.use();
@@ -162,11 +198,12 @@ namespace VM76 {
 
 		axe.render();
 
+
 		postBuffer->unbind();
 		post_processing.use();
 		post_processing.set_texture("colortex", postBuffer->texture_buffer[0], 0);
 		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 1);
-		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMDE->frame_count * 0.01), sin(VMDE->frame_count * 0.01), 0.0);
+		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
 		glUniform3f(glGetUniformLocation(post_processing.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
 		PostProcessingManager::Blit2D();
 
@@ -174,7 +211,7 @@ namespace VM76 {
 		gui.use();
 		gui.set_texture("atlastex", &tile_texture, 0);
 		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
-		glDisable(GL_DEPTH_TEST);
+		GDrawable::disable_depth_test();
 		if (hand_id > 0) clist[hand_id - 1]->render();
 
 		if (SceneManager::render_debug_info) {
@@ -199,7 +236,7 @@ namespace VM76 {
 				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
 			);
 		}
-		glEnable(GL_DEPTH_TEST);
+		GDrawable::enable_depth_test();
 	}
 	//-------------------------------------------------------------------------
 	// ● 释放

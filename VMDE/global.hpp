@@ -279,7 +279,15 @@
 		void update_instance();
 		void update_instance_alien_size();
 
-		static void close_draw_node();
+		static inline void close_draw_node() { glBindVertexArray(0); }
+		static inline void enable_cullface() { glEnable(GL_CULL_FACE); }
+		static inline void disable_cullface() { glEnable(GL_CULL_FACE); }
+		static inline void enable_depth_test() { glEnable(GL_DEPTH_TEST); }
+		static inline void disable_depth_test() { glEnable(GL_DEPTH_TEST); }
+		static inline void enable_blend() { glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); }
+		static inline void disable_blend() { glEnable(GL_BLEND); }
+		static inline void render_mode_wireframe() { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }
+		static inline void render_mode_fill() { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); }
 
 		~GDrawable();
 
@@ -337,13 +345,14 @@
 
 		static void clearColorDepth(float r, float g, float b, float a) {
 			glClearColor(r, g, b, a);
+			glClearDepth(1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_DEPTH_TEST);
+			GDrawable::enable_depth_test();
 		}
 
 		static void clearDepth() {
 			glClear(GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_DEPTH_TEST);
+			GDrawable::enable_depth_test();
 		}
 
 		RenderBuffer(int w, int h, int mrt, GLuint* type);

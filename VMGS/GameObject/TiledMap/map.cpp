@@ -70,8 +70,6 @@ namespace VM76 {
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);
 
-		const glm::mat2 rotate2D = glm::mat2(1.3623, 1.7531, -1.7131, 1.4623);
-
 		for (int i = 0; i < width; i ++) {
 			if (i % (width / 12) == 0)
 				log("Generated %d%% (%d / %d)",
@@ -80,34 +78,19 @@ namespace VM76 {
 				);
 
 			for (int j = 0; j < length; j++) {
-				glm::vec2 pos = glm::vec2(i, j) * 0.00001f;
+				glm::vec2 coord = glm::vec2(i, j) * 0.01f;
 
-				float ww = glm::perlin(pos * 0.1f) + glm::perlin(-pos * 0.1f);
-				ww = ww * ww * 0.5f + 0.5f;
-				ww *= 2.0f;
+				const glm::mat2 rotate = glm::mat2(0.86f, -0.5f, 0.5f, 0.86f);
 
-				float w = 1.0;
-				float n = .0f;
-				for (int i = 0; i < 5; i++) {
-					glm::vec2 xp = pos + ww * w * glm::perlin(pos);
-					glm::vec2 wv = 1.0f - glm::abs(glm::sin(xp));
-					glm::vec2 swv = glm::abs(glm::cos(xp));
-					wv = glm::mix(wv, swv, wv);
-					n += glm::pow(1.0 - glm::pow(wv.x * wv.y, 0.75), 2.0 * w);
+				glm::vec2 dir = glm::vec2(1.0, 0.1);
+				float n = glm::sin(glm::perlin(coord * dir)) * 0.5f; coord *= 1.2f;  dir = dir * rotate; coord += dir * 0.3f;
+				n += glm::perlin(coord * dir) * 0.45f; dir = dir * rotate;
+				n += glm::perlin(coord * dir) * 0.35f; dir = dir * rotate;
+				n += glm::perlin(coord * dir) * 0.25f; dir = dir * rotate;
+				coord *= 3.01f; dir = dir * rotate; coord += dir * 0.6f;
+				n += glm::perlin(coord) * 0.125f;
 
-					w *= 0.85f;
-					pos = rotate2D * pos * 3.2f;
-					pos -= glm::vec2(0.4f, 0.8f) * (float) i;
-				}
-
-				pos = glm::vec2(i, j) * -0.00001f; w = 1.0;
-				for (int i = 0; i < 3; i++) {
-					n += w * glm::simplex(pos);
-					w *= -0.65f;
-					pos = rotate2D * pos * 3.2f;
-				}
-				n *= 0.5f;
-				n = glm::pow(n, 1.0 + ww);
+				n = n + 0.5f;
 
 				n = glm::clamp(n * 0.7f + 0.2f, 1.0f / (float) TERRIAN_MAX_HEIGHT, 1.0f);
 				int h = n * TERRIAN_MAX_HEIGHT;

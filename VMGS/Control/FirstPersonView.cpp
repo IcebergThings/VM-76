@@ -4,40 +4,34 @@
 //   Game view of First Person Game Control
 //=============================================================================
 
-#include "control.hpp"
-
-#ifdef Control_FPView
-
 #include "FirstPersonView.hpp"
 namespace VM76 {
 
-	Game_control game = {
-		.key_quit = GLFW_KEY_ESCAPE,
-		.key_forward = GLFW_KEY_W,
-		.key_left = GLFW_KEY_A,
-		.key_right = GLFW_KEY_D,
-		.key_back = GLFW_KEY_S,
-		.key_up = GLFW_KEY_SPACE,
-		.key_down = GLFW_KEY_LEFT_SHIFT,
-	};
-
-	Player game_player;
-
-	void init_control() {
+	void FirstPersonView::init_control() {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
+
+		game = {
+			.key_quit = GLFW_KEY_ESCAPE,
+			.key_forward = GLFW_KEY_I,
+			.key_left = GLFW_KEY_J,
+			.key_right = GLFW_KEY_L,
+			.key_back = GLFW_KEY_K,
+			.key_up = GLFW_KEY_SPACE,
+			.key_down = GLFW_KEY_LEFT_SHIFT,
+		};
 	}
 
-	void update_control() {
+	void FirstPersonView::update_control() {
 		// Mouse Input
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		game_player.horizontal_angle -= 0.005 * (xpos - VMDE->width / 2.0);
 		game_player.vertical_angle -= 0.005 * (ypos - VMDE->height / 2.0);
 		game_player.vertical_angle = glm::clamp(
-			- Util::PIf / 2 + 0.04f,
+			- VMath::PIf / 2 + 0.04f,
 			game_player.vertical_angle,
-			Util::PIf / 2
+			VMath::PIf / 2
 		);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 		glm::vec3 direction = glm::vec3(
@@ -46,9 +40,9 @@ namespace VM76 {
 			cos(game_player.vertical_angle) * cos(game_player.horizontal_angle)
 		);
 		glm::vec3 right = glm::vec3(
-			sin(game_player.horizontal_angle - Util::PIf / 2.0f),
+			sin(game_player.horizontal_angle - VMath::PIf / 2.0f),
 			0,
-			cos(game_player.horizontal_angle - Util::PIf / 2.0f)
+			cos(game_player.horizontal_angle - VMath::PIf / 2.0f)
 		);
 		glm::vec3 up = glm::cross(right, direction);
 		glm::vec3 cam_pos = game_player.wpos + glm::vec3(0.0, 1.68, 0.0);
@@ -74,5 +68,3 @@ namespace VM76 {
 	}
 
 }
-
-#endif
