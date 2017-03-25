@@ -86,6 +86,9 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 按键回调
 	//-------------------------------------------------------------------------
+	bool magnify = false;
+	bool magnifyPrev = false;
+
 	void EditorMainScene::key_callback(
 		GLFWwindow* window, int key, int scancode, int action, int mods
 	) {
@@ -113,6 +116,12 @@ namespace VM76 {
 
 		if (PRESS(GLFW_KEY_SPACE)) {
 			map.place_block(obj->pos, hand_id);
+		}
+
+		if (PRESS(GLFW_KEY_O)) {
+			magnify = !magnify;
+			if (magnify) projection = glm::perspective(0.3f, aspect_ratio, 0.1f, 1000.0f);
+			else projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;
