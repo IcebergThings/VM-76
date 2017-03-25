@@ -36,8 +36,6 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void start_game() {
 		::init_engine(860, 540, "VM / 76");
-		init_control();
-		cam.wpos = glm::vec3(64.0, 72.0, 64.0);
 
 		trex = new TextRenderer();
 		aspect_ratio = (float) VMDE->width / VMDE->height;

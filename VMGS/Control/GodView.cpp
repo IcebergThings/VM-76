@@ -4,28 +4,22 @@
 //   Game view of God View
 //=============================================================================
 
-#include "control.hpp"
-
-#ifdef Control_GodView
-
 #include "GodView.hpp"
 namespace VM76 {
 
-	Game_control game = {
-		.key_quit = GLFW_KEY_ESCAPE,
-		.key_forward = GLFW_KEY_I,
-		.key_left = GLFW_KEY_J,
-		.key_right = GLFW_KEY_L,
-		.key_back = GLFW_KEY_K,
-		.key_zoomin = GLFW_KEY_N,
-		.key_zoomout = GLFW_KEY_M,
-	};
+	void GodView::init_control() {
+		game = {
+			.key_quit = GLFW_KEY_ESCAPE,
+			.key_forward = GLFW_KEY_I,
+			.key_left = GLFW_KEY_J,
+			.key_right = GLFW_KEY_L,
+			.key_back = GLFW_KEY_K,
+			.key_zoomin = GLFW_KEY_N,
+			.key_zoomout = GLFW_KEY_M,
+		};
+	}
 
-	Camera cam;
-
-	void init_control() { }
-
-	void update_control() {
+	void GodView::update_control() {
 		// Key Input
 		const glm::vec3 CameraForward = glm::normalize(glm::vec3(0.0, -1.0, -0.4));
 
@@ -52,5 +46,3 @@ namespace VM76 {
 	}
 
 }
-
-#endif

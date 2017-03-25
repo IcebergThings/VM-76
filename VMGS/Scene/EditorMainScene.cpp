@@ -6,7 +6,16 @@
 
 #include "../VMGS.hpp"
 
+#include "../Control/GodView.hpp"
+#include "../Control/FirstPersonView.hpp"
+
 namespace VM76 {
+
+	GodView* ctl;
+	FirstPersonView* ctl_fp;
+
+	bool fp_control = false;
+
 	//-------------------------------------------------------------------------
 	// ● 场景开始
 	//-------------------------------------------------------------------------
@@ -62,6 +71,13 @@ namespace VM76 {
 			clist[i]->update_instance(1,1,1,1,1,1);
 		}
 		block_pointer.obj->data.mat_c = 1;
+
+		ctl = new GodView();
+		ctl_fp = new FirstPersonView();
+		ctl->init_control();
+		ctl_fp->init_control();
+		ctl->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctl_fp->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
 	}
 	//-------------------------------------------------------------------------
 	// ● 按键回调
@@ -76,6 +92,8 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 1.0));
 		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 1.0, 0.0));
 		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -1.0, 0.0));
+
+		if (PRESS(GLFW_KEY_F5)) fp_control = !fp_control;
 
 		if (PRESS(GLFW_KEY_0)) hand_id = 0;
 		if (PRESS(GLFW_KEY_0)) hand_id = 0;
@@ -131,7 +149,10 @@ namespace VM76 {
 	// ● 刷新
 	//-------------------------------------------------------------------------
 	void EditorMainScene::update() {
-		update_control();
+		if (fp_control)
+			ctl->update_control();
+		else
+			ctl_fp->update_control();
 	}
 	//-------------------------------------------------------------------------
 	// ● 渲染
