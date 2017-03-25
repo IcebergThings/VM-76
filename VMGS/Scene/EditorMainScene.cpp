@@ -8,11 +8,13 @@
 
 #include "../Control/GodView.hpp"
 #include "../Control/FirstPersonView.hpp"
+#include "../GameObject/SkyBox/SkyBox.hpp"
 
 namespace VM76 {
 
 	GodView* ctl;
 	FirstPersonView* ctl_fp;
+	SkyBox* sky;
 
 	bool fp_control = false;
 
@@ -78,6 +80,8 @@ namespace VM76 {
 		ctl_fp->init_control();
 		ctl->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctl_fp->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
+
+		sky = new SkyBox("../Media/skybox.png");
 	}
 	//-------------------------------------------------------------------------
 	// ● 按键回调
@@ -172,6 +176,8 @@ namespace VM76 {
 		shader_textured.ProjectionView(projection, view);
 		map.render();
 
+		sky->render();
+
 		// Setup uniforms
 		// Non textured rendering
 		shader_basic.use();
@@ -183,11 +189,12 @@ namespace VM76 {
 
 		axe.render();
 
+
 		postBuffer->unbind();
 		post_processing.use();
 		post_processing.set_texture("colortex", postBuffer->texture_buffer[0], 0);
 		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 1);
-		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMDE->frame_count * 0.01), sin(VMDE->frame_count * 0.01), sin(VMDE->frame_count * 0.01) * 0.3f);
+		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
 		glUniform3f(glGetUniformLocation(post_processing.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
 		PostProcessingManager::Blit2D();
 

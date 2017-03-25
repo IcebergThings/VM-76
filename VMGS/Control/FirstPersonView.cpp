@@ -13,10 +13,10 @@ namespace VM76 {
 
 		game = {
 			.key_quit = GLFW_KEY_ESCAPE,
-			.key_forward = GLFW_KEY_W,
-			.key_left = GLFW_KEY_A,
-			.key_right = GLFW_KEY_D,
-			.key_back = GLFW_KEY_S,
+			.key_forward = GLFW_KEY_I,
+			.key_left = GLFW_KEY_J,
+			.key_right = GLFW_KEY_L,
+			.key_back = GLFW_KEY_K,
 			.key_up = GLFW_KEY_SPACE,
 			.key_down = GLFW_KEY_LEFT_SHIFT,
 		};

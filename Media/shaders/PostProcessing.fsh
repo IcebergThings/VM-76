@@ -31,8 +31,11 @@ void colorAdjust(inout vec3 c) {
 void main() {
 	vec3 c = texture(colortex, texcoord).rgb;
 
-	vec3 normal = texture(gnormal, texcoord).rgb * 2.0 - 1.0;
-	c *= 0.5 + 0.5 * max(0.0, dot(normal, sunVec));
+	vec4 ntex = texture(gnormal, texcoord);
+	if (length(ntex.rgb) > 0.01) {
+		vec3 normal = ntex.rgb * 2.0 - 1.0;
+		c *= 0.5 + 0.5 * max(0.0, dot(normal, sunVec));
+	}
 
 	colorAdjust(c);
 	color = vec4(c, 1.0);
