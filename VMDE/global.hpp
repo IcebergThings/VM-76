@@ -355,7 +355,7 @@
 			GDrawable::enable_depth_test();
 		}
 
-		RenderBuffer(int w, int h, int mrt, GLuint* type);
+		RenderBuffer(int w, int h, int mrt, const GLuint* type);
 		void set_draw_buffers();
 		~RenderBuffer();
 	};

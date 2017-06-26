@@ -6,7 +6,7 @@
 
 #include "global.hpp"
 
-RenderBuffer::RenderBuffer (int w, int h, int mrt, GLuint* type) {
+RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 	log("Creating Render Buffer of %d x %d", w, h);
 
 	glGenFramebuffers(1, &framebuffer);
@@ -16,15 +16,15 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, GLuint* type) {
 	texture_buffer = new Res::Texture*[mrt];
 	for (int i = 0; i < mrt; i++) {
 		texture_buffer[i] = new Res::Texture();
-		glGenTextures(1, &texture_buffer[i]->texture);
+		glGenTextures(1, &(texture_buffer[i]->texture));
 		glBindTexture(GL_TEXTURE_2D, texture_buffer[i]->texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, type[i], w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glBindTexture(GL_TEXTURE_2D, 0);
 		texture_buffer[i]->width = w; texture_buffer[i]->height = h;
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture_buffer[i]->texture, 0);
 	}
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
