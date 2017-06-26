@@ -37,6 +37,10 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void RenderBuffer::bind() {
+	 glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
+}
+
 void RenderBuffer::set_draw_buffers() {
 	GLuint attachments[mrtcount];
 	for (int i = 0; i < mrtcount; i++) attachments[i] = GL_COLOR_ATTACHMENT0 + i;

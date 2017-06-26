@@ -335,8 +335,8 @@
 
 		//void resize(int w, int h);
 
-		inline void bind() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
-		static inline void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+		void bind();
+		static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 		static void clearColor(float r, float g, float b, float a) {
 			glClearColor(r, g, b, a);
