@@ -244,5 +244,6 @@ namespace VM76 {
 	EditorMainScene::~EditorMainScene() {
 		for (int i = 0; i < 16; i++) VMDE_Dispose(delete, clist[i]);
 		VMDE_Dispose(delete, trex);
+		VMDE_Dispose(delete, postBuffer);
 	}
 }
