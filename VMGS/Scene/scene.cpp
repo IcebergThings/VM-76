@@ -27,7 +27,7 @@ namespace VM76 {
 		if (context) context->render();
 		// Render FPS
 		if (render_debug_info) {
-			glDisable(GL_DEPTH_TEST);
+			VMSC::disable_depth_test();
 			char fps[10];
 			sprintf(fps, "FPS: %d", VMDE->fps);
 			trex->instanceRenderText(

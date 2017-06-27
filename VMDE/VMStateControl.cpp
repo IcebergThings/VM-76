@@ -66,10 +66,10 @@ void VMStateControl::disable_cullface() {
 }
 
 void VMStateControl::enable_depth_test() {
-	//if (!StateMachine.DEPTH_TEST) {
+	if (!StateMachine.DEPTH_TEST) {
 		StateMachine.DEPTH_TEST = true;
 		glEnable(GL_DEPTH_TEST);
-	//}
+	}
 }
 
 void VMStateControl::disable_depth_test() {
