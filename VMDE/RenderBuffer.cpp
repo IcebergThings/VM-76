@@ -17,14 +17,14 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 	for (int i = 0; i < mrt; i++) {
 		texture_buffer[i] = new Res::Texture();
 		glGenTextures(1, &(texture_buffer[i]->texture));
-		glBindTexture(GL_TEXTURE_2D, texture_buffer[i]->texture);
+		VMSC::ChangeTexture2D(texture_buffer[i]->texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, type[i], w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		texture_buffer[i]->width = w; texture_buffer[i]->height = h;
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture_buffer[i]->texture, 0);
 	}
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
@@ -79,9 +79,9 @@ void PostProcessingManager::init() {
 }
 
 void PostProcessingManager::Blit2D() {
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
+	VMSC::disable_depth_test();
+	VMSC::disable_cullface();
 	QuadScreen->renderOnce();
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	VMSC::enable_depth_test();
+	VMSC::enable_cullface();
 }

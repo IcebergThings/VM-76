@@ -101,7 +101,7 @@ namespace VM76 {
 
 	SkyBox::~SkyBox() {
 		for (int i = 0; i < 6; i++) {
-			VMDE_Dispose(delete, obj[i]);
+			XE(delete[], obj[i]);
 			XE(delete[], vtx[i]);
 			XE(delete[], itx[i]);
 		}

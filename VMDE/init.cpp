@@ -89,7 +89,7 @@ void init_graphics(int w, int h, const char* title) {
 		VMDE->gl_ver = GL_33;
 		if (!window) {
 			glfwTerminate();
-			log("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.3.");
+			error("glfwCreateWindow() (GLFW Window Creation) failed. Your computer need OpenGL 3.3.");
 			return;
 		}
 		log("OpenGL API: 3.3");
@@ -98,27 +98,7 @@ void init_graphics(int w, int h, const char* title) {
 		log("OpenGL API: 4.3");
 	}
 
-	// 设置当前窗口GL上下文
-	glfwMakeContextCurrent(window);
-	// 垂直同步，拒绝鬼畜
-	glfwSwapInterval(1);
-
-	// 初始化GLEW
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) {
-		log("glewInit() (GLEW Initialization) failed.");
-		return;
-	}
-	#ifdef __APPLE__
-		log("UBO: Apple Uniform Buffer Object （__APPLE__)");
-	#else
-		if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") != GLFW_TRUE) {
-			glfwTerminate();
-			log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
-			return;
-		}
-		log("UBO: GL33 Uniform Buffer Object");
-	#endif
+	VMSC::init_graphics_state();
 
 	setup_viewport();
 
@@ -134,8 +114,8 @@ void init_graphics(int w, int h, const char* title) {
 	glDepthFunc(GL_LEQUAL);
 
 	glFrontFace(GL_CCW);
-	GDrawable::enable_depth_test();
-	GDrawable::enable_cullface();
+	VMStateControl::enable_depth_test();
+	VMStateControl::enable_cullface();
 }
 
 //-----------------------------------------------------------------------------

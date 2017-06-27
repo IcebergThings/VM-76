@@ -245,7 +245,49 @@
 	// VMDE操控的全局变量
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
-
+	
+	//-------------------------------------------------------------------------
+	// ● State Control
+	//-------------------------------------------------------------------------
+	//   在OpenGL状态机外层再加一个状态管理机制，减少不必要的状态切换和不必要的draw call
+	//   这样的一个状态机设计也可以更好地隔离API，为以后Vulkan做准备
+	class VMStateControl {
+		static struct StateMachineStruct {
+			GLuint VERTEX_ARRAY;
+			GLuint ELEMENT_ARRAY_BUFFER;
+			GLuint ARRAY_BUFFER;
+			GLuint TEXTURE_2D;
+			GLuint UNIFORM_BUFFER;
+			GLuint Shader_Program;
+			bool TextureActivated[32]; // 32 for GL 3.X+, should be enough
+			
+			bool DEPTH_TEST;
+			bool CULL_FACE;
+			bool BLEND;
+			GLuint PolygonMode;
+		} StateMachine;
+	
+	public:
+		static void ChangeVertexArray (GLuint index);
+		static void ChangeElementArrayBuffer (GLuint index);
+		static void ChangeArrayBuffer (GLuint index);
+		static void ChangeTexture2D (GLuint index);
+		static void ChangeUniformBuffer (GLuint index);
+		static void ChangeShaderProgram (GLuint index);
+		
+		static void enable_cullface();
+		static void disable_cullface();
+		static void enable_depth_test();
+		static void disable_depth_test();
+		static void enable_blend();
+		static void disable_blend();
+		static void render_mode_wireframe();
+		static void render_mode_fill();
+		
+		static void init_graphics_state ();
+	};
+	#define VMSC VMStateControl // 少写几个字
+	
 	//-------------------------------------------------------------------------
 	// ● GDrawable
 	//-------------------------------------------------------------------------
@@ -279,15 +321,7 @@
 		void update_instance();
 		void update_instance_alien_size();
 
-		static inline void close_draw_node() { glBindVertexArray(0); }
-		static inline void enable_cullface() { glEnable(GL_CULL_FACE); }
-		static inline void disable_cullface() { glEnable(GL_CULL_FACE); }
-		static inline void enable_depth_test() { glEnable(GL_DEPTH_TEST); }
-		static inline void disable_depth_test() { glEnable(GL_DEPTH_TEST); }
-		static inline void enable_blend() { glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); }
-		static inline void disable_blend() { glEnable(GL_BLEND); }
-		static inline void render_mode_wireframe() { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }
-		static inline void render_mode_fill() { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); }
+		static inline void close_draw_node() { VMStateControl::ChangeVertexArray(0); }
 
 		~GDrawable();
 
@@ -347,12 +381,12 @@
 			glClearColor(r, g, b, a);
 			glClearDepth(1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			GDrawable::enable_depth_test();
+			VMStateControl::enable_depth_test();
 		}
 
 		static void clearDepth() {
 			glClear(GL_DEPTH_BUFFER_BIT);
-			GDrawable::enable_depth_test();
+			VMStateControl::enable_depth_test();
 		}
 
 		RenderBuffer(int w, int h, int mrt, const GLuint* type);
