@@ -78,15 +78,19 @@ namespace VM76 {
 				);
 
 			for (int j = 0; j < length; j++) {
-				glm::vec2 coord = glm::vec2(i, j) * 0.01f;
+				glm::vec2 coord = glm::vec2(i, j) * 0.006f;
 
-				const glm::mat2 rotate = glm::mat2(0.86f, -0.5f, 0.5f, 0.86f);
+				const glm::mat2 rotate = glm::mat2(1.4,1.1,-1.2,1.4);
 
 				glm::vec2 dir = glm::vec2(1.0, 0.1);
-				float n = glm::sin(glm::perlin(coord * dir)) * 0.5f; coord *= 1.2f;  dir = dir * rotate; coord += dir * 0.3f;
+				float n = glm::sin(glm::perlin(coord * dir)) * 0.5f; coord *= 1.2f;dir = dir * rotate; coord += dir * 0.3f;
+				dir += glm::vec2(n * 0.8, 0.0);
 				n += glm::perlin(coord * dir) * 0.45f; dir = dir * rotate;
+				dir += glm::vec2(n * 0.6, 0.0);
 				n += glm::perlin(coord * dir) * 0.35f; dir = dir * rotate;
+				dir += glm::vec2(n * 0.4, 0.0);
 				n += glm::perlin(coord * dir) * 0.25f; dir = dir * rotate;
+				dir += glm::vec2(n * 0.2, 0.0);
 				coord *= 3.01f; dir = dir * rotate; coord += dir * 0.6f;
 				n += glm::perlin(coord) * 0.125f;
 

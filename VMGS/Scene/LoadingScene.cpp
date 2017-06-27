@@ -17,7 +17,7 @@ namespace VM76 {
 	bool first_load = true;
 
 	void LoadingScene::render() {
-		glDisable(GL_DEPTH_TEST);
+		VMSC::disable_depth_test();
 
 		char load_splash[] = "Loading    ";
 		for (int i = 0; i < (VMDE->frame_count / 6) % 4; i++) load_splash[i + 8] = '.';
@@ -28,7 +28,7 @@ namespace VM76 {
 				glm::vec3((1.0 * aspect_ratio - 0.05 * 11) * 0.5,0.45,0.0)),
 			0.05, 0.1, TextRenderer::TextDecorationType::NONE
 		);
-		GDrawable::enable_depth_test();
+		VMSC::enable_depth_test();
 
 		if (first_load) {
 			first_load = false;

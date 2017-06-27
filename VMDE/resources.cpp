@@ -12,7 +12,7 @@ namespace Res {
 
 	Texture::Texture(const char* file) {
 		glGenTextures(1, &this->texture);
-		glBindTexture(GL_TEXTURE_2D, this->texture);
+		VMSC::ChangeTexture2D(this->texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
@@ -24,16 +24,14 @@ namespace Res {
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		SOIL_free_image_data(image);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		this->width = width; this->height = height;
+		VMSC::ChangeTexture2D(0);
 
 		log("Texture is loaded from %s to texture unit", file);
 	}
 
 	Texture::Texture(const char* file, bool useLinear) {
 		glGenTextures(1, &this->texture);
-		glBindTexture(GL_TEXTURE_2D, this->texture);
+		VMSC::ChangeTexture2D(this->texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, useLinear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR);
@@ -45,9 +43,7 @@ namespace Res {
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		SOIL_free_image_data(image);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		this->width = width; this->height = height;
+		VMSC::ChangeTexture2D(0);
 
 		log("Texture is loaded from %s to texture unit", file);
 	}

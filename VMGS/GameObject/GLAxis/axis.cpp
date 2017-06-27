@@ -42,11 +42,11 @@ namespace VM76 {
 	}
 
 	void Axis::render() {
-		GDrawable::disable_cullface();
-		GDrawable::render_mode_wireframe();
+		VMStateControl::disable_cullface();
+		VMStateControl::render_mode_wireframe();
 		obj->render();
-		GDrawable::enable_cullface();
-		GDrawable::render_mode_fill();
+		VMStateControl::enable_cullface();
+		VMStateControl::render_mode_fill();
 	}
 
 	Axis::~Axis() {

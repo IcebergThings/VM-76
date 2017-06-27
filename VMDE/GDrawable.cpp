@@ -7,26 +7,26 @@
 #include "global.hpp"
 
 void GDrawable::renderOnce() {
-	glBindVertexArray(data.VAO);
+	VMSC::ChangeVertexArray(data.VAO);
 	glDrawElements(GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0);
 }
 
 void GDrawable::render() {
-	glBindVertexArray(data.VAO);
+	VMSC::ChangeVertexArray(data.VAO);
 	glDrawElementsInstanced(
 		GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0, data.mat_c);
 }
 
 void GDrawable::fbind() {
-	glBindVertexArray(data.VAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.EBO);
+	VMSC::ChangeVertexArray(data.VAO);
+	VMSC::ChangeElementArrayBuffer(data.EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.ind_c * sizeof(GLuint), data.indices, GL_STATIC_DRAW);
 
 	const size_t vec4Size = sizeof(glm::vec4);
 	const size_t vertex_size = sizeof(Vertex); // X,Y,Z,  R,G,B,A,  S,T, Normal
 	if (VMDE->gl_ver == GL_43) {
 		// GL43 Vertex Attribute Format & Binding
-		glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
+		VMSC::ChangeArrayBuffer(data.VBO);
 		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * vertex_size, (GLfloat*) data.vertices, GL_STATIC_DRAW);
 
 		glVertexAttribFormat(0, 3, GL_FLOAT, false, 0); // XYZ
@@ -41,7 +41,7 @@ void GDrawable::fbind() {
 		glBindVertexBuffer(0, data.VBO, 0, vertex_size);
 	} else {
 		// GL33 Vertex Attribute Pointer
-		glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
+		VMSC::ChangeArrayBuffer(data.VBO);
 		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * vertex_size, data.vertices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
@@ -50,7 +50,7 @@ void GDrawable::fbind() {
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (9 * sizeof(GLfloat)));
 	}
 	// GL33 Vertex Attribute Pointer Instanced
-	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
+	VMSC::ChangeArrayBuffer(data.MBO);
 	glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
 
 	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) 0);
@@ -72,23 +72,23 @@ void GDrawable::fbind() {
 	glVertexAttribDivisor(6, 1);
 	glVertexAttribDivisor(7, 1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
 }
 
 #define INSTANCE_UPDATE glBindBuffer(GL_ARRAY_BUFFER, data.MBO); \
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.mat_c * sizeof(glm::mat4), data.mat);
 
 void GDrawable::update() {
-	glBindVertexArray(data.VAO);
+	VMSC::ChangeVertexArray(data.VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, data.VBO);
+	VMSC::ChangeArrayBuffer(data.VBO);
 	//void* bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
 	//memcpy(bufv, data.vertices, data.vtx_c * sizeof(GLfloat));
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.vtx_c * sizeof(Vertex), data.vertices);
 	//glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.EBO);
+	VMSC::ChangeElementArrayBuffer(data.EBO);
 	//void* bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 	//memcpy(bufi, data.indices, data.ind_c * sizeof(GLuint));
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
@@ -96,20 +96,20 @@ void GDrawable::update() {
 
 	INSTANCE_UPDATE
 
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	//glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 void GDrawable::update_instance() {
-	glBindVertexArray(data.VAO);
+	VMSC::ChangeVertexArray(data.VAO);
 	INSTANCE_UPDATE
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	//glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 void GDrawable::update_instance_alien_size() {
-	glBindVertexArray(data.VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, data.MBO);
+	VMSC::ChangeVertexArray(data.VAO);
+	VMSC::ChangeArrayBuffer(data.MBO);
 	glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER,0);
+	//glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 GDrawable::~GDrawable() {

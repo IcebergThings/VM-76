@@ -211,7 +211,7 @@ namespace VM76 {
 		gui.use();
 		gui.set_texture("atlastex", &tile_texture, 0);
 		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
-		GDrawable::disable_depth_test();
+		VMSC::disable_depth_test();
 		if (hand_id > 0) clist[hand_id - 1]->render();
 
 		if (SceneManager::render_debug_info) {
@@ -236,7 +236,7 @@ namespace VM76 {
 				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
 			);
 		}
-		GDrawable::enable_depth_test();
+		VMSC::enable_depth_test();
 	}
 	//-------------------------------------------------------------------------
 	// ● 释放
@@ -244,5 +244,6 @@ namespace VM76 {
 	EditorMainScene::~EditorMainScene() {
 		for (int i = 0; i < 16; i++) VMDE_Dispose(delete, clist[i]);
 		VMDE_Dispose(delete, trex);
+		VMDE_Dispose(delete, postBuffer);
 	}
 }

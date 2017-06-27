@@ -26,7 +26,7 @@ namespace VM76 {
 			SceneManager::update_scene();
 
 			RenderBuffer::clearColorDepth(.0f, .0f, .0f, .0f);
-			GDrawable::enable_blend();
+			VMSC::enable_blend();
 			SceneManager::render_scene();
 			::main_draw_end();
 		} while (!VMDE->done);

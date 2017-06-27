@@ -122,6 +122,7 @@ namespace ASM76 {
 		void dump_registers();
 		void dump_memory();
 
+		void execute_from(uint32_t start_pos, bool debug_process);
 		void execute(bool debug_process);
 		inline void execute_instruction_inline(uint16_t opcode, uint32_t a, uint32_t b);
 		void execute_instruction(Instruct*);
