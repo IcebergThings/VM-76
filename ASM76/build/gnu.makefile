@@ -7,8 +7,8 @@ include ../inc.makefile
 TARGET = libASM76.so
 
 LDLIBS += $(shell pkg-config --libs --static glm)
-LDFLAGS += -shared
-CXXFLAGS += -I.. $(shell pkg-config --cflags glm) -fPIC
+LDFLAGS += -flto -shared
+CXXFLAGS += -flto -I.. $(shell pkg-config --cflags glm) -fPIC
 
 all: $(TARGET)
 
@@ -22,7 +22,7 @@ $(TARGET): $(OBJECTS)
 
 VMtest: VMtest.cxx $(TARGET)
 	$(CXX) -c VMtest.cxx -o VMtest.o $(CXXFLAGS)
-	$(CCLD) VMtest.o ./libASM76.so -lstdc++ -lm -o VMtest
+	$(CCLD) VMtest.o ./libASM76.so -lstdc++ -flto -lm -o VMtest
 	./VMtest
 
 clean:
