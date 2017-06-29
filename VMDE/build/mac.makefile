@@ -10,8 +10,8 @@ TARGET = libVMDE.dylib
 
 LDLIBS += /usr/local/lib/libSOIL.a \
 	$(shell pkg-config --libs glfw3 glm glew portaudio-2.0 ogg vorbisfile)
-LDFLAGS += -dynamiclib -framework OpenGL
-CXXFLAGS += -I../lib/SOIL/include -I.. -c -fPIC \
+LDFLAGS += -flto -dynamiclib -framework OpenGL
+CXXFLAGS += -flto -I../lib/SOIL/include -I.. -c -fPIC \
 	$(shell pkg-config --cflags glfw3 glm glew portaudio-2.0 vorbisfile)
 
 all: $(TARGET)
