@@ -43,6 +43,7 @@ I(PUSH, TREG, TIMM) I(POP_, TREG, TIMM)
 // 76 Vectors
 
 // BIOS Instructions
+I(INTX, TIMM, TADD)
 
 // 自带清理宏
 #undef I

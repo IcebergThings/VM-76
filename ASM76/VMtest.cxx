@@ -67,6 +67,19 @@ const char* const asm_test =
 	"JILA	[loop_start]\n"
 	"HALT\n"
 	"# EOF\n";
+	
+const char* const bios_test =
+	"DATI	0x76 $0\n"
+	"SLIA	0x100 $0\n"
+	"INTX	0x1 0x100\n"
+	"HALT\n"
+	"# EOF\n";
+	
+static uint32_t test_bios_call(uint8_t* input) {
+	printf("TEST BIOS CALL: %x\n", *((uint32_t*) input));
+	
+	return 0x89ABCDEF;
+}
 
 Instruct speed_test_prgm[] = {
 	{DATI,0x1,20},
@@ -144,6 +157,21 @@ int main() {
 		char* s = d.disassemble();
 		puts(s);
 		free(s);
+	}
+
+	{
+		printf("===== BIOS Test =====\n");
+		BIOS* b = new BIOS(5);
+		b->function_table[1] = &test_bios_call;
+		
+		Assembler a(bios_test);
+		a.scan();
+		Program p = a.assemble();
+		
+		VM v(p);
+		v.firmware = b;
+		v.execute(true);
+		v.dump_registers();
 	}
 
 	{
