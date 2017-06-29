@@ -86,7 +86,7 @@ static uint32_t test_bios_call(uint8_t* input) {
 
 Instruct speed_test_prgm[] = {
 	{DATI,0x1,20},
-	{DATI,0x1000000,60},
+	{DATI,0x3000000,60},
 	{DATI,0x2,15},
 	{ADDL,3,20},
 	{CMPI,3,60},
@@ -187,9 +187,9 @@ int main() {
 		v.execute(false);
 		auto t2 = chrono::high_resolution_clock::now();
 		chrono::duration<double, milli> delay = t2 - t1;
-		printf("Elapsed time: %fms\nMIPS: %f\n",
+		printf("Elapsed time: %lfms\nMIPS: %lf\n",
 			delay.count(),
-			0x1000000 * 3.0 / delay.count() / 10000.0
+			((double) 0x3000000) * 3.0 / ((double) delay.count()) / 10000.0
 		);
 	}
 
