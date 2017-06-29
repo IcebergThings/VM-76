@@ -72,6 +72,9 @@ const char* const bios_test =
 	"DATI	0x76 $0\n"
 	"SLIA	0x100 $0\n"
 	"INTX	0x1 0x100\n"
+	"DATI	0xAB $0\n"
+	"SLIA	0x100 $0\n"
+	"INTX	0x1 0x100\n"
 	"HALT\n"
 	"# EOF\n";
 	
