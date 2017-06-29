@@ -182,7 +182,7 @@ int main() {
 	}
 
 	{
-		printf("===== Speed Test: 0x1000000 cycles =====\n");
+		printf("===== Speed Test: 0x3000000 cycles =====\n");
 		VM v({speed_test_prgm, sizeof(flow_control_test_prgm)});
 
 		// The type is chrono::time_point<chrono::high_resolution_clock>
