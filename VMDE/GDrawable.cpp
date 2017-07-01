@@ -76,7 +76,7 @@ void GDrawable::fbind() {
 	//glBindVertexArray(0);
 }
 
-#define INSTANCE_UPDATE glBindBuffer(GL_ARRAY_BUFFER, data.MBO); \
+#define INSTANCE_UPDATE VMSC::ChangeVertexArray(data.MBO); \
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.mat_c * sizeof(glm::mat4), data.mat);
 
 void GDrawable::update() {
@@ -91,7 +91,7 @@ void GDrawable::update() {
 	VMSC::ChangeElementArrayBuffer(data.EBO);
 	//void* bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
 	//memcpy(bufi, data.indices, data.ind_c * sizeof(GLuint));
-	glBufferSubData(GL_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
+	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
 	//glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
 	INSTANCE_UPDATE
