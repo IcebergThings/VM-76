@@ -83,17 +83,11 @@ void GDrawable::update() {
 	VMSC::ChangeVertexArray(data.VAO);
 
 	VMSC::ChangeArrayBuffer(data.VBO);
-	//void* bufv = glMapBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-	//memcpy(bufv, data.vertices, data.vtx_c * sizeof(GLfloat));
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.vtx_c * sizeof(Vertex), data.vertices);
-	//glUnmapBuffer(GL_ARRAY_BUFFER);
-
+	
 	VMSC::ChangeElementArrayBuffer(data.EBO);
-	//void* bufi = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
-	//memcpy(bufi, data.indices, data.ind_c * sizeof(GLuint));
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
-	//glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-
+	
 	INSTANCE_UPDATE
 
 	//glBindBuffer(GL_ARRAY_BUFFER,0);
