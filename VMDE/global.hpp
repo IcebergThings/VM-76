@@ -166,13 +166,25 @@
 	// ● resources.cpp
 	//-------------------------------------------------------------------------
 	namespace Res {
+		struct TextureParameters {
+			GLuint WRAP_MODE_S, WRAP_MODE_T;
+			GLuint MIN_FILTER, MAG_FILTER;
+			GLuint MIPMAP_LEVEL;
+			GLuint PixelFormat, PixelType;
+		};
+		
+		extern struct TextureParameters DefaultTextureParameters;
+		extern struct TextureParameters LinearTextureParameters;
+	
 		class Texture : public Object {
 		public:
 			GLuint texture, index;
 			int width, height;
+			struct TextureParameters* parameter;
+			
 			Texture();
 			Texture(const char* file);
-			Texture(const char* file, bool useLinear);
+			Texture(const char* file, struct TextureParameters* p);
 
 			~Texture();
 		};
@@ -334,7 +346,7 @@
 	class TextRenderer : public RenderObject {
 	private:
 		GDrawable obj;
-		Res::Texture tex = Res::Texture("../Media/Font.bmp", true);
+		Res::Texture tex = Res::Texture("../Media/Font.bmp", &Res::LinearTextureParameters);
 		Shaders texshader;
 
 	public:
