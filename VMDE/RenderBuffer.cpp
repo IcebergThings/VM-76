@@ -23,6 +23,8 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		texture_buffer[i]->width = w; texture_buffer[i]->height = h;
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture_buffer[i]->texture, 0);
+		
+		texture_buffer[i]->parameter = &Res::LinearTextureParameters;
 	}
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
