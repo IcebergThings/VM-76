@@ -54,6 +54,8 @@ namespace VM76 {
 		int width, length, height;
 		glm::vec3 mount_point = glm::vec3(0.0);
 		glm::mat4 translate = glm::mat4(1.0);
+		
+		bool is_valid = false;
 
 	private:
 		Tiles* cinstance[16];

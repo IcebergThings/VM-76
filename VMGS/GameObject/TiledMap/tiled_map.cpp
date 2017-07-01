@@ -66,9 +66,7 @@ namespace VM76 {
 	if (ind_c + 6 > ind_max) {ind_max *= 2; ind = (GLuint*) realloc(ind, sizeof(GLuint) * ind_max);}\
 
 	void TiledMap::bake_tiles() {
-		int count[16][6];
-
-		memset(count, 0, sizeof(count));
+		int count = 0;
 		
 		// Pre alloc
 		Vertex* vtx = (Vertex*)malloc(sizeof(Vertex) * 512);
@@ -89,32 +87,32 @@ namespace VM76 {
 						if (map->tidQuery(x, y, z - 1) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 0);
-							count[id][0] ++;
+							count ++;
 						}
 						if (map->tidQuery(x, y, z + 1) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 1);
-							count[id][1] ++;
+							count ++;
 						}
 						if (map->tidQuery(x, y + 1, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 2);
-							count[id][2] ++;
+							count ++;
 						}
 						if (map->tidQuery(x, y - 1, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 3);
-							count[id][3] ++;
+							count ++;
 						}
 						if (map->tidQuery(x - 1, y, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 4);
-							count[id][4] ++;
+							count ++;
 						}
 						if (map->tidQuery(x + 1, y, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 5);
-							count[id][5] ++;
+							count ++;
 						}
 						
 					}
@@ -131,10 +129,12 @@ namespace VM76 {
 		obj->data.mat_c = 1;
 		obj->data.mat = (GLuint*) &translate;
 		obj->fbind();
+		
+		is_valid = count > 0;
 	}
 
 	void TiledMap::render() {
-		obj->renderOnce();
+		if (is_valid) obj->renderOnce();
 	}
 
 	TiledMap::~TiledMap() {
