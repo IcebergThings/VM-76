@@ -17,12 +17,18 @@ namespace VM76 {
 	SkyBox* sky;
 
 	bool fp_control = false;
+	
+	GDrawable* hand_block;
 
 	//-------------------------------------------------------------------------
 	// ● 场景开始
 	//-------------------------------------------------------------------------
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
+		
+		hand_block = new GDrawable();
+		hand_block->data.vertices = new Vertex[4 * 6];
+		hand_block->data.indices = new GLuint[6 * 6];
 
 		shader_textured.add_file(GL_VERTEX_SHADER, "../Media/shaders/gbuffers_textured.vsh");
 		shader_textured.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/gbuffers_textured.fsh");
@@ -63,16 +69,14 @@ namespace VM76 {
 		);
 
 		TiledMap::init_cinstances(clist);
-		/*for (int i = 0; i < 16; i++) {
-			clist[i]->mat[0] = new glm::mat4[1]; clist[i]->mat[0][0] = block_display;
-			clist[i]->mat[1] = new glm::mat4[1]; clist[i]->mat[1][0] = block_display;
-			clist[i]->mat[2] = new glm::mat4[1]; clist[i]->mat[2][0] = block_display;
-			clist[i]->mat[3] = new glm::mat4[1]; clist[i]->mat[3][0] = block_display;
-			clist[i]->mat[4] = new glm::mat4[1]; clist[i]->mat[4][0] = block_display;
-			clist[i]->mat[5] = new glm::mat4[1]; clist[i]->mat[5][0] = block_display;
-			clist[i]->update_instance(1,1,1,1,1,1);
-		}
-		block_pointer.obj->data.mat_c = 1;*/
+		int vtx_c = 0, ind_c = 0;
+		for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+		hand_block->data.vtx_c = vtx_c;
+		hand_block->data.ind_c = ind_c;
+		hand_block->data.mat_c = 1;
+		hand_block->data.mat = (GLuint*) &block_display;
+		hand_block->fbind();
+		block_pointer.obj->data.mat_c = 1;
 
 		ctl = new GodView();
 		ctl_fp = new FirstPersonView();
@@ -103,7 +107,6 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_F5)) fp_control = !fp_control;
 
 		if (PRESS(GLFW_KEY_0)) hand_id = 0;
-		if (PRESS(GLFW_KEY_0)) hand_id = 0;
 		if (PRESS(GLFW_KEY_1)) hand_id = 1;
 		if (PRESS(GLFW_KEY_2)) hand_id = 2;
 		if (PRESS(GLFW_KEY_3)) hand_id = 3;
@@ -114,14 +117,20 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_8)) hand_id = 8;
 		if (PRESS(GLFW_KEY_9)) hand_id = 9;
 
+		if (hand_id > 0) {
+			int vtx_c = 0, ind_c = 0;
+			for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+			hand_block->update();
+		}
+
 		if (PRESS(GLFW_KEY_SPACE)) {
 			map.place_block(obj->pos, hand_id);
 		}
 
 		if (PRESS(GLFW_KEY_O)) {
-			magnify = !magnify;
-			if (magnify) projection = glm::perspective(0.3f, aspect_ratio, 0.1f, 1000.0f);
-			else projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
+			projection = glm::perspective(0.3f, aspect_ratio, 0.1f, 1000.0f);
+		} else if (key == GLFW_KEY_O && action == GLFW_RELEASE) {
+			projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;
@@ -212,7 +221,7 @@ namespace VM76 {
 		gui.set_texture("atlastex", &tile_texture, 0);
 		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
 		VMSC::disable_depth_test();
-		//if (hand_id > 0) clist[hand_id - 1]->render();
+		if (hand_id > 0) hand_block->renderOnce();
 
 		if (SceneManager::render_debug_info) {
 			char info[64];
