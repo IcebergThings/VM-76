@@ -53,20 +53,28 @@ namespace VM76 {
 
 		//init_cinstances(cinstance);
 		memset(cinstance, 0, sizeof(cinstance));
+		init_cinstances(cinstance);
 		map = m;
 
 		mount_point = wp;
+		
+		obj = new GDrawable();
 	}
+	
+	#define CHECK_EXPAND \
+	if (vtx_c + 4 > vtx_max) {vtx_max *= 2; vtx = (Vertex*) realloc(vtx, sizeof(Vertex) * vtx_max);}\
+	if (ind_c + 6 > ind_max) {ind_max *= 2; ind = (GLuint*) realloc(ind, sizeof(GLuint) * ind_max);}\
 
 	void TiledMap::bake_tiles() {
 		int count[16][6];
 
-		glm::mat4* temp[16][6];
-		for (int x = 0; x < 16; x++)
-			for (int y = 0; y < 6; y++)
-				temp[x][y] = (glm::mat4*) malloc(sizeof(glm::mat4) * 8192);
-
 		memset(count, 0, sizeof(count));
+		
+		// Pre alloc
+		Vertex* vtx = (Vertex*)malloc(sizeof(Vertex) * 512);
+		GLuint* ind = (GLuint*)malloc(sizeof(GLuint) * 512);
+		int vtx_max = 512, ind_max = 512;
+		int vtx_c = 0, ind_c = 0;
 
 		for (int x = mount_point.x; x < mount_point.x + width; x++) {
 			for (int z = mount_point.z; z < length + mount_point.z; z++) {
@@ -74,81 +82,59 @@ namespace VM76 {
 					int id = map->tidQuery(x, y, z);
 					if (id > 0) {
 						id --;
+						float x0 = x - mount_point.x;
+						float y0 = y - mount_point.y;
+						float z0 = z - mount_point.z;
 
-						glm::mat4 tr = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z));
 						if (map->tidQuery(x, y, z - 1) == 0) {
-							temp[id][0][count[id][0]] = tr;
+							CHECK_EXPAND
+							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 0);
 							count[id][0] ++;
 						}
-
 						if (map->tidQuery(x, y, z + 1) == 0) {
-							temp[id][1][count[id][1]] = tr;
+							CHECK_EXPAND
+							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 1);
 							count[id][1] ++;
 						}
-
 						if (map->tidQuery(x, y + 1, z) == 0) {
-							temp[id][2][count[id][2]] = tr;
+							CHECK_EXPAND
+							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 2);
 							count[id][2] ++;
 						}
-
 						if (map->tidQuery(x, y - 1, z) == 0) {
-							temp[id][3][count[id][3]] = tr;
+							CHECK_EXPAND
+							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 3);
 							count[id][3] ++;
 						}
-
 						if (map->tidQuery(x - 1, y, z) == 0) {
-							temp[id][4][count[id][4]] = tr;
+							CHECK_EXPAND
+							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 4);
 							count[id][4] ++;
 						}
-
 						if (map->tidQuery(x + 1, y, z) == 0) {
-							temp[id][5][count[id][5]] = tr;
+							CHECK_EXPAND
+							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 5);
 							count[id][5] ++;
 						}
+						
 					}
 				}
 			}
 		}
+		//log("%d < %d : %d < %d", vtx_c, vtx_max, ind_c, ind_max);
+		translate = glm::translate(glm::mat4(1.0), mount_point);
 
-		for (int id = 0; id < 16; id ++) {
-
-			bool has_block_valid = false;
-			for (int x = 0; x < 6; x++) if (count[id][x]) {
-				has_block_valid = true;
-				break;
-			}
-
-			if (has_block_valid) {
-				if (!cinstance[id]) cinstance[id] = get_instances(id + 1);
-
-				for (int x = 0; x < 6; x++) {
-					if (count[id][x] > 0) {
-						XE(free, cinstance[id]->mat[x]);
-
-						cinstance[id]->mat[x] = new glm::mat4[count[id][x]];
-						memcpy(cinstance[id]->mat[x], temp[id][x], sizeof(glm::mat4) * count[id][x]);
-					}
-				}
-			} else if (cinstance[id]) {
-				VMDE_Dispose(delete, cinstance[id]);
-			}
-		}
-
-		for (int x = 0; x < 16; x++)
-			for (int y = 0; y < 6; y++)
-				XE(free, temp[x][y]);
-
-		for (int id = 0; id < 16; id++) {
-			if (cinstance[id]) cinstance[id]->update_instance(
-				count[id][0],count[id][1],count[id][2],
-				count[id][3],count[id][4],count[id][5]
-			);
-		}
+		obj->data.vtx_c = vtx_c;
+		obj->data.ind_c = ind_c;
+		obj->data.vertices = vtx;
+		obj->data.indices = ind;
+		obj->data.mat_c = 1;
+		obj->data.mat = (GLuint*) &translate;
+		obj->fbind();
 	}
 
 	void TiledMap::render() {
-		for (int i = 0; i < 16; i++)
-			if (cinstance[i]) cinstance[i]->render();
+		obj->renderOnce();
 	}
 
 	TiledMap::~TiledMap() {

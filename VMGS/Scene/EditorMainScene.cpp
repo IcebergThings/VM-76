@@ -63,7 +63,7 @@ namespace VM76 {
 		);
 
 		TiledMap::init_cinstances(clist);
-		for (int i = 0; i < 16; i++) {
+		/*for (int i = 0; i < 16; i++) {
 			clist[i]->mat[0] = new glm::mat4[1]; clist[i]->mat[0][0] = block_display;
 			clist[i]->mat[1] = new glm::mat4[1]; clist[i]->mat[1][0] = block_display;
 			clist[i]->mat[2] = new glm::mat4[1]; clist[i]->mat[2][0] = block_display;
@@ -72,7 +72,7 @@ namespace VM76 {
 			clist[i]->mat[5] = new glm::mat4[1]; clist[i]->mat[5][0] = block_display;
 			clist[i]->update_instance(1,1,1,1,1,1);
 		}
-		block_pointer.obj->data.mat_c = 1;
+		block_pointer.obj->data.mat_c = 1;*/
 
 		ctl = new GodView();
 		ctl_fp = new FirstPersonView();
@@ -212,7 +212,7 @@ namespace VM76 {
 		gui.set_texture("atlastex", &tile_texture, 0);
 		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
 		VMSC::disable_depth_test();
-		if (hand_id > 0) clist[hand_id - 1]->render();
+		//if (hand_id > 0) clist[hand_id - 1]->render();
 
 		if (SceneManager::render_debug_info) {
 			char info[64];

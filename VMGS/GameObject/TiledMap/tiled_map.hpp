@@ -53,9 +53,12 @@ namespace VM76 {
 		DataMap* map = NULL;
 		int width, length, height;
 		glm::vec3 mount_point = glm::vec3(0.0);
+		glm::mat4 translate = glm::mat4(1.0);
 
 	private:
 		Tiles* cinstance[16];
+		
+		GDrawable* obj;
 
 	public:
 		inline int calcTileIndex(int x, int y, int z) { return (width * length) * y + (length) * z + x; }
