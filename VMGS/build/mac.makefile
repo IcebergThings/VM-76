@@ -19,15 +19,15 @@ run: all
 	./$(TARGET)
 
 %.o %.debug.o: %.cpp
-	@echo 编译C++文件$^……
+	@echo -e "\033[33m 编译C++文件\033[47;30m $^…… \033[0m"
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 libVMDE.dylib: ../VMDE/libVMDE.dylib
-	@echo 更新动态库
+	@echo -e "\033[33m 更新动态库 \033[0m"
 	cp ../VMDE/libVMDE.dylib .
 
 $(TARGET): $(OBJECTS) libVMDE.dylib
-	@echo 链接最终二进制
+	@echo -e "\033[33m 链接最终二进制 \033[0m"
 	$(CCLD) $(LDLIBS) $(LDFLAGS) $^ -o $@
 
 clean:

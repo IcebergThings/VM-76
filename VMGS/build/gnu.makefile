@@ -15,11 +15,11 @@ CXXFLAGS += -flto -I../lib/SOIL/include -I../VMDE -IGame -I.. \
 all: $(TARGET)
 
 %.o %.debug.o: %.cpp
-	@echo 编译C++文件$^……
+	@echo -e "\033[33m 编译C++文件\033[47;30m $^…… \033[0m"
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 $(TARGET): $(OBJECTS)
-	@echo 链接最终二进制
+	@echo -e "\033[33m 链接最终二进制 \033[0m"
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
 .PHONY: all

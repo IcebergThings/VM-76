@@ -14,40 +14,41 @@ void glfw_error_callback(int error, const char* description) {
 }
 
 //-----------------------------------------------------------------------------
-// ● TODO: 这是啥
+// ● 全局相机设定
 //-----------------------------------------------------------------------------
 glm::mat4 projection, view = glm::mat4(1.0);
 
-time_t fps_since = time(NULL);
+//-----------------------------------------------------------------------------
+// ● FPS计数
+//-----------------------------------------------------------------------------
+#include <chrono>
+
+auto fps_since = chrono::high_resolution_clock::now();
 int fps_counter = 0;
-time_t accumulated_frame_time = 0;
+double accumulated_frame_time = 0;
 
 //-----------------------------------------------------------------------------
 // ● 渲染
 //-----------------------------------------------------------------------------
-time_t now;
+auto now = chrono::high_resolution_clock::now();
 
 void main_draw_start() {
 	glfwPollEvents();
 	if (glfwWindowShouldClose(window)) VMDE->done = true;
 	VMDE->frame_count++;
 	fps_counter++;
-	now = time(NULL);
-	if (difftime(now, fps_since) > 0)
-		VMDE->fps = fps_counter / difftime(now, fps_since);
-	if (difftime(now, fps_since) >= 1.0) {
-		fps_counter = 0;
-		fps_since = now;
-		VMDE->frame_time = accumulated_frame_time / (double) VMDE->fps * 1000.0;
-		accumulated_frame_time -= 1.0;
-	}
+
+	now = chrono::high_resolution_clock::now();
+	chrono::duration<double, micro> delay = now - fps_since;
+	fps_since = now;
+
+	VMDE->fps = glm::round(1000000.0 / ((double) delay.count()));
+	VMDE->frame_time = ((double) delay.count()) / 1000.0;
 }
 
 void main_draw_end() {
 	if (!VMDE->state.frozen) {
 		glFlush();
-
-		accumulated_frame_time += difftime(time(NULL), now);
 
 		glfwSwapBuffers(window);
 	}

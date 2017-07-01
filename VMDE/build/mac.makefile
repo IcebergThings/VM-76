@@ -17,11 +17,11 @@ CXXFLAGS += -flto -I../lib/SOIL/include -I.. -c -fPIC \
 all: $(TARGET)
 
 %.o %.debug.o: %.cpp
-	@echo 编译C++文件$^……
+	@echo -e "\033[33m 编译C++文件\033[47;30m $^…… \033[0m"
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(TARGET): $(OBJECTS)
-	@echo 链接最终二进制
+	@echo -e "\033[33m 链接最终二进制 \033[0m"
 	$(CCLD) $(LDLIBS) $(LDFLAGS) $^ -o $@
 
 clean:
