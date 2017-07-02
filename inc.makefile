@@ -38,6 +38,10 @@ ifndef _INCLUDE_INC_MAKEFILE
 	CXXFLAGS = $(CFLAGS) -std=c++14 -DGLM_FORCE_SSE41
 	LDFLAGS =
 	LDLIBS = -lstdc++
+	ifneq "$(PLATFORM)" "msw"
+		CFLAGS += -flto
+		LDFLAGS += -flto
+	endif
 	ifdef DEBUG
 		CXXFLAGS += -O0 -g -DDEBUG
 		LDFLAGS += -O0
@@ -50,7 +54,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 		ifdef GCC
 			CXX = g++
 		else
-			CFLAGS += --target=i686-pc-mingw32
+			CFLAGS += --target=i686-w64-mingw32
 		endif
 		CCLD = gcc
 	else ifeq "$(PLATFORM)" "gnu"

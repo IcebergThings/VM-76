@@ -9,8 +9,8 @@ include ../inc.makefile
 TARGET = VMDE.dll
 
 LDLIBS += $(shell type build\windows_libs.txt)
-LDFLAGS += -flto -shared -Wl,--export-all-symbols
-CXXFLAGS += -flto -I../lib/SOIL/include -I.. $(shell type build\windows_flags.txt)
+LDFLAGS += -shared -Wl,--export-all-symbols
+CXXFLAGS += -I../lib/SOIL/include -I.. $(shell type build\windows_flags.txt)
 
 all: $(TARGET)
 

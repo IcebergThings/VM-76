@@ -7,8 +7,8 @@ include ../inc.makefile
 TARGET = libASM76.dylib
 
 LDLIBS += $(shell pkg-config --libs --static glm)
-LDFLAGS += -flto -shared
-CXXFLAGS += -flto -I.. $(shell pkg-config --cflags glm) -fPIC
+LDFLAGS += -shared
+CXXFLAGS += -I.. $(shell pkg-config --cflags glm) -fPIC
 
 all: $(TARGET)
 

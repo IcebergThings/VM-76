@@ -7,8 +7,8 @@ include ../inc.makefile
 TARGET = VMGS.exe
 
 LDLIBS += $(shell type build\windows_libs.txt)
-LDFLAGS += -flto VMDE.dll
-CXXFLAGS += -flto -I../lib/SOIL/include -I../VMDE -I./Game -I.. \
+LDFLAGS += VMDE.dll
+CXXFLAGS += -I../lib/SOIL/include -I../VMDE -I./Game -I.. \
 	$(shell type build\windows_flags.txt)
 
 all: $(TARGET)
