@@ -93,6 +93,22 @@ namespace ASM76 {
 		void append_address(char* line, uint32_t a);
 	};
 	//-------------------------------------------------------------------------
+	// ● BIOS类
+	//-------------------------------------------------------------------------
+	// Input "databuf" which is a VM76 memory address (Global memory only)
+	// Output a VM76 memory address (Global memory only) or any uint32 value
+	// Bios calls are locked, which is thread safe
+	typedef uint32_t (*BIOS_call)(uint8_t* d);
+
+	class BIOS {
+	public:
+		BIOS_call* function_table;
+		
+		BIOS(int function_table_count);
+		
+		uint32_t call(int fid, uint8_t* d);
+	};
+	//-------------------------------------------------------------------------
 	// ● Virtual Machine类
 	//-------------------------------------------------------------------------
 	class VM {
@@ -110,6 +126,8 @@ namespace ASM76 {
 		#define REGISF REG(uint8_t, 110)
 
 	public:
+		BIOS* firmware;
+		
 		static const size_t REGISTER_COUNT = 112;
 		template <class T> T* memfetch(uint32_t address) {
 			return address < 0x1000000 ?
@@ -122,6 +140,7 @@ namespace ASM76 {
 		void dump_registers();
 		void dump_memory();
 
+		void execute_from(uint32_t start_pos, bool debug_process);
 		void execute(bool debug_process);
 		inline void execute_instruction_inline(uint16_t opcode, uint32_t a, uint32_t b);
 		void execute_instruction(Instruct*);

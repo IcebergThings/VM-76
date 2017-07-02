@@ -122,12 +122,12 @@ void TextRenderer::BakeText(
 }
 
 void TextRenderer::render() {
-	glDisable(GL_CULL_FACE);
+	VMSC::disable_cullface();
 	texshader.use();
 	texshader.set_texture("fontmap", &tex, 0);
 	obj.render();
 	GDrawable::close_draw_node();
-	glEnable(GL_CULL_FACE);
+	VMSC::enable_cullface();
 }
 
 void TextRenderer::instanceRenderText(

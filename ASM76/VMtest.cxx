@@ -66,11 +66,28 @@ const char* const asm_test =
 	"PUSH	$15 1\n"
 	"JILA	[loop_start]\n"
 	"HALT\n"
+	"DD		0x7676 0xEFEF 0xABAB 0xCDCD 0x0000\n"
 	"# EOF\n";
+	
+const char* const bios_test =
+	"DATI	0x76 $0\n"
+	"SLIA	0x100 $0\n"
+	"INTX	0x1 0x100\n"
+	"DATI	0xAB $0\n"
+	"SLIA	0x100 $0\n"
+	"INTX	0x1 0x100\n"
+	"HALT\n"
+	"# EOF\n";
+	
+static uint32_t test_bios_call(uint8_t* input) {
+	printf("TEST BIOS CALL: %x\n", *((uint32_t*) input));
+	
+	return 0x89ABCDEF;
+}
 
 Instruct speed_test_prgm[] = {
 	{DATI,0x1,20},
-	{DATI,0x1000000,60},
+	{DATI,0x3000000,60},
 	{DATI,0x2,15},
 	{ADDL,3,20},
 	{CMPI,3,60},
@@ -123,6 +140,9 @@ int main() {
 		Assembler a(asm_test);
 		a.scan();
 		Program p = a.assemble();
+		// Test assembler DD function
+		printf("Data DD: %04x%08x%08x\n", p.instruct[9].opcode, p.instruct[9].a, p.instruct[9].b);
+		// Test disassembler
 		Disassembler d(p);
 		char* s = d.disassemble();
 		puts(s);
@@ -147,7 +167,22 @@ int main() {
 	}
 
 	{
-		printf("===== Speed Test: 0x1000000 cycles =====\n");
+		printf("===== BIOS Test =====\n");
+		BIOS* b = new BIOS(5);
+		b->function_table[1] = &test_bios_call;
+		
+		Assembler a(bios_test);
+		a.scan();
+		Program p = a.assemble();
+		
+		VM v(p);
+		v.firmware = b;
+		v.execute(true);
+		v.dump_registers();
+	}
+
+	{
+		printf("===== Speed Test: 0x3000000 cycles =====\n");
 		VM v({speed_test_prgm, sizeof(flow_control_test_prgm)});
 
 		// The type is chrono::time_point<chrono::high_resolution_clock>
@@ -156,9 +191,9 @@ int main() {
 		v.execute(false);
 		auto t2 = chrono::high_resolution_clock::now();
 		chrono::duration<double, milli> delay = t2 - t1;
-		printf("Elapsed time: %fms\nMIPS: %f\n",
+		printf("Elapsed time: %lfms\nMIPS: %lf\n",
 			delay.count(),
-			0x1000000 * 3.0 / delay.count() / 10000.0
+			((double) 0x3000000) * 3.0 / ((double) delay.count()) / 10000.0
 		);
 	}
 

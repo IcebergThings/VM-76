@@ -67,6 +67,21 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 解释
 	//-------------------------------------------------------------------------
+	void VM::execute_from(uint32_t start_pos, bool debug_process) {
+		REG100 = start_pos;
+		Instruct* now = memfetch<Instruct>(REG100);
+		uint16_t opcode = now->opcode;
+		while (opcode != HALT) {
+			if (debug_process) printf("%08x: %04x, %x, %x\n", REG100, now->opcode, now->a, now->b);
+			VM::execute_instruction_inline(opcode, now->a, now->b);
+			REG100 += sizeof(Instruct);
+			now = memfetch<Instruct>(REG100);
+			opcode = now->opcode;
+		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 解释
+	//-------------------------------------------------------------------------
 	void VM::execute(bool debug_process) {
 		Instruct* now = memfetch<Instruct>(REG100);
 		uint16_t opcode = now->opcode;
@@ -435,4 +450,10 @@ namespace ASM76 {
 	// ╔═════════════════════╗
 	// ║ □ BIOS Instructions ║
 	// ╚═════════════════════╝
+	//-------------------------------------------------------------------------
+	// ● INTX
+	//-------------------------------------------------------------------------
+	execute(INTX) {
+		REG(uint32_t, 0) = firmware->call(a, memfetch<uint8_t>(b));
+	}
 }
