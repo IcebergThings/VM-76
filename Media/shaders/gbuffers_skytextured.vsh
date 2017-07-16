@@ -23,6 +23,7 @@ void main() {
 	vec4 v = vec4(position, 1.0);
 
 	gl_Position = matrices.ProjectionView * Model * v;
+	vpos = v.xyz;
 	texcolor = vertex_color;
 	texcoord = texc;
 }

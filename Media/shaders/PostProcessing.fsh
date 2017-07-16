@@ -21,10 +21,10 @@ const float W = 48.0;
 #define Uncharted2Tonemap(x) (((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F)
 
 void colorAdjust(inout vec3 c) {
-	const float ExposureBias = 2.0f;
+	const float ExposureBias = 2.0;
 	vec3 curr = Uncharted2Tonemap(ExposureBias * c);
 
-	vec3 whiteScale = 1.0f / Uncharted2Tonemap(vec3(W));
+	vec3 whiteScale = 1.0 / Uncharted2Tonemap(vec3(W));
 	vec3 color = curr * whiteScale;
 }
 
