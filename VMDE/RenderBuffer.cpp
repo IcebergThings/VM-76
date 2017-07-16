@@ -59,6 +59,27 @@ RenderBuffer::~RenderBuffer () {
 	glDeleteFramebuffers(1, &framebuffer);
 }
 
+void RenderBuffer::unbind() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderBuffer::clearColor(float r, float g, float b, float a) {
+	glClearColor(r, g, b, a);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void RenderBuffer::clearColorDepth(float r, float g, float b, float a) {
+	glClearColor(r, g, b, a);
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	VMStateControl::enable_depth_test();
+}
+
+void RenderBuffer::clearDepth() {
+	glClear(GL_DEPTH_BUFFER_BIT);
+	VMStateControl::enable_depth_test();
+}
+
 GDrawable* PostProcessingManager::QuadScreen;
 
 void PostProcessingManager::init() {

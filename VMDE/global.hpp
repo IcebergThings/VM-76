@@ -382,24 +382,10 @@
 		//void resize(int w, int h);
 
 		void bind();
-		static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-
-		static void clearColor(float r, float g, float b, float a) {
-			glClearColor(r, g, b, a);
-			glClear(GL_COLOR_BUFFER_BIT);
-		}
-
-		static void clearColorDepth(float r, float g, float b, float a) {
-			glClearColor(r, g, b, a);
-			glClearDepth(1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			VMStateControl::enable_depth_test();
-		}
-
-		static void clearDepth() {
-			glClear(GL_DEPTH_BUFFER_BIT);
-			VMStateControl::enable_depth_test();
-		}
+		static void unbind();
+		static void clearColor(float r, float g, float b, float a);
+		static void clearColorDepth(float r, float g, float b, float a);
+		static void clearDepth();
 
 		RenderBuffer(int w, int h, int mrt, const GLuint* type);
 		void set_draw_buffers();
