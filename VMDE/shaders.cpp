@@ -20,6 +20,7 @@ void Shaders::add_string(GLenum type, const GLchar* source) {
 }
 
 void Shaders::add_file(GLenum type, const char* filename) {
+	log("adding shader file: %s", filename);
 	char* source = Util::read_file(filename);
 	add_string(type, source);
 	free(source);
