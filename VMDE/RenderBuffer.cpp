@@ -6,7 +6,7 @@
 
 #include "global.hpp"
 
-RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
+RenderBuffer::RenderBuffer(int w, int h, int mrt, const GLuint* type) {
 	log("Creating Render Buffer of %d x %d", w, h);
 
 	glGenFramebuffers(1, &framebuffer);

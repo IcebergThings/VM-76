@@ -50,12 +50,12 @@ namespace VM76 {
 			{{1.0, 1.0, 1.0},{1.0, 1.0, 1.0, 1.0},{xs + T, ys + S},{1.0, 0.0, 0.0}},
 			{{1.0, 1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{xs + S, ys + S},{1.0, 0.0, 0.0}},
 		};
-		itx[0] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[1] = new GLuint[6] {3,1,0,  3,2,1};
-		itx[2] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[3] = new GLuint[6] {3,1,0,  3,2,1};
-		itx[4] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[5] = new GLuint[6] {3,1,0,  3,2,1};
+		itx[0] = new GLuint[6] {0, 1, 3,  1, 2, 3};
+		itx[1] = new GLuint[6] {3, 1, 0,  3, 2, 1};
+		itx[2] = new GLuint[6] {0, 1, 3,  1, 2, 3};
+		itx[3] = new GLuint[6] {3, 1, 0,  3, 2, 1};
+		itx[4] = new GLuint[6] {0, 1, 3,  1, 2, 3};
+		itx[5] = new GLuint[6] {3, 1, 0,  3, 2, 1};
 
 		// Prepare an empty space
 		for (int i = 0; i < 6; i++) {
@@ -137,12 +137,12 @@ namespace VM76 {
 			{{1.0, 1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{xs + S, ys + S},{1.0, 0.0, 0.0}},
 		};
 
-		itx[0] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[1] = new GLuint[6] {3,1,0,  3,2,1};
-		itx[2] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[3] = new GLuint[6] {3,1,0,  3,2,1};
-		itx[4] = new GLuint[6] {0,1,3,  1,2,3};
-		itx[5] = new GLuint[6] {3,1,0,  3,2,1};
+		itx[0] = new GLuint[6] {0, 1, 3,  1, 2, 3};
+		itx[1] = new GLuint[6] {3, 1, 0,  3, 2, 1};
+		itx[2] = new GLuint[6] {0, 1, 3,  1, 2, 3};
+		itx[3] = new GLuint[6] {3, 1, 0,  3, 2, 1};
+		itx[4] = new GLuint[6] {0, 1, 3,  1, 2, 3};
+		itx[5] = new GLuint[6] {3, 1, 0,  3, 2, 1};
 
 		// Prepare an empty space
 		for (int i = 0; i < 6; i++) {

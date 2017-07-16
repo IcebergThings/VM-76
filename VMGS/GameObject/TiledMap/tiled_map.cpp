@@ -8,43 +8,33 @@
 
 namespace VM76 {
 
-	void TiledMap::init_cinstances (Tiles* cinstance[]) {
-		for (int i = 0; i < 16; i ++)
+	void TiledMap::init_cinstances(Tiles* cinstance[]) {
+		for (int i = 0; i < 16; i++)
 			cinstance[i] = get_instances(i + 1);
 	}
 
-	Tiles* TiledMap::get_instances (int id) {
+	Tiles* TiledMap::get_instances(int id) {
 		switch (id) {
 			case Grass:
-				return new MultiFaceCubeTile(49,49,0,2,49,49);
-				break;
+				return new MultiFaceCubeTile(49, 49, 0, 2, 49, 49);
 			case Stone:
 				return new SimpleCubeTile(1);
-				break;
 			case Dirt:
 				return new SimpleCubeTile(2);
-				break;
 			case Glass:
 				return new SimpleCubeTile(3);
-				break;
 			case WoodPlank:
 				return new SimpleCubeTile(4);
-				break;
 			case HalfBrick:
-				return new MultiFaceCubeTile(5,5,6,6,5,5);
-				break;
+				return new MultiFaceCubeTile(5, 5, 6, 6, 5, 5);
 			case Brick:
 				return new SimpleCubeTile(7);
-				break;
 			case TNT:
-				return new MultiFaceCubeTile(8,8,9,10,8,8);
-				break;
+				return new MultiFaceCubeTile(8, 8, 9, 10, 8, 8);
 			case CobbleStone:
 				return new SimpleCubeTile(16);
-				break;
 			default:
 				return new SimpleCubeTile(31);
-				break;
 		}
 	}
 
@@ -73,45 +63,44 @@ namespace VM76 {
 				for (int y = mount_point.y; y < height + mount_point.y; y++) {
 					int id = map->tidQuery(x, y, z);
 					if (id > 0) {
-						id --;
+						id--;
 
 						glm::mat4 tr = glm::translate(glm::mat4(1.0), glm::vec3(x,y,z));
 						if (map->tidQuery(x, y, z - 1) == 0) {
 							temp[id][0][count[id][0]] = tr;
-							count[id][0] ++;
+							count[id][0]++;
 						}
 
 						if (map->tidQuery(x, y, z + 1) == 0) {
 							temp[id][1][count[id][1]] = tr;
-							count[id][1] ++;
+							count[id][1]++;
 						}
 
 						if (map->tidQuery(x, y + 1, z) == 0) {
 							temp[id][2][count[id][2]] = tr;
-							count[id][2] ++;
+							count[id][2]++;
 						}
 
 						if (map->tidQuery(x, y - 1, z) == 0) {
 							temp[id][3][count[id][3]] = tr;
-							count[id][3] ++;
+							count[id][3]++;
 						}
 
 						if (map->tidQuery(x - 1, y, z) == 0) {
 							temp[id][4][count[id][4]] = tr;
-							count[id][4] ++;
+							count[id][4]++;
 						}
 
 						if (map->tidQuery(x + 1, y, z) == 0) {
 							temp[id][5][count[id][5]] = tr;
-							count[id][5] ++;
+							count[id][5]++;
 						}
 					}
 				}
 			}
 		}
 
-		for (int id = 0; id < 16; id ++) {
-
+		for (int id = 0; id < 16; id++) {
 			bool has_block_valid = false;
 			for (int x = 0; x < 6; x++) if (count[id][x]) {
 				has_block_valid = true;
@@ -140,8 +129,8 @@ namespace VM76 {
 
 		for (int id = 0; id < 16; id++) {
 			if (cinstance[id]) cinstance[id]->update_instance(
-				count[id][0],count[id][1],count[id][2],
-				count[id][3],count[id][4],count[id][5]
+				count[id][0], count[id][1], count[id][2],
+				count[id][3], count[id][4], count[id][5]
 			);
 		}
 	}
