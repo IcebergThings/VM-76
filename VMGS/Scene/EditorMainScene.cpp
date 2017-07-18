@@ -205,6 +205,7 @@ namespace VM76 {
 		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 1);
 		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
 		log("Boom1! %f %f %f #%d", sunVec.x, sunVec.y, sunVec.z, post_processing.program);
+		check_gl_error;
 		log("Boom2! UL - #%d", glGetUniformLocation(post_processing.program, "sunVec"));
 		glUniform3f(glGetUniformLocation(post_processing.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
 		PostProcessingManager::Blit2D();

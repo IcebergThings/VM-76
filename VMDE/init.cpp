@@ -39,6 +39,7 @@ void GL_info() {
 	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &a);
 	log("Maximum texture unit: %d", a);
 	log("==========================");
+	check_gl_error;
 }
 
 //-----------------------------------------------------------------------------

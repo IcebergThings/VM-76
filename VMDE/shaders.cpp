@@ -17,6 +17,7 @@ void Shaders::add_string(GLenum type, const GLchar* source) {
 	check_shader_compilation(shader, "shader compilation failed");
 	shaders[shader_count] = shader;
 	shader_count++;
+	check_gl_error;
 }
 
 void Shaders::add_file(GLenum type, const char* filename) {
@@ -55,6 +56,7 @@ void Shaders::link_program() {
 	for (size_t i = 0; i < shader_count; i++) {
 		glDeleteShader(shaders[i]);
 	}
+	check_gl_error;
 
 	GLint loc = glGetUniformBlockIndex(program, "Matrices");
 	glUniformBlockBinding(program, loc, 0);
@@ -67,6 +69,7 @@ void Shaders::link_program() {
 
 void Shaders::use() {
 	glUseProgram(program);
+	check_gl_error;
 }
 
 void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
@@ -81,11 +84,13 @@ void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
 void Shaders::set_float(const char* identifier, GLfloat value) {
 	GLuint loc = glGetUniformLocation(program, identifier);
 	glUniform1f(loc, value);
+	check_gl_error;
 }
 
 void Shaders::set_int(const char* identifier, GLint value) {
 	GLuint loc = glGetUniformLocation(program, identifier);
 	glUniform1i(loc, value);
+	check_gl_error;
 }
 
 void Shaders::set_texture(const char* identifier, Res::Texture* tex, GLuint index) {
