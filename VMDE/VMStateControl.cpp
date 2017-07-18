@@ -109,7 +109,7 @@ void VMStateControl::render_mode_fill() {
 }
 
 
-void VMStateControl::init_graphics_state () {
+void VMStateControl::init_graphics_state() {
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 	// 垂直同步，拒绝鬼畜
@@ -121,22 +121,24 @@ void VMStateControl::init_graphics_state () {
 		log("glewInit() (GLEW Initialization) failed.");
 		return;
 	}
-	#ifdef __APPLE__
-		if (glfwExtensionSupported("GL_APPLE_uniform_buffer_object") != GLFW_TRUE) {
-			glfwTerminate();
-			log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
-			log("Uniform buffer object is NOT detected properlly");
-			return;
-		}
-		log("UBO: Apple Uniform Buffer Object （__APPLE__)");
-	#else
-		if (glfwExtensionSupported("GL_ARB_uniform_buffer_object") != GLFW_TRUE) {
-			glfwTerminate();
-			error("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
-			return;
-		}
-		log("UBO: GL33 Uniform Buffer Object");
-	#endif
-	
-	memset (&StateMachine, 0, sizeof(StateMachine));
+	if (glfwExtensionSupported(
+		#ifdef __APPLE__
+			"GL_APPLE_uniform_buffer_object"
+		#else
+			"GL_ARB_uniform_buffer_object"
+		#endif
+	) != GLFW_TRUE) {
+		glfwTerminate();
+		log("Your computer need OpenGL 3.3 with Uniform Buffer Object (UBO).");
+		error("Uniform buffer object is NOT detected properly.");
+	}
+	log(
+		#ifdef __APPLE__
+			"UBO: Apple Uniform Buffer Object (__APPLE__)"
+		#else
+			"UBO: GL33 Uniform Buffer Object"
+		#endif
+	);
+
+	memset(&StateMachine, 0, sizeof(StateMachine));
 }
