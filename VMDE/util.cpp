@@ -83,7 +83,12 @@ namespace Util {
 		char* r = (char*) malloc(1024);
 		if (!r) return NULL;
 		size_t size = fread(r, 1, 1024, f);
-		r[size < 1024 ? size : 1023] = 0;
+		if (size < 1024 ? size : 1023) {
+			r[size] = 0;
+		} else {
+			r[1023] = 0;
+			log("Warning: read_file has truncated file %s", filename);
+		}
 		fclose(f);
 		return r;
 	}
