@@ -102,17 +102,21 @@ namespace Util {
 	void check_gl_error_internal(const char* file, unsigned line) {
 		GLenum error;
 		int count = 0;
-		while ((error = glGetError())) switch (count++, error) {
-		#define case(x) case x: printf("- GL error: %s\n", #x); break
-		case(GL_INVALID_ENUM);
-		case(GL_INVALID_VALUE);
-		case(GL_INVALID_OPERATION);
-		case(GL_INVALID_FRAMEBUFFER_OPERATION);
-		case(GL_OUT_OF_MEMORY);
-		#undef case
-		default:
-			printf("- unknown GL error: %d\n", error);
-			break;
+		while ((error = glGetError()) != GL_NO_ERROR) {
+			count++;
+			if (count == 1) log("GL error!");
+			switch (error) {
+			#define case(x) case x: printf("- %s\n", #x); break
+			case(GL_INVALID_ENUM);
+			case(GL_INVALID_VALUE);
+			case(GL_INVALID_OPERATION);
+			case(GL_INVALID_FRAMEBUFFER_OPERATION);
+			case(GL_OUT_OF_MEMORY);
+			#undef case
+			default:
+				printf("- %d\n", error);
+				break;
+			}
 		}
 		if (count) {
 			printf(
