@@ -63,7 +63,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 
 	# Useful variables.
 	ifeq "$(PLATFORM)" "msw"
-		SOURCES = $(shell dir /b /s *.cpp *.rc)
+		SOURCES = $(shell dir /b /s *.cpp)
 	else ifeq "$(PLATFORM)" "gnu"
 		SOURCES = $(shell find . -name "*.cpp")
 	else ifeq "$(PLATFORM)" "mac"
@@ -73,7 +73,6 @@ ifndef _INCLUDE_INC_MAKEFILE
 	ifdef DEBUG
 		OBJECTS = $(SOURCES:%.cpp=%.debug.o)
 	else
-		OBJECTS := $(SOURCES:%.cpp=%.o)
-		OBJECTS := $(OBJECTS:%.rc=%.o)
+		OBJECTS = $(SOURCES:%.cpp=%.o)
 	endif
 endif

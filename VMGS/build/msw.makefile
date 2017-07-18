@@ -17,12 +17,14 @@ all: $(TARGET)
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 %.o: %.rc
-	windres -i $^ -o $@
 
-$(TARGET): VMDE.dll $(OBJECTS)
+$(TARGET): VMDE.dll $(OBJECTS) windows.rc.o
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
 VMDE.dll: ../VMDE/VMDE.dll
 	copy ..\VMDE\VMDE.dll $@
+
+windows.rc.o: windows.rc
+	windres -i windows.rc -o windows.rc.o
 
 .PHONY: all
