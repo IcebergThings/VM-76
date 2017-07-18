@@ -59,12 +59,16 @@ void Shaders::link_program() {
 	check_gl_error;
 
 	GLint loc = glGetUniformBlockIndex(program, "Matrices");
-	glUniformBlockBinding(program, loc, 0);
+	if (loc == -1) {
+		error("No Matrices");
+	} else {
+		glUniformBlockBinding(program, loc, 0);
 
-	glGenBuffers(1, &UBO_matrix);
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
-	glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), 0, GL_STREAM_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glGenBuffers(1, &UBO_matrix);
+		glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
+		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), 0, GL_STREAM_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
 }
 
 void Shaders::use() {
