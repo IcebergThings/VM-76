@@ -113,7 +113,7 @@
 	// error - 抛出错误并终止程序
 	#define error(...) error_internal(, __VA_ARGS__)
 	// errorp - error + perror
-	#define errorp(...) error_internal(perror("perror()"), __VA_ARGS__)
+	#define errorp(...) error_internal(perror("perror()");, __VA_ARGS__)
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//   这个Util的意义已经远超utility。
