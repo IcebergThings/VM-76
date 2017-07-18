@@ -44,8 +44,9 @@ void GL_info() {
 //-----------------------------------------------------------------------------
 void check_gl_error() {
 	GLenum error;
-	while ((error = glGetError())) switch (error) {
-	#define case(x) case x: log(#x); break
+	int count = 0;
+	while ((error = glGetError())) switch (count++, error) {
+	#define case(x) case x: log("GL error: %s", #x); break
 	case(GL_INVALID_ENUM);
 	case(GL_INVALID_VALUE);
 	case(GL_INVALID_OPERATION);
