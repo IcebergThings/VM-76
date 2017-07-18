@@ -29,8 +29,10 @@ void GL_info() {
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &a);
 	log("Maximum vertex attributes: %d", a);
 	glGetIntegerv(GL_MAX_VERTEX_OUTPUT_COMPONENTS, &a);
-	log("Maximum vertex output components: %d", a);
-	glGetIntegerv(GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS, &a);
+	if (VMDE->gl_ver == GL_43) {
+		log("Maximum vertex output components: %d", a);
+		glGetIntegerv(GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS, &a);
+	}
 	log("Maximum fragment shader storage blocks: %d", a);
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &a);
 	log("Maximum texture size: %d", a);
