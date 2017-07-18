@@ -57,7 +57,7 @@ void check_gl_error() {
 		break;
 	#undef case
 	}
-	error("These are all the errors from glGetError().");
+	if (count) error("These are all the errors from glGetError().");
 }
 
 //-----------------------------------------------------------------------------
