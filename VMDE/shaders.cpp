@@ -89,7 +89,13 @@ void Shaders::set_int(const char* identifier, GLint value) {
 
 void Shaders::set_texture(const char* identifier, Res::Texture* tex, GLuint index) {
 	glActiveTexture(GL_TEXTURE0 + index);
-	glBindTexture(GL_TEXTURE_2D, tex->texture);
+	VMSC::ChangeTexture2D(tex->texture);
+	set_int(identifier, index);
+}
+
+void Shaders::set_texture_cube(const char* identifier, Res::CubeMap* tex, GLuint index) {
+	glActiveTexture(GL_TEXTURE0 + index);
+	VMSC::ChangeTextureCubeMap(tex->texture);
 	set_int(identifier, index);
 }
 

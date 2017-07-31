@@ -43,8 +43,8 @@ namespace VM76 {
 		Shaders shader_textured;
 		Shaders gui;
 		Shaders shader_basic;
-		Shaders post_processing;
-		Res::Texture tile_texture = Res::Texture("../Media/terrain.png");
+		Shaders final_composite;
+		Res::Texture tile_texture = Res::Texture("../Media/terrain.png", NULL);
 
 		Cube block_pointer = Cube(1);
 		Tiles* clist[16];
@@ -58,7 +58,7 @@ namespace VM76 {
 		RenderBuffer* postBuffer;
 
 	public:
-		Map map = Map(4, 4, 4, 64);
+		Map map = Map(8, 8, 8, 32);
 
 	public:
 		EditorMainScene();

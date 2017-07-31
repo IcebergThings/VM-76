@@ -18,11 +18,27 @@ namespace VM76 {
 
 	bool fp_control = false;
 
+	GDrawable* hand_block;
+
+	//-------------------------------------------------------------------------
+	// ● 缓冲区设定
+	//-------------------------------------------------------------------------
+	enum BuffersIndex {
+		BufferAlbedo,
+		BufferNormal,
+		BufferLighting,
+		BufferComposite
+	};
+
 	//-------------------------------------------------------------------------
 	// ● 场景开始
 	//-------------------------------------------------------------------------
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
+
+		hand_block = new GDrawable();
+		hand_block->data.vertices = new Vertex[4 * 6];
+		hand_block->data.indices = new GLuint[6 * 6];
 
 		shader_textured.add_file(GL_VERTEX_SHADER, "../Media/shaders/gbuffers_textured.vsh");
 		shader_textured.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/gbuffers_textured.fsh");
@@ -33,12 +49,13 @@ namespace VM76 {
 		gui.add_file(GL_VERTEX_SHADER, "../Media/shaders/gui.vsh");
 		gui.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/gui.fsh");
 		gui.link_program();
-		post_processing.add_file(GL_VERTEX_SHADER, "../Media/shaders/PostProcessing.vsh");
-		post_processing.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/PostProcessing.fsh");
-		post_processing.link_program();
+		final_composite.add_file(GL_VERTEX_SHADER, "../Media/shaders/composite.vsh");
+		final_composite.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/composite.fsh");
+		final_composite.link_program();
 
-		GLuint* gbuffers_type = new GLuint[3]{GL_RGB8, GL_RGB16F, GL_RGB8};
-		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 3, gbuffers_type);
+		GLuint* gbuffers_type = new GLuint[4]{GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB16F};
+		// Albedo, Normal, Lighting, Composite
+		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 4, gbuffers_type);
 
 		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		view = glm::lookAt(
@@ -63,15 +80,13 @@ namespace VM76 {
 		);
 
 		TiledMap::init_cinstances(clist);
-		for (int i = 0; i < 16; i++) {
-			clist[i]->mat[0] = new glm::mat4[1]; clist[i]->mat[0][0] = block_display;
-			clist[i]->mat[1] = new glm::mat4[1]; clist[i]->mat[1][0] = block_display;
-			clist[i]->mat[2] = new glm::mat4[1]; clist[i]->mat[2][0] = block_display;
-			clist[i]->mat[3] = new glm::mat4[1]; clist[i]->mat[3][0] = block_display;
-			clist[i]->mat[4] = new glm::mat4[1]; clist[i]->mat[4][0] = block_display;
-			clist[i]->mat[5] = new glm::mat4[1]; clist[i]->mat[5][0] = block_display;
-			clist[i]->update_instance(1,1,1,1,1,1);
-		}
+		int vtx_c = 0, ind_c = 0;
+		for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+		hand_block->data.vtx_c = vtx_c;
+		hand_block->data.ind_c = ind_c;
+		hand_block->data.mat_c = 1;
+		hand_block->data.mat = (GLuint*) &block_display;
+		hand_block->fbind();
 		block_pointer.obj->data.mat_c = 1;
 
 		ctl = new GodView();
@@ -81,7 +96,14 @@ namespace VM76 {
 		ctl->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctl_fp->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
 
-		sky = new SkyBox("../Media/skybox.png");
+		sky = new SkyBox({
+			"../Media/skybox/skybox_0.png",
+			"../Media/skybox/skybox_1.png",
+			"../Media/skybox/skybox_2.png",
+			"../Media/skybox/skybox_3.png",
+			"../Media/skybox/skybox_4.png",
+			"../Media/skybox/skybox_5.png"
+		});
 	}
 	//-------------------------------------------------------------------------
 	// ● 按键回调
@@ -103,7 +125,6 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_F5)) fp_control = !fp_control;
 
 		if (PRESS(GLFW_KEY_0)) hand_id = 0;
-		if (PRESS(GLFW_KEY_0)) hand_id = 0;
 		if (PRESS(GLFW_KEY_1)) hand_id = 1;
 		if (PRESS(GLFW_KEY_2)) hand_id = 2;
 		if (PRESS(GLFW_KEY_3)) hand_id = 3;
@@ -114,14 +135,20 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_8)) hand_id = 8;
 		if (PRESS(GLFW_KEY_9)) hand_id = 9;
 
+		if (hand_id > 0) {
+			int vtx_c = 0, ind_c = 0;
+			for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+			hand_block->update();
+		}
+
 		if (PRESS(GLFW_KEY_SPACE)) {
 			map.place_block(obj->pos, hand_id);
 		}
 
 		if (PRESS(GLFW_KEY_O)) {
-			magnify = !magnify;
-			if (magnify) projection = glm::perspective(0.3f, aspect_ratio, 0.1f, 1000.0f);
-			else projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
+			projection = glm::perspective(0.3f, aspect_ratio, 0.1f, 1000.0f);
+		} else if (key == GLFW_KEY_O && action == GLFW_RELEASE) {
+			projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;
@@ -177,15 +204,21 @@ namespace VM76 {
 		shader_textured.set_float("brightness", VMDE->state.brightness);
 		shader_textured.set_texture("colortex0", &tile_texture, 0);
 
+		// ================ STAGE 1 ================
+		//  Object rendering Opaque & cut-outs
+		//  Bind Post buffer & use stencil
 		postBuffer->bind();
-		RenderBuffer::clearColorDepth(0.5, 0.7, 1.0, 0.0);
+		RenderBuffer::clearBuffer(glm::vec4(0.5, 0.7, 1.0, 0.0), true, true, true);
 		postBuffer->set_draw_buffers();
+
+		// setup mask
+		glStencilFunc(GL_ALWAYS, 1, 0x01);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilMask(0xFF);
 
 		// Textured blocks rendering
 		shader_textured.ProjectionView(projection, view);
 		map.render();
-
-		sky->render();
 
 		// Setup uniforms
 		// Non textured rendering
@@ -198,21 +231,38 @@ namespace VM76 {
 
 		axe.render();
 
+		// ================ STAGE 2 ================
+		//  Deferred shading Opaque & cut-outs
+		//  Read Post buffer & stencil mask
+		glStencilFunc(GL_EQUAL, 1, 0x01);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilMask(0x00);
 
-		postBuffer->unbind();
-		post_processing.use();
+		/*post_processing.use();
 		post_processing.set_texture("colortex", postBuffer->texture_buffer[0], 0);
 		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 1);
 		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
 		glUniform3f(glGetUniformLocation(post_processing.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
-		PostProcessingManager::Blit2D();
+		*/
+
+		// ================ STAGE 3 ================
+		//  Skybox (Unfilled area) shading
+		//  Reverse stencil mask
+
+		glStencilFunc(GL_NOTEQUAL, 1, 0x01);
+		VMStateControl::disable_depth_test();
+		sky->render();
+
+		// ================ STAGE 4 ================
+		//  Full screen shading
+		VMStateControl::disable_stencil_test();
 
 		// GUI rendering
 		gui.use();
 		gui.set_texture("atlastex", &tile_texture, 0);
 		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
 		VMSC::disable_depth_test();
-		if (hand_id > 0) clist[hand_id - 1]->render();
+		if (hand_id > 0) hand_block->renderOnce();
 
 		if (SceneManager::render_debug_info) {
 			char info[64];
@@ -237,6 +287,13 @@ namespace VM76 {
 			);
 		}
 		VMSC::enable_depth_test();
+
+		// ================ STAGE 5 ================
+		//  Final composite
+		postBuffer->unbind();
+		final_composite.use();
+		final_composite.set_texture("composite", postBuffer->texture_buffer[BufferAlbedo], 15);
+		PostProcessingManager::Blit2D();
 	}
 	//-------------------------------------------------------------------------
 	// ● 释放

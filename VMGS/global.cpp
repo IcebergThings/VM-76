@@ -5,4 +5,5 @@
 #include "VMGS.hpp"
 
 namespace VM76 {
+
 }

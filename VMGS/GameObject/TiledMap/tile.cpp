@@ -56,21 +56,6 @@ namespace VM76 {
 		itx[3] = new GLuint[6] {3,1,0,  3,2,1};
 		itx[4] = new GLuint[6] {0,1,3,  1,2,3};
 		itx[5] = new GLuint[6] {3,1,0,  3,2,1};
-
-		// Prepare an empty space
-		for (int i = 0; i < 6; i++) {
-			mat[i] = NULL;//new glm::mat4[256];
-			//for (int x = 0; x < 256; x++) mat[i][x] = glm::mat4(1.0);
-
-			obj[i] = new GDrawable();
-			obj[i]->data.vtx_c = 4;
-			obj[i]->data.ind_c = 2 * 3;
-			obj[i]->data.vertices = vtx[i];
-			obj[i]->data.indices = itx[i];
-			obj[i]->data.mat_c = 0;
-			obj[i]->data.mat = NULL;//(GLuint*) &mat[i][0];
-			obj[i]->fbind();
-		}
 	}
 
 	MultiFaceCubeTile::MultiFaceCubeTile(int t1, int t2, int t3, int t4, int t5, int t6) {
@@ -143,56 +128,31 @@ namespace VM76 {
 		itx[3] = new GLuint[6] {3,1,0,  3,2,1};
 		itx[4] = new GLuint[6] {0,1,3,  1,2,3};
 		itx[5] = new GLuint[6] {3,1,0,  3,2,1};
+	}
 
-		// Prepare an empty space
-		for (int i = 0; i < 6; i++) {
-			mat[i] = NULL;
-
-			obj[i] = new GDrawable();
-			obj[i]->data.vtx_c = 4;
-			obj[i]->data.ind_c = 2 * 3;
-			obj[i]->data.vertices = vtx[i];
-			obj[i]->data.indices = itx[i];
-			obj[i]->data.mat_c = 0;
-			obj[i]->data.mat = NULL;
-			obj[i]->fbind();
+	void Tiles::bake(
+		float x, float y, float z, 
+		Vertex* v, GLuint* ix, 
+		int *vcount, int *icount, int ind)
+	{
+		for (int i = 0; i < 4; i++) {
+			Vertex emitted = vtx[ind][i];
+			emitted.world_position += glm::vec3(x, y, z);
+			v[*vcount + i] = emitted;
 		}
-	}
-
-	void Tiles::update_instance(int c1, int c2, int c3, int c4, int c5, int c6) {
-		obj[0]->data.mat_c = c1;
-		obj[0]->data.mat = (GLuint*) mat[0];
-		obj[0]->update_instance_alien_size();
-
-		obj[1]->data.mat_c = c2;
-		obj[1]->data.mat = (GLuint*) mat[1];
-		obj[1]->update_instance_alien_size();
-
-		obj[2]->data.mat_c = c3;
-		obj[2]->data.mat = (GLuint*) mat[2];
-		obj[2]->update_instance_alien_size();
-
-		obj[3]->data.mat_c = c4;
-		obj[3]->data.mat = (GLuint*) mat[3];
-		obj[3]->update_instance_alien_size();
-
-		obj[4]->data.mat_c = c5;
-		obj[4]->data.mat = (GLuint*) mat[4];
-		obj[4]->update_instance_alien_size();
-
-		obj[5]->data.mat_c = c6;
-		obj[5]->data.mat = (GLuint*) mat[5];
-		obj[5]->update_instance_alien_size();
-	}
-
-	void Tiles::render() {
-		for (int i = 0; i < 6; i++)
-			if (obj[i]->data.mat_c) obj[i]->render();
+		
+		for (int i = 0; i < 6; i++) {
+			GLuint emitted = itx[ind][i];
+			emitted += *vcount;
+			ix[*icount + i] = emitted;
+		}
+		
+		*vcount += 4;
+		*icount += 6;
 	}
 
 	Tiles::~Tiles() {
 		for (int i = 0; i < 6; i++) {
-			VMDE_Dispose(delete, obj[i]);
 			XE(delete[], vtx[i]);
 			XE(delete[], itx[i]);
 		}

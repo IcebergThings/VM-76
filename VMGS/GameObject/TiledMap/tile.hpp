@@ -8,18 +8,17 @@
 #define _INCLUDE_TILES_H
 
 namespace VM76 {
-	class Tiles : public RenderObject {
+	class Tiles : public Object {
 	public:
-		GDrawable* obj[6];
-		glm::mat4* mat[6];
-
 		Vertex* vtx[6];
 		GLuint* itx[6];
 
 	public:
 		virtual ~Tiles();
-		virtual void render();
-		virtual void update_instance(int c1, int c2, int c3, int c4, int c5, int c6);
+		virtual void bake(
+			float x, float y, float z, 
+			Vertex* v, GLuint* ix, 
+			int* vcount, int* icount, int ind);
 	};
 
 	enum TileID {
