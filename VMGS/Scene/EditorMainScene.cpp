@@ -52,6 +52,12 @@ namespace VM76 {
 		final_composite.add_file(GL_VERTEX_SHADER, "../Media/shaders/composite.vsh");
 		final_composite.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/composite.fsh");
 		final_composite.link_program();
+		deferred_lighting.add_file(GL_VERTEX_SHADER, "../Media/shaders/deferred_lighting.vsh");
+		deferred_lighting.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/deferred_lighting.fsh");
+		deferred_lighting.link_program();
+		deferred_composite.add_file(GL_VERTEX_SHADER, "../Media/shaders/composite_deferred.vsh");
+		deferred_composite.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/composite_deferred.fsh");
+		deferred_composite.link_program();
 
 		GLuint* gbuffers_type = new GLuint[4]{GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB16F};
 		// Albedo, Normal, Lighting, Composite
@@ -238,12 +244,17 @@ namespace VM76 {
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glStencilMask(0x00);
 
-		/*post_processing.use();
-		post_processing.set_texture("colortex", postBuffer->texture_buffer[0], 0);
-		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 1);
+		deferred_lighting.use();
+		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
 		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
-		glUniform3f(glGetUniformLocation(post_processing.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
-		*/
+		glUniform3f(glGetUniformLocation(deferred_lighting.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
+		PostProcessingManager::Blit2D();
+
+		// Combine lighting with albedo
+		deferred_composite.use();
+		deferred_composite.set_texture("albedo", postBuffer->texture_buffer[BufferAlbedo], 0);
+		deferred_composite.set_texture("lighting", postBuffer->texture_buffer[BufferLighting], 1);
+		PostProcessingManager::Blit2D();
 
 		// ================ STAGE 3 ================
 		//  Skybox (Unfilled area) shading
@@ -254,10 +265,16 @@ namespace VM76 {
 		sky->render();
 
 		// ================ STAGE 4 ================
-		//  Full screen shading
+		//  Final composite & Full screen shading
 		VMStateControl::disable_stencil_test();
 
-		// GUI rendering
+		postBuffer->unbind();
+		final_composite.use();
+		final_composite.set_texture("composite", postBuffer->texture_buffer[BufferComposite], 15);
+		PostProcessingManager::Blit2D();
+
+		// ================ STAGE 5 ================
+		//  GUI rendering
 		gui.use();
 		gui.set_texture("atlastex", &tile_texture, 0);
 		gui.ProjectionView(gui_2d_projection, glm::mat4(1.0));
@@ -287,13 +304,6 @@ namespace VM76 {
 			);
 		}
 		VMSC::enable_depth_test();
-
-		// ================ STAGE 5 ================
-		//  Final composite
-		postBuffer->unbind();
-		final_composite.use();
-		final_composite.set_texture("composite", postBuffer->texture_buffer[BufferAlbedo], 15);
-		PostProcessingManager::Blit2D();
 	}
 	//-------------------------------------------------------------------------
 	// ● 释放
