@@ -86,6 +86,20 @@ void VMStateControl::disable_depth_test() {
 	}
 }
 
+void VMStateControl::enable_stencil_test() {
+	if (!StateMachine.STENCIL_TEST) {
+		StateMachine.STENCIL_TEST = true;
+		glEnable(GL_STENCIL_TEST);
+	}
+}
+
+void VMStateControl::disable_stencil_test() {
+	if (StateMachine.STENCIL_TEST) {
+		StateMachine.STENCIL_TEST = false;
+		glDisable(GL_STENCIL_TEST);
+	}
+}
+
 void VMStateControl::enable_blend() {
 	if (!StateMachine.BLEND) {
 		StateMachine.BLEND = true;

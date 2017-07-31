@@ -285,6 +285,7 @@
 			bool TextureActivated[32]; // 32 for GL 3.X+, should be enough
 
 			bool DEPTH_TEST;
+			bool STENCIL_TEST;
 			bool CULL_FACE;
 			bool BLEND;
 			GLuint PolygonMode;
@@ -303,6 +304,8 @@
 		static void disable_cullface();
 		static void enable_depth_test();
 		static void disable_depth_test();
+		static void enable_stencil_test();
+		static void disable_stencil_test();
 		static void enable_blend();
 		static void disable_blend();
 		static void render_mode_wireframe();
@@ -396,21 +399,20 @@
 		void bind();
 		static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
-		static void clearColor(float r, float g, float b, float a) {
-			glClearColor(r, g, b, a);
-			glClear(GL_COLOR_BUFFER_BIT);
-		}
-
-		static void clearColorDepth(float r, float g, float b, float a) {
-			glClearColor(r, g, b, a);
-			glClearDepth(1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			VMStateControl::enable_depth_test();
-		}
-
-		static void clearDepth() {
-			glClear(GL_DEPTH_BUFFER_BIT);
-			VMStateControl::enable_depth_test();
+		static void clearBuffer(glm::vec4 c, bool color, bool depth, bool stencil) {
+			glClearColor(c.r, c.g, c.b, c.a);
+			GLuint bits = 0x0;
+			if (color) bits |= GL_COLOR_BUFFER_BIT;
+			if (depth) {
+				bits |= GL_DEPTH_BUFFER_BIT;
+				VMStateControl::enable_depth_test();
+			}
+			if (stencil) {
+				bits |= GL_STENCIL_BUFFER_BIT;
+				glStencilMask(~0);
+				VMStateControl::enable_stencil_test();
+			}
+			glClear(bits);
 		}
 
 		RenderBuffer(int w, int h, int mrt, const GLuint* type);

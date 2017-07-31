@@ -115,6 +115,7 @@ void init_graphics(int w, int h, const char* title) {
 
 	glFrontFace(GL_CCW);
 	VMStateControl::enable_depth_test();
+	VMStateControl::enable_stencil_test();
 	VMStateControl::enable_cullface();
 }
 
