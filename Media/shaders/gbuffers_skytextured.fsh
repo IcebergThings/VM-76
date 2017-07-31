@@ -6,18 +6,15 @@ layout (location = 1) out vec4 vv;
 layout (location = 2) out vec4 nn;
 
 in Vertex {
-	vec4 texcolor;
-	vec2 texcoord;
-	vec3 vpos;
+	vec3 wpos;
 };
 
 uniform float brightness;
-uniform sampler2D colortex0;
+uniform samplerCube cubemap0;
 
 void main() {
-	vec4 finalc = texture(colortex0, texcoord.st);
-	color = vec4(finalc * texcolor);
+	color = vec4(texture(cubemap0, normalize(wpos)).rgb, 1.0);
 
-	vv = vec4(vpos, 1.0);
-	nn = vec4(0.0, 0.0, 0.0, 1.0);
+	vv = vec4(1.0);
+	nn = vec4(1.0);
 }

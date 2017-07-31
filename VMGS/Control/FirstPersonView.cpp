@@ -47,6 +47,7 @@ namespace VM76 {
 		glm::vec3 up = glm::cross(right, direction);
 		glm::vec3 cam_pos = game_player.wpos + glm::vec3(0.0, 1.68, 0.0);
 		view = glm::lookAt(cam_pos, cam_pos + direction, up);
+		view_camera = glm::lookAt(glm::vec3(0.0f), direction, up);
 
 		// Key Input
 		glm::vec3 speed = glm::vec3(0.1);

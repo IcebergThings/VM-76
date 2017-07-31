@@ -17,7 +17,7 @@ namespace VM76 {
 	SkyBox* sky;
 
 	bool fp_control = false;
-	
+
 	GDrawable* hand_block;
 
 	//-------------------------------------------------------------------------
@@ -25,7 +25,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
-		
+
 		hand_block = new GDrawable();
 		hand_block->data.vertices = new Vertex[4 * 6];
 		hand_block->data.indices = new GLuint[6 * 6];
@@ -85,7 +85,14 @@ namespace VM76 {
 		ctl->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctl_fp->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
 
-		sky = new SkyBox("../Media/skybox.png");
+		sky = new SkyBox({
+			"../Media/skybox/skybox_0.png",
+			"../Media/skybox/skybox_1.png",
+			"../Media/skybox/skybox_2.png",
+			"../Media/skybox/skybox_3.png",
+			"../Media/skybox/skybox_4.png",
+			"../Media/skybox/skybox_5.png"
+		});
 	}
 	//-------------------------------------------------------------------------
 	// ● 按键回调
@@ -206,7 +213,6 @@ namespace VM76 {
 		block_pointer.render();
 
 		axe.render();
-
 
 		postBuffer->unbind();
 		post_processing.use();

@@ -36,6 +36,13 @@ void VMStateControl::ChangeTexture2D (GLuint index) {
 	}
 }
 
+void VMStateControl::ChangeTextureCubeMap (GLuint index) {
+	if (index != StateMachine.TEXTURE_CUBE_MAP) {
+		StateMachine.TEXTURE_CUBE_MAP = index;
+		glBindTexture(GL_TEXTURE_2D, index);
+	}
+}
+
 void VMStateControl::ChangeUniformBuffer (GLuint index) {
 	if (index != StateMachine.UNIFORM_BUFFER) {
 		StateMachine.UNIFORM_BUFFER = index;
@@ -137,6 +144,6 @@ void VMStateControl::init_graphics_state () {
 		}
 		log("UBO: GL33 Uniform Buffer Object");
 	#endif
-	
+
 	memset (&StateMachine, 0, sizeof(StateMachine));
 }

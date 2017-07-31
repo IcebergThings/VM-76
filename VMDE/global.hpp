@@ -150,7 +150,7 @@
 	void main_draw_end();
 	void main_set_brightness(float b);
 
-	extern glm::mat4 projection, view;
+	extern glm::mat4 projection, view, view_camera;
 	//-------------------------------------------------------------------------
 	// ● RenderObject.cpp
 	//-------------------------------------------------------------------------
@@ -173,21 +173,29 @@
 			GLuint MIPMAP_LEVEL;
 			GLuint PixelFormat, PixelType;
 		};
-		
+
+		struct CubeMapFiles {
+			const char *A, *B, *C, *D, *E, *F;
+		};
+
 		extern struct TextureParameters DefaultTextureParameters;
 		extern struct TextureParameters LinearTextureParameters;
-	
+
 		class Texture : public Object {
 		public:
 			GLuint texture, index;
 			int width, height;
 			struct TextureParameters* parameter;
-			
+
 			Texture();
-			Texture(const char* file);
 			Texture(const char* file, struct TextureParameters* p);
 
 			~Texture();
+		};
+
+		class CubeMap : public Texture {
+		public:
+			CubeMap(struct CubeMapFiles files, struct TextureParameters* p);
 		};
 	}
 	//-------------------------------------------------------------------------
@@ -213,6 +221,7 @@
 		void set_float(const char* identifier, GLfloat value);
 		void set_int(const char* identifier, GLint value);
 		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
+		void set_texture_cube(const char* identifier, Res::CubeMap* tex, GLuint index);
 
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 
@@ -258,7 +267,7 @@
 	// VMDE操控的全局变量
 	extern struct VMDE* VMDE;
 	extern GLFWwindow* window;
-	
+
 	//-------------------------------------------------------------------------
 	// ● State Control
 	//-------------------------------------------------------------------------
@@ -270,24 +279,26 @@
 			GLuint ELEMENT_ARRAY_BUFFER;
 			GLuint ARRAY_BUFFER;
 			GLuint TEXTURE_2D;
+			GLuint TEXTURE_CUBE_MAP;
 			GLuint UNIFORM_BUFFER;
 			GLuint Shader_Program;
 			bool TextureActivated[32]; // 32 for GL 3.X+, should be enough
-			
+
 			bool DEPTH_TEST;
 			bool CULL_FACE;
 			bool BLEND;
 			GLuint PolygonMode;
 		} StateMachine;
-	
+
 	public:
 		static void ChangeVertexArray (GLuint index);
 		static void ChangeElementArrayBuffer (GLuint index);
 		static void ChangeArrayBuffer (GLuint index);
 		static void ChangeTexture2D (GLuint index);
+		static void ChangeTextureCubeMap (GLuint index);
 		static void ChangeUniformBuffer (GLuint index);
 		static void ChangeShaderProgram (GLuint index);
-		
+
 		static void enable_cullface();
 		static void disable_cullface();
 		static void enable_depth_test();
@@ -296,11 +307,11 @@
 		static void disable_blend();
 		static void render_mode_wireframe();
 		static void render_mode_fill();
-		
+
 		static void init_graphics_state ();
 	};
 	#define VMSC VMStateControl // 少写几个字
-	
+
 	//-------------------------------------------------------------------------
 	// ● GDrawable
 	//-------------------------------------------------------------------------

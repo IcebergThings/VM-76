@@ -8,19 +8,20 @@
 #define _INCLUDE_SKYBOX_H
 
 namespace VM76 {
+
 	class SkyBox : public RenderObject {
 	public:
-		GDrawable* obj[6];
-		Res::Texture* tex;
+		GDrawable* obj;
+		Res::CubeMap* tex;
 		glm::mat4 mat;
 		Shaders* gbuffers_sky;
 
 	private:
-		Vertex* vtx[6];
-		GLuint* itx[6];
+		Vertex* vtx;
+		GLuint* itx;
 
 	public:
-		SkyBox(const char* skyTexture);
+		SkyBox(const struct Res::CubeMapFiles files);
 		void render();
 		~SkyBox();
 	};

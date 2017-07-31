@@ -14,15 +14,13 @@ layout (std140) uniform Matrices {
 } matrices;
 
 out Vertex {
-	vec4 texcolor;
-	vec2 texcoord;
-	vec3 vpos;
+	vec3 wpos;
 };
 
 void main() {
 	vec4 v = vec4(position, 1.0);
+	v = Model * v;
 
-	gl_Position = matrices.ProjectionView * Model * v;
-	texcolor = vertex_color;
-	texcoord = texc;
+	wpos = v.xyz;
+	gl_Position = matrices.ProjectionView * v;
 }

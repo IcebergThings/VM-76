@@ -73,7 +73,7 @@ void GDrawable::fbind() {
 	glVertexAttribDivisor(7, 1);
 
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindVertexArray(0);
+	VMSC::ChangeVertexArray(0);
 }
 
 #define INSTANCE_UPDATE VMSC::ChangeVertexArray(data.MBO); \
@@ -84,10 +84,10 @@ void GDrawable::update() {
 
 	VMSC::ChangeArrayBuffer(data.VBO);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, data.vtx_c * sizeof(Vertex), data.vertices);
-	
+
 	VMSC::ChangeElementArrayBuffer(data.EBO);
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
-	
+
 	INSTANCE_UPDATE
 
 	//glBindBuffer(GL_ARRAY_BUFFER,0);
