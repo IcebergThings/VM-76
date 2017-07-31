@@ -21,6 +21,16 @@ namespace VM76 {
 	GDrawable* hand_block;
 
 	//-------------------------------------------------------------------------
+	// ● 缓冲区设定
+	//-------------------------------------------------------------------------
+	enum BuffersIndex {
+		BufferAlbedo,
+		BufferNormal,
+		BufferLighting,
+		BufferComposite
+	};
+
+	//-------------------------------------------------------------------------
 	// ● 场景开始
 	//-------------------------------------------------------------------------
 	EditorMainScene::EditorMainScene() {
@@ -39,12 +49,13 @@ namespace VM76 {
 		gui.add_file(GL_VERTEX_SHADER, "../Media/shaders/gui.vsh");
 		gui.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/gui.fsh");
 		gui.link_program();
-		post_processing.add_file(GL_VERTEX_SHADER, "../Media/shaders/PostProcessing.vsh");
-		post_processing.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/PostProcessing.fsh");
-		post_processing.link_program();
+		final_composite.add_file(GL_VERTEX_SHADER, "../Media/shaders/composite.vsh");
+		final_composite.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/composite.fsh");
+		final_composite.link_program();
 
-		GLuint* gbuffers_type = new GLuint[3]{GL_RGB8, GL_RGB16F, GL_RGB8};
-		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 3, gbuffers_type);
+		GLuint* gbuffers_type = new GLuint[4]{GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB16F};
+		// Albedo, Normal, Lighting, Composite
+		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 4, gbuffers_type);
 
 		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
 		view = glm::lookAt(
@@ -193,15 +204,21 @@ namespace VM76 {
 		shader_textured.set_float("brightness", VMDE->state.brightness);
 		shader_textured.set_texture("colortex0", &tile_texture, 0);
 
+		// ================ STAGE 1 ================
+		//  Object rendering Opaque & cut-outs
+		//  Bind Post buffer & use stencil
 		postBuffer->bind();
-		RenderBuffer::clearColorDepth(0.5, 0.7, 1.0, 0.0);
+		RenderBuffer::clearBuffer(glm::vec4(0.5, 0.7, 1.0, 0.0), true, true, true);
 		postBuffer->set_draw_buffers();
+
+		// setup mask
+		glStencilFunc(GL_ALWAYS, 1, 0x01);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilMask(0xFF);
 
 		// Textured blocks rendering
 		shader_textured.ProjectionView(projection, view);
 		map.render();
-
-		sky->render();
 
 		// Setup uniforms
 		// Non textured rendering
@@ -214,13 +231,31 @@ namespace VM76 {
 
 		axe.render();
 
-		postBuffer->unbind();
-		post_processing.use();
+		// ================ STAGE 2 ================
+		//  Deferred shading Opaque & cut-outs
+		//  Read Post buffer & stencil mask
+		glStencilFunc(GL_EQUAL, 1, 0x01);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilMask(0x00);
+
+		/*post_processing.use();
 		post_processing.set_texture("colortex", postBuffer->texture_buffer[0], 0);
 		post_processing.set_texture("gnormal", postBuffer->texture_buffer[2], 1);
 		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
 		glUniform3f(glGetUniformLocation(post_processing.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
-		PostProcessingManager::Blit2D();
+		*/
+
+		// ================ STAGE 3 ================
+		//  Skybox (Unfilled area) shading
+		//  Reverse stencil mask
+
+		glStencilFunc(GL_NOTEQUAL, 1, 0x01);
+		VMStateControl::disable_depth_test();
+		sky->render();
+
+		// ================ STAGE 4 ================
+		//  Full screen shading
+		VMStateControl::disable_stencil_test();
 
 		// GUI rendering
 		gui.use();
@@ -252,6 +287,13 @@ namespace VM76 {
 			);
 		}
 		VMSC::enable_depth_test();
+
+		// ================ STAGE 5 ================
+		//  Final composite
+		postBuffer->unbind();
+		final_composite.use();
+		final_composite.set_texture("composite", postBuffer->texture_buffer[BufferAlbedo], 15);
+		PostProcessingManager::Blit2D();
 	}
 	//-------------------------------------------------------------------------
 	// ● 释放
