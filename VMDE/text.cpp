@@ -6,8 +6,26 @@
 
 #include "global.hpp"
 
+GLuint Text_VBO_size[] = {3, 4, 2};
+GLuint Text_VBO_type[] = {GL_FLOAT, GL_FLOAT, GL_FLOAT};
+
+struct VBO_Entry_Descriptor Text_VBO {
+	9 * sizeof(GLfloat),
+	3,
+	Text_VBO_size,
+	Text_VBO_type,
+	false,
+	NULL
+};
+
+typedef struct struct_TextVertex {
+	glm::vec3 pos;
+	glm::vec4 color;
+	glm::vec2 uv;
+} TextVertex;
+
 TextRenderer::TextRenderer() {
-	obj = new GDrawable(NULL, NULL);
+	obj = new GDrawable(&Text_VBO, NULL);
 
 	texshader.add_file(GL_VERTEX_SHADER, "../Media/shaders/text.vsh");
 	texshader.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/text.fsh");
@@ -35,7 +53,7 @@ void TextRenderer::BakeText(
 		itx_stride = 30;
 		break;
 	}
-	Vertex* vtx = new Vertex[vtx_stride * length];
+	TextVertex* vtx = new TextVertex[vtx_stride * length];
 	GLuint* itx = new GLuint[itx_stride * length];
 
 	float lbx = 0.0f;
@@ -50,13 +68,13 @@ void TextRenderer::BakeText(
 
 		lbx = (float) (i) * width;
 
-		Vertex* vtxi = vtx + i * vtx_stride;
+		TextVertex* vtxi = vtx + i * vtx_stride;
 		GLuint* itxi = itx + i * itx_stride;
 		#define ADD_VERTICES(j, ox, oy, r, g, b, a) do { \
-			vtxi[(j) + 0] = {{lbx         + (ox),        + (oy), .0}, {r, g, b, a}, {stx    , sty + h}, {.0, .0, .0}}; \
-			vtxi[(j) + 1] = {{lbx         + (ox), height + (oy), .0}, {r, g, b, a}, {stx    , sty    }, {.0, .0, .0}}; \
-			vtxi[(j) + 2] = {{lbx + width + (ox), height + (oy), .0}, {r, g, b, a}, {stx + w, sty    }, {.0, .0, .0}}; \
-			vtxi[(j) + 3] = {{lbx + width + (ox),        + (oy), .0}, {r, g, b, a}, {stx + w, sty + h}, {.0, .0, .0}}; \
+			vtxi[(j) + 0] = {{lbx         + (ox),        + (oy), .0}, {r, g, b, a}, {stx    , sty + h}}; \
+			vtxi[(j) + 1] = {{lbx         + (ox), height + (oy), .0}, {r, g, b, a}, {stx    , sty    }}; \
+			vtxi[(j) + 2] = {{lbx + width + (ox), height + (oy), .0}, {r, g, b, a}, {stx + w, sty    }}; \
+			vtxi[(j) + 3] = {{lbx + width + (ox),        + (oy), .0}, {r, g, b, a}, {stx + w, sty + h}}; \
 		} while (false);
 		#define ADD_INDEICES(j, a, b, c) do { \
 			itxi[(j) + 0] = i * vtx_stride + (a); \
@@ -107,7 +125,7 @@ void TextRenderer::BakeText(
 
 	obj->data.vtx_c = length * vtx_stride;
 	obj->data.ind_c = length * itx_stride;
-	obj->data.vertices = vtx;
+	obj->data.vertices = (GLuint*) vtx;
 	obj->data.indices = itx;
 
 	obj->fbind();

@@ -343,7 +343,7 @@
 		struct VBO_Entry_Descriptor *vbo, *mbo;
 
 		struct Data {
-			Vertex* vertices;
+			GLuint* vertices;
 			int vtx_c;
 			GLuint* indices;
 			int ind_c;
