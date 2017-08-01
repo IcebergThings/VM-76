@@ -220,6 +220,9 @@
 
 		void set_float(const char* identifier, GLfloat value);
 		void set_int(const char* identifier, GLint value);
+		void set_vec2(const char* identifier, glm::vec2 value);
+		void set_vec3(const char* identifier, glm::vec3 value);
+		void set_vec4(const char* identifier, glm::vec4 value);
 		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
 		void set_texture_cube(const char* identifier, Res::CubeMap* tex, GLuint index);
 
@@ -325,10 +328,25 @@
 		glm::vec3 normal;
 	};
 
+	struct VBO_Entry_Descriptor {
+		size_t entry_length;
+		int attribute_count;
+		GLuint* attribute_size;
+		GLuint* attribute_type;
+		// Instanced data
+		bool is_instanced;
+		GLuint* divisors;
+	};
+
+	extern struct VBO_Entry_Descriptor default_Vertex;
+	extern struct VBO_Entry_Descriptor default_MBO;
+
 	class GDrawable : public RenderObject {
 	public:
+		struct VBO_Entry_Descriptor *vbo, *mbo;
+
 		struct Data {
-			Vertex* vertices;
+			GLuint* vertices;
 			int vtx_c;
 			GLuint* indices;
 			int ind_c;
@@ -352,7 +370,7 @@
 
 		~GDrawable();
 
-		GDrawable();
+		GDrawable(struct VBO_Entry_Descriptor* vbo, struct VBO_Entry_Descriptor* mbo);
 	};
 
 	//-------------------------------------------------------------------------
@@ -360,7 +378,7 @@
 	//-------------------------------------------------------------------------
 	class TextRenderer : public RenderObject {
 	private:
-		GDrawable obj;
+		GDrawable* obj;
 		Res::Texture tex = Res::Texture("../Media/Font.bmp", &Res::LinearTextureParameters);
 		Shaders texshader;
 

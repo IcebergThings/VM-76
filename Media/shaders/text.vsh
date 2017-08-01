@@ -4,8 +4,7 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec4 vertex_color;
 layout (location = 2) in vec2 texc;
-layout (location = 3) in vec3 normal;
-layout (location = 4) in mat4 Model;
+layout (location = 3) in mat4 Model;
 
 layout (std140) uniform Matrices {
 	mat4 Projection;

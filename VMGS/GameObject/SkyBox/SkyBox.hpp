@@ -9,6 +9,8 @@
 
 namespace VM76 {
 
+	typedef struct struct_SimpleVertex { glm::vec3 pos; } SimpleVertex;
+
 	class SkyBox : public RenderObject {
 	public:
 		GDrawable* obj;
@@ -17,7 +19,7 @@ namespace VM76 {
 		Shaders* gbuffers_sky;
 
 	private:
-		Vertex* vtx;
+		SimpleVertex* vtx;
 		GLuint* itx;
 
 	public:

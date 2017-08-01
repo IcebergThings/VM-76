@@ -44,6 +44,8 @@ namespace VM76 {
 		Shaders gui;
 		Shaders shader_basic;
 		Shaders final_composite;
+		Shaders deferred_lighting;
+		Shaders deferred_composite;
 		Res::Texture tile_texture = Res::Texture("../Media/terrain.png", NULL);
 
 		Cube block_pointer = Cube(1);
