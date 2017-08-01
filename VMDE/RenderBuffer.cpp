@@ -13,7 +13,8 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 	mrtcount = mrt;
-	texture_buffer = new Res::Texture*[mrt];
+	texture_buffer = new Res::Texture*[mrt + 1];
+	// Always reserve the last space for depth
 	for (int i = 0; i < mrt; i++) {
 		texture_buffer[i] = new Res::Texture();
 		glGenTextures(1, &(texture_buffer[i]->texture));
@@ -28,14 +29,29 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 	}
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
+	// Generate depth tex
+	{
+		texture_buffer[mrt] = new Res::Texture();
+		glGenTextures(1, &(texture_buffer[mrt]->texture));
+		VMSC::ChangeTexture2D(texture_buffer[mrt]->texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+		texture_buffer[mrt]->width = w; texture_buffer[mrt]->height = h;
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture_buffer[mrt]->texture, 0);
+
+		texture_buffer[mrt]->parameter = &Res::LinearTextureParameters;
+	}
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, w, h);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) error("Framebuffer creation failed. Framebuffer is not complete");
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX, w, h);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	// Check errors
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		error("Framebuffer creation failed. Framebuffer is not complete");
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -52,7 +68,7 @@ void RenderBuffer::set_draw_buffers() {
 RenderBuffer::~RenderBuffer () {
 	log("Delete Buffer %d", framebuffer);
 
-	for (int i = 0; i < mrtcount; i++) XE(delete, texture_buffer[i]);
+	for (int i = 0; i < mrtcount + 1; i++) XE(delete, texture_buffer[i]);
 	XE(delete, texture_buffer);
 
 	glDeleteRenderbuffers(1, &rbo);

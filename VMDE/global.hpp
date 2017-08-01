@@ -220,6 +220,9 @@
 
 		void set_float(const char* identifier, GLfloat value);
 		void set_int(const char* identifier, GLint value);
+		void set_vec2(const char* identifier, glm::vec2 value);
+		void set_vec3(const char* identifier, glm::vec3 value);
+		void set_vec4(const char* identifier, glm::vec4 value);
 		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
 		void set_texture_cube(const char* identifier, Res::CubeMap* tex, GLuint index);
 
