@@ -3,9 +3,7 @@
 
 layout (location = 3) out vec4 color;
 
-in Vertex {
-	vec3 wpos;
-};
+in vec3 wpos;
 
 uniform float brightness;
 uniform samplerCube cubemap0;
