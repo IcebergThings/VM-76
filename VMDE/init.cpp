@@ -29,34 +29,17 @@ void GL_info() {
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &a);
 	log("Maximum vertex attributes: %d", a);
 	glGetIntegerv(GL_MAX_VERTEX_OUTPUT_COMPONENTS, &a);
-	log("Maximum vertex output components: %d", a);
-	glGetIntegerv(GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS, &a);
+	if (VMDE->gl_ver == GL_43) {
+		log("Maximum vertex output components: %d", a);
+		glGetIntegerv(GL_MAX_FRAGMENT_SHADER_STORAGE_BLOCKS, &a);
+	}
 	log("Maximum fragment shader storage blocks: %d", a);
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &a);
 	log("Maximum texture size: %d", a);
 	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &a);
 	log("Maximum texture unit: %d", a);
 	log("==========================");
-}
-
-//-----------------------------------------------------------------------------
-// ● 检查GL是否有错误
-//-----------------------------------------------------------------------------
-void check_gl_error() {
-	GLenum error;
-	while ((error = glGetError())) switch (error) {
-	#define case(x) case x: log(#x); break
-	case(GL_INVALID_ENUM);
-	case(GL_INVALID_VALUE);
-	case(GL_INVALID_OPERATION);
-	case(GL_INVALID_FRAMEBUFFER_OPERATION);
-	case(GL_OUT_OF_MEMORY);
-	default:
-		log("unknown GL error: %d", error);
-		break;
-	#undef case
-	}
-	error("These are all the errors from glGetError().");
+	check_gl_error;
 }
 
 //-----------------------------------------------------------------------------

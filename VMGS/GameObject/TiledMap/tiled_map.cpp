@@ -8,43 +8,33 @@
 
 namespace VM76 {
 
-	void TiledMap::init_cinstances (Tiles* cinstance[]) {
-		for (int i = 0; i < 16; i ++)
+	void TiledMap::init_cinstances(Tiles* cinstance[]) {
+		for (int i = 0; i < 16; i++)
 			cinstance[i] = get_instances(i + 1);
 	}
 
-	Tiles* TiledMap::get_instances (int id) {
+	Tiles* TiledMap::get_instances(int id) {
 		switch (id) {
 			case Grass:
-				return new MultiFaceCubeTile(49,49,0,2,49,49);
-				break;
+				return new MultiFaceCubeTile(49, 49, 0, 2, 49, 49);
 			case Stone:
 				return new SimpleCubeTile(1);
-				break;
 			case Dirt:
 				return new SimpleCubeTile(2);
-				break;
 			case Glass:
 				return new SimpleCubeTile(3);
-				break;
 			case WoodPlank:
 				return new SimpleCubeTile(4);
-				break;
 			case HalfBrick:
-				return new MultiFaceCubeTile(5,5,6,6,5,5);
-				break;
+				return new MultiFaceCubeTile(5, 5, 6, 6, 5, 5);
 			case Brick:
 				return new SimpleCubeTile(7);
-				break;
 			case TNT:
-				return new MultiFaceCubeTile(8,8,9,10,8,8);
-				break;
+				return new MultiFaceCubeTile(8, 8, 9, 10, 8, 8);
 			case CobbleStone:
 				return new SimpleCubeTile(16);
-				break;
 			default:
 				return new SimpleCubeTile(31);
-				break;
 		}
 	}
 
@@ -114,7 +104,7 @@ namespace VM76 {
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 5);
 							count ++;
 						}
-						
+
 					}
 				}
 			}
@@ -129,7 +119,6 @@ namespace VM76 {
 		obj->data.mat_c = 1;
 		obj->data.mat = (GLuint*) &translate;
 		obj->fbind();
-		
 		is_valid = count > 0;
 	}
 

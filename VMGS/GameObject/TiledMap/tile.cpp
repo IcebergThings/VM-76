@@ -140,13 +140,13 @@ namespace VM76 {
 			emitted.world_position += glm::vec3(x, y, z);
 			v[*vcount + i] = emitted;
 		}
-		
+
 		for (int i = 0; i < 6; i++) {
 			GLuint emitted = itx[ind][i];
 			emitted += *vcount;
 			ix[*icount + i] = emitted;
 		}
-		
+
 		*vcount += 4;
 		*icount += 6;
 	}

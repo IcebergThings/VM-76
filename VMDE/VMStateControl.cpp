@@ -130,7 +130,7 @@ void VMStateControl::render_mode_fill() {
 }
 
 
-void VMStateControl::init_graphics_state () {
+void VMStateControl::init_graphics_state() {
 	// 设置当前窗口GL上下文
 	glfwMakeContextCurrent(window);
 	// 垂直同步，拒绝鬼畜

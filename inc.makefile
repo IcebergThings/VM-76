@@ -38,6 +38,10 @@ ifndef _INCLUDE_INC_MAKEFILE
 	CXXFLAGS = $(CFLAGS) -std=c++14 -DGLM_FORCE_SSE41
 	LDFLAGS =
 	LDLIBS = -lstdc++
+	ifneq "$(PLATFORM)" "msw"
+		CFLAGS += -flto
+		LDFLAGS += -flto
+	endif
 	ifdef DEBUG
 		CXXFLAGS += -O0 -g -DDEBUG
 		LDFLAGS += -O0
@@ -50,7 +54,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 		ifdef GCC
 			CXX = g++
 		else
-			CFLAGS += --target=i686-pc-mingw32
+			CFLAGS += --target=i686-w64-mingw32
 		endif
 		CCLD = gcc
 	else ifeq "$(PLATFORM)" "gnu"
@@ -59,7 +63,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 
 	# Useful variables.
 	ifeq "$(PLATFORM)" "msw"
-		SOURCES = $(shell dir /b /s *.cpp *.rc)
+		SOURCES = $(shell dir /b /s *.cpp)
 	else ifeq "$(PLATFORM)" "gnu"
 		SOURCES = $(shell find . -name "*.cpp")
 	else ifeq "$(PLATFORM)" "mac"
@@ -69,7 +73,6 @@ ifndef _INCLUDE_INC_MAKEFILE
 	ifdef DEBUG
 		OBJECTS = $(SOURCES:%.cpp=%.debug.o)
 	else
-		OBJECTS := $(SOURCES:%.cpp=%.o)
-		OBJECTS := $(OBJECTS:%.rc=%.o)
+		OBJECTS = $(SOURCES:%.cpp=%.o)
 	endif
 endif

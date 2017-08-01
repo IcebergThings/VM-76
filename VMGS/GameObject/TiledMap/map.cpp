@@ -70,7 +70,7 @@ namespace VM76 {
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);
 
-		for (int i = 0; i < width; i ++) {
+		for (int i = 0; i < width; i++) {
 			if (i % (width / 12) == 0)
 				log("Generated %d%% (%d / %d)",
 					(int) (100.0 / width * i),
@@ -80,7 +80,7 @@ namespace VM76 {
 			for (int j = 0; j < length; j++) {
 				glm::vec2 coord = glm::vec2(i, j) * 0.006f;
 
-				const glm::mat2 rotate = glm::mat2(1.4,1.1,-1.2,1.4);
+				const glm::mat2 rotate = glm::mat2(1.4, 1.1, -1.2, 1.4);
 
 				glm::vec2 dir = glm::vec2(1.0, 0.1);
 				float n = glm::sin(glm::perlin(coord * dir)) * 0.5f; coord *= 1.2f;dir = dir * rotate; coord += dir * 0.3f;
