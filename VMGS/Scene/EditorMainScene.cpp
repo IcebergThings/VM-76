@@ -144,6 +144,9 @@ namespace VM76 {
 		if (hand_id > 0) {
 			int vtx_c = 0, ind_c = 0;
 			for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+			hand_block->data.vtx_c = vtx_c;
+			hand_block->data.ind_c = ind_c;
+			hand_block->data.mat_c = 1;
 			hand_block->update();
 		}
 
