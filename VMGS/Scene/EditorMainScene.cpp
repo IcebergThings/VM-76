@@ -250,13 +250,16 @@ namespace VM76 {
 		deferred_lighting.use();
 		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
 		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
-		glUniform3f(glGetUniformLocation(deferred_lighting.program, "sunVec"), sunVec.x, sunVec.y, sunVec.z);
+		deferred_lighting.set_vec3("sunVec", sunVec);
 		PostProcessingManager::Blit2D();
 
 		// Combine lighting with albedo
 		deferred_composite.use();
 		deferred_composite.set_texture("albedo", postBuffer->texture_buffer[BufferAlbedo], 0);
 		deferred_composite.set_texture("lighting", postBuffer->texture_buffer[BufferLighting], 1);
+		deferred_composite.set_texture("depthtex", postBuffer->texture_buffer[4], 14);
+		deferred_composite.set_vec2("clipping", glm::vec2(0.1, 1000.0));
+		deferred_composite.set_vec3("fogColor", glm::vec3(0.5, 0.7, 1.0));
 		PostProcessingManager::Blit2D();
 
 		// ================ STAGE 3 ================
