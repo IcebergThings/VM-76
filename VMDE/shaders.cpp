@@ -82,6 +82,21 @@ void Shaders::set_float(const char* identifier, GLfloat value) {
 	glUniform1f(loc, value);
 }
 
+void Shaders::set_vec2(const char* identifier, glm::vec2 value) {
+	GLuint loc = glGetUniformLocation(program, identifier);
+	glUniform2f(loc, value.r, value.g);
+}
+
+void Shaders::set_vec3(const char* identifier, glm::vec3 value) {
+	GLuint loc = glGetUniformLocation(program, identifier);
+	glUniform3f(loc, value.r, value.g, value.b);
+}
+
+void Shaders::set_vec4(const char* identifier, glm::vec4 value) {
+	GLuint loc = glGetUniformLocation(program, identifier);
+	glUniform4f(loc, value.r, value.g, value.b, value.a);
+}
+
 void Shaders::set_int(const char* identifier, GLint value) {
 	GLuint loc = glGetUniformLocation(program, identifier);
 	glUniform1i(loc, value);
