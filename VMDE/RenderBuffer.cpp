@@ -73,7 +73,7 @@ void PostProcessingManager::init() {
 	QuadScreen = new GDrawable(NULL, NULL);
 	QuadScreen->data.vtx_c = 4;
 	QuadScreen->data.ind_c = 6;
-	QuadScreen->data.vertices = vtx;
+	QuadScreen->data.vertices = (GLuint*)vtx;
 	QuadScreen->data.indices = itx;
 	QuadScreen->data.mat_c = 0;
 	QuadScreen->data.mat = NULL;

@@ -37,7 +37,7 @@ namespace VM76 {
 		obj = new GObject();
 
 		hand_block = new GDrawable(NULL, NULL);
-		hand_block->data.vertices = new Vertex[4 * 6];
+		hand_block->data.vertices = (GLuint*)new Vertex[4 * 6];
 		hand_block->data.indices = new GLuint[6 * 6];
 
 		shader_textured.add_file(GL_VERTEX_SHADER, "../Media/shaders/gbuffers_textured.vsh");
@@ -87,7 +87,7 @@ namespace VM76 {
 
 		TiledMap::init_cinstances(clist);
 		int vtx_c = 0, ind_c = 0;
-		for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+		for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,(Vertex*)hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
 		hand_block->data.vtx_c = vtx_c;
 		hand_block->data.ind_c = ind_c;
 		hand_block->data.mat_c = 1;
@@ -143,7 +143,7 @@ namespace VM76 {
 
 		if (hand_id > 0) {
 			int vtx_c = 0, ind_c = 0;
-			for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+			for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,(Vertex*)hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
 			hand_block->data.vtx_c = vtx_c;
 			hand_block->data.ind_c = ind_c;
 			hand_block->data.mat_c = 1;
@@ -155,9 +155,9 @@ namespace VM76 {
 		}
 
 		if (PRESS(GLFW_KEY_O)) {
-			projection = glm::perspective(0.3f, aspect_ratio, 0.1f, 1000.0f);
+			projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
 		} else if (key == GLFW_KEY_O && action == GLFW_RELEASE) {
-			projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
+			projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;

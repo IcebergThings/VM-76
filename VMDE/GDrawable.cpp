@@ -155,7 +155,7 @@ GDrawable::GDrawable(struct VBO_Entry_Descriptor* vbo, struct VBO_Entry_Descript
 	glGenBuffers(1, &data.VBO);
 	glGenBuffers(1, &data.EBO);
 	glGenBuffers(1, &data.MBO);
-	data.vertices = NULL;
+	data.vertices = (GLuint*)NULL;
 	data.indices = NULL;
 	data.mat = NULL;
 }

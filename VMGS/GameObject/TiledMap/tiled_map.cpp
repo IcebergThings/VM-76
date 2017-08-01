@@ -124,7 +124,7 @@ namespace VM76 {
 
 		obj->data.vtx_c = vtx_c;
 		obj->data.ind_c = ind_c;
-		obj->data.vertices = vtx;
+		obj->data.vertices = (GLuint*)vtx;
 		obj->data.indices = ind;
 		obj->data.mat_c = 1;
 		obj->data.mat = (GLuint*) &translate;

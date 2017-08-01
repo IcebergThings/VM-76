@@ -34,7 +34,7 @@ namespace VM76 {
 		obj = new GDrawable(NULL, NULL);
 		obj->data.vtx_c = 3 * 3;
 		obj->data.ind_c = 3 * 3;
-		obj->data.vertices = vtx;
+		obj->data.vertices = (GLuint*)vtx;
 		obj->data.indices = itx;
 		obj->data.mat_c = 1;
 		obj->data.mat = (GLuint*) &mat[0];
