@@ -31,7 +31,7 @@ namespace VM76 {
 		// Prepare an empty space
 		mat = new glm::mat4[1] {glm::mat4(1.0)};
 
-		obj = new GDrawable();
+		obj = new GDrawable(NULL, NULL);
 		obj->data.vtx_c = 3 * 3;
 		obj->data.ind_c = 3 * 3;
 		obj->data.vertices = vtx;

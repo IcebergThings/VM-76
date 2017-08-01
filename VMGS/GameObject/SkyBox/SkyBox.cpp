@@ -37,7 +37,7 @@ namespace VM76 {
 
 		mat = glm::scale(glm::mat4(1.0), glm::vec3(512.0));
 
-		obj = new GDrawable();
+		obj = new GDrawable(NULL, NULL);
 		obj->data.vtx_c = 8;
 		obj->data.ind_c = 6 * 6;
 		obj->data.vertices = vtx;

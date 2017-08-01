@@ -58,7 +58,7 @@ namespace VM76 {
 
 		mount_point = wp;
 		
-		obj = new GDrawable();
+		obj = new GDrawable(NULL, NULL);
 	}
 	
 	#define CHECK_EXPAND \

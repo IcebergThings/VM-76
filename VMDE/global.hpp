@@ -325,8 +325,23 @@
 		glm::vec3 normal;
 	};
 
+	struct VBO_Entry_Descriptor {
+		size_t entry_length;
+		int attribute_count;
+		GLuint* attribute_size;
+		GLuint* attribute_type;
+		// Instanced data
+		bool is_instanced;
+		GLuint* divisors;
+	};
+
+	extern struct VBO_Entry_Descriptor default_Vertex;
+	extern struct VBO_Entry_Descriptor default_MBO;
+
 	class GDrawable : public RenderObject {
 	public:
+		struct VBO_Entry_Descriptor *vbo, *mbo;
+
 		struct Data {
 			Vertex* vertices;
 			int vtx_c;
@@ -352,7 +367,7 @@
 
 		~GDrawable();
 
-		GDrawable();
+		GDrawable(struct VBO_Entry_Descriptor* vbo, struct VBO_Entry_Descriptor* mbo);
 	};
 
 	//-------------------------------------------------------------------------
@@ -360,7 +375,7 @@
 	//-------------------------------------------------------------------------
 	class TextRenderer : public RenderObject {
 	private:
-		GDrawable obj;
+		GDrawable* obj;
 		Res::Texture tex = Res::Texture("../Media/Font.bmp", &Res::LinearTextureParameters);
 		Shaders texshader;
 

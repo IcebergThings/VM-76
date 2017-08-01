@@ -6,6 +6,31 @@
 
 #include "global.hpp"
 
+GLuint Vertex_entry_size[] = {3, 4, 2, 3};
+GLuint Vertex_entry_type[] = {GL_FLOAT, GL_FLOAT, GL_FLOAT, GL_FLOAT};
+
+struct VBO_Entry_Descriptor default_Vertex {
+	12 * sizeof(GLfloat),
+	4,
+	Vertex_entry_size,
+	Vertex_entry_type,
+	false,
+	NULL
+};
+
+GLuint MBO_entry_size[] = {4, 4, 4, 4};
+GLuint MBO_entry_type[] = {GL_FLOAT, GL_FLOAT, GL_FLOAT, GL_FLOAT};
+GLuint MBO_entry_divisor[] = {1, 1, 1, 1};
+
+struct VBO_Entry_Descriptor default_MBO {
+	16 * sizeof(GLfloat),
+	4,
+	MBO_entry_size,
+	MBO_entry_type,
+	true,
+	MBO_entry_divisor
+};
+
 void GDrawable::renderOnce() {
 	VMSC::ChangeVertexArray(data.VAO);
 	glDrawElements(GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0);
@@ -17,63 +42,78 @@ void GDrawable::render() {
 		GL_TRIANGLES, data.ind_c, GL_UNSIGNED_INT, 0, data.mat_c);
 }
 
+size_t _internal_attribute_size(GLuint type) {
+	if (type == GL_FLOAT) {
+		return sizeof(GLfloat);
+	} else if (type == GL_INT) {
+		return sizeof(GLint);
+	} else if (type == GL_UNSIGNED_INT) {
+		return sizeof(GLuint);
+	} else
+		return sizeof(GLvoid*);
+}
+
 void GDrawable::fbind() {
 	VMSC::ChangeVertexArray(data.VAO);
 	VMSC::ChangeElementArrayBuffer(data.EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.ind_c * sizeof(GLuint), data.indices, GL_STATIC_DRAW);
 
-	const size_t vec4Size = sizeof(glm::vec4);
-	const size_t vertex_size = sizeof(Vertex); // X,Y,Z,  R,G,B,A,  S,T, Normal
+	//const size_t vec4Size = sizeof(glm::vec4);
+	GLuint attr_index = 0;
+	GLuint stream = 0;
+
+	VMSC::ChangeArrayBuffer(data.VBO);
+	glBufferData(GL_ARRAY_BUFFER, data.vtx_c * vbo->entry_length, data.vertices, GL_STATIC_DRAW);
+
 	if (VMDE->gl_ver == GL_43) {
 		// GL43 Vertex Attribute Format & Binding
-		VMSC::ChangeArrayBuffer(data.VBO);
-		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * vertex_size, (GLfloat*) data.vertices, GL_STATIC_DRAW);
 
-		glVertexAttribFormat(0, 3, GL_FLOAT, false, 0); // XYZ
-		glVertexAttribFormat(1, 4, GL_FLOAT, false, 3 * sizeof(GLfloat)); // RGBA
-		glVertexAttribFormat(2, 2, GL_FLOAT, false, 7 * sizeof(GLfloat)); // ST
-		glVertexAttribFormat(3, 3, GL_FLOAT, false, 9 * sizeof(GLfloat)); // Normal
-		glVertexAttribBinding(0, 0); // XYZ -> stream 0
-		glVertexAttribBinding(1, 0); // RGBA -> stream 0
-		glVertexAttribBinding(2, 0); // ST -> stream 0
-		glVertexAttribBinding(3, 0); // Normal -> stream 0
+		size_t offset = 0;
+		for (int i = 0; i < vbo->attribute_count; i++) {
+			GLuint type = vbo->attribute_type[i];
+			GLuint size = vbo->attribute_size[i];
+			glVertexAttribFormat(attr_index, size, type, false, offset);
+			offset += size * _internal_attribute_size(type);
 
-		glBindVertexBuffer(0, data.VBO, 0, vertex_size);
+			glVertexAttribBinding(attr_index, stream);
+			glEnableVertexAttribArray(attr_index);
+			if (vbo->is_instanced) glVertexAttribDivisor(attr_index, vbo->divisors[i]);
+			attr_index ++;
+		}
+
+		glBindVertexBuffer(stream, data.VBO, 0, offset);
 	} else {
 		// GL33 Vertex Attribute Pointer
-		VMSC::ChangeArrayBuffer(data.VBO);
-		glBufferData(GL_ARRAY_BUFFER, data.vtx_c * vertex_size, data.vertices, GL_STATIC_DRAW);
+		size_t offset = 0;
+		for (int i = 0; i < vbo->attribute_count; i++) {
+			GLuint type = vbo->attribute_type[i];
+			GLuint size = vbo->attribute_size[i];
+			glVertexAttribPointer(attr_index, size, type, GL_FALSE, vbo->entry_length, (GLvoid*) offset);
+			offset += size * _internal_attribute_size(type);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) 0);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (3 * sizeof(GLfloat)));
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (7 * sizeof(GLfloat)));
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, vertex_size, (GLvoid*) (9 * sizeof(GLfloat)));
+			glEnableVertexAttribArray(attr_index);
+			if (vbo->is_instanced) glVertexAttribDivisor(attr_index, vbo->divisors[i]);
+			attr_index ++;
+		}
 	}
 	// GL33 Vertex Attribute Pointer Instanced
 	VMSC::ChangeArrayBuffer(data.MBO);
 	glBufferData(GL_ARRAY_BUFFER, data.mat_c * sizeof(glm::mat4), data.mat, GL_DYNAMIC_DRAW);
 
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) 0);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (vec4Size));
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (2 * vec4Size));
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*) (3 * vec4Size));
+	size_t offset = 0;
+	for (int i = 0; i < mbo->attribute_count; i++) {
+		GLuint type = mbo->attribute_type[i];
+		GLuint size = mbo->attribute_size[i];
+		glVertexAttribPointer(attr_index, size, type, GL_FALSE, mbo->entry_length, (GLvoid*) offset);
+		offset += size * _internal_attribute_size(type);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
-	glEnableVertexAttribArray(5);
-	glEnableVertexAttribArray(6);
-	glEnableVertexAttribArray(7);
-
-	glVertexAttribDivisor(4, 1);
-	glVertexAttribDivisor(5, 1);
-	glVertexAttribDivisor(6, 1);
-	glVertexAttribDivisor(7, 1);
+		glEnableVertexAttribArray(attr_index);
+		if (mbo->is_instanced) glVertexAttribDivisor(attr_index, mbo->divisors[i]);
+		attr_index ++;
+	}
 
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	VMSC::ChangeVertexArray(0);
+	//VMSC::ChangeVertexArray(0);
 }
 
 void GDrawable::update() {
@@ -107,7 +147,10 @@ GDrawable::~GDrawable() {
 	glDeleteBuffers(1, &data.MBO);
 }
 
-GDrawable::GDrawable() {
+GDrawable::GDrawable(struct VBO_Entry_Descriptor* vbo, struct VBO_Entry_Descriptor* mbo) {
+	this->vbo = vbo ? vbo : &default_Vertex;
+	this->mbo = mbo ? mbo : &default_MBO;
+
 	glGenVertexArrays(1, &data.VAO);
 	glGenBuffers(1, &data.VBO);
 	glGenBuffers(1, &data.EBO);

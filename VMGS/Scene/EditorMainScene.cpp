@@ -36,7 +36,7 @@ namespace VM76 {
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
 
-		hand_block = new GDrawable();
+		hand_block = new GDrawable(NULL, NULL);
 		hand_block->data.vertices = new Vertex[4 * 6];
 		hand_block->data.indices = new GLuint[6 * 6];
 

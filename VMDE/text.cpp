@@ -7,14 +7,8 @@
 #include "global.hpp"
 
 TextRenderer::TextRenderer() {
-	/*obj.data.vtx_c = 2000;
-	obj.data.ind_c = 2000;
-	obj.data.vertices = NULL;
-	obj.data.indices = NULL;
-	obj.data.mat_c = 10;
-	obj.data.mat = NULL;
-	obj.fbind();
-	obj.data.mat_c = 0;*/
+	obj = new GDrawable(NULL, NULL);
+
 	texshader.add_file(GL_VERTEX_SHADER, "../Media/shaders/text.vsh");
 	texshader.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/text.fsh");
 	texshader.link_program();
@@ -111,12 +105,12 @@ void TextRenderer::BakeText(
 		}
 	}
 
-	obj.data.vtx_c = length * vtx_stride;
-	obj.data.ind_c = length * itx_stride;
-	obj.data.vertices = vtx;
-	obj.data.indices = itx;
+	obj->data.vtx_c = length * vtx_stride;
+	obj->data.ind_c = length * itx_stride;
+	obj->data.vertices = vtx;
+	obj->data.indices = itx;
 
-	obj.fbind();
+	obj->fbind();
 	free(vtx);
 	free(itx);
 }
@@ -125,7 +119,7 @@ void TextRenderer::render() {
 	VMSC::disable_cullface();
 	texshader.use();
 	texshader.set_texture("fontmap", &tex, 0);
-	obj.render();
+	obj->render();
 	GDrawable::close_draw_node();
 	VMSC::enable_cullface();
 }
@@ -138,8 +132,8 @@ void TextRenderer::instanceRenderText(
 	texshader.ProjectionView(projection, view);
 
 	glm::mat4 foo[1] = {transform};
-	obj.data.mat_c = 1;
-	obj.data.mat = (GLuint*) &foo[0];
+	obj->data.mat_c = 1;
+	obj->data.mat = (GLuint*) &foo[0];
 	BakeText(text, width, height, decoration);
 
 	render();

@@ -58,7 +58,7 @@ namespace VM76 {
 		mat = new glm::mat4[1];
 		mat[0] = glm::mat4(1.0);
 
-		obj = new GDrawable();
+		obj = new GDrawable(NULL, NULL);
 		obj->data.vtx_c = 4 * 6;
 		obj->data.ind_c = 2 * 3 * 6;
 		obj->data.vertices = vtx;
