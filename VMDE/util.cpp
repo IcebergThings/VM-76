@@ -83,8 +83,48 @@ namespace Util {
 		char* r = (char*) malloc(1024);
 		if (!r) return NULL;
 		size_t size = fread(r, 1, 1024, f);
-		r[size < 1024 ? size : 1023] = 0;
+		if (size < 1024 ? size : 1023) {
+			r[size] = 0;
+		} else {
+			r[1023] = 0;
+			log("Warning: read_file has truncated file %s", filename);
+		}
 		fclose(f);
 		return r;
+	}
+	//-----------------------------------------------------------------------------
+	// ● 检查GL是否有错误
+	//   是时候好好用用unsigned了！
+	//   这个平时经常惹麻烦的家伙，在这里却什么也干不了。
+	//   当然了，千万不要因为数据一定是非负的而采用无符号整数，
+	//   要不然你会非常痛苦的。别问我是怎么知道的。
+	//-----------------------------------------------------------------------------
+	void check_gl_error_internal(const char* file, unsigned line) {
+		GLenum error;
+		int count = 0;
+		while ((error = glGetError()) != GL_NO_ERROR) {
+			count++;
+			if (count == 1) log("GL error!");
+			switch (error) {
+			#define case(x) case x: printf("- %s\n", #x); break
+			case(GL_INVALID_ENUM);
+			case(GL_INVALID_VALUE);
+			case(GL_INVALID_OPERATION);
+			case(GL_INVALID_FRAMEBUFFER_OPERATION);
+			case(GL_OUT_OF_MEMORY);
+			#undef case
+			default:
+				printf("- %d\n", error);
+				break;
+			}
+		}
+		if (count) {
+			printf(
+				"These are all the errors from glGetError()"
+				" that were thrown before the check in:\n\t%s:%d.\n",
+				file, line
+			);
+			error("Terminating to arouse your attention.");
+		}
 	}
 }

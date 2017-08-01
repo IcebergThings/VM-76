@@ -6,7 +6,7 @@
 
 #include "global.hpp"
 
-RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
+RenderBuffer::RenderBuffer(int w, int h, int mrt, const GLuint* type) {
 	log("Creating Render Buffer of %d x %d", w, h);
 
 	glGenFramebuffers(1, &framebuffer);
@@ -36,13 +36,11 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 		VMSC::ChangeTexture2D(texture_buffer[mrt]->texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 		texture_buffer[mrt]->width = w; texture_buffer[mrt]->height = h;
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture_buffer[mrt]->texture, 0);
-
 		texture_buffer[mrt]->parameter = &Res::LinearTextureParameters;
 	}
 	glGenRenderbuffers(1, &rbo);
@@ -52,6 +50,7 @@ RenderBuffer::RenderBuffer (int w, int h, int mrt, const GLuint* type) {
 	// Check errors
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		error("Framebuffer creation failed. Framebuffer is not complete");
+	check_gl_error;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

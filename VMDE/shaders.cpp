@@ -17,9 +17,11 @@ void Shaders::add_string(GLenum type, const GLchar* source) {
 	check_shader_compilation(shader, "shader compilation failed");
 	shaders[shader_count] = shader;
 	shader_count++;
+	check_gl_error;
 }
 
 void Shaders::add_file(GLenum type, const char* filename) {
+	log("adding shader file: %s", filename);
 	char* source = Util::read_file(filename);
 	add_string(type, source);
 	free(source);
@@ -54,18 +56,24 @@ void Shaders::link_program() {
 	for (size_t i = 0; i < shader_count; i++) {
 		glDeleteShader(shaders[i]);
 	}
+	check_gl_error;
 
 	GLint loc = glGetUniformBlockIndex(program, "Matrices");
-	glUniformBlockBinding(program, loc, 0);
+	if (loc == -1) {
 
-	glGenBuffers(1, &UBO_matrix);
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
-	glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), 0, GL_STREAM_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	} else {
+		glUniformBlockBinding(program, loc, 0);
+
+		glGenBuffers(1, &UBO_matrix);
+		glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
+		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), 0, GL_STREAM_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
 }
 
 void Shaders::use() {
 	glUseProgram(program);
+	check_gl_error;
 }
 
 void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
@@ -80,6 +88,7 @@ void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
 void Shaders::set_float(const char* identifier, GLfloat value) {
 	GLuint loc = glGetUniformLocation(program, identifier);
 	glUniform1f(loc, value);
+	check_gl_error;
 }
 
 void Shaders::set_vec2(const char* identifier, glm::vec2 value) {
@@ -100,6 +109,7 @@ void Shaders::set_vec4(const char* identifier, glm::vec4 value) {
 void Shaders::set_int(const char* identifier, GLint value) {
 	GLuint loc = glGetUniformLocation(program, identifier);
 	glUniform1i(loc, value);
+	check_gl_error;
 }
 
 void Shaders::set_texture(const char* identifier, Res::Texture* tex, GLuint index) {

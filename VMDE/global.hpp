@@ -113,7 +113,9 @@
 	// error - 抛出错误并终止程序
 	#define error(...) error_internal(, __VA_ARGS__)
 	// errorp - error + perror
-	#define errorp(...) error_internal(perror("perror()"), __VA_ARGS__)
+	#define errorp(...) error_internal(perror("perror()");, __VA_ARGS__)
+	// check_gl_error - 通过在代码中大量散布这个宏，可以达到调试器一般的效果（笑）
+	#define check_gl_error Util::check_gl_error_internal(__FILE__, __LINE__)
 	//-------------------------------------------------------------------------
 	// ● util.cpp
 	//   这个Util的意义已经远超utility。
@@ -125,6 +127,7 @@
 		void log_internal(const char*, const char*, const char*, ...)
 			__attribute__((format(printf, 3, 4)));
 		char* read_file(const char* filename);
+		void check_gl_error_internal(const char *file, unsigned line);
 	}
 	//-------------------------------------------------------------------------
 	// ● 子文件夹中的头文件
@@ -137,7 +140,6 @@
 	EXPORTED void init_engine(int w, int h, const char* title);
 	void setup_viewport();
 	void init_vmde(int w, int h);
-	void check_gl_error();
 	//-------------------------------------------------------------------------
 	// ● terminate.cpp
 	//-------------------------------------------------------------------------
