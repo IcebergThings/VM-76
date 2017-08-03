@@ -145,6 +145,7 @@ namespace VM76 {
 		int max_count = w * l * h;
 		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
 		ASM76::Instruct* cmd_buf = (ASM76::Instruct*) malloc(size);
+		memset(cmd_buf, size, 0x0);
 		cmd_buf[0] = {ASM76::INTX, CLEnum_GDrawable_batchOnce, 0x10};
 		cmd_buf[1] = {ASM76::HALT,0,0};
 		int real_count = 0;
