@@ -2,8 +2,8 @@
 title: VM/76
 description: >
   Lacking description.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/VM-76"
+url: "https://icebergos.github.io"
 permalink: /blog/:categories/:title.html
 timezone: Asia/Shanghai
 defaults:
