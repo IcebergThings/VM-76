@@ -28,7 +28,6 @@ namespace VM76 {
 			RenderBuffer::clearBuffer(glm::vec4(.0f), true, true, false);
 			VMSC::enable_blend();
 			SceneManager::render_scene();
-			log("YY");
 			::main_draw_end();
 		} while (!VMDE->done);
 	}
