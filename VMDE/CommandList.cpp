@@ -46,12 +46,12 @@ static uint32_t CL_GDrawable_batchOnce(uint8_t* input) {
 	return 0x0;
 }
 
-#define add(x) &CL_##x,
 static ASM76::BIOS_call func_list[] = {
-#include "CommandList.hpp"
+	#define add(x) &CL_##x,
+	#include "CommandList.hpp"
+	#undef add
 };
-#undef add
-static int function_count = 2;
+static int function_count = ARRAY_SIZE(func_list) + 1;
 
 ASM76::BIOS* CmdList::bios;
 
