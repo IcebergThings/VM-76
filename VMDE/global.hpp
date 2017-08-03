@@ -36,6 +36,8 @@
 #include <portaudio.h>
 #include <vorbis/vorbisfile.h>
 
+#include <ASM76.hpp>
+
 #ifndef _INCLUDE_GLOBAL_H
 	#define _INCLUDE_GLOBAL_H
 	using namespace std;
@@ -435,5 +437,25 @@
 		static void Blit2D();
 	};
 
+	//-------------------------------------------------------------------------
+	// ● CommandList
+	//-------------------------------------------------------------------------
+	#define add(x) CLEnum_##x,
+	enum CLEnum {
+	#include "CommandList.hpp"
+	};
+	#undef add
+
+	class CmdList {
+	private:
+		static ASM76::BIOS* bios;
+		ASM76::VM* vm;
+
+	public:
+		static void global_init();
+		void call();
+
+		CmdList(ASM76::Program p);
+	};
 
 #endif

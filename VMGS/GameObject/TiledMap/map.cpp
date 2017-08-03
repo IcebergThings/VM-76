@@ -140,6 +140,24 @@ namespace VM76 {
 		}
 
 		log("Baking Chunks: 100%%, map initialized");
+		log("Preparing render command buffer");
+
+		int max_count = w * l * h;
+		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
+		log("this size %zx", size);
+		ASM76::Instruct* cmd_buf = (ASM76::Instruct*) malloc(size);
+		cmd_buf[0] = {ASM76::INTX, CLEnum_GDrawable_batch, 0x10};
+		cmd_buf[1] = {ASM76::HALT,0,0};
+		int real_count = 0;
+		for (int i = 0; i < max_count; i++) {
+			GDrawable* obj = chunks[i]->getBatch();
+			if (obj) {
+				uint8_t* address = ((uint8_t*) cmd_buf) + 0x10 + i * sizeof(GDrawable*);
+				*((GDrawable**) address) = obj;
+				real_count++;
+			}
+		}
+		cmd_buffer = new CmdList({{cmd_buf, size}});
 	}
 
 	void Map::place_block(glm::vec3 dir, int tid) {
@@ -152,9 +170,10 @@ namespace VM76 {
 	}
 
 	void Map::render() {
-		for (int x = 0; x < width * length * height; x++)
-			chunks[x]->render();
-		GDrawable::close_draw_node();
+		//for (int x = 0; x < width * length * height; x++)
+		//	chunks[x]->render();
+		//GDrawable::close_draw_node();
+		cmd_buffer->call();
 	}
 
 	Map::~Map() {

@@ -40,7 +40,6 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● 全局变量
 	//-------------------------------------------------------------------------
-	extern uint8_t global_memory[];
 	//-------------------------------------------------------------------------
 	// ● 实用函数
 	//-------------------------------------------------------------------------
@@ -95,17 +94,17 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● BIOS类
 	//-------------------------------------------------------------------------
-	// Input "databuf" which is a VM76 memory address (Global memory only)
-	// Output a VM76 memory address (Global memory only) or any uint32 value
+	// Input "databuf" which is a VM76 memory address
+	// Output a VM76 memory address or any uint32 value
 	// Bios calls are locked, which is thread safe
 	typedef uint32_t (*BIOS_call)(uint8_t* d);
 
 	class BIOS {
 	public:
 		BIOS_call* function_table;
-		
+
 		BIOS(int function_table_count);
-		
+
 		uint32_t call(int fid, uint8_t* d);
 	};
 	//-------------------------------------------------------------------------
@@ -127,12 +126,10 @@ namespace ASM76 {
 
 	public:
 		BIOS* firmware;
-		
+
 		static const size_t REGISTER_COUNT = 112;
 		template <class T> T* memfetch(uint32_t address) {
-			return address < 0x1000000 ?
-				(T*) (global_memory + address) :
-				(T*) (local_memory + address - 0x1000000);
+			return (T*) (local_memory + address);
 		}
 
 		VM(Program program);

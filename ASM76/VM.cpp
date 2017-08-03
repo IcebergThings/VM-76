@@ -24,9 +24,9 @@ namespace ASM76 {
 
 		// Setup registers
 		// Instruction pointer
-		REG100 = 0x1000000;
+		REG100 = 0x0;
 		// Stack bottom pointer
-		REG104 = 0x1003000;
+		REG104 = 0x3000;
 	}
 	//-------------------------------------------------------------------------
 	// ● 析构
