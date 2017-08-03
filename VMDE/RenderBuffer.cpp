@@ -79,16 +79,28 @@ RenderBuffer::~RenderBuffer () {
 
 GDrawable* PostProcessingManager::QuadScreen;
 
+GLuint Simple_VBO_size[] = {3};
+GLuint Simple_VBO_type[] = {GL_FLOAT};
+
+struct VBO_Entry_Descriptor Simple_VBO {
+	3 * sizeof(GLfloat),
+	1,
+	Simple_VBO_size,
+	Simple_VBO_type,
+	false,
+	NULL
+};
+
 void PostProcessingManager::init() {
-	Vertex* vtx = new Vertex[4] {
-		{{-1.0, -1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,0.0},{0.0, 0.0, 0.0}},
-		{{-1.0,  1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,1.0},{0.0, 0.0, 0.0}},
-		{{ 1.0,  1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,1.0},{0.0, 0.0, 0.0}},
-		{{ 1.0, -1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,0.0},{0.0, 0.0, 0.0}},
+	glm::vec3* vtx = new glm::vec3[4] {
+		{-1.0, -1.0, 0.0},
+		{-1.0,  1.0, 0.0},
+		{ 1.0,  1.0, 0.0},
+		{ 1.0, -1.0, 0.0},
 	};
 	GLuint* itx = new GLuint[6] { 0,1,3, 1,2,3 };
 
-	QuadScreen = new GDrawable(NULL, NULL);
+	QuadScreen = new GDrawable(&Simple_VBO, NULL);
 	QuadScreen->data.vtx_c = 4;
 	QuadScreen->data.ind_c = 6;
 	QuadScreen->data.vertices = (GLuint*)vtx;
