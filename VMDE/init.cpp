@@ -25,7 +25,7 @@ void GL_info() {
 	glGetIntegerv(GL_MAJOR_VERSION, &a);
 	glGetIntegerv(GL_MINOR_VERSION, &b);
 	log("Supproted GL Version %d.%d", a, b);
-	log("==========================");
+	log("=====================================================");
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &a);
 	log("Maximum vertex attributes: %d", a);
 	glGetIntegerv(GL_MAX_VERTEX_OUTPUT_COMPONENTS, &a);
@@ -38,8 +38,14 @@ void GL_info() {
 	log("Maximum texture size: %d", a);
 	glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &a);
 	log("Maximum texture unit: %d", a);
-	log("==========================");
 	check_gl_error;
+	log("=====================================================");
+	log(
+		"EXT_packed_stencil_depth: %s",
+		glfwExtensionSupported("EXT_packed_stencil_depth") ? "Supported" : "Unsupported"
+	);
+	check_gl_error;
+	log("=====================================================");
 }
 
 //-----------------------------------------------------------------------------

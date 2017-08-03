@@ -38,9 +38,10 @@ RenderBuffer::RenderBuffer(int w, int h, int mrt, const GLuint* type) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8_EXT, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 		texture_buffer[mrt]->width = w; texture_buffer[mrt]->height = h;
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture_buffer[mrt]->texture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture_buffer[mrt]->texture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture_buffer[mrt]->texture, 0);
 		texture_buffer[mrt]->parameter = &Res::LinearTextureParameters;
 	}
 
@@ -51,6 +52,7 @@ RenderBuffer::RenderBuffer(int w, int h, int mrt, const GLuint* type) {
 	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	// Check errors
+	log("glCheckFramebufferStatus() = 0x%x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		error("Framebuffer creation failed. Framebuffer is not complete");
 	check_gl_error;
