@@ -18,7 +18,7 @@ struct VBO_Entry_Descriptor Text_VBO {
 	NULL
 };
 
-typedef struct struct_TextVertex {
+typedef struct {
 	glm::vec3 pos;
 	glm::vec4 color;
 	glm::vec2 uv;
@@ -26,10 +26,10 @@ typedef struct struct_TextVertex {
 
 TextRenderer::TextRenderer() {
 	obj = new GDrawable(&Text_VBO, NULL);
-
 	texshader.add_file(GL_VERTEX_SHADER, "../Media/shaders/text.vsh");
 	texshader.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/text.fsh");
 	texshader.link_program();
+	check_gl_error;
 }
 
 void TextRenderer::BakeText(
