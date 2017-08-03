@@ -54,12 +54,12 @@ namespace VM76 {
 		int width, length, height;
 		glm::vec3 mount_point = glm::vec3(0.0);
 		glm::mat4 translate = glm::mat4(1.0);
-		
+
 		bool is_valid = false;
 
 	private:
 		Tiles* cinstance[16];
-		
+
 		GDrawable* obj;
 
 	public:
@@ -71,11 +71,15 @@ namespace VM76 {
 
 		TiledMap(int x, int y, int z, glm::vec3 wp, DataMap* m);
 		void render();
+		GDrawable* getBatch();
 		void bake_tiles();
 		~TiledMap();
 	};
 
 	class Map : public RenderObject {
+	private:
+		CmdList* cmd_buffer;
+
 	public:
 		DataMap* map = NULL;
 		TiledMap** chunks = NULL;

@@ -47,17 +47,17 @@ namespace VM76 {
 		map = m;
 
 		mount_point = wp;
-		
+
 		obj = new GDrawable(NULL, NULL);
 	}
-	
+
 	#define CHECK_EXPAND \
 	if (vtx_c + 4 > vtx_max) {vtx_max *= 2; vtx = (Vertex*) realloc(vtx, sizeof(Vertex) * vtx_max);}\
 	if (ind_c + 6 > ind_max) {ind_max *= 2; ind = (GLuint*) realloc(ind, sizeof(GLuint) * ind_max);}\
 
 	void TiledMap::bake_tiles() {
 		int count = 0;
-		
+
 		// Pre alloc
 		Vertex* vtx = (Vertex*)malloc(sizeof(Vertex) * 512);
 		GLuint* ind = (GLuint*)malloc(sizeof(GLuint) * 512);
@@ -124,6 +124,11 @@ namespace VM76 {
 
 	void TiledMap::render() {
 		if (is_valid) obj->renderOnce();
+	}
+
+	GDrawable* TiledMap::getBatch() {
+		if (is_valid) return obj;
+		return NULL;
 	}
 
 	TiledMap::~TiledMap() {
