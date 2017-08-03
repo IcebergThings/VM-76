@@ -17,7 +17,7 @@ all: $(TARGET)
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
 %.o: %.rc
-$(TARGET): VMDE.dll $(OBJECTS) windows.rc.o
+$(TARGET): ASM76.dll VMDE.dll $(OBJECTS) windows.rc.o
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
 VMDE.dll: ../VMDE/VMDE.dll
