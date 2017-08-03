@@ -6,8 +6,6 @@
 
 #include "VMGS.hpp"
 
-#include "Control/GodView.hpp"
-
 namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 变量
@@ -21,7 +19,7 @@ namespace VM76 {
 	// ● 主循环
 	//-------------------------------------------------------------------------
 	void loop() {
-		do {
+		while (!VMDE->done) {
 			::main_draw_start();
 			SceneManager::update_scene();
 
@@ -29,7 +27,7 @@ namespace VM76 {
 			VMSC::enable_blend();
 			SceneManager::render_scene();
 			::main_draw_end();
-		} while (!VMDE->done);
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 启动
