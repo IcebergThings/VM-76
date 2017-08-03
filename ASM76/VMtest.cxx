@@ -50,7 +50,7 @@ Instruct flow_control_test_prgm[] = {
 	{ADDL,3,20},
 	{CMPI,3,10},
 	{PUSH,15,1},
-	{JILA, 0x1000000 + 3 * sizeof(Instruct),0},
+	{JILA, 3 * sizeof(Instruct),0},
 	{HALT, 0, 0},
 };
 
@@ -68,7 +68,7 @@ const char* const asm_test =
 	"HALT\n"
 	"DD		0x7676 0xEFEF 0xABAB 0xCDCD 0x0000\n"
 	"# EOF\n";
-	
+
 const char* const bios_test =
 	"DATI	0x76 $0\n"
 	"SLIA	0x100 $0\n"
@@ -78,10 +78,10 @@ const char* const bios_test =
 	"INTX	0x1 0x100\n"
 	"HALT\n"
 	"# EOF\n";
-	
+
 static uint32_t test_bios_call(uint8_t* input) {
 	printf("TEST BIOS CALL: %x\n", *((uint32_t*) input));
-	
+
 	return 0x89ABCDEF;
 }
 
@@ -91,7 +91,7 @@ Instruct speed_test_prgm[] = {
 	{DATI,0x2,15},
 	{ADDL,3,20},
 	{CMPI,3,60},
-	{JILA, 0x1000000 + 3 * sizeof(Instruct),0},
+	{JILA, 3 * sizeof(Instruct),0},
 	{HALT, 0, 0},
 };
 
@@ -170,11 +170,11 @@ int main() {
 		printf("===== BIOS Test =====\n");
 		BIOS* b = new BIOS(5);
 		b->function_table[1] = &test_bios_call;
-		
+
 		Assembler a(bios_test);
 		a.scan();
 		Program p = a.assemble();
-		
+
 		VM v(p);
 		v.firmware = b;
 		v.execute(true);

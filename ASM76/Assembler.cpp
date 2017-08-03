@@ -17,7 +17,7 @@ namespace ASM76 {
 	// ● 第一遍扫描（扫描标签）
 	//-------------------------------------------------------------------------
 	void Assembler::scan() {
-		uint32_t size = 0x1000000;
+		uint32_t size = 0x0;
 		while (prg && *prg) switch (*prg) {
 		case '[': {
 			prg++;
@@ -179,7 +179,7 @@ namespace ASM76 {
 		// This instruction takes in 10 bytes, excatly
 		// In the format of DD 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF
 		if (strcmp(str, "DD") == 0) return (enum InstructionOpcode) 512;
-		
+
 		error("unidentified instruction");
 		return NOOP;
 	}
@@ -201,7 +201,7 @@ namespace ASM76 {
 			uint16_t bits16_3 = read_immediate_u32() & 0xFFFF;
 			uint16_t bits16_4 = read_immediate_u32() & 0xFFFF;
 			uint16_t bits16_5 = read_immediate_u32() & 0xFFFF;
-			
+
 			i->opcode = bits16_1;
 			i->a = (bits16_2 << 16) | bits16_3;
 			i->b = (bits16_4 << 16) | bits16_5;
