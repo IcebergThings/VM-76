@@ -56,20 +56,21 @@ namespace VM76 {
 
 		// Key Input
 		glm::vec3 speed = glm::vec3(0.1);
-		#define PRESS(key) glfwGetKey(window, game.key_##key) == GLFW_PRESS
-		if (PRESS(quit)) VMDE->done = true;
+		#define PRESS(k) glfwGetKey(window, keys.k) == GLFW_PRESS
+		if (PRESS(quit))
+			VMDE->done = true;
 		if (PRESS(forward))
-		game_player.wpos += glm::vec3(direction.x, 0.0, direction.z) * speed;
+			game_player.wpos += glm::vec3(direction.x, 0.0, direction.z) * speed;
 		if (PRESS(back))
-		game_player.wpos -= glm::vec3(direction.x, 0.0, direction.z) * speed;
+			game_player.wpos -= glm::vec3(direction.x, 0.0, direction.z) * speed;
 		if (PRESS(left))
-		game_player.wpos -= right * speed;
+			game_player.wpos -= right * speed;
 		if (PRESS(right))
-		game_player.wpos += right * speed;
+			game_player.wpos += right * speed;
 		if (PRESS(up))
-		game_player.wpos += glm::vec3(0.0, 1.0, 0.0) * speed;
+			game_player.wpos += glm::vec3(0.0, 1.0, 0.0) * speed;
 		if (PRESS(down))
-		game_player.wpos -= glm::vec3(0.0, 1.0, 0.0) * speed;
+			game_player.wpos -= glm::vec3(0.0, 1.0, 0.0) * speed;
 		#undef PRESS
 	}
 

@@ -31,11 +31,11 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	class GodView : public Control {
 	public:
-		struct Game_control {
+		struct {
 			int key_quit;
 			int key_forward, key_left, key_right, key_back;
 			int key_zoomin, key_zoomout;
-		} game;
+		} keys;
 
 		class Camera {
 		public:
@@ -50,12 +50,11 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	class FirstPersonView : public Control {
 	public:
-		struct Game_control {
-			int
-			key_quit,
-			key_forward, key_left, key_right, key_back,
-			key_up, key_down;
-		} game;
+		struct {
+			int key_quit;
+			int key_forward, key_left, key_right, key_back;
+			int key_up, key_down;
+		} keys;
 
 		class Player {
 		public:
