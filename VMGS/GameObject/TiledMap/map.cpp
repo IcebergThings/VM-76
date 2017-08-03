@@ -145,18 +145,20 @@ namespace VM76 {
 		int max_count = w * l * h;
 		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
 		ASM76::Instruct* cmd_buf = (ASM76::Instruct*) malloc(size);
-		memset(cmd_buf, size, 0x0);
+		memset(cmd_buf, 0x0, size);
 		cmd_buf[0] = {ASM76::INTX, CLEnum_GDrawable_batchOnce, 0x10};
 		cmd_buf[1] = {ASM76::HALT,0,0};
 		int real_count = 0;
+		GDrawable** list = (GDrawable**) (((uint8_t*) cmd_buf) + 0x10);
 		for (int i = 0; i < max_count; i++) {
 			GDrawable* obj = chunks[i]->getBatch();
 			if (obj != NULL) {
-				uint8_t* address = ((uint8_t*) cmd_buf) + 0x10 + real_count * sizeof(GDrawable*);
-				*((GDrawable**) address) = obj;
+				list[real_count] = obj;
 				real_count++;
 			}
 		}
+		size = 0x10 + (real_count + 1) * sizeof(GDrawable*);
+		cmd_buf = (ASM76::Instruct*) realloc(cmd_buf, size);
 		cmd_buffer = new CmdList({{cmd_buf, size}});
 	}
 
