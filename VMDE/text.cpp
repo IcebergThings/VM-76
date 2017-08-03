@@ -138,7 +138,7 @@ void TextRenderer::render() {
 	texshader.use();
 	texshader.set_texture("fontmap", &tex, 0);
 	obj->render();
-	GDrawable::close_draw_node();
+	//GDrawable::close_draw_node();
 	VMSC::enable_cullface();
 }
 

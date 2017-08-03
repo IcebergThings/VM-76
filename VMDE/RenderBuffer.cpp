@@ -38,15 +38,18 @@ RenderBuffer::RenderBuffer(int w, int h, int mrt, const GLuint* type) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, w, h, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, w, h, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture_buffer[mrt]->texture, 0);
 		texture_buffer[mrt]->width = w; texture_buffer[mrt]->height = h;
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture_buffer[mrt]->texture, 0);
 		texture_buffer[mrt]->parameter = &Res::LinearTextureParameters;
 	}
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX, w, h);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	// We use stencil 24 depth 8 internal format
+	//glGenRenderbuffers(1, &rbo);
+	//glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX, w, h);
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
 	// Check errors
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		error("Framebuffer creation failed. Framebuffer is not complete");
@@ -76,16 +79,28 @@ RenderBuffer::~RenderBuffer () {
 
 GDrawable* PostProcessingManager::QuadScreen;
 
+GLuint Simple_VBO_size[] = {3};
+GLuint Simple_VBO_type[] = {GL_FLOAT};
+
+struct VBO_Entry_Descriptor Simple_VBO {
+	3 * sizeof(GLfloat),
+	1,
+	Simple_VBO_size,
+	Simple_VBO_type,
+	false,
+	NULL
+};
+
 void PostProcessingManager::init() {
-	Vertex* vtx = new Vertex[4] {
-		{{-1.0, -1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,0.0},{0.0, 0.0, 0.0}},
-		{{-1.0,  1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{0.0,1.0},{0.0, 0.0, 0.0}},
-		{{ 1.0,  1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,1.0},{0.0, 0.0, 0.0}},
-		{{ 1.0, -1.0, 0.0},{1.0, 1.0, 1.0, 1.0},{1.0,0.0},{0.0, 0.0, 0.0}},
+	glm::vec3* vtx = new glm::vec3[4] {
+		{-1.0, -1.0, 0.0},
+		{-1.0,  1.0, 0.0},
+		{ 1.0,  1.0, 0.0},
+		{ 1.0, -1.0, 0.0},
 	};
 	GLuint* itx = new GLuint[6] { 0,1,3, 1,2,3 };
 
-	QuadScreen = new GDrawable(NULL, NULL);
+	QuadScreen = new GDrawable(&Simple_VBO, NULL);
 	QuadScreen->data.vtx_c = 4;
 	QuadScreen->data.ind_c = 6;
 	QuadScreen->data.vertices = (GLuint*)vtx;
