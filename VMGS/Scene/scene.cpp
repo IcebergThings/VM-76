@@ -41,6 +41,9 @@ namespace VM76 {
 	}
 
 	void SceneManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+		if (key == GLFW_KEY_PAUSE && action == GLFW_PRESS && (mods & GLFW_MOD_CONTROL)) {
+			abort();
+		}
 		if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
 			render_debug_info = !render_debug_info;
 			return;
