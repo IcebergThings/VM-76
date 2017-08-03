@@ -143,21 +143,22 @@ namespace VM76 {
 		log("Preparing render command buffer");
 
 		int max_count = w * l * h;
-		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
-		ASM76::Instruct* cmd_buf = (ASM76::Instruct*) malloc(size);
-		memset(cmd_buf, size, 0x0);
-		cmd_buf[0] = {ASM76::INTX, CLEnum_GDrawable_batchOnce, 0x10};
-		cmd_buf[1] = {ASM76::HALT,0,0};
+		size_t text_size = 10 * sizeof(ASM76::Instruct*);
+		size_t buf_size = text_size + (max_count + 1) * sizeof(GDrawable*);
+		ASM76::Instruct* cmd_buf = (ASM76::Instruct*) malloc(buf_size);
+		memset(cmd_buf, buf_size, 0x0);
+		cmd_buf[0] = {ASM76::INTX, CLEnum_GDrawable_batchOnce, text_size};
+		cmd_buf[1] = {ASM76::HALT, 0, 0};
 		int real_count = 0;
 		for (int i = 0; i < max_count; i++) {
 			GDrawable* obj = chunks[i]->getBatch();
 			if (obj != NULL) {
-				uint8_t* address = ((uint8_t*) cmd_buf) + 0x10 + real_count * sizeof(GDrawable*);
+				uint8_t* address = ((uint8_t*) cmd_buf) + text_size + real_count * sizeof(GDrawable*);
 				*((GDrawable**) address) = obj;
 				real_count++;
 			}
 		}
-		cmd_buffer = new CmdList({{cmd_buf, size}});
+		cmd_buffer = new CmdList({{cmd_buf, buf_size}});
 	}
 
 	void Map::place_block(glm::vec3 dir, int tid) {
