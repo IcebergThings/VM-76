@@ -95,17 +95,17 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● BIOS类
 	//-------------------------------------------------------------------------
-	// Input "databuf" which is a VM76 memory address (Global memory only)
+	// Input “databuf” which is a VM76 memory address (Global memory only)
 	// Output a VM76 memory address (Global memory only) or any uint32 value
-	// Bios calls are locked, which is thread safe
+	// BIOS calls are locked, which is thread safe.
 	typedef uint32_t (*BIOS_call)(uint8_t* d);
 
 	class BIOS {
 	public:
 		BIOS_call* function_table;
-		
-		BIOS(int function_table_count);
-		
+
+		BIOS(size_t function_table_count);
+
 		uint32_t call(int fid, uint8_t* d);
 	};
 	//-------------------------------------------------------------------------

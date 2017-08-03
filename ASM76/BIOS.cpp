@@ -17,24 +17,27 @@ namespace ASM76 {
 	// ● BIOS空回调
 	//-------------------------------------------------------------------------
 	static uint32_t NULL_Call(uint8_t* d) {
-		// 返回输入值的XOR 76ABCDEF，并取反
+		// 返回输入值与0x76ABCDEF的异或值并取反
 		// 程序*可以*使用这种方式校验，虽然没卵用（
-		return ~(((size_t)d & 0xFFFFFF) ^ 0x76ABCDEF);
+		return ~(((uintptr_t) d & 0xFFFFFF) ^ 0x76ABCDEF);
 	}
 
 	//-------------------------------------------------------------------------
 	// ● 构造
 	//-------------------------------------------------------------------------
-	BIOS::BIOS(int function_table_count) {
+	BIOS::BIOS(size_t function_table_count) {
 		function_table = new BIOS_call[function_table_count];
-		
+
 		// 用固定NULL回调填充
-		for (int i = 0; i < function_table_count; i++)
+		for (size_t i = 0; i < function_table_count; i++) {
 			function_table[i] = &NULL_Call;
-			
+		}
+
 		// 自我校验
-		if (call(0, (uint8_t*)0x76) != 0x89543266)
-			printf("Error: VM BIOS self test failed");
+		if (call(0, (uint8_t*) 0x76) != 0x89543266) {
+			printf("Error: VM BIOS self test failed!");
+			exit(76);
+		}
 	}
 
 	//-------------------------------------------------------------------------
