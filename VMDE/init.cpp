@@ -55,7 +55,7 @@ void init_graphics(int w, int h, const char* title) {
 		return;
 	}
 
-	// OpenGL 向前&向后兼容，使用GL 3.3 Core Profile，窗口大小不可变
+	// OpenGL 向前&向后兼容，使用GL 4.3 Core Profile，窗口大小不可变
 	// 如果有更高版本就利用
 	// 指定版本后便无需再检查是否支持指定版本，因为GLFW会处理此问题
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -66,6 +66,7 @@ void init_graphics(int w, int h, const char* title) {
 
 	window = glfwCreateWindow(VMDE->width, VMDE->height, title, NULL, NULL);
 	if (!window) {
+		// 如果GL 4.3不行就回退到GL 3.3
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		window = glfwCreateWindow(VMDE->width, VMDE->height, title, NULL, NULL);
