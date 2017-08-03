@@ -38,6 +38,7 @@ static uint32_t CL_GDrawable_batchOnce(uint8_t* input) {
 
 	while (*ind != NULL) {
 		GDrawable* ptr = *ind;
+		log("Batch %d", ptr->data.VAO);
 		ptr->renderOnce();
 
 		ind ++;
