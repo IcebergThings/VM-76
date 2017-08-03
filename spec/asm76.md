@@ -352,6 +352,7 @@ All BIOS operations are C style functions. That means you must PUSH the necessar
 
 Function ID | BIOS Function | Description
 ----------- | ------------- | -----------
+0000 | null(uintptr_t a)    | Return NOT (*a* XOR 0x76ABCDEF) — the null call
 0001 | putc(uint8_t c)      | Print *c* as a byte character
 0002 | puts(uint32_t addr)  | Print a null-terminated string starting from memory address *addr*
 0003 | putlx(uint64_t x)    | Print *x* as a hexadecimal number
