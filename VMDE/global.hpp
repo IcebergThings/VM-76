@@ -456,6 +456,7 @@
 		void call();
 
 		CmdList(ASM76::Program p);
+		~CmdList();
 	};
 
 #endif

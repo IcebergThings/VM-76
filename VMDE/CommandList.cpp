@@ -23,15 +23,13 @@ static uint32_t CL_GDrawable_renderOnce(uint8_t* input) {
 static uint32_t CL_GDrawable_batch(uint8_t* input) {
 	GDrawable** ind = (GDrawable**) input;
 
-log("start batching");
 	while (*ind != NULL) {
 		GDrawable* ptr = *ind;
-		log("batch %zx", ptr);
 		ptr->render();
 
 		ind ++;
 	}
-log("end batching");
+
 	return 0x0;
 }
 
@@ -69,5 +67,9 @@ CmdList::CmdList(ASM76::Program p) {
 }
 
 void CmdList::call() {
-	vm->execute(true);
+	vm->execute_from(0x0, false);
+}
+
+CmdList::~CmdList() {
+	XE(delete, vm);
 }
