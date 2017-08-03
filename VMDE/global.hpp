@@ -419,21 +419,7 @@
 		void bind();
 		void unbind();
 
-		static void clearBuffer(glm::vec4 c, bool color, bool depth, bool stencil) {
-			glClearColor(c.r, c.g, c.b, c.a);
-			GLuint bits = 0x0;
-			if (color) bits |= GL_COLOR_BUFFER_BIT;
-			if (depth) {
-				bits |= GL_DEPTH_BUFFER_BIT;
-				VMStateControl::enable_depth_test();
-			}
-			if (stencil) {
-				bits |= GL_STENCIL_BUFFER_BIT;
-				glStencilMask(~0);
-				VMStateControl::enable_stencil_test();
-			}
-			glClear(bits);
-		}
+		static void clearBuffer(glm::vec4 c, bool color, bool depth, bool stencil);
 
 		RenderBuffer(int w, int h, int mrt, const GLuint* type);
 		void set_draw_buffers();
