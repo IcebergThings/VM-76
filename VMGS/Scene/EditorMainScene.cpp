@@ -6,8 +6,7 @@
 
 #include "../VMGS.hpp"
 
-#include "../Control/GodView.hpp"
-#include "../Control/FirstPersonView.hpp"
+#include "../Control/control.hpp"
 #include "../GameObject/SkyBox/SkyBox.hpp"
 
 namespace VM76 {
@@ -143,7 +142,15 @@ namespace VM76 {
 
 		if (hand_id > 0) {
 			int vtx_c = 0, ind_c = 0;
-			for (int i = 0; i < 6; i++) clist[hand_id - 1]->bake(0,0,0,(Vertex*)hand_block->data.vertices,hand_block->data.indices,&vtx_c,&ind_c,i);
+			for (int i = 0; i < 6; i++) {
+				clist[hand_id - 1]->bake(
+					0, 0, 0,
+					(Vertex*) hand_block->data.vertices,
+					hand_block->data.indices,
+					&vtx_c, &ind_c,
+					i
+				);
+			}
 			hand_block->data.vtx_c = vtx_c;
 			hand_block->data.ind_c = ind_c;
 			hand_block->data.mat_c = 1;
@@ -154,10 +161,12 @@ namespace VM76 {
 			map.place_block(obj->pos, hand_id);
 		}
 
-		if (PRESS(GLFW_KEY_O)) {
-			projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
-		} else if (key == GLFW_KEY_O && action == GLFW_RELEASE) {
-			projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
+		if (key == GLFW_KEY_O) {
+			if (action == GLFW_PRESS) {
+				projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
+			} else if (action == GLFW_RELEASE) {
+				projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
+			}
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;

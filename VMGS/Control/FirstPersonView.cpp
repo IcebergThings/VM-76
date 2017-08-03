@@ -4,9 +4,12 @@
 //   Game view of First Person Game Control
 //=============================================================================
 
-#include "FirstPersonView.hpp"
-namespace VM76 {
+#include "control.hpp"
 
+namespace VM76 {
+	//-------------------------------------------------------------------------
+	// ● 初始化
+	//-------------------------------------------------------------------------
 	void FirstPersonView::init_control() {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
@@ -21,7 +24,9 @@ namespace VM76 {
 			.key_down = GLFW_KEY_LEFT_SHIFT,
 		};
 	}
-
+	//-------------------------------------------------------------------------
+	// ● 更新
+	//-------------------------------------------------------------------------
 	void FirstPersonView::update_control() {
 		// Mouse Input
 		double xpos, ypos;

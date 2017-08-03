@@ -4,9 +4,12 @@
 //   Game view of God View
 //=============================================================================
 
-#include "GodView.hpp"
-namespace VM76 {
+#include "control.hpp"
 
+namespace VM76 {
+	//-------------------------------------------------------------------------
+	// ● 初始化
+	//-------------------------------------------------------------------------
 	void GodView::init_control() {
 		game = {
 			.key_quit = GLFW_KEY_ESCAPE,
@@ -18,7 +21,9 @@ namespace VM76 {
 			.key_zoomout = GLFW_KEY_M,
 		};
 	}
-
+	//-------------------------------------------------------------------------
+	// ● 更新
+	//-------------------------------------------------------------------------
 	void GodView::update_control() {
 		// Key Input
 		const glm::vec3 CameraForward = glm::normalize(glm::vec3(0.0, -1.0, -0.4));
@@ -44,5 +49,4 @@ namespace VM76 {
 
 		view = glm::lookAt(cam.wpos - CameraForward * 3.0f, cam.wpos, up);
 	}
-
 }

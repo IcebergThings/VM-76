@@ -4,18 +4,20 @@
 //   Game view of a simple camera turnning, for demo
 //=============================================================================
 
-#include "DemoView.hpp"
+#include "control.hpp"
 
 namespace VM76 {
-
+	//-------------------------------------------------------------------------
+	// ● 初始化
+	//-------------------------------------------------------------------------
 	void DemoView::init_control() {
 		glfwSetInputMode(window, GLFW_STICKY_KEYS, 0);
 	}
-
-	// That simple and does not need a header
+	//-------------------------------------------------------------------------
+	// ● 更新
+	//-------------------------------------------------------------------------
 	void DemoView::update_control() {
 		float stime = float(VMDE->frame_count);
-
 		float x = 5.0f * cos(stime * 0.015f);
 		float z = 5.0f * sin(stime * 0.015f);
 		view = glm::lookAt(
@@ -24,5 +26,4 @@ namespace VM76 {
 			glm::vec3(0.0f, 1.0f, 0.0f)
 		);
 	}
-
 }
