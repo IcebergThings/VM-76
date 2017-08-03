@@ -28,8 +28,8 @@ namespace VM76 {
 		// Render FPS
 		if (render_debug_info) {
 			VMSC::disable_depth_test();
-			char fps[10];
-			sprintf(fps, "FPS: %d, %fms", VMDE->fps, VMDE->frame_time);
+			char fps[40];
+			sprintf(fps, "FPS: %d, %f.4ms", VMDE->fps, VMDE->frame_time);
 			trex->instanceRenderText(
 				fps, gui_2d_projection,
 				glm::mat4(1.0),

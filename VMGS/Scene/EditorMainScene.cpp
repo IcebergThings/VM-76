@@ -233,7 +233,7 @@ namespace VM76 {
 		// Non textured rendering
 		shader_basic.use();
 		shader_basic.set_float("opaque", 0.5);
-		shader_textured.ProjectionView(projection, view);
+		shader_basic.ProjectionView(projection, view);
 		block_pointer.mat[0] = obj->transform();
 		block_pointer.update_instance(1);
 		block_pointer.render();
