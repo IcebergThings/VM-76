@@ -27,7 +27,7 @@ static uint32_t CL_GDrawable_batch(uint8_t* input) {
 		GDrawable* ptr = *ind;
 		ptr->render();
 
-		ind ++;
+		ind++;
 	}
 
 	return 0x0;
@@ -40,7 +40,7 @@ static uint32_t CL_GDrawable_batchOnce(uint8_t* input) {
 		GDrawable* ptr = *ind;
 		ptr->renderOnce();
 
-		ind ++;
+		ind++;
 	}
 
 	return 0x0;

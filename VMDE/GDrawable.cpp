@@ -78,7 +78,7 @@ void GDrawable::fbind() {
 			glVertexAttribBinding(attr_index, stream);
 			glEnableVertexAttribArray(attr_index);
 			if (vbo->is_instanced) glVertexAttribDivisor(attr_index, vbo->divisors[i]);
-			attr_index ++;
+			attr_index++;
 		}
 
 		glBindVertexBuffer(stream, data.VBO, 0, offset);
@@ -93,7 +93,7 @@ void GDrawable::fbind() {
 
 			glEnableVertexAttribArray(attr_index);
 			if (vbo->is_instanced) glVertexAttribDivisor(attr_index, vbo->divisors[i]);
-			attr_index ++;
+			attr_index++;
 		}
 	}
 	// GL33 Vertex Attribute Pointer Instanced
@@ -109,7 +109,7 @@ void GDrawable::fbind() {
 
 		glEnableVertexAttribArray(attr_index);
 		if (mbo->is_instanced) glVertexAttribDivisor(attr_index, mbo->divisors[i]);
-		attr_index ++;
+		attr_index++;
 	}
 
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);

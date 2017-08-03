@@ -69,7 +69,7 @@ namespace VM76 {
 				for (int y = mount_point.y; y < height + mount_point.y; y++) {
 					int id = map->tidQuery(x, y, z);
 					if (id > 0) {
-						id --;
+						id--;
 						float x0 = x - mount_point.x;
 						float y0 = y - mount_point.y;
 						float z0 = z - mount_point.z;
@@ -77,32 +77,32 @@ namespace VM76 {
 						if (map->tidQuery(x, y, z - 1) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 0);
-							count ++;
+							count++;
 						}
 						if (map->tidQuery(x, y, z + 1) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 1);
-							count ++;
+							count++;
 						}
 						if (map->tidQuery(x, y + 1, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 2);
-							count ++;
+							count++;
 						}
 						if (map->tidQuery(x, y - 1, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 3);
-							count ++;
+							count++;
 						}
 						if (map->tidQuery(x - 1, y, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 4);
-							count ++;
+							count++;
 						}
 						if (map->tidQuery(x + 1, y, z) == 0) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 5);
-							count ++;
+							count++;
 						}
 
 					}
