@@ -11,9 +11,6 @@ namespace VM76 {
 		todo = *tobeload;
 	}
 
-	// 这玩意不需要按键回调
-	void LoadingScene::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
-
 	bool first_load = true;
 
 	void LoadingScene::render() {

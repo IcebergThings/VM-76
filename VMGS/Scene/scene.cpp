@@ -9,7 +9,7 @@ namespace VM76 {
 		Scene* context = NULL;
 	}
 
-	void Scene::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {}
+	void Scene::key_callback(int key, int scancode, int action, int mods) {}
 	void Scene::update() {}
 	Scene::~Scene() {}
 
@@ -45,6 +45,6 @@ namespace VM76 {
 			render_debug_info = !render_debug_info;
 			return;
 		}
-		if (context) context->key_callback(window, key, scancode, action, mods);
+		if (context) context->key_callback(key, scancode, action, mods);
 	}
 }

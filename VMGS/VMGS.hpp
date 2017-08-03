@@ -32,7 +32,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	class Scene : public Object {
 	public:
-		virtual void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		virtual void key_callback(int key, int scancode, int action, int mods);
 		virtual void render() = 0; // Graphics update
 		virtual void update(); // Tick update
 		virtual ~Scene();
@@ -64,7 +64,7 @@ namespace VM76 {
 
 	public:
 		EditorMainScene();
-		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void key_callback(int key, int scancode, int action, int mods);
 		void render();
 		void GenerateMap();
 		void update();
@@ -77,7 +77,6 @@ namespace VM76 {
 
 	public:
 		LoadingScene(Scene** tobeload);
-		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void render();
 		void update();
 	};

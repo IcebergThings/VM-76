@@ -121,9 +121,7 @@ namespace VM76 {
 	bool magnify = false;
 	bool magnifyPrev = false;
 
-	void EditorMainScene::key_callback(
-		GLFWwindow* window, int key, int scancode, int action, int mods
-	) {
+	void EditorMainScene::key_callback(int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == (n) && action == GLFW_PRESS
 		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(-1.0, 0.0, 0.0));
 		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(1.0, 0.0, 0.0));
