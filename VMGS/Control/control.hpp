@@ -32,9 +32,9 @@ namespace VM76 {
 	class GodView : public Control {
 	public:
 		struct {
-			int key_quit;
-			int key_forward, key_left, key_right, key_back;
-			int key_zoomin, key_zoomout;
+			int quit;
+			int forward, left, right, back;
+			int zoomin, zoomout;
 		} keys;
 
 		class Camera {
@@ -51,9 +51,9 @@ namespace VM76 {
 	class FirstPersonView : public Control {
 	public:
 		struct {
-			int key_quit;
-			int key_forward, key_left, key_right, key_back;
-			int key_up, key_down;
+			int quit;
+			int forward, left, right, back;
+			int up, down;
 		} keys;
 
 		class Player {

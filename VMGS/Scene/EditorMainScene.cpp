@@ -10,12 +10,10 @@
 #include "../GameObject/SkyBox/SkyBox.hpp"
 
 namespace VM76 {
-
-	GodView* ctl;
-	FirstPersonView* ctl_fp;
+	// There can be multiple controls.
+	size_t ctl_count, ctl_index;
+	Control* ctls[16] = {NULL};
 	SkyBox* sky;
-
-	bool fp_control = false;
 
 	GDrawable* hand_block;
 
@@ -94,12 +92,19 @@ namespace VM76 {
 		hand_block->fbind();
 		block_pointer.obj->data.mat_c = 1;
 
-		ctl = new GodView();
-		ctl_fp = new FirstPersonView();
-		ctl->init_control();
-		ctl_fp->init_control();
-		ctl->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
-		ctl_fp->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctl_index = 2; // initially FirstPersonView
+		ctl_count = 3;
+		DemoView* ctl0 = new DemoView();
+		ctl0->init_control();
+		ctls[0] = ctl0;
+		GodView* ctl1 = new GodView();
+		ctl1->init_control();
+		ctl1->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctls[1] = ctl1;
+		FirstPersonView* ctl2 = new FirstPersonView();
+		ctl2->init_control();
+		ctl2->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctls[2] = ctl2;
 
 		sky = new SkyBox({
 			"../Media/skybox/skybox_0.png",
@@ -119,7 +124,7 @@ namespace VM76 {
 	void EditorMainScene::key_callback(
 		GLFWwindow* window, int key, int scancode, int action, int mods
 	) {
-		#define PRESS(n) key == n && action == GLFW_PRESS
+		#define PRESS(n) key == (n) && action == GLFW_PRESS
 		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(-1.0, 0.0, 0.0));
 		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(1.0, 0.0, 0.0));
 		if (PRESS(GLFW_KEY_W)) obj->move(glm::vec3(0.0, 0.0, -1.0));
@@ -127,7 +132,15 @@ namespace VM76 {
 		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 1.0, 0.0));
 		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -1.0, 0.0));
 
-		if (PRESS(GLFW_KEY_F5)) fp_control = !fp_control;
+		if (PRESS(GLFW_KEY_F5)) {
+			if (mods & GLFW_MOD_SHIFT) {
+				ctl_index--;
+				if (ctl_index == SIZE_MAX) ctl_index = ctl_count - 1;
+			} else {
+				ctl_index++;
+				if (ctl_index >= ctl_count) ctl_index = 0;
+			}
+		}
 
 		if (PRESS(GLFW_KEY_0)) hand_id = 0;
 		if (PRESS(GLFW_KEY_1)) hand_id = 1;
@@ -207,10 +220,7 @@ namespace VM76 {
 	// ● 刷新
 	//-------------------------------------------------------------------------
 	void EditorMainScene::update() {
-		if (fp_control)
-			ctl->update_control();
-		else
-			ctl_fp->update_control();
+		ctls[ctl_index]->update_control();
 	}
 	//-------------------------------------------------------------------------
 	// ● 渲染

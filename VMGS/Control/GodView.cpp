@@ -12,13 +12,13 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void GodView::init_control() {
 		keys = {
-			.key_quit = GLFW_KEY_ESCAPE,
-			.key_forward = GLFW_KEY_I,
-			.key_left = GLFW_KEY_J,
-			.key_right = GLFW_KEY_L,
-			.key_back = GLFW_KEY_K,
-			.key_zoomin = GLFW_KEY_N,
-			.key_zoomout = GLFW_KEY_M,
+			.quit = GLFW_KEY_ESCAPE,
+			.forward = GLFW_KEY_I,
+			.left = GLFW_KEY_J,
+			.right = GLFW_KEY_L,
+			.back = GLFW_KEY_K,
+			.zoomin = GLFW_KEY_N,
+			.zoomout = GLFW_KEY_M,
 		};
 	}
 	//-------------------------------------------------------------------------

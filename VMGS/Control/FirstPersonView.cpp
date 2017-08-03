@@ -14,14 +14,14 @@ namespace VM76 {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 
-		game = {
-			.key_quit = GLFW_KEY_ESCAPE,
-			.key_forward = GLFW_KEY_I,
-			.key_left = GLFW_KEY_J,
-			.key_right = GLFW_KEY_L,
-			.key_back = GLFW_KEY_K,
-			.key_up = GLFW_KEY_SPACE,
-			.key_down = GLFW_KEY_LEFT_SHIFT,
+		keys = {
+			.quit = GLFW_KEY_ESCAPE,
+			.forward = GLFW_KEY_I,
+			.left = GLFW_KEY_J,
+			.right = GLFW_KEY_L,
+			.back = GLFW_KEY_K,
+			.up = GLFW_KEY_SPACE,
+			.down = GLFW_KEY_LEFT_SHIFT,
 		};
 	}
 	//-------------------------------------------------------------------------
