@@ -417,7 +417,7 @@
 		//void resize(int w, int h);
 
 		void bind();
-		static void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+		void unbind();
 
 		static void clearBuffer(glm::vec4 c, bool color, bool depth, bool stencil) {
 			glClearColor(c.r, c.g, c.b, c.a);

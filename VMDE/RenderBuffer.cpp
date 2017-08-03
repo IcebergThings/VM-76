@@ -58,7 +58,11 @@ RenderBuffer::RenderBuffer(int w, int h, int mrt, const GLuint* type) {
 }
 
 void RenderBuffer::bind() {
-	 glBindFramebuffer(GL_FRAMEBUFFER, this->framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+}
+
+void RenderBuffer::unbind() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void RenderBuffer::set_draw_buffers() {
