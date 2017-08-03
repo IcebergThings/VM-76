@@ -118,7 +118,7 @@ namespace ASM76 {
 		uint8_t* reg;
 
 		// Common & special registers
-		#define REG(T, P) (*((T*) (reg + P)))
+		#define REG(T, P) (*((T*) (reg + (P))))
 		#define REG100 REG(uint32_t, 100)
 		#define REG104 REG(uint32_t, 104)
 		#define REGCMP REG(uint8_t, 109)
