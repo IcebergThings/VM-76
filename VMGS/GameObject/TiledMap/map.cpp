@@ -158,7 +158,7 @@ namespace VM76 {
 		GDrawable** list = (GDrawable**) (((uint8_t*) cmd_buf) + 0x10);
 		for (int i = 0; i < max_count; i++) {
 			GDrawable* obj = chunks[i]->getBatch();
-			if (obj) {
+			if (!obj) {
 				list[real_count] = obj;
 				real_count++;
 			}
