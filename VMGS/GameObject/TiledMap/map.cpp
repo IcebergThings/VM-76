@@ -142,11 +142,12 @@ namespace VM76 {
 		log("Baking Chunks: 100%%, map initialized");
 		log("Preparing render command buffer");
 
+		cmd_buffer = NULL;
 		update_render_buffer();
 	}
 
 	void Map::update_render_buffer() {
-		XE(delete, cmd_buffer);
+		if (cmd_buffer) XE(delete, cmd_buffer);
 
 		int max_count = width * length * height;
 		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
@@ -158,7 +159,7 @@ namespace VM76 {
 		GDrawable** list = (GDrawable**) (((uint8_t*) cmd_buf) + 0x10);
 		for (int i = 0; i < max_count; i++) {
 			GDrawable* obj = chunks[i]->getBatch();
-			if (!obj) {
+			if (obj) {
 				list[real_count] = obj;
 				real_count++;
 			}
