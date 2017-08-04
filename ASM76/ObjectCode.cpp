@@ -12,9 +12,16 @@
 #include "ASM76.hpp"
 
 namespace ASM76 { namespace ObjectCode {
+	const uint64_t magic = 0x36374d56e2a3efa3; // “VM76ｏｂ” in GB2312
 	Program read_file(const char* filename) {
 		Program r;
 		VBinaryFileReader f(filename);
+		if (f.read_u64() != magic) {
+			printf("Error: magic is not correct\n");
+			r.size = 0;
+			r.instruct = NULL;
+			return r;
+		}
 		r.size = f.read_u32();
 		r.instruct = (Instruct*) malloc(r.size);
 		for (size_t i = 0; i < r.size / sizeof(Instruct); i++) {
@@ -26,6 +33,7 @@ namespace ASM76 { namespace ObjectCode {
 	}
 	bool write_file(const char* filename, Program program) {
 		VBinaryFileWriter f(filename);
+		f.write_u64(magic);
 		f.write_u32(program.size);
 		for (size_t i = 0; i < program.size / sizeof(Instruct); i++) {
 			f.write_u16(program.instruct[i].opcode);
