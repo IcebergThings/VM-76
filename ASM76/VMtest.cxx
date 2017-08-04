@@ -9,7 +9,7 @@
 
 using namespace ASM76;
 
-Instruct mem_test_prgm[] = {
+Instruct mem_test_i[] = {
 	{LCMM,0x4000000,0},
 	{DATI,0xABCD1234,1},
 	{DATB,'V',5},
@@ -23,6 +23,10 @@ Instruct mem_test_prgm[] = {
 	{LDIA,0x2500000,51},
 	{LDBA,0x2500000,61},
 	{HALT, 0, 0},
+};
+Program mem_test_p {
+	.size = sizeof(mem_test_i),
+	.instruct = mem_test_i
 };
 
 Instruct basic_algebra_test_prgm[] = {
@@ -116,7 +120,7 @@ int main() {
 	#define VM_v(var) VM v({.size = sizeof(var), .instruct = var})
 	{
 		printf("===== Memory =====\n");
-		VM_v(mem_test_prgm);
+		VM v(mem_test_p);
 		v.execute(true);
 		v.dump_registers();
 	}
@@ -180,6 +184,17 @@ int main() {
 		v.firmware = b;
 		v.execute(true);
 		v.dump_registers();
+	}
+
+	{
+		printf("===== Object Code =====\n");
+		ObjectCode::write_file("test.obj", mem_test_p);
+		Program p = ObjectCode::read_file("test.obj");
+		Disassembler d(p);
+		char* s = d.disassemble();
+		puts(s);
+		free(s);
+		free(p.instruct);
 	}
 
 	{
