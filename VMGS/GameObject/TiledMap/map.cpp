@@ -159,7 +159,7 @@ namespace VM76 {
 		}
 		size = 0x10 + (real_count + 1) * sizeof(GDrawable*);
 		cmd_buf = (ASM76::Instruct*) realloc(cmd_buf, size);
-		cmd_buffer = new CmdList({{cmd_buf, size}});
+		cmd_buffer = new CmdList({{.size = size, .instruct = cmd_buf}});
 	}
 
 	void Map::place_block(glm::vec3 dir, int tid) {

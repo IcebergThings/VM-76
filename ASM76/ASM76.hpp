@@ -34,8 +34,8 @@ namespace ASM76 {
 		uint32_t b;
 	};
 	struct Program {
+		size_t size; // in bytes [citation needed]
 		Instruct* instruct;
-		size_t size; // in byte
 	};
 	//-------------------------------------------------------------------------
 	// ● 全局变量
