@@ -48,7 +48,7 @@ namespace VM76 {
 
 		mount_point = wp;
 
-		obj = new GDrawable(NULL, NULL);
+		obj = NULL;
 	}
 
 	#define CHECK_EXPAND \
@@ -112,14 +112,19 @@ namespace VM76 {
 		//log("%d < %d : %d < %d", vtx_c, vtx_max, ind_c, ind_max);
 		translate = glm::translate(glm::mat4(1.0), mount_point);
 
-		obj->data.vtx_c = vtx_c;
-		obj->data.ind_c = ind_c;
-		obj->data.vertices = (GLuint*)vtx;
-		obj->data.indices = ind;
-		obj->data.mat_c = 1;
-		obj->data.mat = (GLuint*) &translate;
-		obj->fbind();
 		is_valid = count > 0;
+		if (is_valid) {
+			if (!obj) obj = new GDrawable(NULL, NULL);
+			obj->data.vtx_c = vtx_c;
+			obj->data.ind_c = ind_c;
+			obj->data.vertices = (GLuint*)vtx;
+			obj->data.indices = ind;
+			obj->data.mat_c = 1;
+			obj->data.mat = (GLuint*) &translate;
+			obj->fbind();
+		} else {
+			if (obj) XE(delete, obj);
+		}
 	}
 
 	void TiledMap::render() {
