@@ -61,18 +61,18 @@ namespace ASM76 {
 	// ● 附加立即数
 	//-------------------------------------------------------------------------
 	void Disassembler::append_number(char* line, uint32_t x) {
-		sprintf(strchr(line, 0), " %d", x);
+		sprintf(strchr(line, 0), " %" PRIu32, x);
 	}
 	//-------------------------------------------------------------------------
 	// ● 附加寄存器
 	//-------------------------------------------------------------------------
 	void Disassembler::append_register(char* line, uint32_t r) {
-		sprintf(strchr(line, 0), " $%d", r);
+		sprintf(strchr(line, 0), " $%" PRIu32, r);
 	}
 	//-------------------------------------------------------------------------
 	// ● 附加地址
 	//-------------------------------------------------------------------------
 	void Disassembler::append_address(char* line, uint32_t a) {
-		sprintf(strchr(line, 0), " 0x%08x", a);
+		sprintf(strchr(line, 0), " 0x%08" PRIx32, a);
 	}
 }

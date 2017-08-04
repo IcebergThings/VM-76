@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <cstdint>
+#include <cinttypes>
 #include <cctype>
 #include <cstring>
 #include <cstdio>
