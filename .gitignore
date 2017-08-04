@@ -21,3 +21,4 @@ windows_path.bat
 # awesome data
 output.log
 VMGS/map.dat
+*.obj
