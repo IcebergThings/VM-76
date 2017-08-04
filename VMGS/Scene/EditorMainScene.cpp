@@ -13,6 +13,10 @@ namespace VM76 {
 	// There can be multiple controls.
 	size_t ctl_count, ctl_index;
 	Control* ctls[16] = {NULL};
+
+	BoxCollider pa(glm::vec3(0.0),glm::vec3(1.0,0.0,0.0),glm::vec3(0.0,1.0,0.0),glm::vec3(0.0,0.0,1.0));
+	BoxCollider pb(glm::vec3(0.0),glm::vec3(1.0,0.0,0.0),glm::vec3(0.0,1.0,0.0),glm::vec3(0.0,0.0,1.0));
+
 	SkyBox* sky;
 
 	GDrawable* hand_block;
@@ -123,12 +127,12 @@ namespace VM76 {
 
 	void EditorMainScene::key_callback(int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == (n) && action == GLFW_PRESS
-		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(-1.0, 0.0, 0.0));
-		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(1.0, 0.0, 0.0));
-		if (PRESS(GLFW_KEY_W)) obj->move(glm::vec3(0.0, 0.0, -1.0));
-		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 1.0));
-		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 1.0, 0.0));
-		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -1.0, 0.0));
+		if (PRESS(GLFW_KEY_A)) {obj->move(glm::vec3(-1.0, 0.0, 0.0)); pa.move(obj->pos);}
+		if (PRESS(GLFW_KEY_D)) {obj->move(glm::vec3(1.0, 0.0, 0.0)); pa.move(obj->pos);}
+		if (PRESS(GLFW_KEY_W)) {obj->move(glm::vec3(0.0, 0.0, -1.0)); pa.move(obj->pos);}
+		if (PRESS(GLFW_KEY_S)) {obj->move(glm::vec3(0.0, 0.0, 1.0)); pa.move(obj->pos);}
+		if (PRESS(GLFW_KEY_UP)) {obj->move(glm::vec3(0.0, 1.0, 0.0)); pa.move(obj->pos);}
+		if (PRESS(GLFW_KEY_DOWN)) {obj->move(glm::vec3(0.0, -1.0, 0.0)); pa.move(obj->pos);}
 
 		if (PRESS(GLFW_KEY_F5)) {
 			if (mods & GLFW_MOD_SHIFT) {
@@ -249,7 +253,7 @@ namespace VM76 {
 		// Setup uniforms
 		// Non textured rendering
 		shader_basic.use();
-		shader_basic.set_float("opaque", 0.5);
+		shader_basic.set_float("opaque", pa.is_collide(&pb) ? 1.0 : 0.1);
 		shader_basic.ProjectionView(projection, view);
 		block_pointer.mat[0] = obj->transform();
 		block_pointer.update_instance(1);
