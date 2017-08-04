@@ -113,23 +113,24 @@ int main() {
 
 	init();
 
+	#define VM_v(var) VM v({.size = sizeof(var), .instruct = var})
 	{
 		printf("===== Memory =====\n");
-		VM v({mem_test_prgm, sizeof(mem_test_prgm)});
+		VM_v(mem_test_prgm);
 		v.execute(true);
 		v.dump_registers();
 	}
 
 	{
 		printf("===== Basic Algebra =====\n");
-		VM v({basic_algebra_test_prgm, sizeof(basic_algebra_test_prgm)});
+		VM_v(basic_algebra_test_prgm);
 		v.execute(true);
 		v.dump_registers();
 	}
 
 	{
 		printf("===== Disassembler =====\n");
-		Disassembler d({flow_control_test_prgm, sizeof(flow_control_test_prgm)});
+		Disassembler d({sizeof(flow_control_test_prgm), flow_control_test_prgm});
 		char* s = d.disassemble();
 		puts(s);
 		free(s);
@@ -183,7 +184,7 @@ int main() {
 
 	{
 		printf("===== Speed Test: 0x3000000 cycles =====\n");
-		VM v({speed_test_prgm, sizeof(flow_control_test_prgm)});
+		VM_v(speed_test_prgm);
 
 		// The type is chrono::time_point<chrono::high_resolution_clock>
 		// and that is why people used auto.
