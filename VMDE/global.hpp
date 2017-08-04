@@ -230,6 +230,9 @@
 		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
 		void set_texture_cube(const char* identifier, Res::CubeMap* tex, GLuint index);
 
+		bool set_uniform_block(const char* identifier, GLuint* UBO, size_t size, GLuint type);
+		void update_uniform_block(GLuint UBO, size_t size, GLuint* buf);
+
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 
 		~Shaders();

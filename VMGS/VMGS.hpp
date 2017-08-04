@@ -7,6 +7,7 @@
 
 #include "GameObject/GameObject.hpp"
 #include "Control/control.hpp"
+#include "Physics/Physics.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 namespace VM76 {

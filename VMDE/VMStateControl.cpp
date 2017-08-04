@@ -159,5 +159,25 @@ void VMStateControl::init_graphics_state() {
 		log("UBO: GL33 Uniform Buffer Object");
 	#endif
 
+	bool FP16_support = false;
+	bool GPU_Shader5 = false;
+	bool FP16_implicit_support = false;
+	if (glfwExtensionSupported("GL_ARB_gpu_shader5") == GLFW_TRUE) {
+		log("ARB GPU Shader 5 detected");
+		GPU_Shader5 = true;
+	}
+	if (glfwExtensionSupported("GL_NV_gpu_shader5") == GLFW_TRUE) {
+		log("NV GPU Shader 5 detected");
+		GPU_Shader5 = true;
+		FP16_support = true;
+		if (glfwExtensionSupported("GL_ARB_gpu_shader_fp64") == GLFW_TRUE) FP16_implicit_support = true;
+	}
+	if (glfwExtensionSupported("GL_AMD_gpu_shader_half_float") == GLFW_TRUE) {
+		log("AMD FP16 detected");
+		GPU_Shader5 = true;
+		FP16_support = true;
+		FP16_implicit_support = true;
+	}
+
 	memset (&StateMachine, 0, sizeof(StateMachine));
 }
