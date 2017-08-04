@@ -58,17 +58,7 @@ void Shaders::link_program() {
 	}
 	check_gl_error;
 
-	GLint loc = glGetUniformBlockIndex(program, "Matrices");
-	if (loc == -1) {
-
-	} else {
-		glUniformBlockBinding(program, loc, 0);
-
-		glGenBuffers(1, &UBO_matrix);
-		glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
-		glBufferData(GL_UNIFORM_BUFFER, 3 * sizeof(glm::mat4), 0, GL_STREAM_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
+	set_uniform_block("Matrices", &UBO_matrix, 3 * sizeof(glm::mat4), GL_STREAM_DRAW);
 }
 
 void Shaders::use() {
@@ -80,9 +70,7 @@ void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {
 	mat[0] = projection;
 	mat[1] = view;
 	mat[2] = projection * view;
-	glBindBuffer(GL_UNIFORM_BUFFER, UBO_matrix);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, 3 * sizeof(glm::mat4), mat);
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO_matrix, 0, 3 * sizeof(glm::mat4));
+	update_uniform_block(UBO_matrix, 3 * sizeof(glm::mat4), (GLuint*) mat);
 }
 
 void Shaders::set_float(const char* identifier, GLfloat value) {
@@ -122,6 +110,23 @@ void Shaders::set_texture_cube(const char* identifier, Res::CubeMap* tex, GLuint
 	glActiveTexture(GL_TEXTURE0 + index);
 	VMSC::ChangeTextureCubeMap(tex->texture);
 	set_int(identifier, index);
+}
+
+bool Shaders::set_uniform_block(const char* identifier, GLuint* UBO, size_t size, GLuint type) {
+	GLint loc = glGetUniformBlockIndex(program, identifier);
+	if (loc == -1) return false;
+	glUniformBlockBinding(program, loc, 0);
+	glGenBuffers(1, UBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, *UBO);
+	glBufferData(GL_UNIFORM_BUFFER, size, 0, type);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	return true;
+}
+
+void Shaders::update_uniform_block(GLuint UBO, size_t size, GLuint* buf) {
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, size, buf);
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, size);
 }
 
 Shaders::~Shaders() {
