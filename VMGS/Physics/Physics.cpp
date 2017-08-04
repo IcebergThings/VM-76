@@ -47,6 +47,11 @@ bool BoxCollider::is_collide(BoxCollider* b) {
 	return false;
 }
 
+void BoxCollider::move(glm::vec3 o) {
+	anchor = o;
+	w2local = glm::lookAt(anchor, anchor + Z, glm::normalize(Y));
+}
+
 BoxCollider::BoxCollider(glm::vec3 o, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
 	anchor = o;
 	X = a - o;
