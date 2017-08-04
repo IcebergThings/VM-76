@@ -34,7 +34,7 @@ namespace ASM76 {
 		uint32_t b;
 	};
 	struct Program {
-		size_t size; // in bytes [citation needed]
+		size_t size; // should be in bytes, cleanup required
 		Instruct* instruct;
 	};
 	//-------------------------------------------------------------------------
