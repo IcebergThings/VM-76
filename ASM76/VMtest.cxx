@@ -78,14 +78,14 @@ void test_disassembler_assembler() {
 		"PUSH	$15 1\n"
 		"JILA	[loop_start]\n"
 		"HALT\n"
-		"DD 0x7676 0xEFEF 0xABAB 0xCDCD 0x0000\n"
+		"RAWD	0x7676 0xEFEF 0xABAB 0xCDCD 0x0000\n"
 		"# EOF\n";
 	Assembler a(s1);
 	a.scan();
 	Program p = a.assemble();
-	// Test assembler DD function
+	// Test assembler RAWD function
 	printf(
-		"Data DD: %04x%08x%08x\n",
+		"Data RAWD: %04x%08x%08x\n",
 		p.instruct[9].opcode,
 		p.instruct[9].a,
 		p.instruct[9].b
