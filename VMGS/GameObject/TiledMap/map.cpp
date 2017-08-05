@@ -188,10 +188,6 @@ namespace VM76 {
 			VMDE_Dispose(delete, chunks[x]);
 		}
 		XE(delete[], chunks);
-
-		log("Saving map");
-		map->save_map();
-
 		XE(delete, cmd_buffer);
 	}
 }

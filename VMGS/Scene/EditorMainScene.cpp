@@ -184,6 +184,11 @@ namespace VM76 {
 			}
 		}
 
+		if (PRESS(GLFW_KEY_Z)) {
+			log("Saving map");
+			map.map->save_map();
+		}
+
 		static Audio::Channel_Vorbis* loop = NULL;
 		static Audio::Channel_Triangle* triangle = NULL;
 		static Audio::Channel_Sine* sine = NULL;
