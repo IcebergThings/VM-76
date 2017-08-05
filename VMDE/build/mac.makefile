@@ -5,6 +5,7 @@
 #==============================================================================
 
 include ../inc.makefile
+include ../routine.makefile
 
 TARGET = libVMDE.dylib
 

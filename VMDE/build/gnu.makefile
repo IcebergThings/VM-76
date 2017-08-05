@@ -4,6 +4,7 @@
 
 # 这破include居然是根据cwd来的！
 include ../inc.makefile
+include ../routine.makefile
 
 TARGET = libVMDE.so
 
