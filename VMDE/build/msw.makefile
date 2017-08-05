@@ -21,4 +21,10 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
+ONE_FILE = one.cxx
+one:
+	type nul > $(ONE_FILE)
+	for %%i in ($(SOURCES)) do echo #include "%%i" >> $(ONE_FILE)
+	$(CXX) $(ONE_FILE) -o VMDE.one.dll $(CXXFLAGS) $(LDLIBS) $(LDFLAGS)
+
 .PHONY: all

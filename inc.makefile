@@ -63,7 +63,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 
 	# Useful variables.
 	ifeq "$(PLATFORM)" "msw"
-		SOURCES = $(shell dir /b /s *.cpp)
+		SOURCES = $(subst $(shell echo %CD%)\,,$(shell dir /b /s *.cpp))
 	else ifeq "$(PLATFORM)" "gnu"
 		SOURCES = $(shell find . -name "*.cpp")
 	else ifeq "$(PLATFORM)" "mac"
