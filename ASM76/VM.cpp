@@ -15,7 +15,6 @@ namespace ASM76 {
 		// use malloc series for realloc
 		local_memory = (uint8_t*) calloc(sizeof(uint8_t), local_memory_size);
 		instruct_memory = (Instruct*) local_memory;
-		printf("init memory with program sized %zu\n", program.size);
 		memcpy(instruct_memory, program.instruct, program.size);
 
 		// 100+ registers

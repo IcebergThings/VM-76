@@ -142,7 +142,13 @@ namespace VM76 {
 		log("Baking Chunks: 100%%, map initialized");
 		log("Preparing render command buffer");
 
-		int max_count = w * l * h;
+		update_render_buffer();
+	}
+
+	void Map::update_render_buffer() {
+		XE(delete, cmd_buffer);
+
+		int max_count = width * length * height;
 		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
 		ASM76::Instruct* cmd_buf = (ASM76::Instruct*) malloc(size);
 		memset(cmd_buf, 0x0, size);
@@ -169,6 +175,8 @@ namespace VM76 {
 
 		map->map[map->calcIndex(dir)].tid = tid;
 		chunks[calcChunkIndex(cx,cy,cz)]->bake_tiles();
+
+		update_render_buffer();
 	}
 
 	void Map::render() {

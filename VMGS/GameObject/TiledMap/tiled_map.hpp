@@ -90,6 +90,7 @@ namespace VM76 {
 	public:
 		Map(int w, int h, int l, int csize);
 		void place_block(glm::vec3 dir, int tid);
+		void update_render_buffer();
 		void render();
 
 		inline int calcChunkIndex(int x, int y, int z) {
