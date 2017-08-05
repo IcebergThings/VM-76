@@ -455,4 +455,10 @@ namespace ASM76 {
 	execute(INTX) {
 		REG(uint32_t, 0) = firmware->call(a, memfetch<uint8_t>(b));
 	}
+	//-------------------------------------------------------------------------
+	// ● INTR
+	//-------------------------------------------------------------------------
+	execute(INTR) {
+		REG(uint32_t, 0) = firmware->call(REG(uint8_t, a), memfetch<uint8_t>(b));
+	}
 }
