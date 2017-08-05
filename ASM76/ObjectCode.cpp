@@ -2,7 +2,8 @@
 // ■ ObjectCode.cpp
 //-----------------------------------------------------------------------------
 //   处理目标代码。这里的目标代码格式如下：
-//     以字节为单位的大小 —              1E 00 00 00 — 30字节
+//     魔数文件头    — A3 EF A3 E2 56 4D 37 36
+//     指令大小      — 1E 00 00 00                   — 30字节
 //     10字节/个指令 — 01 00 07 00 00 00 06 00 00 00 — #1 ADDL $7 $6
 //                   — 00 00 00 00 00 00 00 00 00 00 — #2 NOOP
 //                   — 28 00 00 00 00 00 00 00 00 00 — #3 HALT
@@ -12,7 +13,7 @@
 #include "ASM76.hpp"
 
 namespace ASM76 { namespace ObjectCode {
-	const uint64_t magic = 0x36374d56e2a3efa3; // “VM76ｏｂ” in GB2312
+	const uint64_t magic = 0x36374d56e2a3efa3; // “ｏｂVM76” in GB2312
 	Program read_file(const char* filename) {
 		Program r;
 		VBinaryFileReader f(filename);
