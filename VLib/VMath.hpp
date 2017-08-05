@@ -39,9 +39,9 @@ namespace Math {
 			return value[i];
 		}
 	};
-	// 然后就实例化一个实例出来
-	#define VMATH_SINE_TABLE_SIZE ((size_t) 256)
-	const SineTable<float, VMATH_SINE_TABLE_SIZE> sine_table;
+	// 然后就实例化唯一的一个实例出来
+	const size_t SINE_TABLE_SIZE = 256;
+	const SineTable<float, SINE_TABLE_SIZE> sine_table;
 	//-------------------------------------------------------------------------
 	// ● clamp
 	//-------------------------------------------------------------------------
