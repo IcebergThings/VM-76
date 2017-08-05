@@ -78,11 +78,11 @@ namespace VM76 {
 		);
 		block_display = glm::scale(block_display, glm::vec3(0.1f));
 		block_display = glm::rotate(block_display,
-			VMath::PIf / 4.0f,
+			V::Math::PIf / 4.0f,
 			glm::vec3(1.0, 0.0, 0.0)
 		);
 		block_display = glm::rotate(block_display,
-			VMath::PIf / 4.0f,
+			V::Math::PIf / 4.0f,
 			glm::vec3(0.0, 1.0, 0.0)
 		);
 
@@ -275,7 +275,7 @@ namespace VM76 {
 
 		deferred_lighting.use();
 		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
-		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
+		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(V::Math::PI * 0.25), sin(V::Math::PI * 0.25), sin(V::Math::PI * 0.25) * 0.3f);
 		deferred_lighting.set_vec3("sunVec", sunVec);
 		PostProcessingManager::Blit2D();
 

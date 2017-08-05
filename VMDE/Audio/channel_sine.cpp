@@ -39,7 +39,7 @@ namespace Audio {
 			index_delta = -index_delta;
 			minus = !minus;
 		}
-		float value = VMath::sine_table[(size_t) (int) index];
+		float value = V::Math::sine_table[(size_t) (int) index];
 		if (minus) value = -value;
 		return value;
 	}

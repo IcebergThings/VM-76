@@ -16,7 +16,7 @@ namespace ASM76 { namespace ObjectCode {
 	const uint64_t magic = 0x36374d56e2a3efa3; // “ｏｂVM76” in GB2312
 	Program read_file(const char* filename) {
 		Program r;
-		VBinaryFileReader f(filename);
+		V::BinaryFileReader f(filename);
 		if (f.read_u64() != magic) {
 			printf("Error: magic is not correct\n");
 			r.size = 0;
@@ -33,7 +33,7 @@ namespace ASM76 { namespace ObjectCode {
 		return r;
 	}
 	bool write_file(const char* filename, Program program) {
-		VBinaryFileWriter f(filename);
+		V::BinaryFileWriter f(filename);
 		f.write_u64(magic);
 		f.write_u32(program.size);
 		for (size_t i = 0; i < program.size / sizeof(Instruct); i++) {

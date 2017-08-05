@@ -29,7 +29,7 @@ namespace VM76 {
 
 	bool DataMap::read_map() {
 		log("Reading map");
-		VBinaryFileReader* fr = new VBinaryFileReader("map.dat");
+		V::BinaryFileReader* fr = new V::BinaryFileReader("map.dat");
 		if (!fr->f) return false;
 
 		int map_version = fr->read_i32();
@@ -50,7 +50,7 @@ namespace VM76 {
 	}
 
 	void DataMap::save_map() {
-		VBinaryFileWriter* fw = new VBinaryFileWriter("map.dat");
+		V::BinaryFileWriter* fw = new V::BinaryFileWriter("map.dat");
 		// 版本号
 		fw->write_i32(100);
 		// 文件头标识

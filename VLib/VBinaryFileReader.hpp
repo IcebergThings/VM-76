@@ -6,7 +6,7 @@
 
 #define ERROR_MESSAGE "error: cannot find beer"
 
-class VBinaryFileReader {
+class BinaryFileReader {
 public:
 	//-------------------------------------------------------------------------
 	// ● 成员
@@ -16,13 +16,13 @@ public:
 	// ● 构造
 	//   请自行检查f是否为NULL。
 	//-------------------------------------------------------------------------
-	VBinaryFileReader(const char* filename) {
+	BinaryFileReader(const char* filename) {
 		f = fopen(filename, "rb");
 	}
 	//-------------------------------------------------------------------------
 	// ● 析构
 	//-------------------------------------------------------------------------
-	~VBinaryFileReader() {
+	~BinaryFileReader() {
 		fclose(f);
 	}
 	//-------------------------------------------------------------------------

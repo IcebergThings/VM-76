@@ -61,7 +61,7 @@ namespace ASM76 {
 	private:
 		const char* original_prg;
 		const char* prg;
-		VVector<Tag> tags;
+		V::Vector<Tag> tags;
 	public:
 		Assembler(const char*);
 		void scan();

@@ -23,6 +23,4 @@ namespace V {
 	#include "VBinaryFileWriter.hpp"
 }
 
-// 自杀式命名空间
-using namespace V;
 #endif

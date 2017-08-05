@@ -47,7 +47,7 @@ namespace ASM76 {
 	// ● 第二遍扫描（汇编）
 	//-------------------------------------------------------------------------
 	Program Assembler::assemble() {
-		VVector<uint8_t, false> instructs(120);
+		V::Vector<uint8_t, false> instructs(120);
 		while (prg && *prg) switch (*prg) {
 		case '#':
 		case '[':
