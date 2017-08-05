@@ -175,10 +175,10 @@ namespace ASM76 {
 	enum InstructionOpcode Assembler::parse_opcode(const char* str) {
 		#define I(x, ta, tb) if (strcmp(str, #x) == 0) return x;
 		#include "instructions.hpp"
-		// DATA instruction (e.g. DD), virtual opcode 512
-		// This instruction takes in 10 bytes, excatly
-		// In the format of DD 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF
-		if (strcmp(str, "DD") == 0) return (enum InstructionOpcode) 512;
+		// RAW data instruction (e.g. RAWD) with a virtual opcode 512
+		// This instruction takes in 10 bytes, exactly,
+		// in the format of RAWD 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF.
+		if (strcmp(str, "RAWD") == 0) return RAWD;
 
 		error("unidentified instruction");
 		return NOOP;
@@ -194,18 +194,20 @@ namespace ASM76 {
 		#define TREG read_register()
 		#define I(x, ta, tb) case x: i->a = ta; i->b = tb; break;
 		#include "instructions.hpp"
-		// Data function
-		case 512:
-			uint16_t bits16_1 = read_immediate_u32() & 0xFFFF;
-			uint16_t bits16_2 = read_immediate_u32() & 0xFFFF;
-			uint16_t bits16_3 = read_immediate_u32() & 0xFFFF;
-			uint16_t bits16_4 = read_immediate_u32() & 0xFFFF;
-			uint16_t bits16_5 = read_immediate_u32() & 0xFFFF;
+		// Data instruction
+		case RAWD: {
+			uint16_t bits[5];
+			bits[0] = read_immediate_u32() & 0xFFFF;
+			bits[1] = read_immediate_u32() & 0xFFFF;
+			bits[2] = read_immediate_u32() & 0xFFFF;
+			bits[3] = read_immediate_u32() & 0xFFFF;
+			bits[4] = read_immediate_u32() & 0xFFFF;
 
-			i->opcode = bits16_1;
-			i->a = (bits16_2 << 16) | bits16_3;
-			i->b = (bits16_4 << 16) | bits16_5;
+			i->opcode = bits[0];
+			i->a = (bits[1] << 16) | bits[2];
+			i->b = (bits[3] << 16) | bits[4];
 			break;
+		}
 		}
 	}
 	//-------------------------------------------------------------------------
