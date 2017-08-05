@@ -455,11 +455,10 @@
 	//-------------------------------------------------------------------------
 	// ● CommandList
 	//-------------------------------------------------------------------------
-	#define add(x) CLEnum_##x,
 	enum CLEnum {
-	#include "CommandList.hpp"
+		#define INT(i, x) CLEnum_##x = i,
+		#include "CommandList.hpp"
 	};
-	#undef add
 
 	class CmdList {
 	private:
