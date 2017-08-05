@@ -160,6 +160,21 @@ FILL 0xABCaa312341
 FILL "A slow lazy fox swirled across the brown dog."
 ```
 
+Appendix: object code format
+----------------------------
+
+The virtual machine can load a packed program format called the VM/76 object code. It is usually stored in a .obj file, which contains a program. The implementation has a ObjectCode module that deals with this format.
+
+### The format
+
+Offset | Description | Example value | Explanation
+------ | ----------- | ------------- | -----------
+0 | Magic number | `A3 EF A3 E2 56 4D 37 36` | ‘ｏｂVM76’ in GB2312
+8 | Program size | `1E 00 00 00` | 30 bytes, excluding the header and this size field
+12 | Instructions | `01 00 07 00 00 00 06 00 00 00`<br>`00 00 00 00 00 00 00 00 00 00`<br>`28 00 00 00 00 00 00 00 00 00` | ADDL $7 $6<br>NOOP<br>HALT
+~ | Random data | `01 23 45 67 89 AB CD` | won't be loaded
+
+
 Instruction set reference
 =========================
 
