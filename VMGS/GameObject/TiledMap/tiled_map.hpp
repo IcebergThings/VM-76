@@ -78,7 +78,7 @@ namespace VM76 {
 
 	class Map : public RenderObject {
 	private:
-		CmdList* cmd_buffer;
+		CmdList* cmd_buffer = NULL;
 
 	public:
 		DataMap* map = NULL;
