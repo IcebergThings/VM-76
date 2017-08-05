@@ -77,4 +77,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 	endif
 
 	ONE_FILE = one.cxx
+
+first: all
+.PHONY: first
 endif
