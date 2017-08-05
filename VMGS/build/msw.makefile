@@ -16,7 +16,6 @@ all: $(TARGET)
 %.o %.debug.o: %.cpp
 	$(CXX) -c $^ -o $@ $(CXXFLAGS)
 
-%.o: %.rc
 $(TARGET): ASM76.dll VMDE.dll $(OBJECTS) windows.rc.o
 	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
 
