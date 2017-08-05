@@ -7,7 +7,6 @@
 
 #include <ratio>
 #include <chrono>
-using namespace std;
 
 #include "ASM76.hpp"
 using namespace ASM76;

@@ -8,6 +8,8 @@
 #include <cctype>
 #include <cstring>
 #include <cstdio>
+#include <mutex>
+using namespace std;
 
 #include "VLib/V.hpp"
 #undef error

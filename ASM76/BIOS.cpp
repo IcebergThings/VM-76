@@ -5,13 +5,12 @@
 //=============================================================================
 
 #include "ASM76.hpp"
-#include <mutex>
 
 namespace ASM76 {
 	//-------------------------------------------------------------------------
 	// ● BIOS mutex锁
 	//-------------------------------------------------------------------------
-	std::mutex bios_lock;
+	mutex bios_lock;
 
 	//-------------------------------------------------------------------------
 	// ● BIOS空回调
@@ -45,7 +44,7 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------	
 	uint32_t BIOS::call(int fid, uint8_t* d) {
 		// Lock will release after function called
-		std::lock_guard<std::mutex> lock(bios_lock);
+		lock_guard<mutex> lock(bios_lock);
 		return function_table[fid](d);
 	}
 
