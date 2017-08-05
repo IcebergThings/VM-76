@@ -17,13 +17,6 @@ typedef struct StructOBB {
 	glm::vec3 size;
 } OBB;
 
-class PhyEngine {
-public:
-	static bool AABB(OBB* a, OBB* b);
-
-	PhyEngine();
-};
-
 class BoxCollider {
 public:
 	glm::vec3 X, Y, Z;
@@ -35,6 +28,38 @@ public:
 	void move(glm::vec3 o);
 
 	BoxCollider(glm::vec3 o, glm::vec3 a, glm::vec3 b, glm::vec3 c);
+};
+
+class PhyObject {
+public:
+	OBB clipping_shell;
+	bool is_stable = true;
+
+public:
+	virtual void tick();
+	virtual void collide_callback(BoxCollider* aC, PhyObject* b, BoxCollider* bC);
+	virtual BoxCollider** get_collide_iterator(OBB* b);
+
+	PhyObject();
+};
+
+
+typedef struct StructPhyObjNode {
+	struct StructPhyObjNode *prev, *next;
+	PhyObject* obj;
+} PhyObjNode;
+
+class PhyEngine {
+private:
+	PhyObjNode *first, *last;
+
+public:
+	static bool AABB(OBB* a, OBB* b);
+	void tick();
+	PhyObjNode* add_obj(PhyObject* phy);
+	void remove_obj(PhyObjNode* node);
+
+	PhyEngine();
 };
 
 #endif
