@@ -47,8 +47,11 @@ I(INTX, TIMM, TADD)
 
 // 自带清理宏
 #undef I
-#undef TNUL
-#undef TIMM
-#undef TADD
-#undef TREG
+#ifdef TNUL
+	// in case of some really annoying preprocessors
+	#undef TNUL
+	#undef TIMM
+	#undef TADD
+	#undef TREG
+#endif
 // 这个REG宏名字重复了，又被坑了一回。

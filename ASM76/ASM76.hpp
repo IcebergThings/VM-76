@@ -12,7 +12,6 @@
 using namespace std;
 
 #include "VLib/V.hpp"
-#undef error
 
 #ifndef _INCLUDE_ASM76_H
 #define _INCLUDE_ASM76_H
