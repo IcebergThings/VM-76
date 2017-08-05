@@ -34,9 +34,9 @@ namespace VM76 {
 		game_player.horizontal_angle -= 0.005 * (xpos - VMDE->width / 2.0);
 		game_player.vertical_angle -= 0.005 * (ypos - VMDE->height / 2.0);
 		game_player.vertical_angle = glm::clamp(
-			- V::Math::PIf / 2 + 0.04f,
+			- PIf / 2 + 0.04f,
 			game_player.vertical_angle,
-			V::Math::PIf / 2
+			PIf / 2
 		);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 		glm::vec3 direction = glm::vec3(
@@ -45,9 +45,9 @@ namespace VM76 {
 			cos(game_player.vertical_angle) * cos(game_player.horizontal_angle)
 		);
 		glm::vec3 right = glm::vec3(
-			sin(game_player.horizontal_angle - V::Math::PIf / 2.0f),
+			sin(game_player.horizontal_angle - PIf / 2.0f),
 			0,
-			cos(game_player.horizontal_angle - V::Math::PIf / 2.0f)
+			cos(game_player.horizontal_angle - PIf / 2.0f)
 		);
 		glm::vec3 up = glm::cross(right, direction);
 		glm::vec3 cam_pos = game_player.wpos + glm::vec3(0.0, 1.68, 0.0);
