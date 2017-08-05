@@ -337,27 +337,35 @@ BIOS Instructions
 
 **BIOS** is an acronym for Basic Input/Output System, of course.
 
+Interrupts are handled by the firmware attached to the VM. A BIOS can contain at most 255 interrupt handler numbered from 1 to 255. Interrupt #0 is defined as the null call. An interrupt accepts an address as its parameter.
+
 You need to set bit 7 of $110 to 1 first in order to make it work.
 
 ### BIOS Access
 
 Instruction | Description
 ----------- | -----------
-[BIOS](#biosbior) _function\_id_ | Do an operation provided by the BIOS
-[BIOR](#biosbior) _$A_ | Same as above, but the function ID is put in *$A* as an int
+[INTX](#intxintr) _function\_id_ _address_ | Do an operation provided by the BIOS
+[INTR](#intxintr) _$A_ _address_ | Same as above, but the function ID is put in *$A*
 
-#### BIOS/BIOR
+#### INTX/INTR
 
-All BIOS operations are C style functions. That means you must PUSH the necessary values before calling the BIOS.
+VMDE provides the following BIOS functions.
+
+*Note that functions 1–8 are unimplemented now.*
 
 Function ID | BIOS Function | Description
 ----------- | ------------- | -----------
-0000 | null(uintptr_t a)    | Return NOT (*a* XOR 0x76ABCDEF) — the null call
-0001 | putc(uint8_t c)      | Print *c* as a byte character
-0002 | puts(uint32_t addr)  | Print a null-terminated string starting from memory address *addr*
-0003 | putlx(uint64_t x)    | Print *x* as a hexadecimal number
-0004 | putix(uint32_t x)    | Print *x* as a hexadecimal number
-0005 | putbx(uint8_t x)     | Print *x* as a hexadecimal number
-0006 | putl(uint64_t x)     | Print *x* as a decimal number
-0007 | puti(uint32_t x)     | Print *x* as a decimal number
-0008 | putb(uint8_t x)      | Print *x* as a decimal number
+0   | null(uintptr_t a)     | Return NOT (*a* XOR 0x76ABCDEF) — the null call
+1   | putc(uint8_t c)       | Print *c* as a byte character
+2   | puts(uint32_t addr)   | Print a null-terminated string starting from memory address *addr*
+3   | putlx(uint64_t x)     | Print *x* as a hexadecimal number
+4   | putix(uint32_t x)     | Print *x* as a hexadecimal number
+5   | putbx(uint8_t x)      | Print *x* as a hexadecimal number
+6   | putl(uint64_t x)      | Print *x* as a decimal number
+7   | puti(uint32_t x)      | Print *x* as a decimal number
+8   | putb(uint8_t x)       | Print *x* as a decimal number
+11  | GDrawable_render      | Documentation needed
+12  | GDrawable_renderOnce  | Idem
+13  | GDrawable_batch       | Idem
+14  | GDrawable_batchOnce   | Idem
