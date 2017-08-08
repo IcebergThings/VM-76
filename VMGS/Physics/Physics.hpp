@@ -41,6 +41,7 @@ public:
 	virtual BoxCollider** get_collide_iterator(OBB* b);
 
 	PhyObject();
+	virtual ~PhyObject();
 };
 
 

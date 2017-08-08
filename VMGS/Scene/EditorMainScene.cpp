@@ -36,6 +36,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
+		physics = new PhyEngine();
 
 		hand_block = new GDrawable(NULL, NULL);
 		hand_block->data.vertices = (GLuint*)new Vertex[4 * 6];
@@ -118,6 +119,9 @@ namespace VM76 {
 			"../Media/skybox/skybox_4.png",
 			"../Media/skybox/skybox_5.png"
 		});
+
+		phy_map = new PhysicsMap(&map);
+		physics->add_obj(phy_map);
 	}
 	//-------------------------------------------------------------------------
 	// ● 按键回调
@@ -223,6 +227,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void EditorMainScene::update() {
 		ctls[ctl_index]->update_control();
+		physics->tick();
 	}
 	//-------------------------------------------------------------------------
 	// ● 渲染
@@ -336,8 +341,11 @@ namespace VM76 {
 	// ● 释放
 	//-------------------------------------------------------------------------
 	EditorMainScene::~EditorMainScene() {
-		for (int i = 0; i < 16; i++) VMDE_Dispose(delete, clist[i]);
-		VMDE_Dispose(delete, trex);
-		VMDE_Dispose(delete, postBuffer);
+		XE(delete, phy_map);
+		XE(delete, physics);
+
+		for (int i = 0; i < 16; i++) XE(delete, clist[i]);
+		XE(delete, trex);
+		XE(delete, postBuffer);
 	}
 }

@@ -52,6 +52,9 @@ void PhyObject::tick() { this->is_stable = true; }
 
 void PhyObject::collide_callback(BoxCollider* aC, PhyObject* b, BoxCollider* bC) { this->is_stable = false; }
 
+PhyObject::PhyObject() {}
+PhyObject::~PhyObject() {}
+
 static BoxCollider* empty_list[] = {NULL};
 BoxCollider** PhyObject::get_collide_iterator(OBB* b) { return empty_list; }
 
