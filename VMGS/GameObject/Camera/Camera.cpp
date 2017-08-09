@@ -15,6 +15,7 @@ void Camera::update() {
 	up = glm::mat3(r) * glm::vec3(0.0, 1.0, 0.0);
 
 	View = glm::lookAt(wpos, wpos + forward, up);
+	view_camera = glm::lookAt(glm::vec3(0.0), forward, up);
 }
 
 Camera::Camera(glm::vec3 wpos, glm::vec3 rotate, glm::mat4 proj) {

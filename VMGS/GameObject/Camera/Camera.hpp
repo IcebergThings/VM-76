@@ -13,7 +13,7 @@ class Camera {
 public:
 	glm::vec3 wpos, rotate;
 	glm::vec3 forward, up;
-	glm::mat4 Projection, View;
+	glm::mat4 Projection, View, view_camera;
 	void update();
 
 public:
