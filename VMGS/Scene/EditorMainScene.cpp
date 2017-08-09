@@ -65,13 +65,6 @@ namespace VM76 {
 		// Albedo, Normal, Lighting, Composite
 		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 4, gbuffers_type);
 
-		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
-		view = glm::lookAt(
-			glm::vec3(0.0, 2.6, 0.0),
-			glm::vec3(0.0, 0.0, 0.0),
-			glm::vec3(0.0, 1.0, 0.0)
-		);
-
 		// Set up hand block indicator's matrix
 		glm::mat4 block_display = glm::translate(
 			glm::mat4(1.0),
@@ -97,17 +90,20 @@ namespace VM76 {
 		hand_block->fbind();
 		block_pointer.obj->data.mat_c = 1;
 
+
+		cam = new Camera(glm::vec3(0.0), glm::vec3(0.0), glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f));
+
 		ctl_index = 2; // initially FirstPersonView
 		ctl_count = 3;
 		DemoView* ctl0 = new DemoView();
-		ctl0->init_control();
+		ctl0->init_control(cam);
 		ctls[0] = ctl0;
 		GodView* ctl1 = new GodView();
-		ctl1->init_control();
-		ctl1->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctl1->init_control(cam);
+		ctl1->cam->wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[1] = ctl1;
 		FirstPersonView* ctl2 = new FirstPersonView();
-		ctl2->init_control();
+		ctl2->init_control(cam);
 		ctl2->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[2] = ctl2;
 
@@ -182,9 +178,9 @@ namespace VM76 {
 
 		if (key == GLFW_KEY_O) {
 			if (action == GLFW_PRESS) {
-				projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
+				cam->Projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
 			} else if (action == GLFW_RELEASE) {
-				projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
+				cam->Projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
 			}
 		}
 
@@ -233,6 +229,7 @@ namespace VM76 {
 	void EditorMainScene::update() {
 		ctls[ctl_index]->update_control();
 		physics->tick();
+		cam->update();
 	}
 	//-------------------------------------------------------------------------
 	// ● 渲染
@@ -257,14 +254,14 @@ namespace VM76 {
 		glStencilMask(0xFF);
 
 		// Textured blocks rendering
-		shader_textured.ProjectionView(projection, view);
+		shader_textured.ProjectionView(cam->Projection, cam->View);
 		map.render();
 
 		// Setup uniforms
 		// Non textured rendering
 		shader_basic.use();
 		shader_basic.set_float("opaque", pa.is_collide(&pb) ? 1.0 : 0.1);
-		shader_basic.ProjectionView(projection, view);
+		shader_basic.ProjectionView(cam->Projection, cam->View);
 		block_pointer.mat[0] = obj->transform();
 		block_pointer.update_instance(1);
 		block_pointer.render();
@@ -280,7 +277,7 @@ namespace VM76 {
 
 		deferred_lighting.use();
 		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
-		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
+		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
 		deferred_lighting.set_vec3("sunVec", sunVec);
 		PostProcessingManager::Blit2D();
 
