@@ -8,6 +8,7 @@
 #define INCLUDE_CONTROL_
 
 #include <global.hpp>
+#include "../GameObject/Camera/Camera.hpp"
 
 namespace VM76 {
 	//-------------------------------------------------------------------------
@@ -15,7 +16,10 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	class Control : public Object {
 	public:
-		virtual void init_control() = 0;
+		Camera* cam;
+
+	public:
+		virtual void init_control(Camera* cam) = 0;
 		virtual void update_control() = 0;
 	};
 	//-------------------------------------------------------------------------
@@ -23,7 +27,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	class DemoView : public Control {
 	public:
-		void init_control();
+		void init_control(Camera* cam);
 		void update_control();
 	};
 	//-------------------------------------------------------------------------
@@ -37,13 +41,8 @@ namespace VM76 {
 			int zoomin, zoomout;
 		} keys;
 
-		class Camera {
-		public:
-			glm::vec3 wpos = glm::vec3(0.0, 0.0, 0.0);
-		} cam;
-
 		void update_control();
-		void init_control();
+		void init_control(Camera* cam);
 	};
 	//-------------------------------------------------------------------------
 	// ● 第一人称视角
@@ -66,7 +65,7 @@ namespace VM76 {
 		} game_player;
 
 	public:
-		void init_control();
+		void init_control(Camera* cam);
 		void update_control();
 	};
 }
