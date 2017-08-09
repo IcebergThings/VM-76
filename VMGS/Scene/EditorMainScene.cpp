@@ -114,7 +114,7 @@ namespace VM76 {
 			"../Media/skybox/skybox_3.png",
 			"../Media/skybox/skybox_4.png",
 			"../Media/skybox/skybox_5.png"
-		});
+		}, cam);
 
 		phy_map = new PhysicsMap(&map);
 		physics->add_obj(phy_map);
