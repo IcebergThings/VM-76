@@ -165,8 +165,6 @@
 	void main_draw_start();
 	void main_draw_end();
 	void main_set_brightness(float b);
-
-	extern glm::mat4 projection, view, view_camera;
 	//-------------------------------------------------------------------------
 	// ● RenderObject.cpp
 	//-------------------------------------------------------------------------
