@@ -61,22 +61,13 @@ ifndef _INCLUDE_INC_MAKEFILE
 	else ifeq "$(PLATFORM)" "mac"
 	endif
 
-	# Useful variables.
 	ifeq "$(PLATFORM)" "msw"
-		SOURCES = $(subst $(shell cd)\,,$(shell dir /b /s *.cpp))
-	else ifeq "$(PLATFORM)" "gnu"
-		SOURCES = $(shell find . -name "*.cpp")
-	else ifeq "$(PLATFORM)" "mac"
-		SOURCES = $(shell find . -name "*.cpp")
-	endif
-
-	ifdef DEBUG
-		OBJECTS = $(SOURCES:%.cpp=%.debug.o)
+		ECHO_BANNER = @echo ● $(1)
+		ECHO_BANNER_BOLD = @echo ● $(1) $(2)
 	else
-		OBJECTS = $(SOURCES:%.cpp=%.o)
+		ECHO_BANNER = @echo -e "\033[33m $(1) \033[0m"
+		ECHO_BANNER_BOLD = @echo -e "\033[33m $(1)\033[47;30m $(2) \033[0m"
 	endif
-
-	ONE_FILE = one.cxx
 
 first: all
 .PHONY: first

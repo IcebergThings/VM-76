@@ -2,26 +2,17 @@
 # ■ ASM76 - msw.makefile
 #==============================================================================
 
-include ../inc.makefile
-
 TARGET = ASM76.dll
+
+include ../inc.makefile
+include ../routine.makefile
 
 LDLIBS += $(shell type build\windows_libs.txt)
 LDFLAGS += -shared -Wl,--export-all-symbols
 CXXFLAGS += -I.. $(shell type build\windows_flags.txt)
 
-all: $(TARGET)
+test: VMtest.cxx $(TARGET)
+	$(CXX) $^ -o VMtest.exe $(CXXFLAGS) $(TARGET)
+	VMtest.exe
 
-%.o %.debug.o: %.cpp
-	$(CXX) -c $^ -o $@ $(CXXFLAGS)
-
-$(TARGET): $(OBJECTS)
-	$(CCLD) $^ -o $@ $(LDLIBS) $(LDFLAGS)
-
-test: test.exe
-	test.exe
-
-test.exe: VMtest.cxx $(TARGET)
-	$(CXX) $^ -o $@ $(CXXFLAGS) $(TARGET)
-
-.PHONY: all test
+.PHONY: test
