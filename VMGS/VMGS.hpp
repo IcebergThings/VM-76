@@ -61,6 +61,8 @@ namespace VM76 {
 		RenderBuffer* postBuffer;
 
 	public:
+		PhyEngine* physics;
+		PhysicsMap* phy_map;
 		Map map = Map(8, 8, 8, 32);
 
 	public:

@@ -142,11 +142,12 @@ namespace VM76 {
 		log("Baking Chunks: 100%%, map initialized");
 		log("Preparing render command buffer");
 
+		cmd_buffer = NULL;
 		update_render_buffer();
 	}
 
 	void Map::update_render_buffer() {
-		XE(delete, cmd_buffer);
+		if (cmd_buffer) XE(delete, cmd_buffer);
 
 		int max_count = width * length * height;
 		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
@@ -190,4 +191,41 @@ namespace VM76 {
 		XE(delete[], chunks);
 		XE(delete, cmd_buffer);
 	}
+
+	PhysicsMap::PhysicsMap(Map* m) {
+		this->robj = m;
+
+		this->clipping_shell = {glm::vec3(0.0), glm::vec3(128.0)};
+	}
+
+	BoxCollider** PhysicsMap::get_collide_iterator(OBB* b) {
+		int total = (1.0 + b->size.x) * (1.0 + b->size.y) * (1.0 + b->size.z);
+		XE(free, buf);
+		buf = (BoxCollider**) malloc(total * sizeof(BoxCollider*));
+		int count = 0;
+		// Get target chunk
+		for (int x0 = b->position.x; x0 <= b->position.x + b->size.x; x0++) {
+			for (int y0 = b->position.y; y0 <= b->position.y + b->size.y; y0++) {
+				for (int z0 = b->position.z; z0 <= b->position.z + b->size.z; z0++) {
+					if (robj->map->map[robj->map->calcIndex(x0, y0, z0)].tid != 0) {
+						BoxCollider* collider = new BoxCollider(
+							glm::vec3(x0, y0, z0),
+							glm::vec3(1.0, 0.0, 0.0),
+							glm::vec3(0.0, 1.0, 0.0),
+							glm::vec3(0.0, 0.0, 1.0)
+						);
+						buf[count] = collider;
+						count ++;
+					}
+				}
+			}
+		}
+
+		return buf;
+	}
+
+	PhysicsMap::~PhysicsMap() {
+		XE(free, buf);
+	}
+
 }

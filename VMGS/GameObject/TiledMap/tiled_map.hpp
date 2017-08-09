@@ -8,6 +8,7 @@
 #define _INCLUDE_TILED_MAP_H
 
 #include "tile.hpp"
+#include "../../Physics/Physics.hpp"
 
 namespace VM76 {
 
@@ -98,6 +99,18 @@ namespace VM76 {
 		}
 
 		~Map();
+	};
+
+	class PhysicsMap : public PhyObject {
+	private:
+		Map* robj;
+		BoxCollider** buf = NULL;
+
+	public:
+		BoxCollider** get_collide_iterator(OBB* b);
+
+		PhysicsMap(Map* m);
+		~PhysicsMap();
 	};
 }
 
