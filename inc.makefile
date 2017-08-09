@@ -25,13 +25,35 @@ ifndef _INCLUDE_INC_MAKEFILE
 		PLATFORM = unknown
 	endif
 
+	# Determine the build MODE.
+	# MODE can be one of the following:
+	#     debug - for use with GDB, with optimizations turned off
+	#     test - for normal development testing
+	#     release - for releasing, maybe I'll add automatic packing sometime
+	ifndef MODE
+		MODE = test
+	endif
+	ifeq "$(MODE)" "debug"
+		BUILD_MODE_MACRO = BUILD_MODE_DEBUG
+	else ifeq "$(MODE)" "test"
+		BUILD_MODE_MACRO = BUILD_MODE_TEST
+	else ifeq "$(MODE)" "release"
+		BUILD_MODE_MACRO = BUILD_MODE_RELEASE
+	endif
+
 	# Global project settings.
-	CXX = clang++
-	CCLD = clang
+	ifdef GCC
+		CXX = g++
+		CCLD = gcc
+	else
+		CXX = clang++
+		CCLD = clang
+	endif
 	CFLAGS = -Wall -Wextra \
 		-Wno-unused-parameter \
-		-msse4.1 -mtune=core2
-	ifndef GCC
+		-msse4.1 -mtune=core2 \
+		-DBUILD_MODE=$(BUILD_MODE_MACRO)
+	ifeq "$(CXX)" "g++"
 		# GCC doesn't support this.
 		CFLAGS += -Wimplicit-fallthrough
 	endif
@@ -42,21 +64,24 @@ ifndef _INCLUDE_INC_MAKEFILE
 		CFLAGS += -flto
 		LDFLAGS += -flto
 	endif
-	ifdef DEBUG
+	ifeq "$(MODE)" "debug"
 		CXXFLAGS += -O0 -g -DDEBUG
 		LDFLAGS += -O0
-	else
+	else ifeq "$(MODE)" "test"
+		CXXFLAGS += -O3 -Ofast
+		LDFLAGS += -O3
+	else ifeq "$(MODE)" "release"
 		CXXFLAGS += -O3 -Ofast
 		LDFLAGS += -O4
 	endif
 
 	ifeq "$(PLATFORM)" "msw"
-		ifdef GCC
-			CXX = g++
-		else
+		ifeq "$(CXX)" "clang++"
 			CFLAGS += --target=i686-w64-mingw32
 		endif
-		CCLD = gcc
+		ifeq "$(CCLD)" "clang"
+			CCLD = gcc
+		endif
 	else ifeq "$(PLATFORM)" "gnu"
 	else ifeq "$(PLATFORM)" "mac"
 	endif
