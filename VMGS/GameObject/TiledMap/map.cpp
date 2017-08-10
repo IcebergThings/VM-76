@@ -103,8 +103,14 @@ namespace VM76 {
 				int ho = h;
 				h = glm::clamp(h, 0, height);
 
+				float dirt_layers = glm::perlin(coord * 5.0f + seed) * 2.0f;
 				for (int y = 0; y < h; y++) {
-					map[calcIndex(i,y,j)].tid = (y == ho - 1) ? Grass : Stone;
+					if (y == ho - 1)
+						map[calcIndex(i,y,j)].tid = Grass;
+					else if (y >= ho - 2 - dirt_layers && y < ho - 1)
+						map[calcIndex(i,y,j)].tid = Dirt;
+					else
+						map[calcIndex(i,y,j)].tid = Stone;
 				}
 				for (int y = h; y < height; y++) {
 					map[calcIndex(i,y,j)].tid = Air;
