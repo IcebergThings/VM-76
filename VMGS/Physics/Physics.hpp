@@ -56,6 +56,7 @@ private:
 
 public:
 	static bool AABB(OBB* a, OBB* b);
+	void collide(PhyObject* obj, PhyObjNode* node);
 	void tick();
 	PhyObjNode* add_obj(PhyObject* phy);
 	void remove_obj(PhyObjNode* node);

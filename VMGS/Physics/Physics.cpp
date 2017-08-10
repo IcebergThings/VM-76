@@ -18,21 +18,25 @@ PhyEngine::PhyEngine() {
 	last->next = NULL;
 }
 
+void PhyEngine::collide(PhyObject* obj, PhyObjNode* node) {
+	for (PhyObjNode* Bnode = first->next; Bnode->obj; Bnode = Bnode->next) {
+		PhyObject* Bobj = Bnode->obj;
+		if (Bnode != node && AABB(&obj->clipping_shell, &Bobj->clipping_shell)) {
+			BoxCollider** colliderA = obj->get_collide_iterator(&Bobj->clipping_shell);
+			BoxCollider** colliderB = Bobj->get_collide_iterator(&obj->clipping_shell);
+
+			for (BoxCollider** A = colliderA; *A; A++)
+				for (BoxCollider** B = colliderB; *B; B++)
+					if ((*A)->is_collide(*B)) obj->collide_callback(*A, Bobj, *B);
+		}
+	}
+}
+
 void PhyEngine::tick() {
 	for (PhyObjNode* node = first->next; node->obj; node = node->next) {
 		PhyObject* obj = node->obj;
 		if (!obj->is_stable) {
-			for (PhyObjNode* Bnode = first->next; Bnode->obj; Bnode = Bnode->next) {
-				PhyObject* Bobj = Bnode->obj;
-				if (Bnode != node && AABB(&obj->clipping_shell, &Bobj->clipping_shell)) {
-					BoxCollider** colliderA = obj->get_collide_iterator(&Bobj->clipping_shell);
-					BoxCollider** colliderB = Bobj->get_collide_iterator(&obj->clipping_shell);
-
-					for (BoxCollider** A = colliderA; *A; A++)
-						for (BoxCollider** B = colliderB; *B; B++)
-							if ((*A)->is_collide(*B)) obj->collide_callback(*A, Bobj, *B);
-				}
-			}
+			this->collide(obj, node);
 		}
 
 		obj->tick();
