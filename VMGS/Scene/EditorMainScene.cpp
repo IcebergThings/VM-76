@@ -226,6 +226,7 @@ namespace VM76 {
 		for (int i = 0; i < 32; i++) {
 			if (Tiles::is_valid(map.map->tidQuery(test.x, test.y, test.z))) {
 				// we got something...
+				if (hand_id != 0) test -= pos * 0.3f;
 				test = test - glm::fract(test);
 				obj->pos = test;
 				break;

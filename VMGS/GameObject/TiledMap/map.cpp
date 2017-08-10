@@ -183,7 +183,15 @@ namespace VM76 {
 		int cz = (int) dir.z / CHUNK_SIZE;
 
 		map->map[map->calcIndex(dir)].tid = tid;
+		log("%f %f %f %d %d %d", dir.x, dir.y, dir.z, cx, cy, cz);
 		chunks[calcChunkIndex(cx,cy,cz)]->bake_tiles();
+
+		if (cx > 0      && (dir.x - 1.0) / CHUNK_SIZE != cx) chunks[calcChunkIndex(cx-1,cy,cz)]->bake_tiles();
+		if (cx < width  && (dir.x + 1.0) / CHUNK_SIZE != cx) chunks[calcChunkIndex(cx+1,cy,cz)]->bake_tiles();
+		if (cy > 0      && (dir.y - 1.0) / CHUNK_SIZE != cy) chunks[calcChunkIndex(cx,cy-1,cz)]->bake_tiles();
+		if (cy < height && (dir.y + 1.0) / CHUNK_SIZE != cy) chunks[calcChunkIndex(cx,cy+1,cz)]->bake_tiles();
+		if (cz > 0      && (dir.z - 1.0) / CHUNK_SIZE != cz) chunks[calcChunkIndex(cx,cy,cz-1)]->bake_tiles();
+		if (cz < length && (dir.z + 1.0) / CHUNK_SIZE != cz) chunks[calcChunkIndex(cx,cy,cz+1)]->bake_tiles();
 
 		update_render_buffer();
 	}
