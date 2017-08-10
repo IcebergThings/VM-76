@@ -52,21 +52,31 @@ namespace VM76 {
 	}
 
 	void DataMap::save_map() {
-		V::BinaryFileWriter* fw = new V::BinaryFileWriter("map.dat");
-		// 版本号
-		fw->write_i32(100);
-		// 文件头标识
-		fw->write_u8('V');
-		fw->write_u8('M');
-		fw->write_u8('7');
-		fw->write_u8('6');
+		auto worker_save = [](DataMap* t) {
+			V::BinaryFileWriter* fw = new V::BinaryFileWriter("map.dat");
+			// 版本号
+			fw->write_i32(100);
+			// 文件头标识
+			fw->write_u8('V');
+			fw->write_u8('M');
+			fw->write_u8('7');
+			fw->write_u8('6');
 
-		for (int x = 0; x < width * length * height; x++) {
-			fw->write_u8(map[x].tid);
-			fw->write_u8(map[x].data_flag);
-		}
-		delete fw;
-		log("Map saved");
+			for (int x = 0; x < t->width * t->length * t->height; x++) {
+				fw->write_u8(t->map[x].tid);
+				fw->write_u8(t->map[x].data_flag);
+			}
+			XE(delete, fw);
+			log("Map saved");
+
+			t->map_save_worker = NULL;
+		};
+		if (!map_save_worker) map_save_worker = new std::thread(worker_save, this);
+	}
+
+	DataMap::~DataMap() {
+		if (map_save_worker) map_save_worker->join();
+		XE(delete, map_save_worker);
 	}
 
 	#include <ctime>
@@ -183,7 +193,6 @@ namespace VM76 {
 		int cz = (int) dir.z / CHUNK_SIZE;
 
 		map->map[map->calcIndex(dir)].tid = tid;
-		log("%f %f %f %d %d %d", dir.x, dir.y, dir.z, cx, cy, cz);
 		chunks[calcChunkIndex(cx,cy,cz)]->bake_tiles();
 
 		if (cx > 0      && (dir.x - 1.0) / CHUNK_SIZE != cx) chunks[calcChunkIndex(cx-1,cy,cz)]->bake_tiles();
@@ -206,6 +215,8 @@ namespace VM76 {
 		}
 		XE(delete[], chunks);
 		XE(delete, cmd_buffer);
+
+		XE(delete, map);
 	}
 
 	PhysicsMap::PhysicsMap(Map* m) {

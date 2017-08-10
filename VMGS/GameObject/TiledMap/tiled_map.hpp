@@ -4,6 +4,8 @@
 
 #include <global.hpp>
 
+#include <thread>
+
 #ifndef _INCLUDE_TILED_MAP_H
 #define _INCLUDE_TILED_MAP_H
 
@@ -26,8 +28,11 @@ namespace VM76 {
 		int width, length, height;
 		TileData constStone;
 
+		std::thread* map_save_worker = NULL;
+
 	public:
 		DataMap(int w, int h, int l);
+		~DataMap();
 
 		inline long calcIndex(int x, int y, int z) { return (width * length) * y + (length) * z + x; }
 		inline long calcIndex(glm::vec3 v) { return (width * length) * v.y + (length) * v.z + v.x; }

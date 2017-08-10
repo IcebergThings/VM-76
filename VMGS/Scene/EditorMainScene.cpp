@@ -324,6 +324,14 @@ namespace VM76 {
 		VMSC::disable_depth_test();
 		if (hand_id > 0) hand_block->renderOnce();
 
+		const char save_map_info[] = "Map Saving...";
+		if (map.map->map_save_worker) trex->instanceRenderText(
+			save_map_info, gui_2d_projection,
+			glm::mat4(1.0),
+			glm::translate(glm::mat4(1.0), glm::vec3(aspect_ratio - 0.35, 0.94, 0.0)),
+			0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+		);
+
 		if (SceneManager::render_debug_info) {
 			char info[64];
 			sprintf(info, "Hand ID: %d  Pointer ID: %d",
