@@ -14,10 +14,13 @@ namespace VM76 {
 		GLuint* itx[6];
 
 	public:
+		static bool is_opaque(int tid);
+		static bool is_transperant(int tid);
+
 		virtual ~Tiles();
 		virtual void bake(
-			float x, float y, float z, 
-			Vertex* v, GLuint* ix, 
+			float x, float y, float z,
+			Vertex* v, GLuint* ix,
 			int* vcount, int* icount, int ind);
 	};
 

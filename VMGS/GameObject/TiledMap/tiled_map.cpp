@@ -74,32 +74,32 @@ namespace VM76 {
 						float y0 = y - mount_point.y;
 						float z0 = z - mount_point.z;
 
-						if (map->tidQuery(x, y, z - 1) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y, z - 1))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 0);
 							count++;
 						}
-						if (map->tidQuery(x, y, z + 1) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y, z + 1))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 1);
 							count++;
 						}
-						if (map->tidQuery(x, y + 1, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y + 1, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 2);
 							count++;
 						}
-						if (map->tidQuery(x, y - 1, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y - 1, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 3);
 							count++;
 						}
-						if (map->tidQuery(x - 1, y, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x - 1, y, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 4);
 							count++;
 						}
-						if (map->tidQuery(x + 1, y, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x + 1, y, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 5);
 							count++;
