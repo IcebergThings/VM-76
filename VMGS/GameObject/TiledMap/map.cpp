@@ -15,6 +15,8 @@ namespace VM76 {
 		map = (TileData*) malloc(sizeof(TileData) * w * h * l);
 		width = w; length = l; height = h;
 
+		std::srand(std::time(0));
+
 		if (!read_map()) generate_V1();
 	}
 
@@ -67,9 +69,12 @@ namespace VM76 {
 		log("Map saved");
 	}
 
+	#include <ctime>
+
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);
 
+		float seed = std::rand() * 0.00001f;
 		for (int i = 0; i < width; i++) {
 			if (i % (width / 12) == 0)
 				log("Generated %d%% (%d / %d)",
@@ -78,28 +83,25 @@ namespace VM76 {
 				);
 
 			for (int j = 0; j < length; j++) {
-				glm::vec2 coord = glm::vec2(i, j) * 0.006f;
+				glm::vec2 coord = glm::vec2(i, j) * 0.04f;
 
-				const glm::mat2 rotate = glm::mat2(1.4, 1.1, -1.2, 1.4);
+				const glm::mat2 rotate = glm::mat2(0.8387, -0.5446, 0.5446, 0.8387);
 
 				glm::vec2 dir = glm::vec2(1.0, 0.1);
-				float n = glm::sin(glm::perlin(coord * dir)) * 0.5f; coord *= 1.2f;dir = dir * rotate; coord += dir * 0.3f;
-				dir += glm::vec2(n * 0.8, 0.0);
-				n += glm::perlin(coord * dir) * 0.45f; dir = dir * rotate;
-				dir += glm::vec2(n * 0.6, 0.0);
-				n += glm::perlin(coord * dir) * 0.35f; dir = dir * rotate;
-				dir += glm::vec2(n * 0.4, 0.0);
-				n += glm::perlin(coord * dir) * 0.25f; dir = dir * rotate;
-				dir += glm::vec2(n * 0.2, 0.0);
-				coord *= 3.01f; dir = dir * rotate; coord += dir * 0.6f;
-				n += glm::perlin(coord) * 0.125f;
+				float n = glm::sin(glm::perlin(coord * dir + seed)) * 0.5f; dir = rotate * dir;
+				coord += n * dir * 0.6f;
+				n += glm::perlin(coord * dir + seed) * 0.45f; dir = rotate * dir;
+				coord += n * dir * 0.5f;
+				n += glm::perlin(coord * dir + seed) * 0.35f; dir = rotate * dir;
+				coord += n * dir * 0.4f;
+				n += glm::perlin(coord * dir + seed) * 0.25f; dir = rotate * dir;
+				coord += n * dir * 0.3f;
+				n += glm::perlin(coord + seed) * 0.125f;
 
-				n = n + 0.5f;
-
-				n = glm::clamp(n * 0.7f + 0.2f, 1.0f / (float) TERRIAN_MAX_HEIGHT, 1.0f);
+				n = glm::clamp(n * 0.4f + 0.4f, 1.0f / (float) TERRIAN_MAX_HEIGHT, 1.0f);
 				int h = n * TERRIAN_MAX_HEIGHT;
 				int ho = h;
-				h = glm::clamp(0, h, height);
+				h = glm::clamp(h, 0, height);
 
 				for (int y = 0; y < h; y++) {
 					map[calcIndex(i,y,j)].tid = (y == ho - 1) ? Grass : Stone;
