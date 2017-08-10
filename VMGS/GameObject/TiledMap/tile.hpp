@@ -16,6 +16,7 @@ namespace VM76 {
 	public:
 		static bool is_opaque(int tid);
 		static bool is_transperant(int tid);
+		static bool is_valid(int tid);
 
 		virtual ~Tiles();
 		virtual void bake(

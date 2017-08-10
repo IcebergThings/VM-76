@@ -15,6 +15,10 @@ namespace VM76 {
 		return !(Air == tid || Glass == tid);
 	}
 
+	bool Tiles::is_valid(int tid) {
+		return tid != Air;
+	}
+
 	SimpleCubeTile::SimpleCubeTile(int tid) {
 		int x = tid % 16;
 		int y = tid / 16;

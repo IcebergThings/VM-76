@@ -14,9 +14,6 @@ namespace VM76 {
 	size_t ctl_count, ctl_index;
 	Control* ctls[16] = {NULL};
 
-	BoxCollider pa(glm::vec3(0.0),glm::vec3(1.0,0.0,0.0),glm::vec3(0.0,1.0,0.0),glm::vec3(0.0,0.0,1.0));
-	BoxCollider pb(glm::vec3(0.0),glm::vec3(1.0,0.0,0.0),glm::vec3(0.0,1.0,0.0),glm::vec3(0.0,0.0,1.0));
-
 	SkyBox* sky;
 
 	GDrawable* hand_block;
@@ -127,13 +124,6 @@ namespace VM76 {
 
 	void EditorMainScene::key_callback(int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == (n) && action == GLFW_PRESS
-		if (PRESS(GLFW_KEY_A)) {obj->move(glm::vec3(-1.0, 0.0, 0.0)); pa.move(obj->pos);}
-		if (PRESS(GLFW_KEY_D)) {obj->move(glm::vec3(1.0, 0.0, 0.0)); pa.move(obj->pos);}
-		if (PRESS(GLFW_KEY_W)) {obj->move(glm::vec3(0.0, 0.0, -1.0)); pa.move(obj->pos);}
-		if (PRESS(GLFW_KEY_S)) {obj->move(glm::vec3(0.0, 0.0, 1.0)); pa.move(obj->pos);}
-		if (PRESS(GLFW_KEY_UP)) {obj->move(glm::vec3(0.0, 1.0, 0.0)); pa.move(obj->pos);}
-		if (PRESS(GLFW_KEY_DOWN)) {obj->move(glm::vec3(0.0, -1.0, 0.0)); pa.move(obj->pos);}
-
 		if (PRESS(GLFW_KEY_F5)) {
 			if (mods & GLFW_MOD_SHIFT) {
 				ctl_index--;
@@ -227,6 +217,24 @@ namespace VM76 {
 	// ● 刷新
 	//-------------------------------------------------------------------------
 	void EditorMainScene::update() {
+		// Pick
+		//  暂时只有拣选地图Tile功能，其它的拣选可以参考RM的分layer拣选
+		glm::mat3 inverse_view = glm::inverse(glm::mat3(cam->View));
+		glm::vec3 pos = glm::normalize(inverse_view * glm::vec3(0.0, 0.0, -1.0));
+		glm::vec3 test = cam->wpos;
+
+		for (int i = 0; i < 32; i++) {
+			if (Tiles::is_valid(map.map->tidQuery(test.x, test.y, test.z))) {
+				// we got something...
+				test = test - glm::fract(test);
+				obj->pos = test;
+				break;
+			}
+
+			test += pos * 0.3f;
+		}
+
+		// Update other stuff
 		ctls[ctl_index]->update_control();
 		physics->tick();
 		cam->update();
@@ -260,7 +268,7 @@ namespace VM76 {
 		// Setup uniforms
 		// Non textured rendering
 		shader_basic.use();
-		shader_basic.set_float("opaque", pa.is_collide(&pb) ? 1.0 : 0.1);
+		shader_basic.set_float("opaque", 0.4 + 0.2 * glm::sin(VMDE->frame_count * 0.1));
 		shader_basic.ProjectionView(cam->Projection, cam->View);
 		block_pointer.mat[0] = obj->transform();
 		block_pointer.update_instance(1);
