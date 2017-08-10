@@ -32,7 +32,7 @@ ifeq "$(PLATFORM)" "msw"
 else
 	echo $(SOURCES) | sed 's/ /\n/g' | sed 's/^/#include "/;s/$/"/' > $(ONE_FILE)
 endif
-	$(CXX) $(ONE_FILE) -o VMDE.one.dll $(CXXFLAGS) $(LDLIBS) $(LDFLAGS)
+	$(CXX) $(ONE_FILE) -o $(TARGET) $(CXXFLAGS) $(LDLIBS) $(LDFLAGS)
 
 %.o %.debug.o: %.cpp
 	$(call ECHO_BANNER_BOLD,编译C++文件,$^)
