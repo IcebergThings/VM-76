@@ -87,8 +87,13 @@ ifndef _INCLUDE_INC_MAKEFILE
 	endif
 
 	ifeq "$(PLATFORM)" "msw"
-		ECHO_BANNER = @echo ● $(1)
-		ECHO_BANNER_BOLD = @echo ● $(1) $(2)
+		ifeq "$(shell chcp)" "Active code page: 65001"
+			ECHO_BANNER = @echo ● $(1)
+			ECHO_BANNER_BOLD = @echo ● $(1) $(2)
+		else
+			ECHO_BANNER =
+			ECHO_BANNER_BOLD =
+		endif
 	else
 		ECHO_BANNER = @echo -e "\033[33m $(1) \033[0m"
 		ECHO_BANNER_BOLD = @echo -e "\033[33m $(1)\033[47;30m $(2) \033[0m"
