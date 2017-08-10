@@ -62,38 +62,38 @@ void TextRenderer::BakeText(const BakeOptions* opt) {
 		float stx = (float) (c & 0b11111) * w;
 		float sty = (float) (c >> 5) * h;
 
-		lbx = (float) (i) * width;
+		lbx = (float) (i) * opt->width;
 
 		TextVertex* vtxi = vtx + i * vtx_stride;
 		GLuint* itxi = itx + i * itx_stride;
-		#define ADD_VERTICES(j, ox, oy, color) do { \
-			vtxi[(j) + 0] = {{lbx         + (ox),        + (oy), .0}, color, {stx    , sty + h}}; \
-			vtxi[(j) + 1] = {{lbx         + (ox), height + (oy), .0}, color, {stx    , sty    }}; \
-			vtxi[(j) + 2] = {{lbx + width + (ox), height + (oy), .0}, color, {stx + w, sty    }}; \
-			vtxi[(j) + 3] = {{lbx + width + (ox),        + (oy), .0}, color, {stx + w, sty + h}}; \
+		#define ADD_VERTICES(j, ox, oy, r, g, b, a) do { \
+			vtxi[(j) + 0] = {{lbx              + (ox),             + (oy), .0}, {(r), (g), (b), (a)}, {stx    , sty + h}}; \
+			vtxi[(j) + 1] = {{lbx              + (ox), opt->height + (oy), .0}, {(r), (g), (b), (a)}, {stx    , sty    }}; \
+			vtxi[(j) + 2] = {{lbx + opt->width + (ox), opt->height + (oy), .0}, {(r), (g), (b), (a)}, {stx + w, sty    }}; \
+			vtxi[(j) + 3] = {{lbx + opt->width + (ox),             + (oy), .0}, {(r), (g), (b), (a)}, {stx + w, sty + h}}; \
 		} while (false);
 		#define ADD_INDEICES(j, a, b, c) do { \
 			itxi[(j) + 0] = i * vtx_stride + (a); \
 			itxi[(j) + 1] = i * vtx_stride + (b); \
 			itxi[(j) + 2] = i * vtx_stride + (c); \
 		} while (false);
-		ADD_VERTICES(0, 0, 0, {opt->color.r, opt->color.g, opt->color.b, opt->color.a});
+		ADD_VERTICES(0, 0, 0, opt->color.r, opt->color.g, opt->color.b, opt->color.a);
 		// sd = shadow distance
 		float sd = 0.0016 * (float) VMDE->width / (float) VMDE->height;
-		switch (decoration) {
+		switch (opt->decoration) {
 		case NONE:
 			break;
 		case SHADOW:
-			ADD_VERTICES(4, +sd, -sd, {0.0, 0.0, 0.0, 0.8});
+			ADD_VERTICES(4, +sd, -sd, 0.0, 0.0, 0.0, 0.8);
 			break;
 		case OUTLINE:
-			ADD_VERTICES( 4, +sd, +sd, {0.0, 0.0, 0.0, color.a * 0.3});
-			ADD_VERTICES( 8, +sd, -sd, {0.0, 0.0, 0.0, color.a * 0.3});
-			ADD_VERTICES(12, -sd, +sd, {0.0, 0.0, 0.0, color.a * 0.3});
-			ADD_VERTICES(16, -sd, -sd, {0.0, 0.0, 0.0, color.a * 0.3});
+			ADD_VERTICES( 4, +sd, +sd, 0.0, 0.0, 0.0, opt->color.a * 0.3);
+			ADD_VERTICES( 8, +sd, -sd, 0.0, 0.0, 0.0, opt->color.a * 0.3);
+			ADD_VERTICES(12, -sd, +sd, 0.0, 0.0, 0.0, opt->color.a * 0.3);
+			ADD_VERTICES(16, -sd, -sd, 0.0, 0.0, 0.0, opt->color.a * 0.3);
 			break;
 		}
-		switch (decoration) {
+		switch (opt->decoration) {
 		case NONE:
 			ADD_INDEICES(0, 0, 1, 3);
 			ADD_INDEICES(3, 1, 2, 3);
