@@ -14,3 +14,5 @@ LDLIBS += /usr/local/lib/libSOIL.a \
 LDFLAGS += -dynamiclib -framework OpenGL
 CXXFLAGS += -I../lib/SOIL/include -I.. -I../ASM76 -c -fPIC \
 	$(shell pkg-config --cflags glfw3 glm glew portaudio-2.0 vorbisfile)
+
+all: $(TARGET)

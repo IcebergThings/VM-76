@@ -23,8 +23,6 @@ endif
 
 ONE_FILE = one.cxx
 
-all: $(TARGET)
-
 one:
 ifeq "$(PLATFORM)" "msw"
 	type nul > $(ONE_FILE) \

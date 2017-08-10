@@ -11,6 +11,8 @@ LDLIBS += $(shell pkg-config --libs --static glm)
 LDFLAGS += -shared
 CXXFLAGS += -I.. $(shell pkg-config --cflags glm) -fPIC
 
+all: $(TARGET)
+
 test: VMtest.cxx $(TARGET)
 	$(CXX) -c VMtest.cxx -o VMtest.o $(CXXFLAGS)
 	$(CCLD) VMtest.o ./libASM76.so -lstdc++ -flto -lm -o VMtest
