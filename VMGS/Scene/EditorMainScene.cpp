@@ -324,13 +324,21 @@ namespace VM76 {
 		if (hand_id > 0) hand_block->renderOnce();
 
 		const char save_map_info[] = "Map Saving...";
-		if (map.map->map_save_worker) trex->instanceRenderText(
-			save_map_info, gui_2d_projection,
-			glm::mat4(1.0),
-			glm::translate(glm::mat4(1.0), glm::vec3(aspect_ratio - 0.35, 0.94, 0.0)),
-			0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE,
-			glm::vec4(1.0, 1.0, 1.0, glm::sin(VMDE->frame_count * 0.1) * 0.2 + 0.6)
-		);
+		if (map.map->map_save_worker) {
+			TextRenderer::BakeOptions opt = {
+				.text = save_map_info,
+				.width = 0.025,
+				.height = 0.05,
+				.decoration = TextRenderer::TextDecorationType::OUTLINE,
+				.color = glm::vec4(1.0, 1.0, 1.0, glm::sin(VMDE->frame_count * 0.1) * 0.2 + 0.6),
+			};
+			trex->instanceRenderText(
+				&opt,
+				gui_2d_projection,
+				glm::mat4(1.0),
+				glm::translate(glm::mat4(1.0), glm::vec3(aspect_ratio - 0.35, 0.94, 0.0))
+			);
+		}
 
 		if (SceneManager::render_debug_info) {
 			char info[64];
@@ -338,20 +346,27 @@ namespace VM76 {
 				hand_id,
 				map.map->tidQuery(obj->pos.x, obj->pos.y, obj->pos.z)
 			);
+			TextRenderer::BakeOptions opt = {
+				.text = info,
+				.width = 0.025,
+				.height = 0.05,
+				.decoration = TextRenderer::TextDecorationType::OUTLINE,
+				.color = glm::vec4(1.0, 1.0, 1.0, 1.0),
+			};
 			trex->instanceRenderText(
-				info, gui_2d_projection,
+				&opt,
+				gui_2d_projection,
 				glm::mat4(1.0),
-				glm::translate(glm::mat4(1.0), glm::vec3(0.01, 0.88, 0.0)),
-				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+				glm::translate(glm::mat4(1.0), glm::vec3(0.01, 0.88, 0.0))
 			);
 			sprintf(info, "Pointer pos: (%.0f, %.0f, %.0f)",
 				obj->pos.x, obj->pos.y, obj->pos.z
 			);
 			trex->instanceRenderText(
-				info, gui_2d_projection,
+				&opt,
+				gui_2d_projection,
 				glm::mat4(1.0),
-				glm::translate(glm::mat4(1.0), glm::vec3(0.01, 0.82, 0.0)),
-				0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+				glm::translate(glm::mat4(1.0), glm::vec3(0.01, 0.82, 0.0))
 			);
 		}
 		VMSC::enable_depth_test();

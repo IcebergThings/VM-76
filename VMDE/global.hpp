@@ -405,24 +405,18 @@
 			SHADOW,
 			OUTLINE,
 		};
+		struct BakeOptions {
+			const char* text;
+			float width, height;
+			TextDecorationType decoration;
+			glm::vec4 color;
+		};
 		TextRenderer();
-		void BakeText(
-			const char* text,
-			float width, float height,
-			TextDecorationType decoration,
-			glm::vec4 color
-		);
+		void BakeText(const BakeOptions* options);
 		void render();
 		void instanceRenderText(
-			const char* text,
-			glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-			float width, float height, TextDecorationType decoration
-		);
-		void instanceRenderText(
-			const char* text,
-			glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-			float width, float height, TextDecorationType decoration,
-			glm::vec4 color
+			const BakeOptions* options,
+			glm::mat4 projection, glm::mat4 view, glm::mat4 transform
 		);
 	};
 

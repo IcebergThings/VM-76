@@ -32,15 +32,10 @@ TextRenderer::TextRenderer() {
 	check_gl_error;
 }
 
-void TextRenderer::BakeText(
-	const char* text,
-	float width, float height,
-	TextDecorationType decoration,
-	glm::vec4 color
-) {
-	int length = strlen(text);
+void TextRenderer::BakeText(const BakeOptions* opt) {
+	int len = strlen(opt->text);
 	int vtx_stride, itx_stride;
-	switch (decoration) {
+	switch (opt->decoration) {
 	case NONE:
 		vtx_stride = 4;
 		itx_stride = 6;
@@ -54,13 +49,13 @@ void TextRenderer::BakeText(
 		itx_stride = 30;
 		break;
 	}
-	TextVertex* vtx = new TextVertex[vtx_stride * length];
-	GLuint* itx = new GLuint[itx_stride * length];
+	TextVertex* vtx = new TextVertex[vtx_stride * len];
+	GLuint* itx = new GLuint[itx_stride * len];
 
 	float lbx = 0.0f;
 
-	for (int i = 0; i < length; i++) {
-		char c = text[i];
+	for (int i = 0; i < len; i++) {
+		char c = opt->text[i];
 		const float w = 1 / 32.0f;
 		const float h = 1 / 8.0f;
 
@@ -71,31 +66,31 @@ void TextRenderer::BakeText(
 
 		TextVertex* vtxi = vtx + i * vtx_stride;
 		GLuint* itxi = itx + i * itx_stride;
-		#define ADD_VERTICES(j, ox, oy, r, g, b, a) do { \
-			vtxi[(j) + 0] = {{lbx         + (ox),        + (oy), .0}, {r, g, b, a}, {stx    , sty + h}}; \
-			vtxi[(j) + 1] = {{lbx         + (ox), height + (oy), .0}, {r, g, b, a}, {stx    , sty    }}; \
-			vtxi[(j) + 2] = {{lbx + width + (ox), height + (oy), .0}, {r, g, b, a}, {stx + w, sty    }}; \
-			vtxi[(j) + 3] = {{lbx + width + (ox),        + (oy), .0}, {r, g, b, a}, {stx + w, sty + h}}; \
+		#define ADD_VERTICES(j, ox, oy, color) do { \
+			vtxi[(j) + 0] = {{lbx         + (ox),        + (oy), .0}, color, {stx    , sty + h}}; \
+			vtxi[(j) + 1] = {{lbx         + (ox), height + (oy), .0}, color, {stx    , sty    }}; \
+			vtxi[(j) + 2] = {{lbx + width + (ox), height + (oy), .0}, color, {stx + w, sty    }}; \
+			vtxi[(j) + 3] = {{lbx + width + (ox),        + (oy), .0}, color, {stx + w, sty + h}}; \
 		} while (false);
 		#define ADD_INDEICES(j, a, b, c) do { \
 			itxi[(j) + 0] = i * vtx_stride + (a); \
 			itxi[(j) + 1] = i * vtx_stride + (b); \
 			itxi[(j) + 2] = i * vtx_stride + (c); \
 		} while (false);
-		ADD_VERTICES(0, 0, 0, color.r, color.g, color.b, color.a);
+		ADD_VERTICES(0, 0, 0, {opt->color.r, opt->color.g, opt->color.b, opt->color.a});
 		// sd = shadow distance
 		float sd = 0.0016 * (float) VMDE->width / (float) VMDE->height;
 		switch (decoration) {
 		case NONE:
 			break;
 		case SHADOW:
-			ADD_VERTICES(4, sd, -sd, 0.0, 0.0, 0.0, 0.0 * 0.8);
+			ADD_VERTICES(4, +sd, -sd, {0.0, 0.0, 0.0, 0.8});
 			break;
 		case OUTLINE:
-			ADD_VERTICES( 4, +sd, +sd, 0.0, 0.0, 0.0, (color.a * 0.3));
-			ADD_VERTICES( 8, +sd, -sd, 0.0, 0.0, 0.0, (color.a * 0.3));
-			ADD_VERTICES(12, -sd, +sd, 0.0, 0.0, 0.0, (color.a * 0.3));
-			ADD_VERTICES(16, -sd, -sd, 0.0, 0.0, 0.0, (color.a * 0.3));
+			ADD_VERTICES( 4, +sd, +sd, {0.0, 0.0, 0.0, color.a * 0.3});
+			ADD_VERTICES( 8, +sd, -sd, {0.0, 0.0, 0.0, color.a * 0.3});
+			ADD_VERTICES(12, -sd, +sd, {0.0, 0.0, 0.0, color.a * 0.3});
+			ADD_VERTICES(16, -sd, -sd, {0.0, 0.0, 0.0, color.a * 0.3});
 			break;
 		}
 		switch (decoration) {
@@ -124,8 +119,8 @@ void TextRenderer::BakeText(
 		}
 	}
 
-	obj->data.vtx_c = length * vtx_stride;
-	obj->data.ind_c = length * itx_stride;
+	obj->data.vtx_c = len * vtx_stride;
+	obj->data.ind_c = len * itx_stride;
 	obj->data.vertices = (GLuint*) vtx;
 	obj->data.indices = itx;
 
@@ -144,32 +139,14 @@ void TextRenderer::render() {
 }
 
 void TextRenderer::instanceRenderText(
-	const char* text,
-	glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-	float width, float height, TextDecorationType decoration
+	const BakeOptions* opt,
+	glm::mat4 projection, glm::mat4 view, glm::mat4 transform
 ) {
 	texshader.ProjectionView(projection, view);
 
-	glm::mat4 foo[1] = {transform};
 	obj->data.mat_c = 1;
-	obj->data.mat = (GLuint*) &foo[0];
-	BakeText(text, width, height, decoration, glm::vec4(1.0));
-
-	render();
-}
-
-void TextRenderer::instanceRenderText(
-	const char* text,
-	glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
-	float width, float height, TextDecorationType decoration,
-	glm::vec4 color
-) {
-	texshader.ProjectionView(projection, view);
-
-	glm::mat4 foo[1] = {transform};
-	obj->data.mat_c = 1;
-	obj->data.mat = (GLuint*) &foo[0];
-	BakeText(text, width, height, decoration, color);
+	obj->data.mat = (GLuint*) &transform;
+	BakeText(opt);
 
 	render();
 }
