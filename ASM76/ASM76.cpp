@@ -14,13 +14,13 @@ namespace ASM76 {
 	// ● 初始化
 	//-------------------------------------------------------------------------
 	void init() {
-		printf("Init ASM76 environment\n");
+		puts("Init ASM76 environment");
 		// nothing to do here now
 	}
 	//-------------------------------------------------------------------------
 	// ● 结束处理
 	//-------------------------------------------------------------------------
 	void terminate() {
-		printf("Terminate ASM76 environment\n");
+		puts("Terminate ASM76 environment");
 	}
 }

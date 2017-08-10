@@ -15,6 +15,8 @@ namespace VM76 {
 		map = (TileData*) malloc(sizeof(TileData) * w * h * l);
 		width = w; length = l; height = h;
 
+		std::srand(std::time(0));
+
 		if (!read_map()) generate_V1();
 	}
 
@@ -29,7 +31,7 @@ namespace VM76 {
 
 	bool DataMap::read_map() {
 		log("Reading map");
-		VBinaryFileReader* fr = new VBinaryFileReader("map.dat");
+		V::BinaryFileReader* fr = new V::BinaryFileReader("map.dat");
 		if (!fr->f) return false;
 
 		int map_version = fr->read_i32();
@@ -50,7 +52,7 @@ namespace VM76 {
 	}
 
 	void DataMap::save_map() {
-		VBinaryFileWriter* fw = new VBinaryFileWriter("map.dat");
+		V::BinaryFileWriter* fw = new V::BinaryFileWriter("map.dat");
 		// 版本号
 		fw->write_i32(100);
 		// 文件头标识
@@ -67,9 +69,12 @@ namespace VM76 {
 		log("Map saved");
 	}
 
+	#include <ctime>
+
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);
 
+		float seed = std::rand() * 0.00001f;
 		for (int i = 0; i < width; i++) {
 			if (i % (width / 12) == 0)
 				log("Generated %d%% (%d / %d)",
@@ -78,31 +83,34 @@ namespace VM76 {
 				);
 
 			for (int j = 0; j < length; j++) {
-				glm::vec2 coord = glm::vec2(i, j) * 0.006f;
+				glm::vec2 coord = glm::vec2(i, j) * 0.04f;
 
-				const glm::mat2 rotate = glm::mat2(1.4, 1.1, -1.2, 1.4);
+				const glm::mat2 rotate = glm::mat2(0.8387, -0.5446, 0.5446, 0.8387);
 
 				glm::vec2 dir = glm::vec2(1.0, 0.1);
-				float n = glm::sin(glm::perlin(coord * dir)) * 0.5f; coord *= 1.2f;dir = dir * rotate; coord += dir * 0.3f;
-				dir += glm::vec2(n * 0.8, 0.0);
-				n += glm::perlin(coord * dir) * 0.45f; dir = dir * rotate;
-				dir += glm::vec2(n * 0.6, 0.0);
-				n += glm::perlin(coord * dir) * 0.35f; dir = dir * rotate;
-				dir += glm::vec2(n * 0.4, 0.0);
-				n += glm::perlin(coord * dir) * 0.25f; dir = dir * rotate;
-				dir += glm::vec2(n * 0.2, 0.0);
-				coord *= 3.01f; dir = dir * rotate; coord += dir * 0.6f;
-				n += glm::perlin(coord) * 0.125f;
+				float n = glm::sin(glm::perlin(coord * dir + seed)) * 0.5f; dir = rotate * dir;
+				coord += n * dir * 0.6f;
+				n += glm::perlin(coord * dir + seed) * 0.45f; dir = rotate * dir;
+				coord += n * dir * 0.5f;
+				n += glm::perlin(coord * dir + seed) * 0.35f; dir = rotate * dir;
+				coord += n * dir * 0.4f;
+				n += glm::perlin(coord * dir + seed) * 0.25f; dir = rotate * dir;
+				coord += n * dir * 0.3f;
+				n += glm::perlin(coord + seed) * 0.125f;
 
-				n = n + 0.5f;
-
-				n = glm::clamp(n * 0.7f + 0.2f, 1.0f / (float) TERRIAN_MAX_HEIGHT, 1.0f);
+				n = glm::clamp(n * 0.4f + 0.4f, 1.0f / (float) TERRIAN_MAX_HEIGHT, 1.0f);
 				int h = n * TERRIAN_MAX_HEIGHT;
 				int ho = h;
-				h = glm::clamp(0, h, height);
+				h = glm::clamp(h, 0, height);
 
+				float dirt_layers = glm::perlin(coord * 5.0f + seed) * 2.0f;
 				for (int y = 0; y < h; y++) {
-					map[calcIndex(i,y,j)].tid = (y == ho - 1) ? Grass : Stone;
+					if (y == ho - 1)
+						map[calcIndex(i,y,j)].tid = Grass;
+					else if (y >= ho - 2 - dirt_layers && y < ho - 1)
+						map[calcIndex(i,y,j)].tid = Dirt;
+					else
+						map[calcIndex(i,y,j)].tid = Stone;
 				}
 				for (int y = h; y < height; y++) {
 					map[calcIndex(i,y,j)].tid = Air;
@@ -142,7 +150,14 @@ namespace VM76 {
 		log("Baking Chunks: 100%%, map initialized");
 		log("Preparing render command buffer");
 
-		int max_count = w * l * h;
+		cmd_buffer = NULL;
+		update_render_buffer();
+	}
+
+	void Map::update_render_buffer() {
+		if (cmd_buffer) XE(delete, cmd_buffer);
+
+		int max_count = width * length * height;
 		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
 		ASM76::Instruct* cmd_buf = (ASM76::Instruct*) malloc(size);
 		memset(cmd_buf, 0x0, size);
@@ -159,7 +174,7 @@ namespace VM76 {
 		}
 		size = 0x10 + (real_count + 1) * sizeof(GDrawable*);
 		cmd_buf = (ASM76::Instruct*) realloc(cmd_buf, size);
-		cmd_buffer = new CmdList({{cmd_buf, size}});
+		cmd_buffer = new CmdList({{.size = size, .instruct = cmd_buf}});
 	}
 
 	void Map::place_block(glm::vec3 dir, int tid) {
@@ -169,6 +184,8 @@ namespace VM76 {
 
 		map->map[map->calcIndex(dir)].tid = tid;
 		chunks[calcChunkIndex(cx,cy,cz)]->bake_tiles();
+
+		update_render_buffer();
 	}
 
 	void Map::render() {
@@ -180,10 +197,43 @@ namespace VM76 {
 			VMDE_Dispose(delete, chunks[x]);
 		}
 		XE(delete[], chunks);
-
-		log("Saving map");
-		map->save_map();
-
 		XE(delete, cmd_buffer);
 	}
+
+	PhysicsMap::PhysicsMap(Map* m) {
+		this->robj = m;
+
+		this->clipping_shell = {glm::vec3(0.0), glm::vec3(128.0)};
+	}
+
+	BoxCollider** PhysicsMap::get_collide_iterator(OBB* b) {
+		int total = (1.0 + b->size.x) * (1.0 + b->size.y) * (1.0 + b->size.z);
+		XE(free, buf);
+		buf = (BoxCollider**) malloc(total * sizeof(BoxCollider*));
+		int count = 0;
+		// Get target chunk
+		for (int x0 = b->position.x; x0 <= b->position.x + b->size.x; x0++) {
+			for (int y0 = b->position.y; y0 <= b->position.y + b->size.y; y0++) {
+				for (int z0 = b->position.z; z0 <= b->position.z + b->size.z; z0++) {
+					if (robj->map->map[robj->map->calcIndex(x0, y0, z0)].tid != 0) {
+						BoxCollider* collider = new BoxCollider(
+							glm::vec3(x0, y0, z0),
+							glm::vec3(1.0, 0.0, 0.0),
+							glm::vec3(0.0, 1.0, 0.0),
+							glm::vec3(0.0, 0.0, 1.0)
+						);
+						buf[count] = collider;
+						count ++;
+					}
+				}
+			}
+		}
+
+		return buf;
+	}
+
+	PhysicsMap::~PhysicsMap() {
+		XE(free, buf);
+	}
+
 }

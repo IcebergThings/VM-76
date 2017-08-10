@@ -20,7 +20,7 @@ namespace VM76 {
 		NULL
 	};
 
-	SkyBox::SkyBox(const struct Res::CubeMapFiles files) {
+	SkyBox::SkyBox(const struct Res::CubeMapFiles files, Camera* cam) {
 		tex = new Res::CubeMap(files,NULL);
 
 		gbuffers_sky = new Shaders();
@@ -58,11 +58,13 @@ namespace VM76 {
 		obj->data.mat_c = 1;
 		obj->data.mat =(GLuint*) &mat;
 		obj->fbind();
+
+		this->cam = cam;
 	}
 
 	void SkyBox::render() {
 		gbuffers_sky->use();
-		gbuffers_sky->ProjectionView(projection, view_camera);
+		gbuffers_sky->ProjectionView(cam->Projection, cam->view_camera);
 		gbuffers_sky->set_texture_cube("cubemap0", tex, 0);
 
 		obj->render();

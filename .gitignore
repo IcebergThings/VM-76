@@ -18,6 +18,10 @@ ASM76/VMtest
 */build/windows_libs.txt
 windows_path.bat
 
+# mysterious onepiece
+one.cxx
+
 # awesome data
 output.log
 VMGS/map.dat
+*.obj

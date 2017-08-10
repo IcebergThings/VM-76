@@ -7,6 +7,18 @@
 #include "tile.hpp"
 
 namespace VM76 {
+	bool Tiles::is_transperant(int tid) {
+		return Air == tid || Glass == tid;
+	}
+
+	bool Tiles::is_opaque(int tid) {
+		return !(Air == tid || Glass == tid);
+	}
+
+	bool Tiles::is_valid(int tid) {
+		return tid != Air;
+	}
+
 	SimpleCubeTile::SimpleCubeTile(int tid) {
 		int x = tid % 16;
 		int y = tid / 16;
@@ -131,8 +143,8 @@ namespace VM76 {
 	}
 
 	void Tiles::bake(
-		float x, float y, float z, 
-		Vertex* v, GLuint* ix, 
+		float x, float y, float z,
+		Vertex* v, GLuint* ix,
 		int *vcount, int *icount, int ind)
 	{
 		for (int i = 0; i < 4; i++) {

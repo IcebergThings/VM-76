@@ -1,7 +1,7 @@
 //=============================================================================
 // ■ instructions.hpp
 //-----------------------------------------------------------------------------
-//   指令注册表。通常在包含时会对宏I(x, ta, tb)进行处理。
+//   指令注册表。必须在包含时定义宏I(x, ta, tb)。本文件则负责清理这个宏。
 //=============================================================================
 
 // I(opcode, operand 1 type, operand 2 type) - Instruction
@@ -44,11 +44,15 @@ I(PUSH, TREG, TIMM) I(POP_, TREG, TIMM)
 
 // BIOS Instructions
 I(INTX, TIMM, TADD)
+I(INTR, TREG, TADD)
 
 // 自带清理宏
 #undef I
-#undef TNUL
-#undef TIMM
-#undef TADD
-#undef TREG
+#ifdef TNUL
+	// in case of some really annoying preprocessors
+	#undef TNUL
+	#undef TIMM
+	#undef TADD
+	#undef TREG
+#endif
 // 这个REG宏名字重复了，又被坑了一回。

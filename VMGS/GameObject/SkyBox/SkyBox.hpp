@@ -7,6 +7,8 @@
 #ifndef _INCLUDE_SKYBOX_H
 #define _INCLUDE_SKYBOX_H
 
+#include "../Camera/Camera.hpp"
+
 namespace VM76 {
 
 	typedef struct struct_SimpleVertex { glm::vec3 pos; } SimpleVertex;
@@ -21,9 +23,10 @@ namespace VM76 {
 	private:
 		SimpleVertex* vtx;
 		GLuint* itx;
+		Camera* cam;
 
 	public:
-		SkyBox(const struct Res::CubeMapFiles files);
+		SkyBox(const struct Res::CubeMapFiles files, Camera* cam);
 		void render();
 		~SkyBox();
 	};

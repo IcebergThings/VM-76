@@ -1,7 +1,7 @@
 //=============================================================================
 // ■ CommandList.cpp
 //-----------------------------------------------------------------------------
-//   VMDE中渲染指令列表。
+//   VMDE提供的渲染指令。
 //=============================================================================
 
 #include "global.hpp"
@@ -47,9 +47,8 @@ static uint32_t CL_GDrawable_batchOnce(uint8_t* input) {
 }
 
 static ASM76::BIOS_call func_list[] = {
-	#define add(x) &CL_##x,
+	#define INT(i, x) [i] = &CL_##x,
 	#include "CommandList.hpp"
-	#undef add
 };
 static int function_count = ARRAY_SIZE(func_list) + 1;
 

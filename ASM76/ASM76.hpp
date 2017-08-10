@@ -4,12 +4,14 @@
 
 #include <cstdlib>
 #include <cstdint>
+#include <cinttypes>
 #include <cctype>
 #include <cstring>
 #include <cstdio>
+#include <mutex>
+using namespace std;
 
 #include "VLib/V.hpp"
-#undef error
 
 #ifndef _INCLUDE_ASM76_H
 #define _INCLUDE_ASM76_H
@@ -21,6 +23,7 @@ namespace ASM76 {
 	enum InstructionOpcode {
 		#define I(x, a, b) x,
 		#include "instructions.hpp"
+		RAWD = 512,
 	};
 	enum InstructionOperandType {
 		NONE,
@@ -34,8 +37,8 @@ namespace ASM76 {
 		uint32_t b;
 	};
 	struct Program {
+		size_t size; // should be in bytes, cleanup required
 		Instruct* instruct;
-		size_t size; // in byte
 	};
 	//-------------------------------------------------------------------------
 	// ● 全局变量
@@ -58,7 +61,7 @@ namespace ASM76 {
 	private:
 		const char* original_prg;
 		const char* prg;
-		VVector<Tag> tags;
+		V::Vector<Tag> tags;
 	public:
 		Assembler(const char*);
 		void scan();
@@ -91,6 +94,13 @@ namespace ASM76 {
 		void append_register(char* line, uint32_t r);
 		void append_address(char* line, uint32_t a);
 	};
+	//-------------------------------------------------------------------------
+	// ● 目标代码（object code）读写
+	//-------------------------------------------------------------------------
+	namespace ObjectCode {
+		Program read_file(const char* filename);
+		bool write_file(const char* filename, Program program);
+	}
 	//-------------------------------------------------------------------------
 	// ● BIOS类
 	//-------------------------------------------------------------------------

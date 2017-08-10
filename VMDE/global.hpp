@@ -91,6 +91,18 @@
 			(pointer) = NULL; \
 		} \
 	} while (false)
+	#define SuperXE(method, pointer) do { \
+		switch ((uintptr_t) pointer) { \
+		case 0xbaadf00d: \
+			(pointer) = NULL; \
+			[[fallthrough]]; \
+		case 0: \
+			break; \
+		default: \
+			method(pointer); \
+			(pointer) = NULL; \
+		} \
+	} while (false)
 	// VMDE_Dispose - 一键销毁宏魔法
 	#define VMDE_Dispose(method, object) do { \
 		if (object) { \
@@ -153,8 +165,6 @@
 	void main_draw_start();
 	void main_draw_end();
 	void main_set_brightness(float b);
-
-	extern glm::mat4 projection, view, view_camera;
 	//-------------------------------------------------------------------------
 	// ● RenderObject.cpp
 	//-------------------------------------------------------------------------
@@ -229,6 +239,9 @@
 		void set_vec4(const char* identifier, glm::vec4 value);
 		void set_texture(const char* identifier, Res::Texture* tex, GLuint index);
 		void set_texture_cube(const char* identifier, Res::CubeMap* tex, GLuint index);
+
+		bool set_uniform_block(const char* identifier, GLuint* UBO, size_t size, GLuint type);
+		void update_uniform_block(GLuint UBO, size_t size, GLuint* buf);
 
 		void ProjectionView(glm::mat4 projection, glm::mat4 view);
 
@@ -440,11 +453,10 @@
 	//-------------------------------------------------------------------------
 	// ● CommandList
 	//-------------------------------------------------------------------------
-	#define add(x) CLEnum_##x,
 	enum CLEnum {
-	#include "CommandList.hpp"
+		#define INT(i, x) CLEnum_##x = i,
+		#include "CommandList.hpp"
 	};
-	#undef add
 
 	class CmdList {
 	private:

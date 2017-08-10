@@ -8,6 +8,7 @@
 #include "Cube/cube.hpp"
 #include "GLAxis/axis.hpp"
 #include "TiledMap/tiled_map.hpp"
+#include "Camera/Camera.hpp"
 
 namespace VM76 {
 	class GObject {

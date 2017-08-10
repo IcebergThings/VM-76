@@ -16,11 +16,11 @@ Windows
 
 ## 参考编译参数
 
-这些是我电脑上的编译参数，更新于 426029b。仅供参考，但保证能在我的电脑上编译通过。使用时需要根据自己的情况修改其中的路径，因为你肯定不会有个Y:盘的。
+这些是我电脑上的编译参数，更新于 5e90b97。仅供参考，但保证能在我的电脑上编译通过。使用时需要根据自己的情况修改其中的路径，因为你肯定不会有个Y:盘的。
 
 ### ASM76/build/windows_flags.txt
 ```
--isystem Y:\glm-0.9.7.5
+-isystem Y:\lib\glm-0.9.8.4
 ```
 
 ### ASM76/build/windows_libs.txt
@@ -30,21 +30,21 @@ Windows
 ```
 -DGLFW_DLL
 -DGLEW_STATIC
--isystem Y:\glfw-3.2.bin.WIN32\include
--isystem Y:\glew-2.0.0\include
--isystem Y:\glm-0.9.7.5
--isystem Y:\portaudio\include
--isystem Y:\libogg-1.3.2\include
--isystem Y:\libvorbis-1.3.5\include
--isystem Y:\SOIL\src
+-isystem Y:\lib\glfw-3.2.bin.WIN32\include
+-isystem Y:\lib\glew-2.0.0\include
+-isystem Y:\lib\glm-0.9.8.4
+-isystem Y:\lib\portaudio\include
+-isystem Y:\lib\libogg-1.3.2\include
+-isystem Y:\lib\libvorbis-1.3.5\include
+-isystem Y:\lib\SOIL\src
 ```
 
 ### VMDE/build/windows_libs.txt
 ```
-Y:\SOIL\lib\libSOIL.a
-Y:\glew-2.0.0-src\src\glew.a
--LY:\project76-lib
--LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
+Y:\lib\SOIL\lib\libSOIL.a
+Y:\lib\glew-2.0.0-src\src\glew.a
+-LY:\my\project76-lib
+-LY:\lib\glfw-3.2.bin.WIN32\lib-mingw-w64
 -lglfw3dll
 -lopengl32
 -lportaudio_x86
@@ -55,22 +55,22 @@ Y:\glew-2.0.0-src\src\glew.a
 ```
 -DGLFW_DLL
 -DGLEW_STATIC
--isystem Y:\glfw-3.2.bin.WIN32\include
--isystem Y:\glew-2.0.0\include
--isystem Y:\glm-0.9.7.5
--isystem Y:\portaudio\include
--isystem Y:\libogg-1.3.2\include
--isystem Y:\libvorbis-1.3.5\include
--isystem Y:\SOIL\src
+-isystem Y:\lib\glfw-3.2.bin.WIN32\include
+-isystem Y:\lib\glew-2.0.0\include
+-isystem Y:\lib\glm-0.9.8.4
+-isystem Y:\lib\portaudio\include
+-isystem Y:\lib\libogg-1.3.2\include
+-isystem Y:\lib\libvorbis-1.3.5\include
+-isystem Y:\lib\SOIL\src
 -I..\VMDE
 ```
 
 ### VMGS/build/windows_libs.txt
 ```
-Y:\SOIL\lib\libSOIL.a
-Y:\glew-2.0.0-src\src\glew.a
--LY:\project76-lib
--LY:\glfw-3.2.bin.WIN32\lib-mingw-w64
+Y:\lib\SOIL\lib\libSOIL.a
+Y:\lib\glew-2.0.0-src\src\glew.a
+-LY:\my\project76-lib
+-LY:\lib\glfw-3.2.bin.WIN32\lib-mingw-w64
 -lglfw3dll
 -lopengl32
 -lportaudio_x86
@@ -79,5 +79,5 @@ Y:\glew-2.0.0-src\src\glew.a
 
 ### windows_path.bat
 ```batch
-path Y:\mingw32\bin;Y:\project76-lib
+path Y:\bin\mingw32\bin;Y:\my\project76-lib
 ```

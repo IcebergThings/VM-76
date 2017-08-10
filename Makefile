@@ -20,7 +20,8 @@ else
 	$(RM) VMGS/output.log
 endif
 
-run: all
+run:
+	$(MAKE) $(PROJECTS) MODE=test
 ifeq "$(PLATFORM)" "msw"
 	call windows_path.bat && cd VMGS && VMGS.exe
 else
@@ -28,7 +29,7 @@ else
 endif
 
 debug:
-	$(MAKE) $(PROJECTS) DEBUG=1
+	$(MAKE) $(PROJECTS) MODE=debug
 ifeq "$(PLATFORM)" "msw"
 	call windows_path.bat && cd VMGS && gdb VMGS.exe
 else

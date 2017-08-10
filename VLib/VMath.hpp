@@ -4,7 +4,7 @@
 //   提供一些标准库里没有的数学函数。
 //=============================================================================
 
-namespace VMath {
+namespace Math {
 	//-------------------------------------------------------------------------
 	// ● 常量
 	//-------------------------------------------------------------------------
@@ -14,10 +14,10 @@ namespace VMath {
 	template <class T> constexpr T pi =
 		(T) 3.141592653589793115997963468544185161590576171875;
 	// 然后弄出一堆π
-	const float PIf = pi<float>;
-	const double PI = pi<double>;
-	const double PId = PI;
-	const long double PIl = pi<long double>;
+	#define PI PId
+	#define PIf ::V::Math::pi<float>
+	#define PId ::V::Math::pi<double>
+	#define PIl ::V::Math::pi<long double>
 	//-------------------------------------------------------------------------
 	// ● 正弦值表系统™
 	//   为了避免反复计算，将正弦值存储在这里。
@@ -39,9 +39,9 @@ namespace VMath {
 			return value[i];
 		}
 	};
-	// 然后就实例化一个实例出来
-	#define VMATH_SINE_TABLE_SIZE ((size_t) 256)
-	const SineTable<float, VMATH_SINE_TABLE_SIZE> sine_table;
+	// 然后就实例化唯一的一个实例出来
+	const size_t SINE_TABLE_SIZE = 256;
+	const SineTable<float, SINE_TABLE_SIZE> sine_table;
 	//-------------------------------------------------------------------------
 	// ● clamp
 	//-------------------------------------------------------------------------

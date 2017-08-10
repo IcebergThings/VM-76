@@ -12,14 +12,7 @@
 #ifndef _INCLUDE_V_HPP
 #define _INCLUDE_V_HPP
 
-#ifndef error
-	#include <cstdio>
-	#define error(x) do { \
-		fprintf(stderr, "%s\n", x); \
-		perror("perror()"); \
-	} while (false)
-#endif
-
+#include "VError.hpp"
 #include "VExplosion.hpp"
 #include "VEndian.hpp"
 namespace V {
@@ -30,6 +23,4 @@ namespace V {
 	#include "VBinaryFileWriter.hpp"
 }
 
-// 自杀式命名空间
-using namespace V;
 #endif

@@ -8,6 +8,7 @@
 #define _INCLUDE_TILED_MAP_H
 
 #include "tile.hpp"
+#include "../../Physics/Physics.hpp"
 
 namespace VM76 {
 
@@ -78,7 +79,7 @@ namespace VM76 {
 
 	class Map : public RenderObject {
 	private:
-		CmdList* cmd_buffer;
+		CmdList* cmd_buffer = NULL;
 
 	public:
 		DataMap* map = NULL;
@@ -90,6 +91,7 @@ namespace VM76 {
 	public:
 		Map(int w, int h, int l, int csize);
 		void place_block(glm::vec3 dir, int tid);
+		void update_render_buffer();
 		void render();
 
 		inline int calcChunkIndex(int x, int y, int z) {
@@ -97,6 +99,18 @@ namespace VM76 {
 		}
 
 		~Map();
+	};
+
+	class PhysicsMap : public PhyObject {
+	private:
+		Map* robj;
+		BoxCollider** buf = NULL;
+
+	public:
+		BoxCollider** get_collide_iterator(OBB* b);
+
+		PhysicsMap(Map* m);
+		~PhysicsMap();
 	};
 }
 

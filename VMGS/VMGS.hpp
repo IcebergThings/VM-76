@@ -7,6 +7,7 @@
 
 #include "GameObject/GameObject.hpp"
 #include "Control/control.hpp"
+#include "Physics/Physics.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
 namespace VM76 {
@@ -50,6 +51,7 @@ namespace VM76 {
 
 		Cube block_pointer = Cube(1);
 		Tiles* clist[16];
+		Camera* cam;
 
 		int hand_id = 1;
 
@@ -60,6 +62,8 @@ namespace VM76 {
 		RenderBuffer* postBuffer;
 
 	public:
+		PhyEngine* physics;
+		PhysicsMap* phy_map;
 		Map map = Map(8, 8, 8, 32);
 
 	public:

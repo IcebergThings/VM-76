@@ -21,14 +21,3 @@ printf
 void* | %p
 size_t | %zu
 ptrdiff_t | %td
-
-内存
-----
-
-这些内存申请和释放函数需要这样配对使用。
-
-申请 | 释放
----- | ----
-`T* a = (T*) malloc(233);` | `free(a)`
-`T* a = new T;` | `delete a;`
-`T* a = new T[233];` | `delete[] a;`

@@ -13,6 +13,7 @@ namespace VM76 {
 	// There can be multiple controls.
 	size_t ctl_count, ctl_index;
 	Control* ctls[16] = {NULL};
+
 	SkyBox* sky;
 
 	GDrawable* hand_block;
@@ -32,6 +33,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	EditorMainScene::EditorMainScene() {
 		obj = new GObject();
+		physics = new PhyEngine();
 
 		hand_block = new GDrawable(NULL, NULL);
 		hand_block->data.vertices = (GLuint*)new Vertex[4 * 6];
@@ -60,13 +62,6 @@ namespace VM76 {
 		// Albedo, Normal, Lighting, Composite
 		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 4, gbuffers_type);
 
-		projection = glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f);
-		view = glm::lookAt(
-			glm::vec3(0.0, 2.6, 0.0),
-			glm::vec3(0.0, 0.0, 0.0),
-			glm::vec3(0.0, 1.0, 0.0)
-		);
-
 		// Set up hand block indicator's matrix
 		glm::mat4 block_display = glm::translate(
 			glm::mat4(1.0),
@@ -74,11 +69,11 @@ namespace VM76 {
 		);
 		block_display = glm::scale(block_display, glm::vec3(0.1f));
 		block_display = glm::rotate(block_display,
-			VMath::PIf / 4.0f,
+			PIf / 4.0f,
 			glm::vec3(1.0, 0.0, 0.0)
 		);
 		block_display = glm::rotate(block_display,
-			VMath::PIf / 4.0f,
+			PIf / 4.0f,
 			glm::vec3(0.0, 1.0, 0.0)
 		);
 
@@ -92,17 +87,20 @@ namespace VM76 {
 		hand_block->fbind();
 		block_pointer.obj->data.mat_c = 1;
 
+
+		cam = new Camera(glm::vec3(0.0), glm::vec3(0.0), glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f));
+
 		ctl_index = 2; // initially FirstPersonView
 		ctl_count = 3;
 		DemoView* ctl0 = new DemoView();
-		ctl0->init_control();
+		ctl0->init_control(cam);
 		ctls[0] = ctl0;
 		GodView* ctl1 = new GodView();
-		ctl1->init_control();
-		ctl1->cam.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctl1->init_control(cam);
+		ctl1->cam->wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[1] = ctl1;
 		FirstPersonView* ctl2 = new FirstPersonView();
-		ctl2->init_control();
+		ctl2->init_control(cam);
 		ctl2->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[2] = ctl2;
 
@@ -113,7 +111,10 @@ namespace VM76 {
 			"../Media/skybox/skybox_3.png",
 			"../Media/skybox/skybox_4.png",
 			"../Media/skybox/skybox_5.png"
-		});
+		}, cam);
+
+		phy_map = new PhysicsMap(&map);
+		physics->add_obj(phy_map);
 	}
 	//-------------------------------------------------------------------------
 	// ● 按键回调
@@ -123,13 +124,6 @@ namespace VM76 {
 
 	void EditorMainScene::key_callback(int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == (n) && action == GLFW_PRESS
-		if (PRESS(GLFW_KEY_A)) obj->move(glm::vec3(-1.0, 0.0, 0.0));
-		if (PRESS(GLFW_KEY_D)) obj->move(glm::vec3(1.0, 0.0, 0.0));
-		if (PRESS(GLFW_KEY_W)) obj->move(glm::vec3(0.0, 0.0, -1.0));
-		if (PRESS(GLFW_KEY_S)) obj->move(glm::vec3(0.0, 0.0, 1.0));
-		if (PRESS(GLFW_KEY_UP)) obj->move(glm::vec3(0.0, 1.0, 0.0));
-		if (PRESS(GLFW_KEY_DOWN)) obj->move(glm::vec3(0.0, -1.0, 0.0));
-
 		if (PRESS(GLFW_KEY_F5)) {
 			if (mods & GLFW_MOD_SHIFT) {
 				ctl_index--;
@@ -168,16 +162,21 @@ namespace VM76 {
 			hand_block->update();
 		}
 
-		if (PRESS(GLFW_KEY_SPACE)) {
+		if (PRESS(GLFW_KEY_R)) {
 			map.place_block(obj->pos, hand_id);
 		}
 
 		if (key == GLFW_KEY_O) {
 			if (action == GLFW_PRESS) {
-				projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
+				cam->Projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
 			} else if (action == GLFW_RELEASE) {
-				projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
+				cam->Projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
 			}
+		}
+
+		if (PRESS(GLFW_KEY_Z)) {
+			log("Saving map");
+			map.map->save_map();
 		}
 
 		static Audio::Channel_Vorbis* loop = NULL;
@@ -218,7 +217,27 @@ namespace VM76 {
 	// ● 刷新
 	//-------------------------------------------------------------------------
 	void EditorMainScene::update() {
+		// Pick
+		//  暂时只有拣选地图Tile功能，其它的拣选可以参考RM的分layer拣选
+		glm::mat3 inverse_view = glm::inverse(glm::mat3(cam->View));
+		glm::vec3 pos = glm::normalize(inverse_view * glm::vec3(0.0, 0.0, -1.0));
+		glm::vec3 test = cam->wpos;
+
+		for (int i = 0; i < 32; i++) {
+			if (Tiles::is_valid(map.map->tidQuery(test.x, test.y, test.z))) {
+				// we got something...
+				test = test - glm::fract(test);
+				obj->pos = test;
+				break;
+			}
+
+			test += pos * 0.3f;
+		}
+
+		// Update other stuff
 		ctls[ctl_index]->update_control();
+		physics->tick();
+		cam->update();
 	}
 	//-------------------------------------------------------------------------
 	// ● 渲染
@@ -243,14 +262,14 @@ namespace VM76 {
 		glStencilMask(0xFF);
 
 		// Textured blocks rendering
-		shader_textured.ProjectionView(projection, view);
+		shader_textured.ProjectionView(cam->Projection, cam->View);
 		map.render();
 
 		// Setup uniforms
 		// Non textured rendering
 		shader_basic.use();
-		shader_basic.set_float("opaque", 0.5);
-		shader_basic.ProjectionView(projection, view);
+		shader_basic.set_float("opaque", 0.4 + 0.2 * glm::sin(VMDE->frame_count * 0.1));
+		shader_basic.ProjectionView(cam->Projection, cam->View);
 		block_pointer.mat[0] = obj->transform();
 		block_pointer.update_instance(1);
 		block_pointer.render();
@@ -266,7 +285,7 @@ namespace VM76 {
 
 		deferred_lighting.use();
 		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
-		glm::vec3 sunVec = glm::mat3(view) * glm::vec3(cos(VMath::PI * 0.25), sin(VMath::PI * 0.25), sin(VMath::PI * 0.25) * 0.3f);
+		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
 		deferred_lighting.set_vec3("sunVec", sunVec);
 		PostProcessingManager::Blit2D();
 
@@ -332,8 +351,11 @@ namespace VM76 {
 	// ● 释放
 	//-------------------------------------------------------------------------
 	EditorMainScene::~EditorMainScene() {
-		for (int i = 0; i < 16; i++) VMDE_Dispose(delete, clist[i]);
-		VMDE_Dispose(delete, trex);
-		VMDE_Dispose(delete, postBuffer);
+		XE(delete, phy_map);
+		XE(delete, physics);
+
+		for (int i = 0; i < 16; i++) XE(delete, clist[i]);
+		XE(delete, trex);
+		XE(delete, postBuffer);
 	}
 }

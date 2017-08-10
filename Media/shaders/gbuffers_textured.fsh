@@ -16,6 +16,8 @@ uniform sampler2D colortex0;
 
 void main() {
 	vec4 finalc = texture(colortex0, texcoord.st);
+	if (finalc.a < 0.5) discard;
+
 	albedo = vec4(finalc * texcolor * brightness);
 
 	normal = vec4(n * 0.5 + 0.5, 1.0);

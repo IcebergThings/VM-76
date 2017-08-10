@@ -10,7 +10,9 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
-	void DemoView::init_control() {
+	void DemoView::init_control(Camera* cam) {
+		this->cam = cam;
+
 		glfwSetInputMode(window, GLFW_STICKY_KEYS, 0);
 	}
 	//-------------------------------------------------------------------------
@@ -20,10 +22,7 @@ namespace VM76 {
 		float stime = float(VMDE->frame_count);
 		float x = 5.0f * cos(stime * 0.015f);
 		float z = 5.0f * sin(stime * 0.015f);
-		view = glm::lookAt(
-			glm::vec3(x, 3.5f, z),
-			glm::vec3(0.74f),
-			glm::vec3(0.0f, 1.0f, 0.0f)
-		);
+		cam->wpos = glm::vec3(x, 3.5f, z);
+		cam->rotate = glm::vec3(0.5, -PI * 0.5 - stime * 0.015f, 0.0);
 	}
 }

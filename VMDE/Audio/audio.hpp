@@ -57,9 +57,9 @@ namespace Audio {
 		FILE* f;
 		OggVorbis_File vf;
 		// AUDIO_VF_BUFFER_SIZE - 解码缓冲区的格数
-		// 由于VRingBuffer的实现，实际可用的格数比此数值少1。
+		// 由于V::RingBuffer的实现，实际可用的格数比此数值少1。
 		#define AUDIO_VF_BUFFER_SIZE ((size_t) 4096)
-		VRingBuffer<float, AUDIO_VF_BUFFER_SIZE> vf_buf;
+		V::RingBuffer<float, AUDIO_VF_BUFFER_SIZE> vf_buf;
 		bool eof;
 		bool loop;
 		int bitstream;

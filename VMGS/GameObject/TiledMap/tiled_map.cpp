@@ -48,7 +48,7 @@ namespace VM76 {
 
 		mount_point = wp;
 
-		obj = new GDrawable(NULL, NULL);
+		obj = NULL;
 	}
 
 	#define CHECK_EXPAND \
@@ -74,32 +74,32 @@ namespace VM76 {
 						float y0 = y - mount_point.y;
 						float z0 = z - mount_point.z;
 
-						if (map->tidQuery(x, y, z - 1) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y, z - 1))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 0);
 							count++;
 						}
-						if (map->tidQuery(x, y, z + 1) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y, z + 1))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 1);
 							count++;
 						}
-						if (map->tidQuery(x, y + 1, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y + 1, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 2);
 							count++;
 						}
-						if (map->tidQuery(x, y - 1, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x, y - 1, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 3);
 							count++;
 						}
-						if (map->tidQuery(x - 1, y, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x - 1, y, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 4);
 							count++;
 						}
-						if (map->tidQuery(x + 1, y, z) == 0) {
+						if (Tiles::is_transperant(map->tidQuery(x + 1, y, z))) {
 							CHECK_EXPAND
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 5);
 							count++;
@@ -112,14 +112,19 @@ namespace VM76 {
 		//log("%d < %d : %d < %d", vtx_c, vtx_max, ind_c, ind_max);
 		translate = glm::translate(glm::mat4(1.0), mount_point);
 
-		obj->data.vtx_c = vtx_c;
-		obj->data.ind_c = ind_c;
-		obj->data.vertices = (GLuint*)vtx;
-		obj->data.indices = ind;
-		obj->data.mat_c = 1;
-		obj->data.mat = (GLuint*) &translate;
-		obj->fbind();
 		is_valid = count > 0;
+		if (is_valid) {
+			if (!obj) obj = new GDrawable(NULL, NULL);
+			obj->data.vtx_c = vtx_c;
+			obj->data.ind_c = ind_c;
+			obj->data.vertices = (GLuint*)vtx;
+			obj->data.indices = ind;
+			obj->data.mat_c = 1;
+			obj->data.mat = (GLuint*) &translate;
+			obj->fbind();
+		} else {
+			if (obj) XE(delete, obj);
+		}
 	}
 
 	void TiledMap::render() {
