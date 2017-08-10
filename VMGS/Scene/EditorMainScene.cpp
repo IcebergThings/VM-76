@@ -162,7 +162,7 @@ namespace VM76 {
 			hand_block->update();
 		}
 
-		if (PRESS(GLFW_KEY_SPACE)) {
+		if (PRESS(GLFW_KEY_R)) {
 			map.place_block(obj->pos, hand_id);
 		}
 

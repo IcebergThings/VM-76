@@ -18,10 +18,10 @@ namespace VM76 {
 
 		keys = {
 			.quit = GLFW_KEY_ESCAPE,
-			.forward = GLFW_KEY_I,
-			.left = GLFW_KEY_J,
-			.right = GLFW_KEY_L,
-			.back = GLFW_KEY_K,
+			.forward = GLFW_KEY_W,
+			.left = GLFW_KEY_A,
+			.right = GLFW_KEY_D,
+			.back = GLFW_KEY_S,
 			.up = GLFW_KEY_SPACE,
 			.down = GLFW_KEY_LEFT_SHIFT,
 		};
