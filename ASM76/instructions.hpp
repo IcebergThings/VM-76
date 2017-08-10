@@ -4,7 +4,11 @@
 //   指令注册表。必须在包含时定义宏I(x, ta, tb)。本文件则负责清理这个宏。
 //=============================================================================
 
-// I(opcode, operand 1 type, operand 2 type) - Instruction
+// I(mnemonic, operand 1 type, operand 2 type) - Instruction
+// VI(opcode, mnemonic) - Virtual Instruction
+#ifndef VI
+	#define VI(i, x)
+#endif
 
 I(NOOP, TNUL, TNUL) // No Operation is always NULL
 
@@ -46,8 +50,14 @@ I(PUSH, TREG, TIMM) I(POP_, TREG, TIMM)
 I(INTX, TIMM, TADD)
 I(INTR, TREG, TADD)
 
+// RAW data instruction (e.g. RAWD) with a virtual opcode 512
+// This instruction takes in 10 bytes, exactly,
+// in the format of RAWD 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF.
+VI(512, RAWD)
+
 // 自带清理宏
 #undef I
+#undef VI
 #ifdef TNUL
 	// in case of some really annoying preprocessors
 	#undef TNUL

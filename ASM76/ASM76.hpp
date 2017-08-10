@@ -22,8 +22,8 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	enum InstructionOpcode {
 		#define I(x, a, b) x,
+		#define VI(i, x) x = i,
 		#include "instructions.hpp"
-		RAWD = 512,
 	};
 	enum InstructionOperandType {
 		NONE,

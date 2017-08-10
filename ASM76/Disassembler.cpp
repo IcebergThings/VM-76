@@ -34,6 +34,7 @@ namespace ASM76 {
 			#define TREG append_register(line,
 			#define I(x, ta, tb) case x: ta a); tb b); break;
 			#include "instructions.hpp"
+			default: break; // deal with a compiler warning
 			}
 			strcat(line, "\n");
 			size_t len = strlen(line);

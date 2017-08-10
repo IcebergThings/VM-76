@@ -174,12 +174,8 @@ namespace ASM76 {
 	//-------------------------------------------------------------------------
 	enum InstructionOpcode Assembler::parse_opcode(const char* str) {
 		#define I(x, ta, tb) if (strcmp(str, #x) == 0) return x;
+		#define VI(i, x)     if (strcmp(str, #x) == 0) return x;
 		#include "instructions.hpp"
-		// RAW data instruction (e.g. RAWD) with a virtual opcode 512
-		// This instruction takes in 10 bytes, exactly,
-		// in the format of RAWD 0xFFFF 0xFFFF 0xFFFF 0xFFFF 0xFFFF.
-		if (strcmp(str, "RAWD") == 0) return RAWD;
-
 		error("unidentified instruction");
 		return NOOP;
 	}
