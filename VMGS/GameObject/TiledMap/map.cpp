@@ -53,6 +53,7 @@ namespace VM76 {
 
 	void DataMap::save_map() {
 		auto worker_save = [](DataMap* t) {
+			log("Saving map");
 			V::BinaryFileWriter* fw = new V::BinaryFileWriter("map.dat");
 			// 版本号
 			fw->write_i32(100);

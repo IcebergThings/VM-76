@@ -35,7 +35,8 @@ TextRenderer::TextRenderer() {
 void TextRenderer::BakeText(
 	const char* text,
 	float width, float height,
-	TextDecorationType decoration
+	TextDecorationType decoration,
+	glm::vec4 color
 ) {
 	int length = strlen(text);
 	int vtx_stride, itx_stride;
@@ -81,20 +82,20 @@ void TextRenderer::BakeText(
 			itxi[(j) + 1] = i * vtx_stride + (b); \
 			itxi[(j) + 2] = i * vtx_stride + (c); \
 		} while (false);
-		ADD_VERTICES(0, 0, 0, 1.0, 1.0, 1.0, 1.0);
+		ADD_VERTICES(0, 0, 0, color.r, color.g, color.b, color.a);
 		// sd = shadow distance
 		float sd = 0.0016 * (float) VMDE->width / (float) VMDE->height;
 		switch (decoration) {
 		case NONE:
 			break;
 		case SHADOW:
-			ADD_VERTICES(4, sd, -sd, 0.0, 0.0, 0.0, 0.8);
+			ADD_VERTICES(4, sd, -sd, 0.0, 0.0, 0.0, 0.0 * 0.8);
 			break;
 		case OUTLINE:
-			ADD_VERTICES( 4, +sd, +sd, 0.0, 0.0, 0.0, 0.3);
-			ADD_VERTICES( 8, +sd, -sd, 0.0, 0.0, 0.0, 0.3);
-			ADD_VERTICES(12, -sd, +sd, 0.0, 0.0, 0.0, 0.3);
-			ADD_VERTICES(16, -sd, -sd, 0.0, 0.0, 0.0, 0.3);
+			ADD_VERTICES( 4, +sd, +sd, 0.0, 0.0, 0.0, (color.a * 0.3));
+			ADD_VERTICES( 8, +sd, -sd, 0.0, 0.0, 0.0, (color.a * 0.3));
+			ADD_VERTICES(12, -sd, +sd, 0.0, 0.0, 0.0, (color.a * 0.3));
+			ADD_VERTICES(16, -sd, -sd, 0.0, 0.0, 0.0, (color.a * 0.3));
 			break;
 		}
 		switch (decoration) {
@@ -152,7 +153,23 @@ void TextRenderer::instanceRenderText(
 	glm::mat4 foo[1] = {transform};
 	obj->data.mat_c = 1;
 	obj->data.mat = (GLuint*) &foo[0];
-	BakeText(text, width, height, decoration);
+	BakeText(text, width, height, decoration, glm::vec4(1.0));
+
+	render();
+}
+
+void TextRenderer::instanceRenderText(
+	const char* text,
+	glm::mat4 projection, glm::mat4 view, glm::mat4 transform,
+	float width, float height, TextDecorationType decoration,
+	glm::vec4 color
+) {
+	texshader.ProjectionView(projection, view);
+
+	glm::mat4 foo[1] = {transform};
+	obj->data.mat_c = 1;
+	obj->data.mat = (GLuint*) &foo[0];
+	BakeText(text, width, height, decoration, color);
 
 	render();
 }

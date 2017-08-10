@@ -175,7 +175,6 @@ namespace VM76 {
 		}
 
 		if (PRESS(GLFW_KEY_Z)) {
-			log("Saving map");
 			map.map->save_map();
 		}
 
@@ -329,7 +328,8 @@ namespace VM76 {
 			save_map_info, gui_2d_projection,
 			glm::mat4(1.0),
 			glm::translate(glm::mat4(1.0), glm::vec3(aspect_ratio - 0.35, 0.94, 0.0)),
-			0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE
+			0.025, 0.05, TextRenderer::TextDecorationType::OUTLINE,
+			glm::vec4(1.0, 1.0, 1.0, glm::sin(VMDE->frame_count * 0.1) * 0.2 + 0.6)
 		);
 
 		if (SceneManager::render_debug_info) {
