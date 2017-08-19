@@ -12,9 +12,37 @@
 //=============================================================================
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+char cmd[1024];
+char buf[1000];
+const char* presets[] = {
+	"make run",
+	"make debug",
+};
 
 int main(int argc, char** argv) {
-	system("make run");
+	system("title Windoge run");
+	system("color 2f");
+	puts("=-=- Windoge run -=-=");
+	for (size_t i = 0; i < sizeof(presets) / sizeof(char*); i++) {
+		printf("[%zu] %s\n", i, presets[i]);
+	}
+	printf("[ ] make ");
+	fgets(buf, sizeof(buf), stdin);
+	if (buf[1] == '\n') {
+		if (buf[0] >= '0' && buf[0] <= '9') {
+			strcpy(cmd, presets[buf[0] - '0']);
+		} else {
+			strcpy(cmd, "echo Wrong choice!");
+		}
+	} else {
+		strcpy(cmd, "make ");
+		strcpy(cmd + 5, buf);
+	}
+	system("cls");
+	system(cmd);
 	system("pause");
 	return 0;
 }
