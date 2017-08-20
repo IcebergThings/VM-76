@@ -30,7 +30,7 @@ Windows
 ```
 -DGLFW_DLL
 -DGLEW_STATIC
--isystem Y:\lib\glfw-3.2.bin.WIN32\include
+-isystem Y:\lib\glfw-3.2.1.bin.WIN32\include
 -isystem Y:\lib\glew-2.0.0\include
 -isystem Y:\lib\glm-0.9.8.4
 -isystem Y:\lib\portaudio\include
@@ -44,7 +44,7 @@ Windows
 Y:\lib\SOIL\lib\libSOIL.a
 Y:\lib\glew-2.0.0-src\src\glew.a
 -LY:\my\project76-lib
--LY:\lib\glfw-3.2.bin.WIN32\lib-mingw-w64
+-LY:\lib\glfw-3.2.1.bin.WIN32\lib-mingw-w64
 -lglfw3dll
 -lopengl32
 -lportaudio_x86
@@ -55,7 +55,7 @@ Y:\lib\glew-2.0.0-src\src\glew.a
 ```
 -DGLFW_DLL
 -DGLEW_STATIC
--isystem Y:\lib\glfw-3.2.bin.WIN32\include
+-isystem Y:\lib\glfw-3.2.1.bin.WIN32\include
 -isystem Y:\lib\glew-2.0.0\include
 -isystem Y:\lib\glm-0.9.8.4
 -isystem Y:\lib\portaudio\include
@@ -70,7 +70,7 @@ Y:\lib\glew-2.0.0-src\src\glew.a
 Y:\lib\SOIL\lib\libSOIL.a
 Y:\lib\glew-2.0.0-src\src\glew.a
 -LY:\my\project76-lib
--LY:\lib\glfw-3.2.bin.WIN32\lib-mingw-w64
+-LY:\lib\glfw-3.2.1.bin.WIN32\lib-mingw-w64
 -lglfw3dll
 -lopengl32
 -lportaudio_x86
