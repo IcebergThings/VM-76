@@ -33,7 +33,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	class Scene : public Object {
 	public:
-		virtual void key_callback(int key, int scancode, int action, int mods);
+		virtual void event_keydown(int key, int mods) {};
 		virtual void render() = 0; // Graphics update
 		virtual void update(); // Tick update
 		virtual ~Scene();
@@ -68,7 +68,7 @@ namespace VM76 {
 
 	public:
 		Scene_Editor();
-		void key_callback(int key, int scancode, int action, int mods);
+		void event_keydown(int key, int mods);
 		void render();
 		void GenerateMap();
 		void update();

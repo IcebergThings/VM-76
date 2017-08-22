@@ -9,7 +9,6 @@ namespace VM76 {
 		Scene* context = NULL;
 	}
 
-	void Scene::key_callback(int key, int scancode, int action, int mods) {}
 	void Scene::update() {}
 	Scene::~Scene() {}
 
@@ -55,6 +54,8 @@ namespace VM76 {
 			render_debug_info = !render_debug_info;
 			return;
 		}
-		if (context) context->key_callback(key, scancode, action, mods);
+		if (context && action == GLFW_PRESS) {
+			context->event_keydown(key, mods);
+		}
 	}
 }

@@ -122,9 +122,31 @@ namespace VM76 {
 	bool magnify = false;
 	bool magnifyPrev = false;
 
-	void Scene_Editor::key_callback(int key, int scancode, int action, int mods) {
-		#define PRESS(n) key == (n) && action == GLFW_PRESS
-		if (PRESS(GLFW_KEY_F5)) {
+	void Scene_Editor::event_keydown(int key, int mods) {
+		for (int i = 0; i <= 9; i++) {
+			if (key == GLFW_KEY_0 + i) {
+				hand_id = i;
+				if (hand_id > 0) {
+					int vtx_c = 0, ind_c = 0;
+					for (int i = 0; i < 6; i++) {
+						clist[hand_id - 1]->bake(
+							0, 0, 0,
+							(Vertex*) hand_block->data.vertices,
+							hand_block->data.indices,
+							&vtx_c, &ind_c,
+							i
+						);
+					}
+					hand_block->data.vtx_c = vtx_c;
+					hand_block->data.ind_c = ind_c;
+					hand_block->data.mat_c = 1;
+					hand_block->update();
+				}
+				return;
+			}
+		}
+		switch (key) {
+		case GLFW_KEY_F5:
 			if (mods & GLFW_MOD_SHIFT) {
 				ctl_index--;
 				if (ctl_index == SIZE_MAX) ctl_index = ctl_count - 1;
@@ -132,67 +154,35 @@ namespace VM76 {
 				ctl_index++;
 				if (ctl_index >= ctl_count) ctl_index = 0;
 			}
-		}
-
-		if (PRESS(GLFW_KEY_0)) hand_id = 0;
-		if (PRESS(GLFW_KEY_1)) hand_id = 1;
-		if (PRESS(GLFW_KEY_2)) hand_id = 2;
-		if (PRESS(GLFW_KEY_3)) hand_id = 3;
-		if (PRESS(GLFW_KEY_4)) hand_id = 4;
-		if (PRESS(GLFW_KEY_5)) hand_id = 5;
-		if (PRESS(GLFW_KEY_6)) hand_id = 6;
-		if (PRESS(GLFW_KEY_7)) hand_id = 7;
-		if (PRESS(GLFW_KEY_8)) hand_id = 8;
-		if (PRESS(GLFW_KEY_9)) hand_id = 9;
-
-		if (hand_id > 0) {
-			int vtx_c = 0, ind_c = 0;
-			for (int i = 0; i < 6; i++) {
-				clist[hand_id - 1]->bake(
-					0, 0, 0,
-					(Vertex*) hand_block->data.vertices,
-					hand_block->data.indices,
-					&vtx_c, &ind_c,
-					i
-				);
-			}
-			hand_block->data.vtx_c = vtx_c;
-			hand_block->data.ind_c = ind_c;
-			hand_block->data.mat_c = 1;
-			hand_block->update();
-		}
-
-		if (PRESS(GLFW_KEY_R)) {
+			break;
+		case GLFW_KEY_R:
 			map.place_block(obj->pos, hand_id);
-		}
-
-		if (key == GLFW_KEY_O) {
-			if (action == GLFW_PRESS) {
-				cam->Projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
-			} else if (action == GLFW_RELEASE) {
-				cam->Projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
-			}
-		}
-
-		if (PRESS(GLFW_KEY_Z)) {
+			break;
+		case GLFW_KEY_O:
+			/*if (action == GLFW_PRESS) {
+							cam->Projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
+						} else if (action == GLFW_RELEASE) {
+							cam->Projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
+						}*/
+			break;
+		case GLFW_KEY_Z:
 			map.map->save_map();
-		}
-
-		static Audio::Channel_Vorbis* loop = NULL;
-		static Audio::Channel_Triangle* triangle = NULL;
-		static Audio::Channel_Sine* sine = NULL;
-		if (PRESS(GLFW_KEY_SEMICOLON)) {
+			break;
+		case GLFW_KEY_SEMICOLON:
 			Audio::play_sound("../Media/soft-ping.ogg", false);
-		}
-		if (PRESS(GLFW_KEY_APOSTROPHE)) {
+			break;
+		case GLFW_KEY_APOSTROPHE: {
+			static Audio::Channel_Vorbis* loop = NULL;
 			if (loop) {
 				Audio::stop(loop);
 				loop = NULL;
 			} else {
 				loop = Audio::play_sound("../Media/loop-test.ogg", true, .1f);
 			}
+			break;
 		}
-		if (PRESS(GLFW_KEY_LEFT_BRACKET)) {
+		case GLFW_KEY_LEFT_BRACKET: {
+			static Audio::Channel_Triangle* triangle = NULL;
 			if (triangle) {
 				Audio::stop(triangle);
 				triangle = NULL;
@@ -200,8 +190,10 @@ namespace VM76 {
 				triangle = new Audio::Channel_Triangle(440);
 				Audio::play_channel(triangle);
 			}
+			break;
 		}
-		if (PRESS(GLFW_KEY_RIGHT_BRACKET)) {
+		case GLFW_KEY_RIGHT_BRACKET: {
+			static Audio::Channel_Sine* sine = NULL;
 			if (sine) {
 				Audio::stop(sine);
 				sine = NULL;
@@ -209,8 +201,9 @@ namespace VM76 {
 				sine = new Audio::Channel_Sine(440);
 				Audio::play_channel(sine);
 			}
+			break;
 		}
-		#undef PRESS
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 刷新
