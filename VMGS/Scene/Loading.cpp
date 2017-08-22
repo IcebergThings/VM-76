@@ -7,13 +7,13 @@
 
 namespace VM76 {
 
-	LoadingScene::LoadingScene(Scene** tobeload) {
+	Scene_Loading::Scene_Loading(Scene** tobeload) {
 		todo = *tobeload;
 	}
 
 	bool first_load = true;
 
-	void LoadingScene::render() {
+	void Scene_Loading::render() {
 		VMSC::disable_depth_test();
 
 		char load_splash[] = "Loading    ";
@@ -45,6 +45,6 @@ namespace VM76 {
 	}
 
 	// 这玩意暂时不需要刷新什么数据
-	void LoadingScene::update() {}
+	void Scene_Loading::update() {}
 
 }

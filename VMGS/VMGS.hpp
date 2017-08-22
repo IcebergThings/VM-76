@@ -75,12 +75,12 @@ namespace VM76 {
 		~Scene_Editor();
 	};
 
-	class LoadingScene : public Scene {
+	class Scene_Loading : public Scene {
 	private:
 		Scene* todo = NULL;
 
 	public:
-		LoadingScene(Scene** tobeload);
+		Scene_Loading(Scene** tobeload);
 		void render();
 		void update();
 	};

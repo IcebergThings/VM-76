@@ -39,7 +39,7 @@ namespace VM76 {
 		aspect_ratio = (float) VMDE->width / VMDE->height;
 		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);
 
-		loading = new LoadingScene((Scene**) &editor);
+		loading = new Scene_Loading((Scene**) &editor);
 		SceneManager::load_scene(loading);
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
