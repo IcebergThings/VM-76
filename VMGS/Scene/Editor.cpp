@@ -119,9 +119,17 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 按键回调
 	//-------------------------------------------------------------------------
-	bool magnify = false;
-	bool magnifyPrev = false;
-
+	void Scene_Editor::event_key(int key, int action) {
+		switch (key) {
+		case GLFW_KEY_O:
+			if (action == GLFW_PRESS) {
+				cam->Projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
+			} else if (action == GLFW_RELEASE) {
+				cam->Projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
+			}
+			break;
+		}
+	}
 	void Scene_Editor::event_keydown(int key, int mods) {
 		for (int i = 0; i <= 9; i++) {
 			if (key == GLFW_KEY_0 + i) {
@@ -157,13 +165,6 @@ namespace VM76 {
 			break;
 		case GLFW_KEY_R:
 			map.place_block(obj->pos, hand_id);
-			break;
-		case GLFW_KEY_O:
-			/*if (action == GLFW_PRESS) {
-							cam->Projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
-						} else if (action == GLFW_RELEASE) {
-							cam->Projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
-						}*/
 			break;
 		case GLFW_KEY_Z:
 			map.map->save_map();

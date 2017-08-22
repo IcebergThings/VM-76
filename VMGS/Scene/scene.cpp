@@ -54,8 +54,11 @@ namespace VM76 {
 			render_debug_info = !render_debug_info;
 			return;
 		}
-		if (context && action == GLFW_PRESS) {
-			context->event_keydown(key, mods);
+		if (context) {
+			context->event_key(key, action);
+			if (action == GLFW_PRESS) {
+				context->event_keydown(key, mods);
+			}
 		}
 	}
 }
