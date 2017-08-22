@@ -39,7 +39,7 @@ namespace VM76 {
 		virtual ~Scene();
 	};
 
-	class EditorMainScene : public Scene {
+	class Scene_Editor : public Scene {
 	private:
 		Shaders shader_textured;
 		Shaders gui;
@@ -67,12 +67,12 @@ namespace VM76 {
 		Map map = Map(8, 8, 8, 32);
 
 	public:
-		EditorMainScene();
+		Scene_Editor();
 		void key_callback(int key, int scancode, int action, int mods);
 		void render();
 		void GenerateMap();
 		void update();
-		~EditorMainScene();
+		~Scene_Editor();
 	};
 
 	class LoadingScene : public Scene {

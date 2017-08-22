@@ -31,7 +31,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 场景开始
 	//-------------------------------------------------------------------------
-	EditorMainScene::EditorMainScene() {
+	Scene_Editor::Scene_Editor() {
 		obj = new GObject();
 		physics = new PhyEngine();
 
@@ -122,7 +122,7 @@ namespace VM76 {
 	bool magnify = false;
 	bool magnifyPrev = false;
 
-	void EditorMainScene::key_callback(int key, int scancode, int action, int mods) {
+	void Scene_Editor::key_callback(int key, int scancode, int action, int mods) {
 		#define PRESS(n) key == (n) && action == GLFW_PRESS
 		if (PRESS(GLFW_KEY_F5)) {
 			if (mods & GLFW_MOD_SHIFT) {
@@ -215,7 +215,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 刷新
 	//-------------------------------------------------------------------------
-	void EditorMainScene::update() {
+	void Scene_Editor::update() {
 		// Pick
 		//  暂时只有拣选地图Tile功能，其它的拣选可以参考RM的分layer拣选
 		glm::mat3 inverse_view = glm::inverse(glm::mat3(cam->View));
@@ -242,7 +242,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 渲染
 	//-------------------------------------------------------------------------
-	void EditorMainScene::render() {
+	void Scene_Editor::render() {
 		shader_textured.use();
 
 		// Setup uniforms
@@ -374,7 +374,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 释放
 	//-------------------------------------------------------------------------
-	EditorMainScene::~EditorMainScene() {
+	Scene_Editor::~Scene_Editor() {
 		XE(delete, phy_map);
 		XE(delete, physics);
 

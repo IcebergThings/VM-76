@@ -12,7 +12,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	TextRenderer* trex;
 	static Scene* loading;
-	static EditorMainScene* editor;
+	static Scene_Editor* editor;
 	float aspect_ratio;
 	glm::mat4 gui_2d_projection;
 	//-------------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void terminate() {
 		log("starting to terminate");
-		EditorMainScene* editor =(EditorMainScene*) SceneManager::context;
+		Scene_Editor* editor =(Scene_Editor*) SceneManager::context;
 		VMDE_Dispose(delete, editor);
 		VMDE_Dispose(delete, loading);
 		VMDE_Dispose(delete, trex);

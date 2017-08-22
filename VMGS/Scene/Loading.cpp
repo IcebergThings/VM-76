@@ -39,7 +39,7 @@ namespace VM76 {
 		if (first_load) {
 			first_load = false;
 		} else {
-			todo = (Scene*) new EditorMainScene();
+			todo = (Scene*) new Scene_Editor();
 			SceneManager::load_scene(todo);
 		}
 	}
