@@ -12,10 +12,8 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void Control_FirstPersonView::init_control(Camera* cam) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
-
+		glfwSetCursorPos(window, .0, .0);
 		this->cam = cam;
-
 		keys = {
 			.quit = GLFW_KEY_ESCAPE,
 			.forward = GLFW_KEY_W,
@@ -33,14 +31,13 @@ namespace VM76 {
 		// Mouse Input
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
-		game_player.horizontal_angle -= 0.005 * (xpos - VMDE->width / 2.0);
-		game_player.vertical_angle += 0.005 * (ypos - VMDE->height / 2.0);
+		glfwSetCursorPos(window, .0, .0);
+		game_player.horizontal_angle -= 0.005 * xpos;
 		game_player.vertical_angle = glm::clamp(
-			- PIf / 2 + 0.04f,
-			game_player.vertical_angle,
-			PIf / 2
+			-PI / 2 + 0.04,
+			game_player.vertical_angle + 0.005 * ypos,
+			PI / 2
 		);
-		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 
 		cam->wpos = game_player.wpos;
 		cam->rotate = glm::vec3(game_player.vertical_angle, game_player.horizontal_angle, 0.0);
