@@ -10,7 +10,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
-	void GodView::init_control(Camera* cam) {
+	void Control_GodView::init_control(Camera* cam) {
 		this->cam = cam;
 
 		keys = {
@@ -26,7 +26,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 更新
 	//-------------------------------------------------------------------------
-	void GodView::update_control() {
+	void Control_GodView::update_control() {
 		cam->rotate = glm::vec3(1.0, 0.0, 0.0);
 
 		// Key Input

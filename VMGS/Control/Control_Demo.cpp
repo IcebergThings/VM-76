@@ -10,7 +10,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
-	void DemoView::init_control(Camera* cam) {
+	void Control_Demo::init_control(Camera* cam) {
 		this->cam = cam;
 
 		glfwSetInputMode(window, GLFW_STICKY_KEYS, 0);
@@ -18,7 +18,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 更新
 	//-------------------------------------------------------------------------
-	void DemoView::update_control() {
+	void Control_Demo::update_control() {
 		float stime = float(VMDE->frame_count);
 		float x = 5.0f * cos(stime * 0.015f);
 		float z = 5.0f * sin(stime * 0.015f);

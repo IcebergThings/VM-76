@@ -25,7 +25,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 演示模式
 	//-------------------------------------------------------------------------
-	class DemoView : public Control {
+	class Control_Demo : public Control {
 	public:
 		void init_control(Camera* cam);
 		void update_control();
@@ -33,7 +33,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 上帝视角
 	//-------------------------------------------------------------------------
-	class GodView : public Control {
+	class Control_GodView : public Control {
 	public:
 		struct {
 			int quit;
@@ -47,7 +47,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 第一人称视角
 	//-------------------------------------------------------------------------
-	class FirstPersonView : public Control {
+	class Control_FirstPersonView : public Control {
 	public:
 		struct {
 			int quit;

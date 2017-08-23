@@ -92,14 +92,14 @@ namespace VM76 {
 
 		ctl_index = 2; // initially FirstPersonView
 		ctl_count = 3;
-		DemoView* ctl0 = new DemoView();
+		Control_Demo* ctl0 = new Control_Demo();
 		ctl0->init_control(cam);
 		ctls[0] = ctl0;
-		GodView* ctl1 = new GodView();
+		Control_GodView* ctl1 = new Control_GodView();
 		ctl1->init_control(cam);
 		ctl1->cam->wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[1] = ctl1;
-		FirstPersonView* ctl2 = new FirstPersonView();
+		Control_FirstPersonView* ctl2 = new Control_FirstPersonView();
 		ctl2->init_control(cam);
 		ctl2->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[2] = ctl2;

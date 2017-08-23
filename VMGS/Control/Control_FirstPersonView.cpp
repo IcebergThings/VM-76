@@ -10,7 +10,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
-	void FirstPersonView::init_control(Camera* cam) {
+	void Control_FirstPersonView::init_control(Camera* cam) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, VMDE->width / 2.0, VMDE->height / 2.0);
 
@@ -29,7 +29,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 更新
 	//-------------------------------------------------------------------------
-	void FirstPersonView::update_control() {
+	void Control_FirstPersonView::update_control() {
 		// Mouse Input
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
