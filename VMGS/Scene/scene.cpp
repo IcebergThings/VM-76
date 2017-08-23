@@ -5,6 +5,4 @@
 #include "../VMGS.hpp"
 
 namespace VM76 {
-	void Scene::update() {}
-	Scene::~Scene() {}
 }

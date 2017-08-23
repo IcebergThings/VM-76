@@ -1,5 +1,7 @@
 //=============================================================================
 // ■ scene.hpp
+//-----------------------------------------------------------------------------
+//   场景类
 //=============================================================================
 
 #ifndef VMGS_SCENE_SCENE_HPP_
@@ -7,17 +9,31 @@
 
 namespace VM76 {
 	//-------------------------------------------------------------------------
-	// ● Scenes
+	// ● 所有场景类的基类
 	//-------------------------------------------------------------------------
-	class Scene : public Object {
+	class Scene {
 	public:
+		virtual void update() = 0; // Tick update
 		virtual void render() = 0; // Graphics update
-		virtual void update(); // Tick update
 		virtual void event_key(int key, int action) {};
 		virtual void event_keydown(int key, int mods) {};
-		virtual ~Scene();
+		virtual ~Scene() {};
 	};
-
+	//-------------------------------------------------------------------------
+	// ● 场景管理器
+	//-------------------------------------------------------------------------
+	namespace SceneManager {
+		extern Scene* context;
+		extern bool render_debug_info;
+		void load_scene(Scene* c);
+		void render_scene();
+		void update_scene();
+		// callbacks for GLFW
+		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	};
+	//-------------------------------------------------------------------------
+	// ● Scenes
+	//-------------------------------------------------------------------------
 	class Scene_Editor : public Scene {
 	private:
 		Shaders shader_textured;
@@ -49,9 +65,9 @@ namespace VM76 {
 		Scene_Editor();
 		void event_key(int key, int action);
 		void event_keydown(int key, int mods);
+		void update();
 		void render();
 		void GenerateMap();
-		void update();
 		~Scene_Editor();
 	};
 
@@ -61,20 +77,8 @@ namespace VM76 {
 
 	public:
 		Scene_Loading(Scene** tobeload);
-		void render();
 		void update();
-	};
-
-	//-------------------------------------------------------------------------
-	// ● Scene Management
-	//-------------------------------------------------------------------------
-	namespace SceneManager {
-		extern Scene* context;
-		extern bool render_debug_info;
-		void load_scene(Scene* c);
-		void render_scene();
-		void update_scene();
-		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void render();
 	};
 }
 
