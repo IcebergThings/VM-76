@@ -82,6 +82,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 		ifeq "$(CCLD)" "clang"
 			CCLD = gcc
 		endif
+		RM = del
 	else ifeq "$(PLATFORM)" "gnu"
 	else ifeq "$(PLATFORM)" "mac"
 	endif
