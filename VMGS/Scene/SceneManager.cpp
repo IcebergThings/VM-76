@@ -13,7 +13,7 @@ namespace VM76 { namespace SceneManager {
 	// 当前场景的实例
 	Scene* scene = NULL;
 	// 在所有场景都会用到的调试信息的开关
-	bool render_debug_info = true;
+	bool debug_info_visible = true;
 
 	//-------------------------------------------------------------------------
 	// ● 更新
@@ -27,8 +27,14 @@ namespace VM76 { namespace SceneManager {
 	//-------------------------------------------------------------------------
 	void render_scene() {
 		if (scene) scene->render();
-		// Render FPS
-		if (render_debug_info) {
+		render_debug_info();
+	}
+
+	//-------------------------------------------------------------------------
+	// ● 绘制调试信息
+	//-------------------------------------------------------------------------
+	void render_debug_info() {
+		if (debug_info_visible) {
 			VMSC::disable_depth_test();
 			char fps[40];
 			sprintf(fps, "FPS: %d, %f.4ms", VMDE->fps, VMDE->frame_time);
@@ -53,13 +59,6 @@ namespace VM76 { namespace SceneManager {
 	// ● 供GLFW使用的按键回调
 	//-------------------------------------------------------------------------
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-		if (key == GLFW_KEY_PAUSE && action == GLFW_PRESS && (mods & GLFW_MOD_CONTROL)) {
-			abort();
-		}
-		if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
-			render_debug_info = !render_debug_info;
-			return;
-		}
 		if (scene) {
 			scene->event_key(key, action);
 			if (action == GLFW_PRESS) {

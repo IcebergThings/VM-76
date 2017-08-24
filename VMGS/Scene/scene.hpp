@@ -13,10 +13,10 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	class Scene {
 	public:
-		virtual void update() = 0; // Tick update
-		virtual void render() = 0; // Graphics update
-		virtual void event_key(int key, int action) {};
-		virtual void event_keydown(int key, int mods) {};
+		virtual void update();
+		virtual void render();
+		virtual void event_key(int key, int action);
+		virtual void event_keydown(int key, int mods);
 		virtual ~Scene() {};
 	};
 	//-------------------------------------------------------------------------
@@ -24,13 +24,14 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	namespace SceneManager {
 		extern Scene* scene;
-		extern bool render_debug_info;
+		extern bool debug_info_visible;
 		template <class T, class... Args> void jump(Args&&... args) {
 			XE(delete, scene);
 			scene = new T(forward<Args>(args)...);
 		}
-		void render_scene();
 		void update_scene();
+		void render_scene();
+		void render_debug_info();
 		// callbacks for GLFW
 		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	};

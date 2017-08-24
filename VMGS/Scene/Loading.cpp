@@ -10,8 +10,9 @@ namespace VM76 {
 	}
 
 	void Scene_Loading::render() {
-		VMSC::disable_depth_test();
+		Scene::render();
 
+		VMSC::disable_depth_test();
 		char load_splash[] = "Loading    ";
 		for (int i = 0; i < (VMDE->frame_count / 6) % 4; i++) load_splash[i + 8] = '.';
 		TextRenderer::BakeOptions opt = {
@@ -34,6 +35,7 @@ namespace VM76 {
 	}
 
 	void Scene_Loading::update() {
+		Scene::update();
 		SceneManager::jump<Scene_Editor>();
 	}
 

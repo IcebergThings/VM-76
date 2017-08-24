@@ -120,6 +120,7 @@ namespace VM76 {
 	// ● 按键回调
 	//-------------------------------------------------------------------------
 	void Scene_Editor::event_key(int key, int action) {
+		Scene::event_key(key, action);
 		switch (key) {
 		case GLFW_KEY_O:
 			if (action == GLFW_PRESS) {
@@ -131,6 +132,7 @@ namespace VM76 {
 		}
 	}
 	void Scene_Editor::event_keydown(int key, int mods) {
+		Scene::event_keydown(key, mods);
 		for (int i = 0; i <= 9; i++) {
 			if (key == GLFW_KEY_0 + i) {
 				hand_id = i;
@@ -210,6 +212,7 @@ namespace VM76 {
 	// ● 刷新
 	//-------------------------------------------------------------------------
 	void Scene_Editor::update() {
+		Scene::update();
 		// Pick
 		//  暂时只有拣选地图Tile功能，其它的拣选可以参考RM的分layer拣选
 		glm::mat3 inverse_view = glm::inverse(glm::mat3(cam->View));
@@ -237,6 +240,8 @@ namespace VM76 {
 	// ● 渲染
 	//-------------------------------------------------------------------------
 	void Scene_Editor::render() {
+		Scene::render();
+
 		shader_textured.use();
 
 		// Setup uniforms
@@ -334,7 +339,7 @@ namespace VM76 {
 			);
 		}
 
-		if (SceneManager::render_debug_info) {
+		if (SceneManager::debug_info_visible) {
 			char info[64];
 			sprintf(info, "Hand ID: %d  Pointer ID: %d",
 				hand_id,
