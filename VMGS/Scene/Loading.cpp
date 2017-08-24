@@ -6,11 +6,8 @@
 
 namespace VM76 {
 
-	Scene_Loading::Scene_Loading(Scene** tobeload) {
-		todo = *tobeload;
+	Scene_Loading::Scene_Loading() {
 	}
-
-	bool first_load = true;
 
 	void Scene_Loading::render() {
 		VMSC::disable_depth_test();
@@ -34,16 +31,10 @@ namespace VM76 {
 			)
 		);
 		VMSC::enable_depth_test();
-
-		if (first_load) {
-			first_load = false;
-		} else {
-			todo = (Scene*) new Scene_Editor();
-			SceneManager::load_scene(todo);
-		}
 	}
 
-	// 这玩意暂时不需要刷新什么数据
-	void Scene_Loading::update() {}
+	void Scene_Loading::update() {
+		SceneManager::jump<Scene_Editor>();
+	}
 
 }

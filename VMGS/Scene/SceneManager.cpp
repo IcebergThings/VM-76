@@ -1,23 +1,32 @@
 //=============================================================================
 // ■ VMGS/Scene/SceneManager.cpp
+//-----------------------------------------------------------------------------
+//   VMGS的场景管理器，负责场景的创建、转移、清理等工作。
 //=============================================================================
 
 #include "../VMGS.hpp"
 
 namespace VM76 { namespace SceneManager {
-	Scene* context = NULL;
+	//-------------------------------------------------------------------------
+	// ● 模块变量
+	//-------------------------------------------------------------------------
+	// 当前场景的实例
+	Scene* scene = NULL;
+	// 在所有场景都会用到的调试信息的开关
 	bool render_debug_info = true;
 
-	void load_scene(Scene* c) {
-		context = c;
-	}
-
+	//-------------------------------------------------------------------------
+	// ● 更新
+	//-------------------------------------------------------------------------
 	void update_scene() {
-		if (context) context->update();
+		if (scene) scene->update();
 	}
 
+	//-------------------------------------------------------------------------
+	// ● 绘制
+	//-------------------------------------------------------------------------
 	void render_scene() {
-		if (context) context->render();
+		if (scene) scene->render();
 		// Render FPS
 		if (render_debug_info) {
 			VMSC::disable_depth_test();
@@ -40,6 +49,9 @@ namespace VM76 { namespace SceneManager {
 		}
 	}
 
+	//-------------------------------------------------------------------------
+	// ● 供GLFW使用的按键回调
+	//-------------------------------------------------------------------------
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		if (key == GLFW_KEY_PAUSE && action == GLFW_PRESS && (mods & GLFW_MOD_CONTROL)) {
 			abort();
@@ -48,10 +60,10 @@ namespace VM76 { namespace SceneManager {
 			render_debug_info = !render_debug_info;
 			return;
 		}
-		if (context) {
-			context->event_key(key, action);
+		if (scene) {
+			scene->event_key(key, action);
 			if (action == GLFW_PRESS) {
-				context->event_keydown(key, mods);
+				scene->event_keydown(key, mods);
 			}
 		}
 	}

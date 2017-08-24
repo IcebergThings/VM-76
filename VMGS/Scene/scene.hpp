@@ -23,9 +23,12 @@ namespace VM76 {
 	// ● 场景管理器
 	//-------------------------------------------------------------------------
 	namespace SceneManager {
-		extern Scene* context;
+		extern Scene* scene;
 		extern bool render_debug_info;
-		void load_scene(Scene* c);
+		template <class T, class... Args> void jump(Args&&... args) {
+			XE(delete, scene);
+			scene = new T(forward<Args>(args)...);
+		}
 		void render_scene();
 		void update_scene();
 		// callbacks for GLFW
@@ -72,11 +75,8 @@ namespace VM76 {
 	};
 
 	class Scene_Loading : public Scene {
-	private:
-		Scene* todo = NULL;
-
 	public:
-		Scene_Loading(Scene** tobeload);
+		Scene_Loading();
 		void update();
 		void render();
 	};

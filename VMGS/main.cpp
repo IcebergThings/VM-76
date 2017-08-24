@@ -11,8 +11,6 @@ namespace VM76 {
 	// ● 变量
 	//-------------------------------------------------------------------------
 	TextRenderer* trex;
-	static Scene* loading;
-	static Scene_Editor* editor;
 	float aspect_ratio;
 	glm::mat4 gui_2d_projection;
 	//-------------------------------------------------------------------------
@@ -39,8 +37,7 @@ namespace VM76 {
 		aspect_ratio = (float) VMDE->width / VMDE->height;
 		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);
 
-		loading = new Scene_Loading((Scene**) &editor);
-		SceneManager::load_scene(loading);
+		SceneManager::jump<Scene_Loading>();
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
 		loop();
@@ -51,9 +48,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void terminate() {
 		log("starting to terminate");
-		Scene_Editor* editor =(Scene_Editor*) SceneManager::context;
-		VMDE_Dispose(delete, editor);
-		VMDE_Dispose(delete, loading);
+		Scene_Editor* editor =(Scene_Editor*) SceneManager::scene;
 		VMDE_Dispose(delete, trex);
 		terminate_engine();
 		log("terminated successfully");
