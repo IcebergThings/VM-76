@@ -28,6 +28,13 @@ namespace VM76 {
 		}
 	}
 	//-------------------------------------------------------------------------
+	// ● 搞个不知道干啥的加载函数实验一下
+	//-------------------------------------------------------------------------
+	void test_load_(bool* completion_sign) {
+		this_thread::sleep_for(chrono::seconds(2));
+		*completion_sign = true;
+	}
+	//-------------------------------------------------------------------------
 	// ● 启动
 	//-------------------------------------------------------------------------
 	void start_game() {
@@ -37,7 +44,7 @@ namespace VM76 {
 		aspect_ratio = (float) VMDE->width / VMDE->height;
 		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);
 
-		SceneManager::jump<Scene_Loading>();
+		SceneManager::jump<Scene_Loading>(test_load_);
 		glfwSetKeyCallback(window, SceneManager::key_callback);
 
 		loop();
@@ -48,7 +55,6 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void terminate() {
 		log("starting to terminate");
-		Scene_Editor* editor =(Scene_Editor*) SceneManager::scene;
 		VMDE_Dispose(delete, trex);
 		terminate_engine();
 		log("terminated successfully");

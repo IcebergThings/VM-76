@@ -36,7 +36,7 @@ namespace VM76 {
 		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	};
 	//-------------------------------------------------------------------------
-	// ● Scenes
+	// ● Scene_Editor
 	//-------------------------------------------------------------------------
 	class Scene_Editor : public Scene {
 	private:
@@ -75,9 +75,15 @@ namespace VM76 {
 		~Scene_Editor();
 	};
 
+	//-------------------------------------------------------------------------
+	// ● Scene_Loading
+	//-------------------------------------------------------------------------
 	class Scene_Loading : public Scene {
+	private:
+		thread loader_thread;
+		bool loader_completed;
 	public:
-		Scene_Loading();
+		Scene_Loading(void (*loader)(bool* completion_sign));
 		void update();
 		void render();
 	};

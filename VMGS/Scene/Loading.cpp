@@ -5,10 +5,27 @@
 #include "../VMGS.hpp"
 
 namespace VM76 {
-
-	Scene_Loading::Scene_Loading() {
+	//-------------------------------------------------------------------------
+	// ● 构造
+	//    loader : 加载用函数。会在另一个线程上执行此函数，加载完后应设置completion_sign为true。
+	//-------------------------------------------------------------------------
+	Scene_Loading::Scene_Loading(void (*loader)(bool* completion_sign)) {
+		loader_completed = false;
+		loader_thread = thread(loader, &loader_completed);
 	}
-
+	//-------------------------------------------------------------------------
+	// ● 更新
+	//-------------------------------------------------------------------------
+	void Scene_Loading::update() {
+		Scene::update();
+		if (loader_completed) {
+			loader_thread.join();
+			SceneManager::jump<Scene_Editor>();
+		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 绘制
+	//-------------------------------------------------------------------------
 	void Scene_Loading::render() {
 		Scene::render();
 
@@ -33,10 +50,4 @@ namespace VM76 {
 		);
 		VMSC::enable_depth_test();
 	}
-
-	void Scene_Loading::update() {
-		Scene::update();
-		SceneManager::jump<Scene_Editor>();
-	}
-
 }
