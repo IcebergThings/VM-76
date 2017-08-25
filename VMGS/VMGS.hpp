@@ -3,8 +3,10 @@
 //=============================================================================
 
 #include <VMDE.hpp>
+#undef DEBUG_ENVIRONMENT
+#define DEBUG_ENVIRONMENT "VMGS"
 
-#include <config.hpp>
+#include "Game/config.hpp"
 
 #include "GameObject/GameObject.hpp"
 #include "Control/control.hpp"
@@ -12,12 +14,8 @@
 #include "Scene/scene.hpp"
 
 #ifndef _INCLUDE_VMGS_GLOBAL_H
+#define _INCLUDE_VMGS_GLOBAL_H
 namespace VM76 {
-	#define _INCLUDE_VMGS_GLOBAL_H
-
-	#undef DEBUG_ENVIRONMENT
-	#define DEBUG_ENVIRONMENT "VMGS"
-
 	//-------------------------------------------------------------------------
 	// ● TODO
 	//-------------------------------------------------------------------------

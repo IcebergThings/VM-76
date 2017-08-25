@@ -13,7 +13,7 @@ OBJECTS += libVMDE.dylib libASM76.dylib
 
 LDLIBS += $(shell pkg-config --libs --static glfw3 glm glew portaudio-2.0 vorbisfile)
 LDFLAGS += ../VMDE/libVMDE.dylib ../ASM76/libASM76.dylib -framework OpenGL
-CXXFLAGS += -I../lib/SOIL/include -I../VMDE -I../ASM76 -I./Game -I.. -c \
+CXXFLAGS += -I../lib/SOIL/include -I../VMDE -I../ASM76 -I.. -c \
 	$(shell pkg-config --cflags glfw3 glm glew portaudio-2.0 vorbisfile)
 
 all: libVMDE.dylib libASM76.dylib $(TARGET)
