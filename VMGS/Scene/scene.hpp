@@ -17,6 +17,7 @@ namespace VM76 {
 		virtual void render();
 		virtual void event_key(int key, int action);
 		virtual void event_keydown(int key, int mods);
+		virtual void event_mousebutton(int button, int action, int mods);
 		virtual ~Scene() {};
 	};
 	//-------------------------------------------------------------------------
@@ -25,6 +26,9 @@ namespace VM76 {
 	namespace SceneManager {
 		extern Scene* scene;
 		extern bool debug_info_visible;
+		void init();
+		// 直接跳转到指定的场景
+		// 用法：SceneManager::jump<场景类>(构造参数)
 		template <class T, class... Args> void jump(Args&&... args) {
 			XE(delete, scene);
 			scene = new T(forward<Args>(args)...);
@@ -33,7 +37,8 @@ namespace VM76 {
 		void render_scene();
 		void render_debug_info();
 		// callbacks for GLFW
-		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void key_callback(GLFWwindow* w, int key, int scancode, int action, int mods);
+		void mouse_button_callback(GLFWwindow* w, int button, int action, int mods);
 	};
 	//-------------------------------------------------------------------------
 	// ● Scene_Editor
@@ -69,6 +74,7 @@ namespace VM76 {
 		Scene_Editor();
 		void event_key(int key, int action);
 		void event_keydown(int key, int mods);
+		void event_mousebutton(int button, int action, int mods);
 		void update();
 		void render();
 		void GenerateMap();

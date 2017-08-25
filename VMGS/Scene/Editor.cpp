@@ -208,6 +208,16 @@ namespace VM76 {
 		}
 		}
 	}
+	void Scene_Editor::event_mousebutton(int button, int action, int mods) {
+		switch (button) {
+		case GLFW_MOUSE_BUTTON_LEFT:
+			map.place_block(obj->pos, 0);
+			break;
+		case GLFW_MOUSE_BUTTON_RIGHT:
+			map.place_block(obj->pos, hand_id);
+			break;
+		}
+	}
 	//-------------------------------------------------------------------------
 	// ● 刷新
 	//-------------------------------------------------------------------------

@@ -16,6 +16,14 @@ namespace VM76 { namespace SceneManager {
 	bool debug_info_visible = true;
 
 	//-------------------------------------------------------------------------
+	// ● 初始化
+	//-------------------------------------------------------------------------
+	void init() {
+		glfwSetKeyCallback(window, SceneManager::key_callback);
+		glfwSetMouseButtonCallback(window, mouse_button_callback);
+	}
+
+	//-------------------------------------------------------------------------
 	// ● 更新
 	//-------------------------------------------------------------------------
 	void update_scene() {
@@ -58,12 +66,22 @@ namespace VM76 { namespace SceneManager {
 	//-------------------------------------------------------------------------
 	// ● 供GLFW使用的按键回调
 	//-------------------------------------------------------------------------
-	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	void key_callback(GLFWwindow* w, int key, int scancode, int action, int mods) {
+		if (w != window) return;
 		if (scene) {
 			scene->event_key(key, action);
 			if (action == GLFW_PRESS) {
 				scene->event_keydown(key, mods);
 			}
+		}
+	}
+	//-------------------------------------------------------------------------
+	// ● 供GLFW使用的鼠标键回调
+	//-------------------------------------------------------------------------
+	void mouse_button_callback(GLFWwindow* w, int button, int action, int mods) {
+		if (w != window) return;
+		if (scene) {
+			scene->event_mousebutton(button, action, mods);
 		}
 	}
 }}
