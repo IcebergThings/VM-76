@@ -4,7 +4,7 @@
 //   VMDE提供的渲染指令。
 //=============================================================================
 
-#include <VMDE.hpp>
+#include "VMDE.hpp"
 
 static uint32_t CL_GDrawable_render(uint8_t* input) {
 	GDrawable* ptr = *((GDrawable**) input);

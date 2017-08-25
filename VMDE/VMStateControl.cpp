@@ -4,7 +4,7 @@
 //   VMDE的状态机管理
 //=============================================================================
 
-#include <VMDE.hpp>
+#include "VMDE.hpp"
 
 VMStateControl::StateMachineStruct VMStateControl::StateMachine;
 

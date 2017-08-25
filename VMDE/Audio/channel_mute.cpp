@@ -4,7 +4,7 @@
 //   静音的声音通道。
 //=============================================================================
 
-#include <VMDE.hpp>
+#include "../VMDE.hpp"
 
 namespace Audio {
 	void Channel_Mute::fill(float* buf, unsigned long n) {

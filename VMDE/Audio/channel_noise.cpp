@@ -4,7 +4,7 @@
 //   这个声音通道输出白噪音。
 //=============================================================================
 
-#include <VMDE.hpp>
+#include "../VMDE.hpp"
 
 namespace Audio {
 	void Channel_Noise::fill(float* buf, unsigned long n) {
