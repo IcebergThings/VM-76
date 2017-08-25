@@ -4,7 +4,7 @@
 // VMGS摄像机类
 //=============================================================================
 
-#include "Camera.hpp"
+#include "../../VMGS.hpp"
 
 void Camera::update() {
 	glm::mat4 r = glm::rotate(glm::mat4(1.0), rotate.y, glm::vec3(0.0, 1.0, 0.0));

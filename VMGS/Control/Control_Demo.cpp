@@ -4,7 +4,7 @@
 //   Game view of a simple camera turnning, for demo
 //=============================================================================
 
-#include "control.hpp"
+#include "../VMGS.hpp"
 
 namespace VM76 {
 	//-------------------------------------------------------------------------

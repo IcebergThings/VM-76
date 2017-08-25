@@ -2,10 +2,7 @@
 // ■ tile.hpp
 //=============================================================================
 
-#include <VMDE.hpp>
-
-#ifndef _INCLUDE_TILES_H
-#define _INCLUDE_TILES_H
+#pragma once
 
 namespace VM76 {
 	class Tiles : public Object {
@@ -48,5 +45,3 @@ namespace VM76 {
 		MultiFaceCubeTile(int t1, int t2, int t3, int t4, int t5, int t6);
 	};
 }
-
-#endif

@@ -2,12 +2,7 @@
 // ■ SkyBox.hpp
 //=============================================================================
 
-#include <VMDE.hpp>
-
-#ifndef _INCLUDE_SKYBOX_H
-#define _INCLUDE_SKYBOX_H
-
-#include "../Camera/Camera.hpp"
+#pragma once
 
 namespace VM76 {
 
@@ -31,5 +26,3 @@ namespace VM76 {
 		~SkyBox();
 	};
 }
-
-#endif

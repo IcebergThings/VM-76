@@ -4,12 +4,7 @@
 //   接受输入并转换为视角变换的系统。
 //=============================================================================
 
-#ifndef INCLUDE_CONTROL_
-#define INCLUDE_CONTROL_
-
-#include <VMDE.hpp>
-
-#include "../GameObject/Camera/Camera.hpp"
+#pragma once
 
 namespace VM76 {
 	//-------------------------------------------------------------------------
@@ -70,5 +65,3 @@ namespace VM76 {
 		void update_control();
 	};
 }
-
-#endif

@@ -4,7 +4,7 @@
 //   3D模型：Tile
 //=============================================================================
 
-#include "tile.hpp"
+#include "../../VMGS.hpp"
 
 namespace VM76 {
 	bool Tiles::is_transperant(int tid) {

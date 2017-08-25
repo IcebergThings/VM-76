@@ -2,10 +2,7 @@
 // ■ axis.hpp
 //=============================================================================
 
-#include <VMDE.hpp>
-
-#ifndef _INCLUDE_GLAXIS_H
-#define _INCLUDE_GLAXIS_H
+#pragma once
 
 namespace VM76 {
 	class Axis : public RenderObject {
@@ -23,5 +20,3 @@ namespace VM76 {
 		~Axis();
 	};
 }
-
-#endif

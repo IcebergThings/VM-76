@@ -4,10 +4,7 @@
 //   VMGS摄像机类
 //=============================================================================
 
-#ifndef _INCLUDE_CAMERA_H
-#define _INCLUDE_CAMERA_H
-
-#include <VMDE.hpp>
+#pragma once
 
 class Camera {
 public:
@@ -20,5 +17,3 @@ public:
 	Camera(glm::vec3 wpos, glm::vec3 rotate, glm::mat4 proj);
 	~Camera();
 };
-
-#endif

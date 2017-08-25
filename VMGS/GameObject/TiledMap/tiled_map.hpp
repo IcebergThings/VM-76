@@ -2,14 +2,7 @@
 // ■ tiled_map.hpp
 //=============================================================================
 
-#include <VMDE.hpp>
-#include <thread>
-
-#ifndef _INCLUDE_TILED_MAP_H
-#define _INCLUDE_TILED_MAP_H
-
-#include "tile.hpp"
-#include "../../Physics/Physics.hpp"
+#pragma once
 
 namespace VM76 {
 
@@ -117,5 +110,3 @@ namespace VM76 {
 		~PhysicsMap();
 	};
 }
-
-#endif

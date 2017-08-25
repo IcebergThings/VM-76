@@ -2,10 +2,7 @@
 // ■ cube.hpp
 //=============================================================================
 
-#include <VMDE.hpp>
-
-#ifndef _INCLUDE_CUBES_H
-#define _INCLUDE_CUBES_H
+#pragma once
 
 namespace VM76 {
 	class Cube : public RenderObject {
@@ -25,5 +22,3 @@ namespace VM76 {
 		~Cube();
 	};
 }
-
-#endif

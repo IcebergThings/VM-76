@@ -4,7 +4,7 @@
 //
 //=============================================================================
 
-#include "GameObject.hpp"
+#include "../VMGS.hpp"
 
 namespace VM76 {
 	glm::mat4 GObject::transform() {

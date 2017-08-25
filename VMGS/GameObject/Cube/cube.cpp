@@ -4,7 +4,7 @@
 //   3D模型：方块
 //=============================================================================
 
-#include "cube.hpp"
+#include "../../VMGS.hpp"
 
 namespace VM76 {
 	Cube::Cube(int tid) {

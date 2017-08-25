@@ -4,13 +4,12 @@
 // Take over the Physics world!
 //=============================================================================
 
+#pragma once
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/fast_square_root.hpp>
-
-#ifndef _INCLUDE_PHYSICS_H
-#define _INCLUDE_PHYSICS_H
 
 typedef struct StructOBB {
 	glm::vec3 position;
@@ -63,5 +62,3 @@ public:
 
 	PhyEngine();
 };
-
-#endif

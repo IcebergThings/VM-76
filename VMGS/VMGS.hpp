@@ -2,19 +2,14 @@
 // ■ VMGS/VMGS.hpp
 //=============================================================================
 
+#pragma once
+
 #include <VMDE.hpp>
 #undef DEBUG_ENVIRONMENT
 #define DEBUG_ENVIRONMENT "VMGS"
 
 #include "Game/config.hpp"
 
-#include "GameObject/GameObject.hpp"
-#include "Control/control.hpp"
-#include "Physics/Physics.hpp"
-#include "Scene/scene.hpp"
-
-#ifndef _INCLUDE_VMGS_GLOBAL_H
-#define _INCLUDE_VMGS_GLOBAL_H
 namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● TODO
@@ -35,4 +30,8 @@ namespace VM76 {
 	void update_logic();
 	void render();
 }
-#endif
+
+#include "Physics/Physics.hpp"
+#include "GameObject/GameObject.hpp"
+#include "Control/control.hpp"
+#include "Scene/scene.hpp"

@@ -4,7 +4,7 @@
 // Take over the Physics world!
 //=============================================================================
 
-#include "Physics.hpp"
+#include "../VMGS.hpp"
 
 PhyEngine::PhyEngine() {
 	first = new PhyObjNode;

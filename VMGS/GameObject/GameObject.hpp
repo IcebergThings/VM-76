@@ -2,13 +2,14 @@
 // ■ GameObject.hpp
 //=============================================================================
 
-#ifndef _INCLUDE_GAME_OBJECT_H
-#define _INCLUDE_GAME_OBJECT_H
+#pragma once
 
 #include "Cube/cube.hpp"
 #include "GLAxis/axis.hpp"
+#include "Tile/tile.hpp"
 #include "TiledMap/tiled_map.hpp"
 #include "Camera/Camera.hpp"
+#include "SkyBox/SkyBox.hpp"
 
 namespace VM76 {
 	class GObject {
@@ -31,5 +32,3 @@ namespace VM76 {
 		);
 	};
 }
-
-#endif

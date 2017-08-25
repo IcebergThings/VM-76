@@ -4,7 +4,7 @@
 //   地图类
 //=============================================================================
 
-#include "tiled_map.hpp"
+#include "../../VMGS.hpp"
 #include "glm/gtc/noise.hpp"
 
 namespace VM76 {
