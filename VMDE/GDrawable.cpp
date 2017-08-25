@@ -4,7 +4,7 @@
 //   VMDE中GDrawable的控制与类。
 //=============================================================================
 
-#include "global.hpp"
+#include <VMDE.hpp>
 
 GLuint Vertex_entry_size[] = {3, 4, 2, 3};
 GLuint Vertex_entry_type[] = {GL_FLOAT, GL_FLOAT, GL_FLOAT, GL_FLOAT};

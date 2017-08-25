@@ -2,7 +2,7 @@
 // ■ VMDE/global.cpp
 //=============================================================================
 
-#include "global.hpp"
+#include <VMDE.hpp>
 
 GLFWwindow* window;
 

@@ -1,8 +1,9 @@
 //=============================================================================
-// ■ VMGS/global.hpp
+// ■ VMGS/VMGS.hpp
 //=============================================================================
 
-#include <global.hpp>
+#include <VMDE.hpp>
+
 #include <config.hpp>
 
 #include "GameObject/GameObject.hpp"

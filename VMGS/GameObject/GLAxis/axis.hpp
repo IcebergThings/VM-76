@@ -2,7 +2,7 @@
 // ■ axis.hpp
 //=============================================================================
 
-#include <global.hpp>
+#include <VMDE.hpp>
 
 #ifndef _INCLUDE_GLAXIS_H
 #define _INCLUDE_GLAXIS_H

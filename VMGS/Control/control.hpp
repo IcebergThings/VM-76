@@ -7,7 +7,8 @@
 #ifndef INCLUDE_CONTROL_
 #define INCLUDE_CONTROL_
 
-#include <global.hpp>
+#include <VMDE.hpp>
+
 #include "../GameObject/Camera/Camera.hpp"
 
 namespace VM76 {

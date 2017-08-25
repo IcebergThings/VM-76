@@ -2,7 +2,7 @@
 // ■ cube.hpp
 //=============================================================================
 
-#include <global.hpp>
+#include <VMDE.hpp>
 
 #ifndef _INCLUDE_CUBES_H
 #define _INCLUDE_CUBES_H

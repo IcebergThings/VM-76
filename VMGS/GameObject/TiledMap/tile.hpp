@@ -2,7 +2,7 @@
 // ■ tile.hpp
 //=============================================================================
 
-#include <global.hpp>
+#include <VMDE.hpp>
 
 #ifndef _INCLUDE_TILES_H
 #define _INCLUDE_TILES_H

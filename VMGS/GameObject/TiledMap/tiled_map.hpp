@@ -2,8 +2,7 @@
 // ■ tiled_map.hpp
 //=============================================================================
 
-#include <global.hpp>
-
+#include <VMDE.hpp>
 #include <thread>
 
 #ifndef _INCLUDE_TILED_MAP_H

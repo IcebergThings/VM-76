@@ -2,7 +2,7 @@
 // ■ SkyBox.hpp
 //=============================================================================
 
-#include <global.hpp>
+#include <VMDE.hpp>
 
 #ifndef _INCLUDE_SKYBOX_H
 #define _INCLUDE_SKYBOX_H

@@ -4,7 +4,7 @@
 //   VMDE中与文字渲染有关的部分。
 //=============================================================================
 
-#include "global.hpp"
+#include <VMDE.hpp>
 
 GLuint Text_VBO_size[] = {3, 4, 2};
 GLuint Text_VBO_type[] = {GL_FLOAT, GL_FLOAT, GL_FLOAT};

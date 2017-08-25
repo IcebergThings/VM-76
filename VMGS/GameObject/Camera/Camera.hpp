@@ -7,7 +7,7 @@
 #ifndef _INCLUDE_CAMERA_H
 #define _INCLUDE_CAMERA_H
 
-#include <global.hpp>
+#include <VMDE.hpp>
 
 class Camera {
 public:
