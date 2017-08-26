@@ -32,7 +32,7 @@ namespace VM76 {
 	bool DataMap::read_map() {
 		log("Reading map");
 		V::BinaryFileReader* fr = new V::BinaryFileReader("map.dat");
-		if (!fr->f) {
+		if (!fr->is_valid()) {
 			delete fr;
 			log("map.dat doesn't exist");
 			return false;
