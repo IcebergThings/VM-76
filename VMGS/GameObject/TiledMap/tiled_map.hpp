@@ -26,17 +26,23 @@ namespace VM76 {
 		DataMap(int w, int h, int l);
 		~DataMap();
 
-		inline long calcIndex(int x, int y, int z) { return (width * length) * y + (length) * z + x; }
-		inline long calcIndex(glm::vec3 v) { return (width * length) * v.y + (length) * v.z + v.x; }
+		inline size_t index(int x, int y, int z) {
+			return width * length * y + length * z + x;
+		}
+		inline size_t index(glm::vec3 v) {
+			return index(v.x, v.y, v.z);
+		}
 
 		inline TileData tileQuery(int x, int y, int z) {
-			return (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) ?
-			constStone : map[calcIndex(x,y,z)];
+			if (x >= 0 && x < width && y >= 0 && y < length && z >= 0 && z < height) {
+				return map[index(x, y, z)];
+			} else {
+				return constStone;
+			}
 		}
 
 		inline char tidQuery(int x, int y, int z) {
-			return (x < 0 || x > width || y < 0 || y > length || z < 0 || z > height) ?
-			1 : map[calcIndex(x,y,z)].tid;
+			return tileQuery(x, y, z).tid;
 		}
 
 		void save_map();

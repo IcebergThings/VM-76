@@ -19,20 +19,21 @@ namespace VM76 {
 		virtual void bake(
 			float x, float y, float z,
 			Vertex* v, GLuint* ix,
-			int* vcount, int* icount, int ind);
+			int* vcount, int* icount, int ind
+		);
 	};
 
 	enum TileID {
-		Air,           // 0
-		Grass,         // 1
-		Stone,         // 2
-		Dirt,          // 3
-		Glass,         // 4
-		WoodPlank,     // 5
-		HalfBrick,     // 6 : 0 = whole, 1 = bottom, 2 = top
-		Brick,         // 7
-		TNT,           // 8
-		CobbleStone,   // 9
+		Air         = 0,
+		Grass       = 1,
+		Stone       = 2,
+		Dirt        = 3,
+		Glass       = 4,
+		WoodPlank   = 5,
+		HalfBrick   = 6, // 0 = whole  1 = bottom  2 = top
+		Brick       = 7,
+		TNT         = 8,
+		CobbleStone = 9,
 	};
 
 	class SimpleCubeTile : public Tiles {

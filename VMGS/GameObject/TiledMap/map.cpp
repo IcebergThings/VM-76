@@ -24,7 +24,7 @@ namespace VM76 {
 		for (int x = 0; x < width; x++)
 			for (int z = 0; z < length; z++)
 				for (int y = 0; y < height; y++) {
-					TileData t = map[calcIndex(x,y,z)];
+					TileData t = map[index(x,y,z)];
 					t.tid = (y == 0) ? Grass : Air;
 				}
 	}
@@ -117,14 +117,14 @@ namespace VM76 {
 				float dirt_layers = glm::perlin(coord * 5.0f + seed) * 2.0f;
 				for (int y = 0; y < h; y++) {
 					if (y == ho - 1)
-						map[calcIndex(i,y,j)].tid = Grass;
+						map[index(i,y,j)].tid = Grass;
 					else if (y >= ho - 2 - dirt_layers && y < ho - 1)
-						map[calcIndex(i,y,j)].tid = Dirt;
+						map[index(i,y,j)].tid = Dirt;
 					else
-						map[calcIndex(i,y,j)].tid = Stone;
+						map[index(i,y,j)].tid = Stone;
 				}
 				for (int y = h; y < height; y++) {
-					map[calcIndex(i,y,j)].tid = Air;
+					map[index(i,y,j)].tid = Air;
 				}
 			}
 		}
@@ -193,7 +193,7 @@ namespace VM76 {
 		int cy = (int) dir.y / CHUNK_SIZE;
 		int cz = (int) dir.z / CHUNK_SIZE;
 
-		map->map[map->calcIndex(dir)].tid = tid;
+		map->map[map->index(dir)].tid = tid;
 		chunks[calcChunkIndex(cx,cy,cz)]->bake_tiles();
 
 		if (cx > 0      && (dir.x - 1.0) / CHUNK_SIZE != cx) chunks[calcChunkIndex(cx-1,cy,cz)]->bake_tiles();
@@ -235,7 +235,7 @@ namespace VM76 {
 		for (int x0 = b->position.x; x0 <= b->position.x + b->size.x; x0++) {
 			for (int y0 = b->position.y; y0 <= b->position.y + b->size.y; y0++) {
 				for (int z0 = b->position.z; z0 <= b->position.z + b->size.z; z0++) {
-					if (robj->map->map[robj->map->calcIndex(x0, y0, z0)].tid != 0) {
+					if (robj->map->map[robj->map->index(x0, y0, z0)].tid != 0) {
 						BoxCollider* collider = new BoxCollider(
 							glm::vec3(x0, y0, z0),
 							glm::vec3(1.0, 0.0, 0.0),

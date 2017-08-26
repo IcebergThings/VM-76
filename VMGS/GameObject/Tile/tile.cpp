@@ -145,8 +145,8 @@ namespace VM76 {
 	void Tiles::bake(
 		float x, float y, float z,
 		Vertex* v, GLuint* ix,
-		int *vcount, int *icount, int ind)
-	{
+		int* vcount, int* icount, int ind
+	) {
 		for (int i = 0; i < 4; i++) {
 			Vertex emitted = vtx[ind][i];
 			emitted.world_position += glm::vec3(x, y, z);

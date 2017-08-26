@@ -9,8 +9,9 @@
 namespace VM76 {
 
 	void TiledMap::init_cinstances(Tiles* cinstance[]) {
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < 16; i++) {
 			cinstance[i] = get_instances(i + 1);
+		}
 	}
 
 	Tiles* TiledMap::get_instances(int id) {
@@ -59,8 +60,8 @@ namespace VM76 {
 		int count = 0;
 
 		// Pre alloc
-		Vertex* vtx = (Vertex*)malloc(sizeof(Vertex) * 512);
-		GLuint* ind = (GLuint*)malloc(sizeof(GLuint) * 512);
+		Vertex* vtx = new Vertex[512];
+		GLuint* ind = new GLuint[512];
 		int vtx_max = 512, ind_max = 512;
 		int vtx_c = 0, ind_c = 0;
 
@@ -104,7 +105,6 @@ namespace VM76 {
 							cinstance[id]->bake(x0, y0, z0, vtx, ind, &vtx_c, &ind_c, 5);
 							count++;
 						}
-
 					}
 				}
 			}
@@ -117,7 +117,7 @@ namespace VM76 {
 			if (!obj) obj = new GDrawable(NULL, NULL);
 			obj->data.vtx_c = vtx_c;
 			obj->data.ind_c = ind_c;
-			obj->data.vertices = (GLuint*)vtx;
+			obj->data.vertices = (GLuint*) vtx;
 			obj->data.indices = ind;
 			obj->data.mat_c = 1;
 			obj->data.mat = (GLuint*) &translate;
