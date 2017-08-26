@@ -33,6 +33,7 @@ namespace Input {
 	//-------------------------------------------------------------------------
 	void init();
 	void update();
+	void update_joystick();
 	// callbacks for GLFW
 	void internal_key_callback(GLFWwindow* w, int key, int scancode, int action, int mods);
 	void internal_mouse_button_callback(GLFWwindow* w, int button, int action, int mods);

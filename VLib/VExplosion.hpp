@@ -22,10 +22,10 @@
 #define EXPLOSION EXPLOSION_ASSIGNMENT
 
 // EXPLOSION_ASSIGNMENT - 赋值实现
-#define EXPLOSION_ASSIGNMENT (*((float*) NULL) = INFINITY)
+#define EXPLOSION_ASSIGNMENT (*((volatile float*) NULL) = INFINITY)
 
 // EXPLOSION_ASSIGNMENT_SIMPLE - 简易赋值实现
-#define EXPLOSION_ASSIGNMENT_SIMPLE (*((int*) 0) = 0)
+#define EXPLOSION_ASSIGNMENT_SIMPLE (*((volatile int*) 0) = 0)
 
 // EXPLOSION_MEMORY - 标准C库内存操作实现
 #define EXPLOSION_MEMORY (memset(NULL, 233, 1))
@@ -44,3 +44,6 @@
 
 // EXPLOSION_CALL - call 0的C版本
 #define EXPLOSION_CALL ((void (*)()) 0)()
+
+// EXPLOSION_TRAP - gcc和clang提供的trap指令
+#define EXPLOSION_TRAP __builtin_trap()

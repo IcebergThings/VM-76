@@ -121,6 +121,7 @@ void init_engine(int w, int h, const char* title) {
 	init_vmde(w, h);
 	init_graphics(w, h, title);
 	Audio::init();
+	Input::init();
 
 	CmdList::global_init();
 
