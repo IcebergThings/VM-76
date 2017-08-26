@@ -11,7 +11,7 @@ namespace Input {
 	//-------------------------------------------------------------------------
 	// ● Unified button input
 	//-------------------------------------------------------------------------
-	enum ButtonType {
+	enum ButtonType : unsigned char {
 		BUTTON_TYPE_MOUSE,
 		BUTTON_TYPE_KEY,
 		BUTTON_TYPE_JOYSTICK,
@@ -20,7 +20,7 @@ namespace Input {
 		ButtonType type;
 		int value;
 	};
-	enum ButtonAction {
+	enum ButtonAction : bool {
 		BUTTON_ACTION_DOWN,
 		BUTTON_ACTION_UP,
 	};
