@@ -6,15 +6,20 @@
 
 namespace Input {
 	//-------------------------------------------------------------------------
-	// ● Event handlers
+	// ● 变量
 	//-------------------------------------------------------------------------
 	void (*event_button)(Button button, ButtonAction action) = NULL;
+	size_t joystick_button_count;
+	unsigned char joystick_buttons[INPUT_JOYSTICK_BUTTONS_SIZE];
 	//-------------------------------------------------------------------------
 	// ● 初始化
 	//-------------------------------------------------------------------------
 	void init() {
 		glfwSetKeyCallback(window, internal_key_callback);
 		glfwSetMouseButtonCallback(window, internal_mouse_button_callback);
+		for (size_t i = 0; i < INPUT_JOYSTICK_BUTTONS_SIZE; i++) {
+			joystick_buttons[i] = GLFW_RELEASE;
+		}
 	}
 	//-------------------------------------------------------------------------
 	// ● 更新
@@ -29,7 +34,27 @@ namespace Input {
 	//-------------------------------------------------------------------------
 	void update_joystick() {
 		int count;
-		const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+		const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+		joystick_button_count = count;
+		// 游戏手柄？不存在的
+		if (!buttons || !count) return;
+		for (int i = 0; i < count; i++) {
+			Button x;
+			x.type = BUTTON_TYPE_JOYSTICK;
+			x.value = i;
+
+			ButtonAction y;
+			if (joystick_buttons[i] == GLFW_RELEASE && buttons[i] == GLFW_PRESS) {
+				y = BUTTON_ACTION_DOWN;
+			}
+			if (joystick_buttons[i] == GLFW_PRESS && buttons[i] == GLFW_RELEASE) {
+				y = BUTTON_ACTION_UP;
+			}
+
+			// 调用事件处理程序的时候这里的状态表还没更新，不过管它呢
+			event_button(x, y);
+		}
+		memcpy(joystick_buttons, buttons, joystick_button_count);
 	}
 	//-------------------------------------------------------------------------
 	// ● 供GLFW使用的键盘按键回调
