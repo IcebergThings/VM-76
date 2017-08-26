@@ -32,7 +32,11 @@ namespace VM76 {
 	bool DataMap::read_map() {
 		log("Reading map");
 		V::BinaryFileReader* fr = new V::BinaryFileReader("map.dat");
-		if (!fr->f) return false;
+		if (!fr->f) {
+			delete fr;
+			log("map.dat doesn't exist");
+			return false;
+		}
 
 		int map_version = fr->read_i32();
 		if (fr->read_u8() == 'V' && fr->read_u8() == 'M'
@@ -79,8 +83,6 @@ namespace VM76 {
 		if (map_save_worker) map_save_worker->join();
 		XE(delete, map_save_worker);
 	}
-
-	#include <ctime>
 
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);

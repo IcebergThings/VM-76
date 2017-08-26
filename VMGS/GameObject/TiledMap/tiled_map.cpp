@@ -123,7 +123,7 @@ namespace VM76 {
 			obj->data.mat = (GLuint*) &translate;
 			obj->fbind();
 		} else {
-			if (obj) XE(delete, obj);
+			XE(delete, obj);
 		}
 	}
 
