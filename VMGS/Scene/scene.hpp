@@ -81,7 +81,7 @@ namespace VM76 {
 		thread loader_thread;
 		bool loader_completed;
 	public:
-		Scene_Loading(void (*loader)(bool* completion_sign));
+		Scene_Loading(void (*loader)(bool* completion_flag));
 		void update();
 		void render();
 	};

@@ -7,9 +7,10 @@
 namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 构造
-	//    loader : 加载用函数。会在另一个线程上执行此函数，加载完后应设置completion_sign为true。
+	//    loader : 加载用函数。
+	//             会在另一个线程上执行此函数，加载完后应设置completion_flag为true。
 	//-------------------------------------------------------------------------
-	Scene_Loading::Scene_Loading(void (*loader)(bool* completion_sign)) {
+	Scene_Loading::Scene_Loading(void (*loader)(bool* completion_flag)) {
 		loader_completed = false;
 		loader_thread = thread(loader, &loader_completed);
 	}

@@ -28,13 +28,6 @@ namespace VM76 {
 		}
 	}
 	//-------------------------------------------------------------------------
-	// ● 搞个不知道干啥的加载函数实验一下
-	//-------------------------------------------------------------------------
-	void test_load_(bool* completion_sign) {
-		this_thread::sleep_for(chrono::seconds(2));
-		*completion_sign = true;
-	}
-	//-------------------------------------------------------------------------
 	// ● 启动
 	//-------------------------------------------------------------------------
 	void start_game() {
@@ -45,7 +38,10 @@ namespace VM76 {
 		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);
 
 		SceneManager::init();
-		SceneManager::jump<Scene_Loading>(test_load_);
+		SceneManager::jump<Scene_Loading>([] (bool* completion_flag) -> void {
+			this_thread::sleep_for(chrono::seconds(1));
+			*completion_flag = true;
+		});
 
 		loop();
 		terminate();
