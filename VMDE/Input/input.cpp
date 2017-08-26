@@ -57,6 +57,21 @@ namespace Input {
 		memcpy(joystick_buttons, buttons, joystick_button_count);
 	}
 	//-------------------------------------------------------------------------
+	// ● 判断按键是否被按下
+	//   为什么方法名不是“press?”呢？
+	//-------------------------------------------------------------------------
+	bool is_pressed(Button button) {
+		switch (button.type) {
+		case BUTTON_TYPE_MOUSE:
+			return glfwGetMouseButton(window, button.value) == GLFW_PRESS;
+		case BUTTON_TYPE_KEY:
+			return glfwGetKey(window, button.value) == GLFW_PRESS;
+		case BUTTON_TYPE_JOYSTICK:
+			return joystick_buttons[button.value] == GLFW_PRESS;
+		}
+		return false;
+	}
+	//-------------------------------------------------------------------------
 	// ● 供GLFW使用的键盘按键回调
 	//   不使用scancode——那样的键不应该被这种应用程序使用。
 	//-------------------------------------------------------------------------
