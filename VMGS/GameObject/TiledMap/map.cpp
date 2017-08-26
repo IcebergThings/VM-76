@@ -31,22 +31,21 @@ namespace VM76 {
 
 	bool DataMap::read_map() {
 		log("Reading map");
-		V::BinaryFileReader* fr = new V::BinaryFileReader("map.dat");
-		if (!fr->is_valid()) {
-			delete fr;
+		V::BinaryFileReader fr("map.dat");
+		if (!fr.is_valid()) {
 			log("map.dat doesn't exist");
 			return false;
 		}
 
-		int map_version = fr->read_i32();
-		if (fr->read_u8() == 'V' && fr->read_u8() == 'M'
-			&& fr->read_u8() == '7' && fr->read_u8() == '6') {
+		int map_version = fr.read_i32();
+		if (fr.read_u8() == 'V' && fr.read_u8() == 'M'
+			&& fr.read_u8() == '7' && fr.read_u8() == '6') {
 				log("Map version : %d", map_version);
 				for (int x = 0; x < width * length * height; x++) {
 					if (x % (width * length * height / 7) == 0)
 						log("Map %d%% loaded", 100 * x / (width * length * height));
-					map[x].tid = fr->read_u8();
-					map[x].data_flag = fr->read_u8();
+					map[x].tid = fr.read_u8();
+					map[x].data_flag = fr.read_u8();
 				}
 				return true;
 			} else {
@@ -58,20 +57,19 @@ namespace VM76 {
 	void DataMap::save_map() {
 		auto worker_save = [](DataMap* t) {
 			log("Saving map");
-			V::BinaryFileWriter* fw = new V::BinaryFileWriter("map.dat");
+			V::BinaryFileWriter fw("map.dat");
 			// 版本号
-			fw->write_i32(100);
+			fw.write_i32(100);
 			// 文件头标识
-			fw->write_u8('V');
-			fw->write_u8('M');
-			fw->write_u8('7');
-			fw->write_u8('6');
+			fw.write_u8('V');
+			fw.write_u8('M');
+			fw.write_u8('7');
+			fw.write_u8('6');
 
 			for (int x = 0; x < t->width * t->length * t->height; x++) {
-				fw->write_u8(t->map[x].tid);
-				fw->write_u8(t->map[x].data_flag);
+				fw.write_u8(t->map[x].tid);
+				fw.write_u8(t->map[x].data_flag);
 			}
-			XE(delete, fw);
 			log("Map saved");
 
 			t->map_save_worker = NULL;
