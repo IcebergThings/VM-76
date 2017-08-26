@@ -72,8 +72,8 @@ namespace VM76 {
 
 	SkyBox::~SkyBox() {
 		XE(delete, obj);
-		XE(delete, vtx);
-		XE(delete, itx);
+		XE(delete[], vtx);
+		XE(delete[], itx);
 		XE(delete, gbuffers_sky);
 	}
 }

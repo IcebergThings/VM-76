@@ -137,7 +137,8 @@ namespace VM76 {
 	}
 
 	TiledMap::~TiledMap() {
-		for (int i = 0; i < 16; i++)
-			if (cinstance[i]) VMDE_Dispose(delete, cinstance[i]);
+		for (int i = 0; i < 16; i++) {
+			if (cinstance[i]) XE(delete, cinstance[i]);
+		}
 	}
 }

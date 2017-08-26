@@ -28,7 +28,7 @@ double accumulated_frame_time = 0;
 auto now = chrono::high_resolution_clock::now();
 
 void main_draw_start() {
-	glfwPollEvents();
+	Input::update();
 	if (glfwWindowShouldClose(window)) VMDE->done = true;
 	VMDE->frame_count++;
 	fps_counter++;
@@ -44,7 +44,6 @@ void main_draw_start() {
 void main_draw_end() {
 	if (!VMDE->state.frozen) {
 		glFlush();
-
 		glfwSwapBuffers(window);
 	}
 }

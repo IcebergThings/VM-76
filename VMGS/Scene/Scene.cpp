@@ -20,24 +20,15 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 按键
 	//-------------------------------------------------------------------------
-	void Scene::event_key(int key, int action) {
-	}
-	//-------------------------------------------------------------------------
-	// ● 按下键
-	//-------------------------------------------------------------------------
-	void Scene::event_keydown(int key, int mods) {
-		switch (key) {
-		case GLFW_KEY_PAUSE:
-			if (mods & GLFW_MOD_CONTROL) abort();
-			break;
-		case GLFW_KEY_F3:
+	void Scene::event_button(Input::Button button, Input::ButtonAction action) {
+		if (button.type == Input::BUTTON_TYPE_KEY
+			&& button.value == GLFW_KEY_PAUSE
+			&& action == Input::BUTTON_ACTION_DOWN) {
+			abort();
+		} else if (button.type == Input::BUTTON_TYPE_KEY
+			&& button.value == GLFW_KEY_F3
+			&& action == Input::BUTTON_ACTION_DOWN) {
 			SceneManager::debug_info_visible = !SceneManager::debug_info_visible;
-			break;
 		}
-	}
-	//-------------------------------------------------------------------------
-	// ● 鼠标键
-	//-------------------------------------------------------------------------
-	void Scene::event_mousebutton(int button, int action, int mods) {
 	}
 }

@@ -4,8 +4,7 @@
 //   场景类
 //=============================================================================
 
-#ifndef VMGS_SCENE_SCENE_HPP_
-#define VMGS_SCENE_SCENE_HPP_
+#pragma once
 
 namespace VM76 {
 	//-------------------------------------------------------------------------
@@ -15,9 +14,7 @@ namespace VM76 {
 	public:
 		virtual void update();
 		virtual void render();
-		virtual void event_key(int key, int action);
-		virtual void event_keydown(int key, int mods);
-		virtual void event_mousebutton(int button, int action, int mods);
+		virtual void event_button(Input::Button button, Input::ButtonAction action);
 		virtual ~Scene() {};
 	};
 	//-------------------------------------------------------------------------
@@ -36,9 +33,6 @@ namespace VM76 {
 		void update_scene();
 		void render_scene();
 		void render_debug_info();
-		// callbacks for GLFW
-		void key_callback(GLFWwindow* w, int key, int scancode, int action, int mods);
-		void mouse_button_callback(GLFWwindow* w, int button, int action, int mods);
 	};
 	//-------------------------------------------------------------------------
 	// ● Scene_Editor
@@ -72,9 +66,7 @@ namespace VM76 {
 
 	public:
 		Scene_Editor();
-		void event_key(int key, int action);
-		void event_keydown(int key, int mods);
-		void event_mousebutton(int button, int action, int mods);
+		void event_button(Input::Button button, Input::ButtonAction action);
 		void update();
 		void render();
 		void GenerateMap();
@@ -94,5 +86,3 @@ namespace VM76 {
 		void render();
 	};
 }
-
-#endif

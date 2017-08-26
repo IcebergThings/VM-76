@@ -69,7 +69,7 @@
 	// MLVN - Macro-Local Variable Name
 	// 这是为了不让明文变量名被莫名其妙使用而设计的。
 	//     #define TEST do { int MLVN() = 0, MLVN(another) = 0; } while(0)
-	#define MLVN(name) My_Lovely_##name##___
+	#define MLVN(name) My_Lovely_##name##_1_2_3_
 	// NTIMES - 执行多次
 	//     NTIMES(3) puts("Three or more, use a for");
 	#define NTIMES(n) \
@@ -78,36 +78,17 @@
 	//     TWICE a++;
 	//     TWICE { a++; b++; }
 	#define TWICE NTIMES(2)
-	// XE - 释放内存黑魔法
+	// XE - 释放内存黑魔法、一键销毁宏魔法
 	// “X掉Exceptions”！
 	//     void* m;
-	//     m = malloc(1); xe(free, m);
-	//     m = (void*) 0; xe(free, m);
-	//     m = new float; xe(delete, m);
-	//     m = new tm[4]; xe(delete[], m);
+	//     m = malloc(1); XE(free, m);
+	//     m = (void*) 0; XE(free, m);
+	//     m = new float; XE(delete, m);
+	//     m = new tm[4]; XE(delete[], m);
 	#define XE(method, pointer) do { \
 		if (pointer) { \
 			method(pointer); \
 			(pointer) = NULL; \
-		} \
-	} while (false)
-	#define SuperXE(method, pointer) do { \
-		switch ((uintptr_t) pointer) { \
-		case 0xbaadf00d: \
-			(pointer) = NULL; \
-			[[fallthrough]]; \
-		case 0: \
-			break; \
-		default: \
-			method(pointer); \
-			(pointer) = NULL; \
-		} \
-	} while (false)
-	// VMDE_Dispose - 一键销毁宏魔法
-	#define VMDE_Dispose(method, object) do { \
-		if (object) { \
-			method(object); \
-			(object) = NULL; \
 		} \
 	} while (false)
 	// DEBUG_ENVIRONMENT - 调试环境
@@ -148,6 +129,7 @@
 	//-------------------------------------------------------------------------
 	#include "VLib/V.hpp"
 	#include "Audio/audio.hpp"
+	#include "Input/Input.hpp"
 	//-------------------------------------------------------------------------
 	// ● init.cpp
 	//-------------------------------------------------------------------------

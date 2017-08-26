@@ -55,7 +55,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void terminate() {
 		log("starting to terminate");
-		VMDE_Dispose(delete, trex);
+		XE(delete, trex);
 		terminate_engine();
 		log("terminated successfully");
 	}

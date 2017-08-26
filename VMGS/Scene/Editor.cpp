@@ -119,97 +119,88 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● 按键回调
 	//-------------------------------------------------------------------------
-	void Scene_Editor::event_key(int key, int action) {
-		Scene::event_key(key, action);
-		switch (key) {
-		case GLFW_KEY_O:
-			if (action == GLFW_PRESS) {
+	void Scene_Editor::event_button(Input::Button button, Input::ButtonAction action) {
+		Scene::event_button(button, action);
+		if (button.type == Input::BUTTON_TYPE_KEY
+			&& button.value == GLFW_KEY_O) {
+			if (action == Input::BUTTON_ACTION_DOWN) {
 				cam->Projection = glm::perspective(0.52f, aspect_ratio, 0.1f, 1000.0f);
-			} else if (action == GLFW_RELEASE) {
+			} else if (action == Input::BUTTON_ACTION_UP) {
 				cam->Projection = glm::perspective(1.2f, aspect_ratio, 0.1f, 1000.0f);
 			}
-			break;
-		}
-	}
-	void Scene_Editor::event_keydown(int key, int mods) {
-		Scene::event_keydown(key, mods);
-		for (int i = 0; i <= 9; i++) {
-			if (key == GLFW_KEY_0 + i) {
-				hand_id = i;
-				if (hand_id > 0) {
-					int vtx_c = 0, ind_c = 0;
-					for (int i = 0; i < 6; i++) {
-						clist[hand_id - 1]->bake(
-							0, 0, 0,
-							(Vertex*) hand_block->data.vertices,
-							hand_block->data.indices,
-							&vtx_c, &ind_c,
-							i
-						);
+		} else if (button.type == Input::BUTTON_TYPE_KEY
+			&& action == Input::BUTTON_ACTION_DOWN) {
+			for (int i = 0; i <= 9; i++) {
+				if (button.value == GLFW_KEY_0 + i) {
+					hand_id = i;
+					if (hand_id > 0) {
+						int vtx_c = 0, ind_c = 0;
+						for (int i = 0; i < 6; i++) {
+							clist[hand_id - 1]->bake(
+								0, 0, 0,
+								(Vertex*) hand_block->data.vertices,
+								hand_block->data.indices,
+								&vtx_c, &ind_c,
+								i
+							);
+						}
+						hand_block->data.vtx_c = vtx_c;
+						hand_block->data.ind_c = ind_c;
+						hand_block->data.mat_c = 1;
+						hand_block->update();
 					}
-					hand_block->data.vtx_c = vtx_c;
-					hand_block->data.ind_c = ind_c;
-					hand_block->data.mat_c = 1;
-					hand_block->update();
+					return;
 				}
-				return;
 			}
-		}
-		switch (key) {
-		case GLFW_KEY_F5:
-			if (mods & GLFW_MOD_SHIFT) {
-				ctl_index--;
-				if (ctl_index == SIZE_MAX) ctl_index = ctl_count - 1;
-			} else {
+			switch (button.value) {
+			case GLFW_KEY_F5:
 				ctl_index++;
 				if (ctl_index >= ctl_count) ctl_index = 0;
+				break;
+			case GLFW_KEY_R:
+				map.place_block(obj->pos, hand_id);
+				break;
+			case GLFW_KEY_Z:
+				map.map->save_map();
+				break;
+			case GLFW_KEY_SEMICOLON:
+				Audio::play_sound("../Media/soft-ping.ogg", false);
+				break;
+			case GLFW_KEY_APOSTROPHE: {
+				static Audio::Channel_Vorbis* loop = NULL;
+				if (loop) {
+					Audio::stop(loop);
+					loop = NULL;
+				} else {
+					loop = Audio::play_sound("../Media/loop-test.ogg", true, .1f);
+				}
+				break;
 			}
-			break;
-		case GLFW_KEY_R:
-			map.place_block(obj->pos, hand_id);
-			break;
-		case GLFW_KEY_Z:
-			map.map->save_map();
-			break;
-		case GLFW_KEY_SEMICOLON:
-			Audio::play_sound("../Media/soft-ping.ogg", false);
-			break;
-		case GLFW_KEY_APOSTROPHE: {
-			static Audio::Channel_Vorbis* loop = NULL;
-			if (loop) {
-				Audio::stop(loop);
-				loop = NULL;
-			} else {
-				loop = Audio::play_sound("../Media/loop-test.ogg", true, .1f);
+			case GLFW_KEY_LEFT_BRACKET: {
+				static Audio::Channel_Triangle* triangle = NULL;
+				if (triangle) {
+					Audio::stop(triangle);
+					triangle = NULL;
+				} else {
+					triangle = new Audio::Channel_Triangle(440);
+					Audio::play_channel(triangle);
+				}
+				break;
 			}
-			break;
-		}
-		case GLFW_KEY_LEFT_BRACKET: {
-			static Audio::Channel_Triangle* triangle = NULL;
-			if (triangle) {
-				Audio::stop(triangle);
-				triangle = NULL;
-			} else {
-				triangle = new Audio::Channel_Triangle(440);
-				Audio::play_channel(triangle);
+			case GLFW_KEY_RIGHT_BRACKET: {
+				static Audio::Channel_Sine* sine = NULL;
+				if (sine) {
+					Audio::stop(sine);
+					sine = NULL;
+				} else {
+					sine = new Audio::Channel_Sine(440);
+					Audio::play_channel(sine);
+				}
+				break;
 			}
-			break;
-		}
-		case GLFW_KEY_RIGHT_BRACKET: {
-			static Audio::Channel_Sine* sine = NULL;
-			if (sine) {
-				Audio::stop(sine);
-				sine = NULL;
-			} else {
-				sine = new Audio::Channel_Sine(440);
-				Audio::play_channel(sine);
 			}
-			break;
-		}
-		}
-	}
-	void Scene_Editor::event_mousebutton(int button, int action, int mods) {
-		switch (button) {
+		} else if (button.type == Input::BUTTON_TYPE_KEY
+			&& action == Input::BUTTON_ACTION_DOWN) switch (button.value) {
 		case GLFW_MOUSE_BUTTON_LEFT:
 			map.place_block(obj->pos, 0);
 			break;
