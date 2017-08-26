@@ -18,13 +18,13 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void loop() {
 		while (!VMDE->done) {
-			::main_draw_start();
+			main_draw_start();
 			SceneManager::update_scene();
 
 			RenderBuffer::clearBuffer(glm::vec4(.0f), true, true, false);
 			VMSC::enable_blend();
 			SceneManager::render_scene();
-			::main_draw_end();
+			main_draw_end();
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace VM76 {
 	// ● 启动
 	//-------------------------------------------------------------------------
 	void start_game() {
-		::init_engine(860, 540, "VM / 76");
+		init_engine(860, 540, "VM / 76");
 
 		trex = new TextRenderer();
 		aspect_ratio = (float) VMDE->width / VMDE->height;
