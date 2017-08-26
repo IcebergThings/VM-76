@@ -15,7 +15,7 @@ namespace VM76 {
 		map = (TileData*) malloc(sizeof(TileData) * w * h * l);
 		width = w; length = l; height = h;
 
-		std::srand(std::time(0));
+		srand(time(NULL));
 
 		if (!read_map()) generate_V1();
 	}
@@ -72,7 +72,7 @@ namespace VM76 {
 
 			t->map_save_worker = NULL;
 		};
-		if (!map_save_worker) map_save_worker = new std::thread(worker_save, this);
+		if (!map_save_worker) map_save_worker = new thread(worker_save, this);
 	}
 
 	DataMap::~DataMap() {
@@ -85,7 +85,7 @@ namespace VM76 {
 	void DataMap::generate_V1() {
 		log("Start generating maps, %d x %d x %d", width, length, height);
 
-		float seed = std::rand() * 0.00001f;
+		float seed = rand() * 0.00001f;
 		for (int i = 0; i < width; i++) {
 			if (i % (width / 12) == 0)
 				log("Generated %d%% (%d / %d)",

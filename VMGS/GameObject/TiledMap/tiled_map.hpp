@@ -20,7 +20,7 @@ namespace VM76 {
 		int width, length, height;
 		TileData constStone;
 
-		std::thread* map_save_worker = NULL;
+		thread* map_save_worker = NULL;
 
 	public:
 		DataMap(int w, int h, int l);
