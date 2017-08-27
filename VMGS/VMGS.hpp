@@ -8,8 +8,6 @@
 #undef DEBUG_ENVIRONMENT
 #define DEBUG_ENVIRONMENT "VMGS"
 
-#include "Game/config.hpp"
-
 namespace VM76 {
 	//-------------------------------------------------------------------------
 	// ● TODO
