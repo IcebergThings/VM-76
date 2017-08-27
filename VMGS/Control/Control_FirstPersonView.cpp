@@ -14,15 +14,20 @@ namespace VM76 {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(window, .0, .0);
 		this->cam = cam;
-		keys = {
-			.quit = GLFW_KEY_ESCAPE,
-			.forward = GLFW_KEY_W,
-			.left = GLFW_KEY_A,
-			.right = GLFW_KEY_D,
-			.back = GLFW_KEY_S,
-			.up = GLFW_KEY_SPACE,
-			.down = GLFW_KEY_LEFT_SHIFT,
-		};
+		keys.quit.type = Input::BUTTON_TYPE_KEY;
+		keys.quit.value = GLFW_KEY_ESCAPE;
+		keys.forward.type = Input::BUTTON_TYPE_KEY;
+		keys.forward.value = GLFW_KEY_W;
+		keys.left.type = Input::BUTTON_TYPE_KEY;
+		keys.left.value = GLFW_KEY_A;
+		keys.right.type = Input::BUTTON_TYPE_KEY;
+		keys.right.value = GLFW_KEY_D;
+		keys.back.type = Input::BUTTON_TYPE_KEY;
+		keys.back.value = GLFW_KEY_S;
+		keys.up.type = Input::BUTTON_TYPE_KEY;
+		keys.up.value = GLFW_KEY_SPACE;
+		keys.down.type = Input::BUTTON_TYPE_KEY;
+		keys.down.value = GLFW_KEY_LEFT_SHIFT;
 	}
 	//-------------------------------------------------------------------------
 	// ● 更新
@@ -46,22 +51,19 @@ namespace VM76 {
 
 		// Key Input
 		glm::vec3 speed = glm::vec3(0.1);
-		#define PRESS(k) glfwGetKey(window, keys.k) == GLFW_PRESS
-		if (PRESS(quit))
+		if (Input::is_pressed(keys.quit))
 			VMDE->done = true;
-		if (PRESS(forward))
+		if (Input::is_pressed(keys.forward))
 			game_player.wpos += glm::vec3(cam->forward.x, 0.0, cam->forward.z) * speed;
-		if (PRESS(back))
+		if (Input::is_pressed(keys.back))
 			game_player.wpos -= glm::vec3(cam->forward.x, 0.0, cam->forward.z) * speed;
-		if (PRESS(left))
+		if (Input::is_pressed(keys.left))
 			game_player.wpos -= right * speed;
-		if (PRESS(right))
+		if (Input::is_pressed(keys.right))
 			game_player.wpos += right * speed;
-		if (PRESS(up))
+		if (Input::is_pressed(keys.up))
 			game_player.wpos += glm::vec3(0.0, 1.0, 0.0) * speed;
-		if (PRESS(down))
+		if (Input::is_pressed(keys.down))
 			game_player.wpos -= glm::vec3(0.0, 1.0, 0.0) * speed;
-		#undef PRESS
 	}
-
 }

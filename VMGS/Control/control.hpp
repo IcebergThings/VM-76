@@ -46,9 +46,9 @@ namespace VM76 {
 	class Control_FirstPersonView : public Control {
 	public:
 		struct {
-			int quit;
-			int forward, left, right, back;
-			int up, down;
+			Input::Button quit;
+			Input::Button forward, left, right, back;
+			Input::Button up, down;
 		} keys;
 
 		class Player {
