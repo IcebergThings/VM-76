@@ -18,6 +18,8 @@
 char cmd[1024];
 char buf[1000];
 const char* presets[] = {
+	"make r",
+	"make one",
 	"make run",
 	"make debug",
 };
@@ -31,7 +33,9 @@ int main(int argc, char** argv) {
 	}
 	printf("[ ] make ");
 	fgets(buf, sizeof(buf), stdin);
-	if (buf[1] == '\n') {
+	if (buf[0] == '\n') {
+		strcpy(cmd, presets[0]);
+	} else if (buf[1] == '\n') {
 		if (buf[0] >= '0' && buf[0] <= '9') {
 			strcpy(cmd, presets[buf[0] - '0']);
 		} else {
