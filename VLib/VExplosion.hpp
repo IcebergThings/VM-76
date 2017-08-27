@@ -2,6 +2,7 @@
 // ■ VExplosion.hpp
 //-----------------------------------------------------------------------------
 //   可以安全地在用户级代码中调用并获得SIGSEGV或其它异常，并在退出程序时装逼。
+//   完全可以把这个头文件移动到其他项目中并获得同样的技能。
 //=============================================================================
 
 #ifdef __cplusplus
@@ -43,7 +44,7 @@
 #endif
 
 // EXPLOSION_CALL - call 0的C版本
-#define EXPLOSION_CALL ((void (*)()) 0)()
+#define EXPLOSION_CALL ((void (*)(void)) 0)()
 
 // EXPLOSION_TRAP - gcc和clang提供的trap指令
 #define EXPLOSION_TRAP __builtin_trap()
