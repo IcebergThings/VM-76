@@ -23,14 +23,15 @@ endif
 
 ONE_FILE = one.cxx
 
-one:
+one: $(SOURCES)
+	$(call ECHO_BANNER,整体编译)
 ifeq "$(PLATFORM)" "msw"
-	type nul > $(ONE_FILE) \
-	& for %%i in ($(SOURCES)) do echo #include "%%i" >> $(ONE_FILE)
+	type nul > $(ONE_FILE) & for %%i in ($(SOURCES)) do echo #include "%%i" >> $(ONE_FILE)
 else
 	echo $(SOURCES) | sed 's/ /\n/g' | sed 's/^/#include "/;s/$/"/' > $(ONE_FILE)
 endif
 	$(CXX) $(ONE_FILE) -o $(TARGET) $(CXXFLAGS) $(LDLIBS) $(LDFLAGS)
+	$(RM) $(ONE_FILE)
 
 %.o %.debug.o: %.cpp
 	$(call ECHO_BANNER_BOLD,编译C++文件,$^)

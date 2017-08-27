@@ -29,6 +29,7 @@ ifndef _INCLUDE_INC_MAKEFILE
 	# MODE can be one of the following:
 	#     debug - for use with GDB, with optimizations turned off
 	#     test - for normal development testing
+	#     one - same as test but builds each project by ‘make one’
 	#     release - for releasing, maybe I'll add automatic packing sometime
 	ifndef MODE
 		MODE = test
@@ -37,6 +38,8 @@ ifndef _INCLUDE_INC_MAKEFILE
 		BUILD_MODE_MACRO = BUILD_MODE_DEBUG
 	else ifeq "$(MODE)" "test"
 		BUILD_MODE_MACRO = BUILD_MODE_TEST
+	else ifeq "$(MODE)" "one"
+		BUILD_MODE_MACRO = BUILD_MODE_ONE
 	else ifeq "$(MODE)" "release"
 		BUILD_MODE_MACRO = BUILD_MODE_RELEASE
 	endif
@@ -100,6 +103,10 @@ ifndef _INCLUDE_INC_MAKEFILE
 		ECHO_BANNER_BOLD = @echo -e "\033[33m $(1)\033[47;30m $(2) \033[0m"
 	endif
 
+ifeq "$(MODE)" "one"
+first: one
+else
 first: all
+endif
 .PHONY: first
 endif

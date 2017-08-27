@@ -28,6 +28,14 @@ else
 	cd VMGS && ./VMGS
 endif
 
+one:
+	$(MAKE) $(PROJECTS) MODE=one
+ifeq "$(PLATFORM)" "msw"
+	call windows_path.bat && cd VMGS && VMGS.exe
+else
+	cd VMGS && ./VMGS
+endif
+
 debug:
 	$(MAKE) $(PROJECTS) MODE=debug
 ifeq "$(PLATFORM)" "msw"
@@ -39,4 +47,4 @@ endif
 platform:
 	@echo $(PLATFORM)
 
-.PHONY: all clean run debug $(PROJECTS) platform
+.PHONY: all clean run one debug $(PROJECTS) platform
