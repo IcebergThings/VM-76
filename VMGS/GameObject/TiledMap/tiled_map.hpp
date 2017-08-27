@@ -45,8 +45,8 @@ namespace VM76 {
 			return tileQuery(x, y, z).tid;
 		}
 
-		void save_map();
-		bool read_map();
+		void save_map(const char* filename);
+		bool read_map(const char* filename);
 
 		void generate_flat();
 		void generate_V1();

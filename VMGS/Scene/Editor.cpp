@@ -161,7 +161,7 @@ namespace VM76 {
 				map.place_block(obj->pos, hand_id);
 				break;
 			case GLFW_KEY_Z:
-				map.map->save_map();
+				map.map->save_map("../userdata/map.dat");
 				break;
 			case GLFW_KEY_SEMICOLON:
 				Audio::play_sound("../Media/soft-ping.ogg", false);
@@ -323,7 +323,7 @@ namespace VM76 {
 		VMSC::disable_depth_test();
 		if (hand_id > 0) hand_block->renderOnce();
 
-		const char save_map_info[] = "Map Saving...";
+		const char* save_map_info = "Map saving...";
 		if (map.map->map_save_worker) {
 			TextRenderer::BakeOptions opt = {
 				.text = save_map_info,

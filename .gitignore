@@ -22,6 +22,6 @@ windows_path.bat
 one.cxx
 
 # awesome data
+userdata/
 output.log
-VMGS/map.dat
 *.obj

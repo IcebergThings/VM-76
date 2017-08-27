@@ -17,7 +17,7 @@ namespace VM76 {
 
 		srand(time(NULL));
 
-		if (!read_map()) generate_V1();
+		if (!read_map("../userdata/map.dat")) generate_V1();
 	}
 
 	void DataMap::generate_flat() {
@@ -29,9 +29,9 @@ namespace VM76 {
 				}
 	}
 
-	bool DataMap::read_map() {
+	bool DataMap::read_map(const char* filename) {
 		log("Reading map");
-		V::BinaryFileReader fr("map.dat");
+		V::BinaryFileReader fr(filename);
 		if (!fr.is_valid()) {
 			log("map.dat doesn't exist");
 			return false;
@@ -54,10 +54,10 @@ namespace VM76 {
 			}
 	}
 
-	void DataMap::save_map() {
-		auto worker_save = [](DataMap* t) {
+	void DataMap::save_map(const char* filename) {
+		auto worker_save = [](DataMap* t, const char* filename) {
 			log("Saving map");
-			V::BinaryFileWriter fw("map.dat");
+			V::BinaryFileWriter fw(filename);
 			// 版本号
 			fw.write_i32(100);
 			// 文件头标识
@@ -74,7 +74,7 @@ namespace VM76 {
 
 			t->map_save_worker = NULL;
 		};
-		if (!map_save_worker) map_save_worker = new thread(worker_save, this);
+		if (!map_save_worker) map_save_worker = new thread(worker_save, this, filename);
 	}
 
 	DataMap::~DataMap() {
