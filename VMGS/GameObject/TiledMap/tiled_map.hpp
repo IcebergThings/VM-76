@@ -46,6 +46,7 @@ namespace VM76 {
 		}
 
 		void save_map(const char* filename);
+		void save_map_async(const char* filename);
 		bool read_map(const char* filename);
 
 		void generate_flat();
