@@ -20,21 +20,21 @@ else
 	$(RM) VMGS/output.log
 endif
 
-run:
-	$(MAKE) $(PROJECTS) MODE=test
+r:
 ifeq "$(PLATFORM)" "msw"
 	call windows_path.bat && cd VMGS && VMGS.exe
 else
 	cd VMGS && ./VMGS
 endif
 
+
+run:
+	$(MAKE) $(PROJECTS) MODE=test
+	$(MAKE) r
+
 one:
 	$(MAKE) $(PROJECTS) MODE=one
-ifeq "$(PLATFORM)" "msw"
-	call windows_path.bat && cd VMGS && VMGS.exe
-else
-	cd VMGS && ./VMGS
-endif
+	$(MAKE) r
 
 debug:
 	$(MAKE) $(PROJECTS) MODE=debug
@@ -47,4 +47,4 @@ endif
 platform:
 	@echo $(PLATFORM)
 
-.PHONY: all clean run one debug $(PROJECTS) platform
+.PHONY: all clean r run one debug $(PROJECTS) platform
