@@ -199,7 +199,7 @@ namespace VM76 {
 				break;
 			}
 			}
-		} else if (button.type == Input::BUTTON_TYPE_KEY
+		} else if (button.type == Input::BUTTON_TYPE_MOUSE
 			&& action == Input::BUTTON_ACTION_DOWN) switch (button.value) {
 		case GLFW_MOUSE_BUTTON_LEFT:
 			map.place_block(obj->pos, 0);
