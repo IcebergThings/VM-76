@@ -12,6 +12,7 @@
 *.exe
 VMGS/VMGS
 ASM76/VMtest
+ASM76/asm76util
 
 # personal configurations for paths etc.
 */build/windows_flags.txt
