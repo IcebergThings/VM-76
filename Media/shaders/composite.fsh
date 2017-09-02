@@ -23,7 +23,6 @@ void tonemap(inout vec3 color) {
 	const float d = 0.59f;
 	const float e = 0.14f;
 	color = (color*(a*color+b))/(color*(c*color+d)+e);
-	color = pow(color, vec3(1.3, 1.20, 1.0));
 
 	color = vignette(color);
 

@@ -287,7 +287,7 @@ namespace VM76 {
 		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
 		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
 		deferred_lighting.set_vec3("sunVec", sunVec);
-		deferred_lighting.set_vec3("lightColor", glm::vec3(1.0,0.85,0.6));
+		deferred_lighting.set_vec3("lightColor", glm::vec3(1.2311,1.0,0.8286)*0.8f);
 		deferred_lighting.set_vec3("ambientColor", glm::vec3(0.12,0.17,0.2));
 		PostProcessingManager::Blit2D();
 
