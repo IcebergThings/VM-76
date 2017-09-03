@@ -35,6 +35,8 @@ namespace VM76 {
 		obj = new GObject();
 		physics = new PhyEngine();
 
+		scene_node = new RenderHierarchy(NULL);
+
 		hand_block = new GDrawable(NULL, NULL);
 		hand_block->data.vertices = (GLuint*)new Vertex[4 * 6];
 		hand_block->data.indices = new GLuint[6 * 6];
@@ -112,6 +114,11 @@ namespace VM76 {
 			"../Media/skybox/skybox_4.png",
 			"../Media/skybox/skybox_5.png"
 		}, cam);
+
+		scene_node->push_back(GBuffers_Cutout, &map);
+		scene_node->push_back(Render_Skybox, sky);
+		scene_node->push_back(GBuffers_NoLighting_Opaque, &block_pointer);
+		scene_node->push_back(GBuffers_NoLighting_Opaque, &axe);
 
 		phy_map = new PhysicsMap(&map);
 		physics->add_obj(phy_map);
@@ -250,7 +257,7 @@ namespace VM76 {
 		shader_textured.set_texture("colortex0", &tile_texture, 0);
 
 		// ================ STAGE 1 ================
-		//  Object rendering Opaque & cut-outs
+		//  GBuffers_Solid & GBuffers_Cutout
 		//  Bind Post buffer & use stencil
 		postBuffer->bind();
 		RenderBuffer::clearBuffer(glm::vec4(0.0, 0.0, 0.0, 0.0), true, true, true);
@@ -263,21 +270,11 @@ namespace VM76 {
 
 		// Textured blocks rendering
 		shader_textured.ProjectionView(cam->Projection, cam->View);
-		map.render();
-
-		// Setup uniforms
-		// Non textured rendering
-		shader_basic.use();
-		shader_basic.set_float("opaque", 0.4 + 0.2 * glm::sin(VMDE->frame_count * 0.1));
-		shader_basic.ProjectionView(cam->Projection, cam->View);
-		block_pointer.mat[0] = obj->transform();
-		block_pointer.update_instance(1);
-		block_pointer.render();
-
-		axe.render();
+		scene_node->render(GBuffers_Cutout);
+		//map.render();
 
 		// ================ STAGE 2 ================
-		//  Deferred shading Opaque & cut-outs
+		//  Deferred_Lighting_Opaque
 		//  Read Post buffer & stencil mask
 		glStencilFunc(GL_EQUAL, 1, 0x01);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
@@ -311,18 +308,32 @@ namespace VM76 {
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0x01);
 		VMStateControl::disable_depth_test();
-		sky->render();
+		scene_node->render(Render_Skybox);
 
 		// ================ STAGE 4 ================
-		//  Final composite & Full screen shading
+		//  GBuffers_NoLighting_Opaque
+		//  No stencil
 		VMStateControl::disable_stencil_test();
+
+		// Setup uniforms
+		// Non textured rendering
+		shader_basic.use();
+		shader_basic.set_float("opaque", 0.4 + 0.2 * glm::sin(VMDE->frame_count * 0.1));
+		shader_basic.ProjectionView(cam->Projection, cam->View);
+		block_pointer.mat[0] = obj->transform();
+		block_pointer.update_instance(1);
+
+		scene_node->render(GBuffers_NoLighting_Opaque);
+
+		// ================ STAGE 5 ================
+		//  Final composite & Full screen shading
 
 		postBuffer->unbind();
 		final_composite.use();
 		final_composite.set_texture("composite", postBuffer->texture_buffer[BufferComposite], 15);
 		PostProcessingManager::Blit2D();
 
-		// ================ STAGE 5 ================
+		// ================ STAGE X ================
 		//  GUI rendering
 		gui.use();
 		gui.set_texture("atlastex", &tile_texture, 0);

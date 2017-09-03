@@ -59,6 +59,8 @@ namespace VM76 {
 
 		RenderBuffer* postBuffer;
 
+		RenderHierarchy* scene_node;
+
 	public:
 		PhyEngine* physics;
 		PhysicsMap* phy_map;
