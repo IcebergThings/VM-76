@@ -97,7 +97,7 @@ namespace VM76 {
 		ctls[0] = ctl0;
 		Control_GodView* ctl1 = new Control_GodView();
 		ctl1->init_control(cam);
-		ctl1->cam->wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctl1->cam->pos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[1] = ctl1;
 		Control_FirstPersonView* ctl2 = new Control_FirstPersonView();
 		ctl2->init_control(cam);
@@ -218,7 +218,7 @@ namespace VM76 {
 		//  暂时只有拣选地图Tile功能，其它的拣选可以参考RM的分layer拣选
 		glm::mat3 inverse_view = glm::inverse(glm::mat3(cam->View));
 		glm::vec3 pos = glm::normalize(inverse_view * glm::vec3(0.0, 0.0, -1.0));
-		glm::vec3 test = cam->wpos;
+		glm::vec3 test = cam->pos;
 
 		for (int i = 0; i < 32; i++) {
 			if (Tiles::is_valid(map.map->tidQuery(test.x, test.y, test.z))) {
@@ -253,7 +253,7 @@ namespace VM76 {
 		//  Object rendering Opaque & cut-outs
 		//  Bind Post buffer & use stencil
 		postBuffer->bind();
-		RenderBuffer::clearBuffer(glm::vec4(0.5, 0.7, 1.0, 0.0), true, true, true);
+		RenderBuffer::clearBuffer(glm::vec4(0.0, 0.0, 0.0, 0.0), true, true, true);
 		postBuffer->set_draw_buffers();
 
 		// setup mask
@@ -283,6 +283,9 @@ namespace VM76 {
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		glStencilMask(0x00);
 
+		// Blend mode : ADD for light accumulation
+		glBlendFunc(GL_ONE, GL_ONE);
+
 		deferred_lighting.use();
 		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
 		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
@@ -290,6 +293,8 @@ namespace VM76 {
 		deferred_lighting.set_vec3("lightColor", glm::vec3(1.2311,1.0,0.8286)*0.8f);
 		deferred_lighting.set_vec3("ambientColor", glm::vec3(0.12,0.17,0.2));
 		PostProcessingManager::Blit2D();
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// Combine lighting with albedo
 		deferred_composite.use();
