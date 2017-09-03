@@ -59,6 +59,7 @@ namespace VM76 {
 		deferred_composite.add_file(GL_VERTEX_SHADER, "../Media/shaders/composite_deferred.vsh");
 		deferred_composite.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/composite_deferred.fsh");
 		deferred_composite.link_program();
+		DirectionalLight::shader = &deferred_lighting;
 
 		GLuint* gbuffers_type = new GLuint[4]{GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB16F};
 		// Albedo, Normal, Lighting, Composite
@@ -89,7 +90,6 @@ namespace VM76 {
 		hand_block->fbind();
 		block_pointer.obj->data.mat_c = 1;
 
-
 		cam = new Camera(glm::vec3(0.0), glm::vec3(0.0), glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f));
 
 		ctl_index = 2; // initially FirstPersonView
@@ -115,10 +115,13 @@ namespace VM76 {
 			"../Media/skybox/skybox_5.png"
 		}, cam);
 
+		sun = new DirectionalLight(false, glm::vec3(1.2311,1.0,0.8286)*0.8f, glm::vec3(0.12,0.17,0.2));
+
 		scene_node->push_back(GBuffers_Cutout, &map);
 		scene_node->push_back(Render_Skybox, sky);
 		scene_node->push_back(GBuffers_NoLighting_Opaque, &block_pointer);
 		scene_node->push_back(GBuffers_NoLighting_Opaque, &axe);
+		scene_node->push_back(Deferred_Lighting_Opaque, sun);
 
 		phy_map = new PhysicsMap(&map);
 		physics->add_obj(phy_map);
@@ -286,10 +289,8 @@ namespace VM76 {
 		deferred_lighting.use();
 		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
 		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
-		deferred_lighting.set_vec3("sunVec", sunVec);
-		deferred_lighting.set_vec3("lightColor", glm::vec3(1.2311,1.0,0.8286)*0.8f);
-		deferred_lighting.set_vec3("ambientColor", glm::vec3(0.12,0.17,0.2));
-		PostProcessingManager::Blit2D();
+		sun->direction = sunVec;
+		scene_node->render(Deferred_Lighting_Opaque);
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

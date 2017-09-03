@@ -60,3 +60,4 @@ namespace VM76 {
 #include "TiledMap/tiled_map.hpp"
 #include "Camera/Camera.hpp"
 #include "SkyBox/SkyBox.hpp"
+#include "Light/Light.hpp"

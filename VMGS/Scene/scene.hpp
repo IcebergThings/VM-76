@@ -57,6 +57,8 @@ namespace VM76 {
 
 		GObject* obj;
 
+		DirectionalLight* sun;
+
 		RenderBuffer* postBuffer;
 
 		RenderHierarchy* scene_node;
