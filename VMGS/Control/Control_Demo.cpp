@@ -22,7 +22,7 @@ namespace VM76 {
 		float stime = float(VMDE->frame_count);
 		float x = 5.0f * cos(stime * 0.015f);
 		float z = 5.0f * sin(stime * 0.015f);
-		cam->wpos = glm::vec3(x, 3.5f, z);
-		cam->rotate = glm::vec3(0.5, -PI * 0.5 - stime * 0.015f, 0.0);
+		cam->pos = glm::vec3(x, 3.5f, z);
+		cam->rotation = glm::vec3(0.5, -PI * 0.5 - stime * 0.015f, 0.0);
 	}
 }

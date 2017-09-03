@@ -27,7 +27,7 @@ namespace VM76 {
 	// ● 更新
 	//-------------------------------------------------------------------------
 	void Control_GodView::update_control() {
-		cam->rotate = glm::vec3(1.0, 0.0, 0.0);
+		cam->rotation = glm::vec3(1.0, 0.0, 0.0);
 
 		// Key Input
 		glm::vec3 speed = glm::vec3(0.1);
@@ -35,17 +35,17 @@ namespace VM76 {
 		if (PRESS(quit))
 			VMDE->done = true;
 		if (PRESS(forward))
-			cam->wpos += glm::vec3(0.0, 0.0, 1.0) * speed;
+			cam->pos += glm::vec3(0.0, 0.0, 1.0) * speed;
 		if (PRESS(back))
-			cam->wpos -= glm::vec3(0.0, 0.0, 1.0) * speed;
+			cam->pos -= glm::vec3(0.0, 0.0, 1.0) * speed;
 		if (PRESS(left))
-			cam->wpos += glm::vec3(1.0, 0.0, 0.0) * speed;
+			cam->pos += glm::vec3(1.0, 0.0, 0.0) * speed;
 		if (PRESS(right))
-			cam->wpos -= glm::vec3(1.0, 0.0, 0.0) * speed;
+			cam->pos -= glm::vec3(1.0, 0.0, 0.0) * speed;
 		if (PRESS(zoomout))
-			cam->wpos += glm::vec3(0.0, 1.0, 0.0) * speed;
+			cam->pos += glm::vec3(0.0, 1.0, 0.0) * speed;
 		if (PRESS(zoomin))
-			cam->wpos -= glm::vec3(0.0, 1.0, 0.0) * speed;
+			cam->pos -= glm::vec3(0.0, 1.0, 0.0) * speed;
 		#undef PRESS
 	}
 }

@@ -44,8 +44,8 @@ namespace VM76 {
 			PI / 2
 		);
 
-		cam->wpos = game_player.wpos;
-		cam->rotate = glm::vec3(game_player.vertical_angle, game_player.horizontal_angle, 0.0);
+		cam->pos = game_player.wpos;
+		cam->rotation = glm::vec3(game_player.vertical_angle, game_player.horizontal_angle, 0.0);
 
 		glm::vec3 right = glm::cross(cam->forward, cam->up);
 
