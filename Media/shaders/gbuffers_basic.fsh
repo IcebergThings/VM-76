@@ -1,16 +1,10 @@
 #version 330 core
 #pragma optimize(on)
 
-layout (location = 0) out vec4 albedo;
-layout (location = 1) out vec4 normal;
+layout (location = 3) out vec4 composite;
 
-in Vertex {
-	vec4 texcolor;
-	vec3 vpos;
-	vec3 n;
-};
+in vec4 texcolor;
 
 void main() {
-	albedo = texcolor;
-	normal = vec4(n * 0.5 + 0.5, 1.0);
+	composite = texcolor;
 }

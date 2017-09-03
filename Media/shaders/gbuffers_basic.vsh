@@ -14,20 +14,11 @@ layout (std140) uniform Matrices {
 
 uniform float opaque;
 
-out Vertex {
-	vec4 texcolor;
-	vec3 vpos;
-	vec3 n;
-};
+out vec4 texcolor;
 
 void main() {
 	vec4 v = vec4(position, 1.0);
 
-	v = matrices.View * Model * v;
-	vpos = v.xyz;
-
-	gl_Position = matrices.Projection * v;
+	gl_Position = matrices.ProjectionView * (Model * v);
 	texcolor = vec4(vertex_color.rgb, vertex_color.a * opaque);
-
-	n = mat3(matrices.View) * mat3(Model) * normal;
 }
