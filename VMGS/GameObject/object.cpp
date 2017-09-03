@@ -30,4 +30,30 @@ namespace VM76 {
 		this->rotation = rotation;
 		this->scale = scale;
 	}
+
+	void RenderHierarchy::render(RenderStage currentStage) {
+		for (RenderHierarchy* r : children) {
+			r->render(currentStage);
+		}
+
+		if (currentStage == this->stage && this->robj) {
+			this->robj->render();
+		}
+	}
+
+	void RenderHierarchy::push_back(RenderHierarchy* robj) {
+		robj->father = this;
+		this->children.push_back(robj);
+	}
+
+	void RenderHierarchy::push_back(RenderStage stage, RenderObject* robj) {
+		RenderHierarchy* n = new RenderHierarchy(this, stage, robj);
+		this->children.push_back(n);
+	}
+
+	RenderHierarchy::RenderHierarchy(RenderHierarchy* father, RenderStage stage, RenderObject* obj) {
+		this->father = father;
+		this->stage = stage;
+		this->robj = obj;
+	}
 }

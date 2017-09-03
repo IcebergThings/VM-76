@@ -3,6 +3,7 @@
 //=============================================================================
 
 #pragma once
+#include <vector>
 
 namespace VM76 {
 	class GObject {
@@ -23,6 +24,33 @@ namespace VM76 {
 			glm::vec3 rotation = glm::vec3(0.0),
 			glm::vec3 scale = glm::vec3(1.0)
 		);
+	};
+
+	enum RenderStage {
+		Render_NONE,                 // Does not render
+		GBuffers_Solid,             // in Hierarchy
+		GBuffers_Cutout,            // in Hierarchy
+		Deferred_Lighting_Opaque,   // in Hierarchy
+		Render_Skybox,              // in Hierarchy
+		GBuffers_NoLighting_Opaque, // in Hierarchy & Camera
+		ImageEffect_Opaque,         // in Camera
+		GBuffers_Transperant,       // in Hierarchy
+		ImageEffect_Final           // in Camera
+	};
+
+	class RenderHierarchy : public GObject {
+	public:
+		RenderHierarchy* father;
+		std::vector<RenderHierarchy*> children = {};
+
+		RenderStage stage;
+		RenderObject* robj;
+
+		void push_back(RenderHierarchy* robj);
+		void push_back(RenderStage stage, RenderObject* robj);
+		void render(RenderStage currentStage);
+
+		RenderHierarchy(RenderHierarchy* father, RenderStage stage = Render_NONE, RenderObject* obj = NULL);
 	};
 }
 
