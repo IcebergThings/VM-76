@@ -17,7 +17,7 @@ namespace VM76 {
 
 		srand(time(NULL));
 
-		if (!read_map()) generate_V1();
+		if (!read_map("../userdata/map.dat")) generate_V1();
 	}
 
 	void DataMap::generate_flat() {
@@ -29,9 +29,9 @@ namespace VM76 {
 				}
 	}
 
-	bool DataMap::read_map() {
+	bool DataMap::read_map(const char* filename) {
 		log("Reading map");
-		V::BinaryFileReader fr("map.dat");
+		V::BinaryFileReader fr(filename);
 		if (!fr.is_valid()) {
 			log("map.dat doesn't exist");
 			return false;
@@ -54,27 +54,34 @@ namespace VM76 {
 			}
 	}
 
-	void DataMap::save_map() {
-		auto worker_save = [](DataMap* t) {
-			log("Saving map");
-			V::BinaryFileWriter fw("map.dat");
-			// 版本号
-			fw.write_i32(100);
-			// 文件头标识
-			fw.write_u8('V');
-			fw.write_u8('M');
-			fw.write_u8('7');
-			fw.write_u8('6');
+	void DataMap::save_map(const char* filename) {
+		log("Saving map to %s", filename);
+		V::BinaryFileWriter fw(filename);
+		// 版本号
+		fw.write_i32(100);
+		// 文件头标识
+		fw.write_u8('V');
+		fw.write_u8('M');
+		fw.write_u8('7');
+		fw.write_u8('6');
 
-			for (int x = 0; x < t->width * t->length * t->height; x++) {
-				fw.write_u8(t->map[x].tid);
-				fw.write_u8(t->map[x].data_flag);
-			}
-			log("Map saved");
+		for (int x = 0; x < width * length * height; x++) {
+			fw.write_u8(map[x].tid);
+			fw.write_u8(map[x].data_flag);
+		}
 
-			t->map_save_worker = NULL;
-		};
-		if (!map_save_worker) map_save_worker = new thread(worker_save, this);
+		if (map_save_worker) {
+			map_save_worker = NULL;
+		}
+		log("Map saved to %s", filename);
+	}
+
+	void DataMap::save_map_async(const char* filename) {
+		if (!map_save_worker) {
+			map_save_worker = new thread([] (DataMap* t, const char* filename) {
+				t->save_map(filename);
+			}, this, filename);
+		}
 	}
 
 	DataMap::~DataMap() {

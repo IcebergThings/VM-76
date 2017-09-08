@@ -98,6 +98,8 @@ namespace ASM76 {
 	// ● 目标代码（object code）读写
 	//-------------------------------------------------------------------------
 	namespace ObjectCode {
+		extern const uint64_t magic;
+		extern const char magic_array[8];
 		Program read_file(const char* filename);
 		bool write_file(const char* filename, Program program);
 	}

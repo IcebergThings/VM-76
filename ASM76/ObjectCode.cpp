@@ -13,7 +13,17 @@
 #include "ASM76.hpp"
 
 namespace ASM76 { namespace ObjectCode {
+	//-------------------------------------------------------------------------
+	// ● 文件头魔法常数
+	//-------------------------------------------------------------------------
 	const uint64_t magic = 0x36374d56e2a3efa3; // “ｏｂVM76” in GB2312
+	const char magic_array[8] = {
+		(char) 0xa3, (char) 0xef, (char) 0xa3, (char) 0xe2,
+		0x56, 0x4d, 0x37, 0x36
+	};
+	//-------------------------------------------------------------------------
+	// ● 从文件读入
+	//-------------------------------------------------------------------------
 	Program read_file(const char* filename) {
 		Program r;
 		V::BinaryFileReader f(filename);
@@ -32,6 +42,9 @@ namespace ASM76 { namespace ObjectCode {
 		}
 		return r;
 	}
+	//-------------------------------------------------------------------------
+	// ● 写入到文件
+	//-------------------------------------------------------------------------
 	bool write_file(const char* filename, Program program) {
 		V::BinaryFileWriter f(filename);
 		f.write_u64(magic);

@@ -12,6 +12,7 @@
 *.exe
 VMGS/VMGS
 ASM76/VMtest
+ASM76/asm76util
 
 # personal configurations for paths etc.
 */build/windows_flags.txt
@@ -22,6 +23,6 @@ windows_path.bat
 one.cxx
 
 # awesome data
+userdata/
 output.log
-VMGS/map.dat
 *.obj
