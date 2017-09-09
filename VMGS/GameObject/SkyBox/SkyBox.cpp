@@ -60,10 +60,10 @@ namespace VM76 {
 		obj->fbind();
 
 		this->cam = cam;
+		this->material = gbuffers_sky;
 	}
 
 	void SkyBox::render() {
-		gbuffers_sky->use();
 		gbuffers_sky->ProjectionView(cam->Projection, cam->view_camera);
 		gbuffers_sky->set_texture_cube("cubemap0", tex, 0);
 

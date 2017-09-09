@@ -4,6 +4,7 @@
 
 #pragma once
 #include <vector>
+#include <algorithm>
 
 namespace VM76 {
 	class GObject {
@@ -45,6 +46,8 @@ namespace VM76 {
 
 		RenderStage stage;
 		RenderObject* robj;
+
+		void sort_child();
 
 		void push_back(RenderHierarchy* robj);
 		void push_back(RenderStage stage, RenderObject* robj);

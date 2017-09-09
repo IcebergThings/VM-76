@@ -148,16 +148,11 @@
 	void main_draw_end();
 	void main_set_brightness(float b);
 	//-------------------------------------------------------------------------
-	// ● RenderObject.cpp
+	// ● RenderObject.cpp - part 0
 	//-------------------------------------------------------------------------
 	class Object {
 	public:
 		virtual ~Object();
-	};
-
-	class RenderObject : public Object {
-	public:
-		virtual void render() = 0;
 	};
 	//-------------------------------------------------------------------------
 	// ● resources.cpp
@@ -240,6 +235,15 @@
 		);
 	};
 	extern Shaders* _shaders_in_use;
+	//-------------------------------------------------------------------------
+	// ● RenderObject.cpp - part 1
+	//-------------------------------------------------------------------------
+	class RenderObject : public Object {
+	public:
+		Shaders* material;
+
+		virtual void render() = 0;
+	};
 	//-------------------------------------------------------------------------
 	// ● VMDE
 	//-------------------------------------------------------------------------

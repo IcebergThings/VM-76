@@ -37,7 +37,19 @@ namespace VM76 {
 		}
 
 		if (currentStage == this->stage && this->robj) {
+			this->robj->material->use();
 			this->robj->render();
+		}
+	}
+
+	void RenderHierarchy::sort_child() {
+		std::sort(children.begin(), children.end(),
+			[] (RenderHierarchy* a, RenderHierarchy* b) {
+				return (a->robj->material && b->robj->material) && a->robj->material->program < b->robj->material->program;
+			});
+
+		for (RenderHierarchy* r : children) {
+			r->sort_child();
 		}
 	}
 
