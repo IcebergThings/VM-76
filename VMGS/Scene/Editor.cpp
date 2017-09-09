@@ -117,6 +117,8 @@ namespace VM76 {
 
 		sun = new DirectionalLight(false, glm::vec3(1.2311,1.0,0.8286)*0.8f, glm::vec3(0.12,0.17,0.2));
 
+		Res::TextureList["Game/TileAtlas"] = &tile_texture;
+
 		map.material = &shader_textured;
 		scene_node->push_back(GBuffers_Cutout, &map);
 		scene_node->push_back(Render_Skybox, sky);
@@ -258,11 +260,6 @@ namespace VM76 {
 		Scene::render();
 
 		scene_node->sort_child();
-
-		shader_textured.use();
-
-		// Setup uniforms
-		shader_textured.set_texture("colortex0", &tile_texture, 0);
 
 		// ================ STAGE 1 ================
 		//  GBuffers_Solid & GBuffers_Cutout

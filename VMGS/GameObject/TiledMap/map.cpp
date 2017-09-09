@@ -214,6 +214,7 @@ namespace VM76 {
 	}
 
 	void Map::render() {
+		material->set_texture("colortex0", Res::TextureList["Game/TileAtlas"], 0);
 		cmd_buffer->call();
 	}
 
