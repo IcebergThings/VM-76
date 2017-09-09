@@ -59,11 +59,23 @@ namespace VM76 {
 		deferred_composite.add_file(GL_VERTEX_SHADER, "../Media/shaders/composite_deferred.vsh");
 		deferred_composite.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/composite_deferred.fsh");
 		deferred_composite.link_program();
-		DirectionalLight::shader = &deferred_lighting;
 
 		GLuint* gbuffers_type = new GLuint[4]{GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB16F};
 		// Albedo, Normal, Lighting, Composite
 		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 4, gbuffers_type);
+
+		sky = new SkyBox({
+			"../Media/skybox/skybox_0.png",
+			"../Media/skybox/skybox_1.png",
+			"../Media/skybox/skybox_2.png",
+			"../Media/skybox/skybox_3.png",
+			"../Media/skybox/skybox_4.png",
+			"../Media/skybox/skybox_5.png"
+		}, cam);
+
+		Res::TextureList["Game/TileAtlas"] = &tile_texture;
+		Res::TextureList["GBuffers/Normals"] = postBuffer->texture_buffer[BufferNormal];
+		Res::ShadersList["Internal/DirectionalLight"] = &deferred_lighting;
 
 		// Set up hand block indicator's matrix
 		glm::mat4 block_display = glm::translate(
@@ -106,18 +118,7 @@ namespace VM76 {
 		ctl2->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
 		ctls[2] = ctl2;
 
-		sky = new SkyBox({
-			"../Media/skybox/skybox_0.png",
-			"../Media/skybox/skybox_1.png",
-			"../Media/skybox/skybox_2.png",
-			"../Media/skybox/skybox_3.png",
-			"../Media/skybox/skybox_4.png",
-			"../Media/skybox/skybox_5.png"
-		}, cam);
-
 		sun = new DirectionalLight(false, glm::vec3(1.2311,1.0,0.8286)*0.8f, glm::vec3(0.12,0.17,0.2));
-
-		Res::TextureList["Game/TileAtlas"] = &tile_texture;
 
 		map.material = &shader_textured;
 		scene_node->push_back(GBuffers_Cutout, &map);
@@ -126,7 +127,6 @@ namespace VM76 {
 		scene_node->push_back(GBuffers_NoLighting_Opaque, &block_pointer);
 		axe.material = &shader_basic;
 		scene_node->push_back(GBuffers_NoLighting_Opaque, &axe);
-		sun->material = &deferred_lighting;
 		scene_node->push_back(Deferred_Lighting_Opaque, sun);
 
 		phy_map = new PhysicsMap(&map);
@@ -260,6 +260,7 @@ namespace VM76 {
 		Scene::render();
 
 		scene_node->sort_child();
+		ActiveCamera = cam;
 
 		// ================ STAGE 1 ================
 		//  GBuffers_Solid & GBuffers_Cutout
@@ -274,9 +275,8 @@ namespace VM76 {
 		glStencilMask(0xFF);
 
 		// Textured blocks rendering
-		shader_textured.ProjectionView(cam->Projection, cam->View);
+		//shader_textured.ProjectionView(cam->Projection, cam->View);
 		scene_node->render(GBuffers_Cutout);
-		//map.render();
 
 		// ================ STAGE 2 ================
 		//  Deferred_Lighting_Opaque
@@ -288,8 +288,6 @@ namespace VM76 {
 		// Blend mode : ADD for light accumulation
 		glBlendFunc(GL_ONE, GL_ONE);
 
-		deferred_lighting.use();
-		deferred_lighting.set_texture("normal", postBuffer->texture_buffer[BufferNormal], 1);
 		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
 		sun->direction = sunVec;
 		scene_node->render(Deferred_Lighting_Opaque);
@@ -322,7 +320,7 @@ namespace VM76 {
 		// Non textured rendering
 		shader_basic.use();
 		shader_basic.set_float("opaque", 0.4 + 0.2 * glm::sin(VMDE->frame_count * 0.1));
-		shader_basic.ProjectionView(cam->Projection, cam->View);
+		//shader_basic.ProjectionView(cam->Projection, cam->View);
 		block_pointer.mat[0] = obj->transform();
 		block_pointer.update_instance(1);
 

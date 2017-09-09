@@ -19,4 +19,6 @@ public:
 	~Camera();
 };
 
+extern Camera* ActiveCamera;
+
 }

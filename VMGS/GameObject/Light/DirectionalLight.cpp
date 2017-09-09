@@ -8,13 +8,12 @@
 
 namespace VM76 {
 
-	Shaders* DirectionalLight::shader = NULL;
-
 	void DirectionalLight::render() {
-		shader->use();
-		shader->set_vec3("sunVec", direction);
-		shader->set_vec3("lightColor", lightColor);
-		shader->set_vec3("ambientColor", ambientColor);
+		material->set_texture("normal", Res::TextureList["GBuffers/Normals"], 1);
+
+		material->set_vec3("sunVec", direction);
+		material->set_vec3("lightColor", lightColor);
+		material->set_vec3("ambientColor", ambientColor);
 
 		PostProcessingManager::Blit2D();
 	}
@@ -23,6 +22,8 @@ namespace VM76 {
 		this->use_shadow = use_shadow;
 		this->lightColor = lightColor;
 		this->ambientColor = ambientColor;
+
+		this->material = Res::ShadersList["Internal/DirectionalLight"];
 	};
 
 }

@@ -64,8 +64,8 @@ namespace VM76 {
 	}
 
 	void SkyBox::render() {
-		gbuffers_sky->ProjectionView(cam->Projection, cam->view_camera);
-		gbuffers_sky->set_texture_cube("cubemap0", tex, 0);
+		material->ProjectionView(ActiveCamera->Projection, ActiveCamera->view_camera);
+		material->set_texture_cube("cubemap0", tex, 0);
 
 		obj->render();
 	}

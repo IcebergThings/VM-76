@@ -42,6 +42,7 @@ namespace VM76 {
 	}
 
 	void Axis::render() {
+		material->ProjectionView(ActiveCamera->Projection, ActiveCamera->View);
 		VMStateControl::disable_cullface();
 		VMStateControl::render_mode_wireframe();
 		obj->render();

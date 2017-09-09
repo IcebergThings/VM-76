@@ -9,6 +9,8 @@
 Shaders::Shaders() {
 }
 
+Shaders* _shaders_in_use = NULL;
+
 void Shaders::add_string(GLenum type, GLchar* source) {
 	if (!source) error("source is null");
 
@@ -67,8 +69,11 @@ void Shaders::link_program() {
 }
 
 void Shaders::use() {
-	glUseProgram(program);
-	check_gl_error;
+	if (_shaders_in_use != this) {
+		glUseProgram(program);
+		check_gl_error;
+		_shaders_in_use = this;
+	}
 }
 
 void Shaders::ProjectionView(glm::mat4 projection, glm::mat4 view) {

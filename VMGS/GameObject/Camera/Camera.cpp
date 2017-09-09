@@ -8,6 +8,8 @@
 
 namespace VM76 {
 
+Camera* ActiveCamera = NULL;
+
 void Camera::update() {
 	glm::mat4 r = glm::rotate(glm::mat4(1.0), rotation.y, glm::vec3(0.0, 1.0, 0.0));
 	r = glm::rotate(r, rotation.x, glm::vec3(1.0, 0.0, 0.0));

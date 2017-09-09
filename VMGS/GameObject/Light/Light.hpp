@@ -10,9 +10,6 @@ namespace VM76 {
 
 	class DirectionalLight : public RenderObject {
 	public:
-		static Shaders* shader;
-
-	public:
 		glm::vec3 direction;
 		glm::vec3 lightColor;
 		glm::vec3 ambientColor;

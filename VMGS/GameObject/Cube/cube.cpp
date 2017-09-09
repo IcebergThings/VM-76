@@ -86,6 +86,7 @@ namespace VM76 {
 	}
 
 	void Cube::render() {
+		material->ProjectionView(ActiveCamera->Projection, ActiveCamera->View);
 		obj->render();
 	}
 
