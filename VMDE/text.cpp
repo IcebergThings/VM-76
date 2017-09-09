@@ -26,10 +26,14 @@ typedef struct {
 
 TextRenderer::TextRenderer() {
 	obj = new GDrawable(&Text_VBO, NULL);
-	texshader.add_file(GL_VERTEX_SHADER, "../Media/shaders/text.vsh");
-	texshader.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/text.fsh");
-	texshader.link_program();
-	check_gl_error;
+	if (Res::ShadersList.count("Internal/Text") == 0) {
+		Res::ShadersList["Internal/Text"] = new Shaders();
+		auto material = Res::ShadersList["Internal/Text"];
+		material->add_file(GL_VERTEX_SHADER, "../Media/shaders/text.vsh");
+		material->add_file(GL_FRAGMENT_SHADER, "../Media/shaders/text.fsh");
+		material->link_program();
+		check_gl_error;
+	}
 }
 
 void TextRenderer::BakeText(const BakeOptions* opt) {
@@ -131,8 +135,9 @@ void TextRenderer::BakeText(const BakeOptions* opt) {
 
 void TextRenderer::render() {
 	VMSC::disable_cullface();
-	texshader.use();
-	texshader.set_texture("fontmap", &tex, 0);
+	auto material = Res::ShadersList["Internal/Text"];
+	material->use();
+	material->set_texture("fontmap", &tex, 0);
 	obj->render();
 	//GDrawable::close_draw_node();
 	VMSC::enable_cullface();
@@ -142,7 +147,7 @@ void TextRenderer::instanceRenderText(
 	const BakeOptions* opt,
 	glm::mat4 projection, glm::mat4 view, glm::mat4 transform
 ) {
-	texshader.ProjectionView(projection, view);
+	Res::ShadersList["Internal/Text"]->ProjectionView(projection, view);
 
 	obj->data.mat_c = 1;
 	obj->data.mat = (GLuint*) &transform;

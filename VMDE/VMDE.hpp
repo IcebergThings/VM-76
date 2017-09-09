@@ -25,6 +25,8 @@
 #include <thread>
 #include <cstdarg>
 #include <cassert>
+#include <string>
+#include <unordered_map>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -155,7 +157,7 @@
 		virtual ~Object();
 	};
 	//-------------------------------------------------------------------------
-	// ● resources.cpp
+	// ● resources.cpp - part 0
 	//-------------------------------------------------------------------------
 	namespace Res {
 		struct TextureParameters {
@@ -235,6 +237,15 @@
 		);
 	};
 	extern Shaders* _shaders_in_use;
+	//-------------------------------------------------------------------------
+	// ● resources.cpp - part 0
+	//-------------------------------------------------------------------------
+	namespace Res {
+		// Yes, we fall back to the implementation of std::string
+		// Since std lib uses std stuff
+		extern std::unordered_map<std::string, Shaders*> ShadersList;
+		extern std::unordered_map<std::string, Texture*> TextureList;
+	}
 	//-------------------------------------------------------------------------
 	// ● RenderObject.cpp - part 1
 	//-------------------------------------------------------------------------

@@ -90,4 +90,7 @@ namespace Res {
 
 		log("Cube Map is loaded to texture unit");
 	}
+
+	std::unordered_map<std::string, Shaders*> ShadersList;
+	std::unordered_map<std::string, Texture*> TextureList;
 }
