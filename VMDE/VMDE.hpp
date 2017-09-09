@@ -206,7 +206,7 @@
 
 	public:
 		Shaders();
-		void add_string(GLenum type, const GLchar* source);
+		void add_string(GLenum type, GLchar* source);
 		void add_file(GLenum type, const char* filename);
 		void link_program();
 		void use();
@@ -394,7 +394,6 @@
 	private:
 		GDrawable* obj;
 		Res::Texture tex = Res::Texture("../Media/Font.bmp", &Res::LinearTextureParameters);
-		Shaders texshader;
 
 	public:
 		enum TextDecorationType {

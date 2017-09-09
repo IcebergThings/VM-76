@@ -1,6 +1,3 @@
-#version 330 core
-#pragma optimize(on)
-
 layout (location = 0) in vec3 position;
 layout (location = 1) in mat4 Model;
 

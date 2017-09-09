@@ -9,10 +9,15 @@
 Shaders::Shaders() {
 }
 
-void Shaders::add_string(GLenum type, const GLchar* source) {
+void Shaders::add_string(GLenum type, GLchar* source) {
 	if (!source) error("source is null");
+
+	char gl_330_string[] = "#version 330 core\n#pragma optimize(on)\n#define VMDE_GL330\n";
+	char gl_430_string[] = "#version 430 core\n#pragma optimize(on)\n#define VMDE_GL330\n#define VMDE_GL430\n";
+	char *sources[2] = {VMDE->gl_ver == GL_43 ? gl_430_string : gl_330_string, source};
+
 	GLuint shader = glCreateShader(type);
-	glShaderSource(shader, 1, &source, NULL);
+	glShaderSource(shader, 2, sources, NULL);
 	glCompileShader(shader);
 	check_shader_compilation(shader, "shader compilation failed");
 	shaders[shader_count] = shader;

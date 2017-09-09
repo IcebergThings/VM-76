@@ -1,6 +1,3 @@
-#version 330 core
-#pragma optimize(on)
-
 layout (location = 0) out vec4 albedo;
 layout (location = 1) out vec4 normal;
 

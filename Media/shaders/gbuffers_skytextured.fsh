@@ -1,6 +1,3 @@
-#version 330 core
-#pragma optimize(on)
-
 layout (location = 3) out vec4 color;
 
 in vec3 wpos;

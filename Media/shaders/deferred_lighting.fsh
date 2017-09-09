@@ -1,6 +1,3 @@
-#version 330 core
-#pragma optimize(on)
-
 layout (location = 2) out vec4 light;
 
 in vec2 texcoord;

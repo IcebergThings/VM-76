@@ -1,6 +1,3 @@
-#version 330 core
-#pragma optimize(on)
-
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec4 vertex_color;
 layout (location = 3) in vec3 normal;
