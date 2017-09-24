@@ -58,9 +58,9 @@ namespace VM76 {
 }
 
 #include "Cube/cube.hpp"
+#include "Light/Light.hpp"
 #include "GLAxis/axis.hpp"
 #include "Tile/tile.hpp"
 #include "TiledMap/tiled_map.hpp"
 #include "Camera/Camera.hpp"
 #include "SkyBox/SkyBox.hpp"
-#include "Light/Light.hpp"

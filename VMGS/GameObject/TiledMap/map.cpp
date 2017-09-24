@@ -10,22 +10,21 @@
 namespace VM76 {
 
 	DataMap::DataMap(int w, int h, int l) {
-		constStone = {1, 0};
+		constVoid = {255, 0};
 
 		map = (TileData*) malloc(sizeof(TileData) * w * h * l);
 		width = w; length = l; height = h;
 
 		srand(time(NULL));
 
-		if (!read_map("../userdata/map.dat")) generate_V1();
+		if (!read_map("../userdata/map.dat")) generate_flat();
 	}
 
 	void DataMap::generate_flat() {
 		for (int x = 0; x < width; x++)
 			for (int z = 0; z < length; z++)
 				for (int y = 0; y < height; y++) {
-					TileData t = map[index(x,y,z)];
-					t.tid = (y == 0) ? Grass : Air;
+					map[index(x,y,z)].tid = (y == 0) ? Grass : Air;
 				}
 	}
 

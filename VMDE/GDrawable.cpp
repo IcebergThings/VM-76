@@ -120,10 +120,10 @@ void GDrawable::update() {
 	VMSC::ChangeVertexArray(data.VAO);
 
 	VMSC::ChangeArrayBuffer(data.VBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, data.vtx_c * sizeof(Vertex), data.vertices);
+	glBufferData(GL_ARRAY_BUFFER, data.vtx_c * sizeof(Vertex), data.vertices, GL_STATIC_DRAW);
 
 	VMSC::ChangeElementArrayBuffer(data.EBO);
-	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, data.ind_c * sizeof(GLuint), data.indices);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.ind_c * sizeof(GLuint), data.indices, GL_STATIC_DRAW);
 }
 
 void GDrawable::update_instance() {

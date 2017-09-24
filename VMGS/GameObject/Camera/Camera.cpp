@@ -1,5 +1,5 @@
 //=============================================================================
-// ■ VMGS/Camera/Camera.hpp
+// ■ VMGS/Camera/Camera.cpp
 //-----------------------------------------------------------------------------
 // VMGS摄像机类
 //=============================================================================
@@ -22,13 +22,15 @@ void Camera::update() {
 	view_camera = glm::lookAt(glm::vec3(0.0), forward, up);
 }
 
-Camera::Camera(glm::vec3 wpos, glm::vec3 rotate, glm::mat4 proj) {
+CameraNoneRender::CameraNoneRender(glm::vec3 wpos, glm::vec3 rotate, glm::mat4 proj) {
 	this->pos = wpos;
 	this->rotation = rotate;
 	this->Projection = proj;
 
 	update();
 }
+
+void Camera::render(RenderHierarchy* scene_root) { }
 
 Camera::~Camera() {}
 

@@ -19,16 +19,6 @@ namespace VM76 {
 	GDrawable* hand_block;
 
 	//-------------------------------------------------------------------------
-	// ● 缓冲区设定
-	//-------------------------------------------------------------------------
-	enum BuffersIndex {
-		BufferAlbedo,
-		BufferNormal,
-		BufferLighting,
-		BufferComposite
-	};
-
-	//-------------------------------------------------------------------------
 	// ● 场景开始
 	//-------------------------------------------------------------------------
 	Scene_Editor::Scene_Editor() {
@@ -60,9 +50,7 @@ namespace VM76 {
 		deferred_composite.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/composite_deferred.fsh");
 		deferred_composite.link_program();
 
-		GLuint* gbuffers_type = new GLuint[4]{GL_RGB8, GL_RGB8, GL_RGB8, GL_RGB16F};
-		// Albedo, Normal, Lighting, Composite
-		postBuffer = new RenderBuffer(VMDE->width, VMDE->height, 4, gbuffers_type);
+		postBuffer = CameraDeferred::create_gbuffers();
 
 		sky = new SkyBox({
 			"../Media/skybox/skybox_0.png",
@@ -75,7 +63,9 @@ namespace VM76 {
 
 		Res::TextureList["Game/TileAtlas"] = &tile_texture;
 		Res::TextureList["GBuffers/Normals"] = postBuffer->texture_buffer[BufferNormal];
+		Res::ShadersList["Internal/FinalComposite"] = &final_composite;
 		Res::ShadersList["Internal/DirectionalLight"] = &deferred_lighting;
+		Res::ShadersList["Internal/DeferredComposite"] = &deferred_composite;
 
 		// Set up hand block indicator's matrix
 		glm::mat4 block_display = glm::translate(
@@ -102,7 +92,8 @@ namespace VM76 {
 		hand_block->fbind();
 		block_pointer.obj->data.mat_c = 1;
 
-		cam = new Camera(glm::vec3(0.0), glm::vec3(0.0), glm::perspective(1.3f, aspect_ratio, 0.1f, 1000.0f));
+		cam = new CameraDeferred(glm::vec3(0.0), glm::vec3(0.0), glm::perspective(0.6981f, aspect_ratio, 0.1f, 1000.0f));
+		cam->gbuffers = postBuffer;
 
 		ctl_index = 2; // initially FirstPersonView
 		ctl_count = 3;
@@ -111,11 +102,11 @@ namespace VM76 {
 		ctls[0] = ctl0;
 		Control_GodView* ctl1 = new Control_GodView();
 		ctl1->init_control(cam);
-		ctl1->cam->pos = glm::vec3(64.0, 72.0, 64.0);
+		ctl1->cam->pos = glm::vec3(0.0, 8.0, 0.0);
 		ctls[1] = ctl1;
 		Control_FirstPersonView* ctl2 = new Control_FirstPersonView();
 		ctl2->init_control(cam);
-		ctl2->game_player.wpos = glm::vec3(64.0, 72.0, 64.0);
+		ctl2->game_player.wpos = glm::vec3(0.0, 8.0, 0.0);
 		ctls[2] = ctl2;
 
 		sun = new DirectionalLight(false, glm::vec3(1.2311,1.0,0.8286)*0.8f, glm::vec3(0.12,0.17,0.2));
@@ -232,26 +223,55 @@ namespace VM76 {
 		Scene::update();
 		// Pick
 		//  暂时只有拣选地图Tile功能，其它的拣选可以参考RM的分layer拣选
-		glm::mat3 inverse_view = glm::inverse(glm::mat3(cam->View));
-		glm::vec3 pos = glm::normalize(inverse_view * glm::vec3(0.0, 0.0, -1.0));
-		glm::vec3 test = cam->pos;
+		glm::mat4 inverse_view = glm::inverse(cam->View);
+		glm::mat4 inverse_proj = glm::inverse(cam->Projection);
+		glm::vec4 pos;
+		if (ctl_index == 1) {
+			double xpos, ypos;
+			glfwGetCursorPos(window, &xpos, &ypos);
+			xpos /= (float) VMDE->width; ypos /= (float) VMDE->height;
+			xpos = xpos * 2.0 - 1.0;
+			ypos = (1.0 - ypos) * 2.0 - 1.0;
 
-		for (int i = 0; i < 32; i++) {
+			pos = glm::vec4(xpos, ypos, 0.0, 1.0);
+		} else {
+			pos = glm::vec4(0.0, 0.0, 0.0, 1.0);
+		}
+
+		for (int i = 0; i < 1000; i++) {
+			glm::vec4 p = inverse_proj * pos;
+			p /= p.w;
+			p = inverse_view * p;
+			glm::vec3 test = glm::vec3(p.x, p.y, p.z);
+
 			if (Tiles::is_valid(map.map->tidQuery(test.x, test.y, test.z))) {
 				// we got something...
-				if (hand_id != 0) test -= pos * 0.3f;
+				if (hand_id != 0) {
+					pos.z -= 0.001f;
+					glm::vec4 p = inverse_proj * pos;
+					p /= p.w;
+					p = inverse_view * p;
+					test = glm::vec3(p.x, p.y, p.z);
+				}
 				test = test - glm::fract(test);
 				obj->pos = test;
 				break;
 			}
 
-			test += pos * 0.3f;
+			pos.z += 0.001f;
 		}
 
+		block_pointer.mat[0] = obj->transform();
+
 		// Update other stuff
+		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
+		sun->direction = sunVec;
+
 		ctls[ctl_index]->update_control();
 		physics->tick();
 		cam->update();
+
+		scene_node->sort_child();
 	}
 	//-------------------------------------------------------------------------
 	// ● 渲染
@@ -259,80 +279,14 @@ namespace VM76 {
 	void Scene_Editor::render() {
 		Scene::render();
 
-		scene_node->sort_child();
 		ActiveCamera = cam;
 
-		// ================ STAGE 1 ================
-		//  GBuffers_Solid & GBuffers_Cutout
-		//  Bind Post buffer & use stencil
-		postBuffer->bind();
-		RenderBuffer::clearBuffer(glm::vec4(0.0, 0.0, 0.0, 0.0), true, true, true);
-		postBuffer->set_draw_buffers();
-
-		// setup mask
-		glStencilFunc(GL_ALWAYS, 1, 0x01);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		glStencilMask(0xFF);
-
-		// Textured blocks rendering
-		//shader_textured.ProjectionView(cam->Projection, cam->View);
-		scene_node->render(GBuffers_Cutout);
-
-		// ================ STAGE 2 ================
-		//  Deferred_Lighting_Opaque
-		//  Read Post buffer & stencil mask
-		glStencilFunc(GL_EQUAL, 1, 0x01);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-		glStencilMask(0x00);
-
-		// Blend mode : ADD for light accumulation
-		glBlendFunc(GL_ONE, GL_ONE);
-
-		glm::vec3 sunVec = glm::mat3(cam->View) * glm::vec3(cos(PIf * 0.25), sin(PIf * 0.25), sin(PIf * 0.25) * 0.3f);
-		sun->direction = sunVec;
-		scene_node->render(Deferred_Lighting_Opaque);
-
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		// Combine lighting with albedo
-		deferred_composite.use();
-		deferred_composite.set_texture("albedo", postBuffer->texture_buffer[BufferAlbedo], 0);
-		deferred_composite.set_texture("lighting", postBuffer->texture_buffer[BufferLighting], 1);
-		deferred_composite.set_texture("depthtex", postBuffer->texture_buffer[4], 14);
-		deferred_composite.set_vec2("clipping", glm::vec2(0.1, 1000.0));
-		deferred_composite.set_vec3("fogColor", glm::vec3(0.5, 0.7, 1.0));
-		PostProcessingManager::Blit2D();
-
-		// ================ STAGE 3 ================
-		//  Skybox (Unfilled area) shading
-		//  Reverse stencil mask
-
-		glStencilFunc(GL_NOTEQUAL, 1, 0x01);
-		VMStateControl::disable_depth_test();
-		scene_node->render(Render_Skybox);
-
-		// ================ STAGE 4 ================
-		//  GBuffers_NoLighting_Opaque
-		//  No stencil
-		VMStateControl::disable_stencil_test();
-
-		// Setup uniforms
-		// Non textured rendering
-		shader_basic.use();
-		shader_basic.set_float("opaque", 0.4 + 0.2 * glm::sin(VMDE->frame_count * 0.1));
-		//shader_basic.ProjectionView(cam->Projection, cam->View);
-		block_pointer.mat[0] = obj->transform();
 		block_pointer.update_instance(1);
 
-		scene_node->render(GBuffers_NoLighting_Opaque);
+		shader_basic.use();
+		shader_basic.set_float("opaque", 0.4 + 0.2 * glm::sin(VMDE->frame_count * 0.1));
 
-		// ================ STAGE 5 ================
-		//  Final composite & Full screen shading
-
-		postBuffer->unbind();
-		final_composite.use();
-		final_composite.set_texture("composite", postBuffer->texture_buffer[BufferComposite], 15);
-		PostProcessingManager::Blit2D();
+		cam->render(scene_node);
 
 		// ================ STAGE X ================
 		//  GUI rendering

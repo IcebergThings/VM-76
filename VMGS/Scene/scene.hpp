@@ -49,7 +49,7 @@ namespace VM76 {
 
 		Cube block_pointer = Cube(1);
 		Tiles* clist[16];
-		Camera* cam;
+		CameraDeferred* cam;
 
 		int hand_id = 1;
 

@@ -11,6 +11,7 @@ namespace VM76 {
 	// ● 初始化
 	//-------------------------------------------------------------------------
 	void Control_GodView::init_control(Camera* cam) {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		this->cam = cam;
 
 		keys = {
@@ -27,6 +28,7 @@ namespace VM76 {
 	// ● 更新
 	//-------------------------------------------------------------------------
 	void Control_GodView::update_control() {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		cam->rotation = glm::vec3(1.0, 0.0, 0.0);
 
 		// Key Input

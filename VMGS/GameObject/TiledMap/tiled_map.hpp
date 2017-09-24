@@ -18,7 +18,7 @@ namespace VM76 {
 	public:
 		TileData* map = NULL;
 		int width, length, height;
-		TileData constStone;
+		TileData constVoid;
 
 		thread* map_save_worker = NULL;
 
@@ -37,7 +37,7 @@ namespace VM76 {
 			if (x >= 0 && x < width && y >= 0 && y < length && z >= 0 && z < height) {
 				return map[index(x, y, z)];
 			} else {
-				return constStone;
+				return constVoid;
 			}
 		}
 
