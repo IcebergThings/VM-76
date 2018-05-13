@@ -232,6 +232,6 @@ int main() {
 	test_speed();
 
 	putchar('\n');
-	terminate();
+	VMterminate();
 	puts("# TEST END #");
 }
