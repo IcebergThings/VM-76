@@ -30,7 +30,7 @@ module RenderManager
         fps::Float32
         fps_average::Float32
         delta::Float64
-        elapsed::Float64
+        elapsed::Float32
     end
 
     graphics_environment = GraphicsEnvirontment(
