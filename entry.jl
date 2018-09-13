@@ -20,20 +20,34 @@ include("GL/VAO.jl")
 main_state = RenderManager.create_state()
 
 vertices = GLfloat[
-    -1.0,  -1.0,  0.0, 1.0, 1.0, 1.0,
-    -1.0,   1.0,  0.0, 1.0, 1.0, 1.0,
-     1.0,   1.0,  0.0, 1.0, 1.0, 1.0,
+    -1.0,  -1.0,  0.0,
+    -1.0,   1.0,  0.0,
+     1.0,   1.0,  0.0,
      
-    -1.0,  -1.0,  0.0, 1.0, 1.0, 1.0,
-     1.0,  -1.0,  0.0, 1.0, 1.0, 1.0,
-     1.0,   1.0,  0.0, 1.0, 1.0, 1.0,
+    -1.0,  -1.0,  0.0,
+     1.0,  -1.0,  0.0,
+     1.0,   1.0,  0.0,
 
-    -0.5,  -0.5,  0.0, 1.0, 0.8, 0.6,
-     0.5,  -0.5,  0.0, 0.6, 1.0, 0.8,
-     0.0,   0.5,  0.0, 0.8, 0.6, 1.0
+    -0.5,  -0.5,  0.0,
+     0.5,  -0.5,  0.0,
+     0.0,   0.5,  0.0
 ]
-vbo = VBO.createVBO([(GLfloat, 3, false), (GLfloat, 3, false)], vertices)
-vao = VAO.createVAO([vbo])
+colors = GLfloat[
+    1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0,
+     
+    1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0,
+
+    1.0, 0.8, 0.6,
+    0.6, 1.0, 0.8,
+    0.8, 0.6, 1.0
+]
+vbo0 = VBO.createVBO([(GLfloat, 3, false)], vertices)
+vbo1 = VBO.createVBO([(GLfloat, 3, false)], colors)
+vao = VAO.createVAO([vbo0, vbo1])
 draw_vao = VAO.getDrawcall(vao)
 
 vsh = """
