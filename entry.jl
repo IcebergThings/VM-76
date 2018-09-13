@@ -121,6 +121,7 @@ draw_using_shaders = Shaders.drawUsing(shaders)
 main_render_loop = RenderManager.create_render_loop(main_state, () -> begin
     RenderTarget.setRenderTargetToState(main_state)
     RenderTarget.clear()
+    RenderTarget.setRenderTarget(RenderTarget.screen_target, 50, 50, main_state.w - 100, main_state.h - 100)
     draw_using_shaders((shaders) -> begin
         Shaders.setFloatCurrent(shaders, "iTime", main_state.elapsed);
         draw_vao()
