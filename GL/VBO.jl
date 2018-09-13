@@ -15,11 +15,11 @@ module VBO
     #                       [     (Type    ,Size,Normalized)]
 
     mutable struct VBO_obj
-        buffer_id::GLint
+        buffer_id::GLuint
         attr_format::VertexAttrFormat
         size::GLint
         num_elements::GLint
-        ebo_id::GLint
+        ebo_id::GLuint
     end
 
     function createVBO(attr_format::VertexAttrFormat = [(GLfloat, 3, false)], vertices = [], ebo = [], draw_hint = GL_STATIC_DRAW)
@@ -62,19 +62,19 @@ module VBO
 
         vbo.num_elements = vbo.size / stride
 
-        if length(vbo.ebo_id) > 0
+        if vbo.ebo_id != 0
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.ebo_id)
         end
 
         return i
     end
 
-    function _uploadData(T::GLuint, id::GLint, data_array::Array, draw_hint = GL_STATIC_DRAW)
+    function _uploadData(T::GLuint, id::GLuint, data_array::Array, draw_hint = GL_STATIC_DRAW)
         glBindBuffer(T, id)
         glBufferData(T, sizeof(data_array), data_array, draw_hint)
         glBindBuffer(T, 0)
     end
 
-    uploadElementIndices(ebo::GLint, data_array::Array, draw_hint = GL_STATIC_DRAW) = _uploadData(GL_ELEMENT_ARRAY_BUFFER, ebo, data_array, draw_hint)
+    uploadElementIndices(ebo::GLuint, data_array::Array, draw_hint = GL_STATIC_DRAW) = _uploadData(GL_ELEMENT_ARRAY_BUFFER, ebo, data_array, draw_hint)
     uploadData(vbo::VBO_obj, data_array::Array, draw_hint = GL_STATIC_DRAW) = _uploadData(GL_ARRAY_BUFFER, vbo.buffer_id, data_array, draw_hint)
 end

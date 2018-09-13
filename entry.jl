@@ -23,10 +23,7 @@ vertices = GLfloat[
     -1.0,  -1.0,  0.0,
     -1.0,   1.0,  0.0,
      1.0,   1.0,  0.0,
-     
-    -1.0,  -1.0,  0.0,
      1.0,  -1.0,  0.0,
-     1.0,   1.0,  0.0,
 
     -0.5,  -0.5,  0.0,
      0.5,  -0.5,  0.0,
@@ -36,19 +33,22 @@ colors = GLfloat[
     1.0, 1.0, 1.0,
     1.0, 1.0, 1.0,
     1.0, 1.0, 1.0,
-     
-    1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0,
     1.0, 1.0, 1.0,
 
     1.0, 0.8, 0.6,
     0.6, 1.0, 0.8,
     0.8, 0.6, 1.0
 ]
-vbo0 = VBO.createVBO([(GLfloat, 3, false)], vertices)
+indices = GLint[
+    0, 1, 2,
+    0, 3, 2,
+
+    4, 5, 6
+]
+vbo0 = VBO.createVBO([(GLfloat, 3, false)], vertices, indices)
 vbo1 = VBO.createVBO([(GLfloat, 3, false)], colors)
 vao = VAO.createVAO([vbo0, vbo1])
-draw_vao = VAO.getDrawcall(vao)
+draw_vao = VAO.getDrawcallIndiced(vao, 9)
 
 vsh = """
 #version 330 core

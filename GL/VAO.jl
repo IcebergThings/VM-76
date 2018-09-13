@@ -33,6 +33,7 @@ module VAO
         glBindVertexArray(vao.object_id)
         location, elements = 0, 0
         for obj in vao.vbos
+            # The EBO is actually one per VAO binding but... it will not break if you don't pass in multiple EBOs
             location = VBO.applyAttrFormat(obj, location)
             # This must be uniform for all VBOs in the same group
             vao.elements = obj.num_elements
@@ -53,4 +54,17 @@ module VAO
         end
         return draw
     end
+
+    function getDrawcallIndiced(vao::VAO_obj,  count::Int, start::Int = 0, before_draw::Function = ()->(), after_draw::Function = ()->())
+        function draw()
+            glBindVertexArray(vao.object_id)
+            before_draw()
+            glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, convert(Ptr{GLuint}, start))
+            after_draw()
+            glBindVertexArray(0)
+        end
+        return draw
+    end
+
+    
 end
