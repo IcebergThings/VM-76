@@ -27,10 +27,16 @@ module RenderTarget
         setRenderTarget(RenderTarget.screen_target, 0, 0, state.w, state.h)
     end
 
-    function clear(color::Bool = true, depth::Bool = true, stencil::Bool = true)
+    function clear(color::Bool = true, depth::Bool = true, stencil::Bool = true;
+        r = 0.0,
+        g = 0.0,
+        b = 0.0,
+        a = 1.0
+    )
         mask::GLuint = 0
         if color
             mask |= GL_COLOR_BUFFER_BIT
+            glClearColor(r, g, b, a)
         end
         if depth
             mask |= GL_DEPTH_BUFFER_BIT
