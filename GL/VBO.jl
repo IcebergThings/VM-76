@@ -9,7 +9,7 @@ module VBO
     include("gltools.jl")
 
     export VBO, VertexAttrFormat
-    export createVBO, applyAttrFormat, uploadData
+    export createVBO, applyAttrFormat, uploadData, uploadElementIndices
 
     VertexAttrFormat = Array{Tuple{DataType,Int ,Bool      }}
     #                       [     (Type    ,Size,Normalized)]
@@ -19,14 +19,23 @@ module VBO
         attr_format::VertexAttrFormat
         size::GLint
         num_elements::GLint
+        ebo_id::GLint
     end
 
-    function createVBO(attr_format::VertexAttrFormat = [(GLfloat, 3, false)], vertices = [], draw_hint = GL_STATIC_DRAW)
-        vbo = VBO_obj(glGenBuffer(), attr_format, sizeof(vertices), 0)
+    function createVBO(attr_format::VertexAttrFormat = [(GLfloat, 3, false)], vertices = [], ebo = [], draw_hint = GL_STATIC_DRAW)
+        vbo = VBO_obj(glGenBuffer(), attr_format, sizeof(vertices), 0, 0)
 
         uploadData(vbo, vertices, draw_hint)
         
         glCheckError("Creating VBO")
+
+        if length(ebo) > 0
+            ebo_id = glGenBuffer()
+            uploadElementIndices(ebo_id, ebo, draw_hint)
+            glCheckError("Creating EBO")
+
+            vbo.ebo_id = ebo_id
+        end
 
         return vbo
     end
@@ -53,12 +62,19 @@ module VBO
 
         vbo.num_elements = vbo.size / stride
 
+        if length(vbo.ebo_id) > 0
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo.ebo_id)
+        end
+
         return i
     end
 
-    function uploadData(vbo::VBO_obj, data_array::Array, draw_hint = GL_STATIC_DRAW)
-        glBindBuffer(GL_ARRAY_BUFFER, vbo.buffer_id)
-        glBufferData(GL_ARRAY_BUFFER, sizeof(data_array), data_array, draw_hint)
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+    function _uploadData(T::GLuint, id::GLint, data_array::Array, draw_hint = GL_STATIC_DRAW)
+        glBindBuffer(T, id)
+        glBufferData(T, sizeof(data_array), data_array, draw_hint)
+        glBindBuffer(T, 0)
     end
+
+    uploadElementIndices(ebo::GLint, data_array::Array, draw_hint = GL_STATIC_DRAW) = _uploadData(GL_ELEMENT_ARRAY_BUFFER, ebo, data_array, draw_hint)
+    uploadData(vbo::VBO_obj, data_array::Array, draw_hint = GL_STATIC_DRAW) = _uploadData(GL_ARRAY_BUFFER, vbo.buffer_id, data_array, draw_hint)
 end
