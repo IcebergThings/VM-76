@@ -7,12 +7,14 @@
 # 又被include的cwd坑了一把
 
 # Useful variables.
-ifeq "$(PLATFORM)" "msw"
-	SOURCES = $(subst $(shell cd)\,,$(shell dir /b /s *.cpp))
-else ifeq "$(PLATFORM)" "gnu"
-	SOURCES = $(shell find . -name "*.cpp")
-else ifeq "$(PLATFORM)" "mac"
-	SOURCES = $(shell find . -name "*.cpp")
+ifeq "$(SOURCES)" ""
+	ifeq "$(PLATFORM)" "msw"
+		SOURCES = $(subst $(shell cd)\,,$(shell dir /b /s *.cpp))
+	else ifeq "$(PLATFORM)" "gnu"
+		SOURCES = $(shell find . -name "*.cpp")
+	else ifeq "$(PLATFORM)" "mac"
+		SOURCES = $(shell find . -name "*.cpp")
+	endif
 endif
 
 ifdef DEBUG

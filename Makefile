@@ -4,12 +4,13 @@
 
 include inc.makefile
 
-PROJECTS = ASM76 VMDE VMGS
+PROJECTS = lib/lodepng lib/ASM76 VMDE VMGS
+PROJECT_ROOT = $(shell pwd)
 
 all: $(PROJECTS)
 
 $(PROJECTS):
-	cd $@ && $(MAKE) -f build/$(PLATFORM).makefile
+	cd $@ && $(MAKE) -f build/$(PLATFORM).makefile MAKE76_ROOT=$(PROJECT_ROOT)
 
 clean:
 ifeq "$(PLATFORM)" "msw"
