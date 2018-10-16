@@ -25,6 +25,8 @@
 #include <thread>
 #include <cstdarg>
 #include <cassert>
+#include <execinfo.h>
+#include <unistd.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -398,7 +400,7 @@
 	class TextRenderer : public RenderObject {
 	private:
 		GDrawable* obj;
-		Res::Texture tex = Res::Texture("../Media/Font.bmp", &Res::LinearTextureParameters);
+		Res::Texture tex;
 		Shaders texshader;
 
 	public:

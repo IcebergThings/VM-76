@@ -124,6 +124,11 @@ namespace Util {
 				" that were thrown before the check in:\n\t%s:%d.\n",
 				file, line
 			);
+
+			void *array[16];
+			size_t size = backtrace(array, 10);
+			backtrace_symbols_fd(array, size, STDERR_FILENO);
+
 			error("Terminating to arouse your attention.");
 		}
 	}
