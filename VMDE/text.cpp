@@ -25,6 +25,7 @@ typedef struct {
 } TextVertex;
 
 TextRenderer::TextRenderer() {
+	tex = Res::Texture("../Media/Font.png", &Res::LinearTextureParameters);
 	obj = new GDrawable(&Text_VBO, NULL);
 	texshader.add_file(GL_VERTEX_SHADER, "../Media/shaders/text.vsh");
 	texshader.add_file(GL_FRAGMENT_SHADER, "../Media/shaders/text.fsh");
