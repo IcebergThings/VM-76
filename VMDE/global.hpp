@@ -105,13 +105,6 @@
 			(pointer) = NULL; \
 		} \
 	} while (false)
-	// VMDE_Dispose - 一键销毁宏魔法
-	#define VMDE_Dispose(method, object) do { \
-		if (object) { \
-			method(object); \
-			(object) = NULL; \
-		} \
-	} while (false)
 	// DEBUG_ENVIRONMENT - 调试环境
 	// 这个字符串会显示在log函数输出的开头。
 	#define DEBUG_ENVIRONMENT "VMDE"

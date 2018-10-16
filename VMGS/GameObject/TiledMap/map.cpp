@@ -194,7 +194,7 @@ namespace VM76 {
 
 	Map::~Map() {
 		for (int x = 0; x < width * length * height; x++) {
-			VMDE_Dispose(delete, chunks[x]);
+			XE(delete, chunks[x]);
 		}
 		XE(delete[], chunks);
 		XE(delete, cmd_buffer);

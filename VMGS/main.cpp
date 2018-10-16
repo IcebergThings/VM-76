@@ -52,9 +52,9 @@ namespace VM76 {
 	void terminate() {
 		log("starting to terminate");
 		EditorMainScene* editor =(EditorMainScene*) SceneManager::context;
-		VMDE_Dispose(delete, editor);
-		VMDE_Dispose(delete, loading);
-		VMDE_Dispose(delete, trex);
+		XE(delete, editor);
+		XE(delete, loading);
+		XE(delete, trex);
 		terminate_engine();
 		log("terminated successfully");
 	}
