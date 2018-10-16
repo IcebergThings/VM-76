@@ -11,5 +11,5 @@ include ../routine.makefile
 
 LDLIBS += -L../ASM76 -lASM76 $(shell type build\windows_libs.txt)
 LDFLAGS += -shared -Wl,--export-all-symbols
-CXXFLAGS += -I../lib/SOIL/include -I.. -I../lib/ASM76 \
+CXXFLAGS += -I../lib/lodepng -I.. -I../lib/ASM76 \
 	$(shell type build\windows_flags.txt)

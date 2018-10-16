@@ -28,7 +28,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <SOIL.h>
+#include <lodepng.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -200,6 +200,8 @@
 			GLuint texture, index;
 			int width, height;
 			struct TextureParameters* parameter;
+
+			static unsigned char* loadpng_bytes(const char* file, GLint* w, GLint* h);
 
 			Texture();
 			Texture(const char* file, struct TextureParameters* p);
