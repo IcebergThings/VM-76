@@ -34,7 +34,7 @@ namespace VM76 {
 	//-------------------------------------------------------------------------
 	void start_game() {
 		::init_engine(860, 540, "VM / 76");
-
+	
 		trex = new TextRenderer();
 		aspect_ratio = (float) VMDE->width / VMDE->height;
 		gui_2d_projection = glm::ortho(0.0, 1.0 * aspect_ratio, 0.0, 1.0, -1.0, 1.0);

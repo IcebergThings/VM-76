@@ -400,7 +400,7 @@
 	class TextRenderer : public RenderObject {
 	private:
 		GDrawable* obj;
-		Res::Texture tex;
+		Res::Texture tex = Res::Texture("../Media/Font.png", &Res::LinearTextureParameters);;
 		Shaders texshader;
 
 	public:
