@@ -155,7 +155,7 @@ namespace VM76 {
 	}
 
 	void Map::update_render_buffer() {
-		if (cmd_buffer) XE(delete, cmd_buffer);
+		XE(delete, cmd_buffer);
 
 		int max_count = width * length * height;
 		size_t size = 0x10 + (max_count + 1) * sizeof(GDrawable*);
@@ -198,6 +198,7 @@ namespace VM76 {
 		}
 		XE(delete[], chunks);
 		XE(delete, cmd_buffer);
+		XE(delete, map);
 	}
 
 	PhysicsMap::PhysicsMap(Map* m) {

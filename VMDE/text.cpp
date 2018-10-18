@@ -32,6 +32,10 @@ TextRenderer::TextRenderer() {
 	check_gl_error;
 }
 
+TextRenderer::~TextRenderer() {
+	XE(delete, obj);
+}
+
 void TextRenderer::BakeText(
 	const char* text,
 	float width, float height,
@@ -53,8 +57,8 @@ void TextRenderer::BakeText(
 		itx_stride = 30;
 		break;
 	}
-	TextVertex* vtx = new TextVertex[vtx_stride * length];
-	GLuint* itx = new GLuint[itx_stride * length];
+	TextVertex* vtx = (TextVertex*) malloc(sizeof(TextVertex) * vtx_stride * length);
+	GLuint* itx = (GLuint*) malloc(sizeof(GLuint) * itx_stride * length);
 
 	float lbx = 0.0f;
 
@@ -129,8 +133,8 @@ void TextRenderer::BakeText(
 	obj->data.indices = itx;
 
 	obj->fbind();
-	free(vtx);
-	free(itx);
+	XE(free, vtx);
+	XE(free, itx);
 }
 
 void TextRenderer::render() {

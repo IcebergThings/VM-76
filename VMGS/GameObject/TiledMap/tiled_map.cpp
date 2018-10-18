@@ -125,6 +125,12 @@ namespace VM76 {
 		} else {
 			if (obj) XE(delete, obj);
 		}
+
+		// We should release the generated data immediately
+		// Because it's now in GPU's buffer
+		// And we should not hold it until some time, as that is a very lazy approach
+		XE(free, vtx);
+		XE(free, ind);
 	}
 
 	void TiledMap::render() {

@@ -92,7 +92,7 @@ RenderBuffer::~RenderBuffer() {
 	log("Delete Buffer %d", framebuffer);
 
 	for (int i = 0; i < mrtcount + 1; i++) XE(delete, texture_buffer[i]);
-	XE(delete, texture_buffer);
+	XE(delete[], texture_buffer);
 
 	glDeleteRenderbuffers(1, &rbo);
 	glDeleteFramebuffers(1, &framebuffer);

@@ -403,6 +403,7 @@
 			OUTLINE,
 		};
 		TextRenderer();
+		~TextRenderer();
 		void BakeText(
 			const char* text,
 			float width, float height,

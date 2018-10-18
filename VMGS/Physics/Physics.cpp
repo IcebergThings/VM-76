@@ -18,6 +18,15 @@ PhyEngine::PhyEngine() {
 	last->next = NULL;
 }
 
+PhyEngine::~PhyEngine() {
+	PhyObjNode* last = last;
+	while (last) {
+		PhyObjNode* prev = last->prev;
+		delete last;
+		last = prev;
+	}
+}
+
 void PhyEngine::collide(PhyObject* obj, PhyObjNode* node) {
 	for (PhyObjNode* Bnode = first->next; Bnode->obj; Bnode = Bnode->next) {
 		PhyObject* Bobj = Bnode->obj;
